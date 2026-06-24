@@ -40,10 +40,13 @@ export default function RadarAIBubble() {
       // Call edge function
       const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/radar-ai-chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+        },
         body: JSON.stringify({ 
           messages: newMessages,
-          session_id: 'temp-session-' + Date.now() // In a real app, generate a proper session ID
+          session_id: 'temp-session-' + Date.now()
         })
       })
 
