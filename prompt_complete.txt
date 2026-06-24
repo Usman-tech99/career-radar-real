@@ -1,0 +1,275 @@
+﻿CAREER RADARAI-Powered Career GPSFind. Prepare. Succeed.ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüFINAL MASTER BUILD PROMPT ΓÇö ALL UPDATES INCLUDEDReact+Vite  |  Supabase  |  Gemini AI  |  Vercel  |  GitHub  |  Google Antigravity  |  React BitsGive this ENTIRE document to your AI coder at the start of every session.
+CoreSQL schema17 tablesRLS policiesEdge functions |  | FeaturesCareer BlueprintScore 0-100Onboarding flowUser dashboard |  | DesignReact Bits UIDark themeAnimationsSora font |  | ToolsAntigravity guideGemini AIReact BitsManual payments
+SECTION 0 ΓÇö ABSOLUTE RULES (Read Before Anything)
+Memorize these. Never break them. They apply to every line of code.
+RULE 1 ΓÇö ZERO HARDCODED DATAEvery public page content comes from Supabase only.No fake arrays, no placeholder text in any .jsx file.Empty DB = show empty state component, never dummy data.
+RULE 2 ΓÇö API KEYS NEVER IN FRONTENDGEMINI_API_KEY ΓåÆ Supabase Edge Function secrets onlySUPABASE_SERVICE_ROLE_KEY ΓåÆ Supabase Edge Function secrets onlyFrontend .env.local only: VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY
+RULE 3 ΓÇö DOUBLE PROTECTION ON EVERY ROUTEReact Router guard + Supabase RLS = both must exist on every protected page.Frontend guard alone is NOT enough.
+RULE 4 ΓÇö 3 STATES ON EVERY DATA COMPONENT1. Loading skeleton  2. Error + retry button  3. Empty state with message
+RULE 5 ΓÇö REACT + VITE ONLY (NOT NEXT.JS)Stack: React 18 + Vite. Vite is stable in sandbox environments.If AI suggests Next.js ΓåÆ reject it, insist on React + Vite.
+RULE 6 ΓÇö MOBILE FIRSTEvery component works at 320px minimum. Build mobile first, scale up.
+SECTION 1 ΓÇö PROJECT VISION: AI-Powered Career GPS
+Career Radar is NOT just an opportunity platform. It is the Google Maps of careers for Pakistani students, Gen Z learners, and freelancers.
+Analogy | Meaning
+Google Maps | Does not build roads ΓÇö helps you navigate existing roads
+Career Radar | Does not create opportunities ΓÇö helps users navigate their career path with AI
+Core difference | Student ΓåÆ AI Analysis ΓåÆ Personal Roadmap ΓåÆ Skills ΓåÆ Opportunities ΓåÆ Employment
+Three Core Pillars:
+Pillar | What It Means
+NAVIGATE | AI builds personalized Career Blueprint based on degree, skills, goals
+SCORE | Career Radar Score (0ΓÇô100) tracks progress like a credit score for careers
+CONNECT | Real jobs, internships, courses ΓÇö matched to user profile from live database
+SECTION 2 ΓÇö DESIGN SYSTEM (Exact Specifications)
+Color Palette ΓÇö Use These Exact Values:
+Element | Value | Usage
+Page Background | #07070C | Entire site background ΓÇö very dark navy
+Card Background | rgba(255,255,255,0.04) | All glassmorphism cards
+Card Border | #1E1E2E | Subtle dark borders
+Primary Text | #FFFFFF | All headings and body text
+Muted Text | #94A3B8 | Descriptions, labels, timestamps
+Accent GREEN | #10B981 | Primary ΓÇö buttons, highlights, active states
+Accent GOLD | #F59E0B | Scores, badges, logo match
+Accent BLUE | #3B82F6 | Links, info badges
+Accent PURPLE | #8B5CF6 | AI features, Career Blueprint
+Glass Card CSS | bg-white/[0.04] backdrop-blur-xl border border-[#1E1E2E] rounded-2xl | Tailwind classes for every card
+Typography:
+Property | Value
+Primary Font | Sora ΓÇö Google Fonts. Weights: 400, 500, 600, 700, 800. Add to index.html <head>
+Mono Font | JetBrains Mono ΓÇö for Career Score number, code blocks, stats
+Import link | <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+Animations ΓÇö NexusTech.pk Style:
+Animation | How To Implement
+Counter Animation | Numbers count 0ΓåÆfinal on scroll-into-view. Use CountUp from React Bits. Duration 2s.
+Text Slide Up | Headings fade in + slide up 30px on scroll. Use BlurText or SplitText from React Bits.
+Gradient Text | Key headings: bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent
+Marquee Ticker | Infinite scroll strip for stats. Use React Bits InfiniteScroll or CSS animation.
+Card Hover | scale(1.02) + green glow shadow on hover. transition: all 0.3s ease.
+Score Ring | Animated SVG circle drawing itself 0ΓåÆscore. Use React Bits CircularProgress.
+Page Transition | Fade in + slight scale on route change via Framer Motion AnimatePresence.
+Logo:
+Logo File: WhatsApp_Image_2026-06-21 (provided by client)Navy circle, graduation cap, briefcase, radar waves, gold arrow ΓÇö "Career Radar" + "Your Opportunity Scanner"Place in: src/assets/logo.pngUse in: Navbar left (44px height), Login page center (80px), Footer center (40px), Browser faviconImport: import Logo from "../assets/logo.png"
+SECTION 3 ΓÇö TECH STACK & SETUP
+Install Commands:
+# Step 1 ΓÇö Create projectnpm create vite@latest career-radar -- --template reactcd career-radar# Step 2 ΓÇö Install all dependenciesnpm install @supabase/supabase-js react-router-dom framer-motion \  lucide-react react-hot-toast react-hook-form zod @hookform/resolvers \  date-fns clsx tailwind-merge# Step 3 ΓÇö Dev dependenciesnpm install -D tailwindcss postcss autoprefixernpx tailwindcss init -p# Step 4 ΓÇö React Bits (install as needed per component)npx jsrepo add https://reactbits.dev/tailwind/Backgrounds/Auroranpx jsrepo add https://reactbits.dev/tailwind/TextAnimations/BlurTextnpx jsrepo add https://reactbits.dev/tailwind/TextAnimations/GradientTextnpx jsrepo add https://reactbits.dev/tailwind/TextAnimations/CountUpnpx jsrepo add https://reactbits.dev/tailwind/TextAnimations/SplitTextnpx jsrepo add https://reactbits.dev/tailwind/Components/AnimatedListnpx jsrepo add https://reactbits.dev/tailwind/Backgrounds/Particles
+tailwind.config.js:
+export default {  content: ["./index.html","./src/**/*.{js,jsx}"],  theme: {    extend: {      fontFamily: { sans: ["Sora","sans-serif"], mono: ["JetBrains Mono","monospace"] },      colors: { surface: "#0F0F1A", border: "#1E1E2E" },    },  },  plugins: [],}
+.env.local (Frontend ONLY):
+VITE_SUPABASE_URL=your_project_urlVITE_SUPABASE_ANON_KEY=your_anon_key# NEVER PUT THESE IN FRONTEND:# GEMINI_API_KEY            ΓÇö Edge Function secrets only# SUPABASE_SERVICE_ROLE_KEY ΓÇö Edge Function secrets only
+SECTION 4 ΓÇö USER SYSTEM & ROLES (4 Tiers)
+Role | Permissions & Redirect
+super_admin (Founder) | One account. Created manually in Supabase dashboard. Full access to everything. Only role that creates/deletes accounts. After login ΓåÆ /admin/dashboard
+admin (Volunteers) | Created by Founder. Full CRUD on all content. Can edit anyone's posts. CANNOT create users or access manage-team. After login ΓåÆ /admin/dashboard
+collaborator (Partners) | Created by Founder. Login = /admin/my-profile page ONLY. Can update own bio, photo, links. NO other access. After login ΓåÆ /admin/my-profile
+user (Public Members) | Self-register on website. Gets /dashboard with Blueprint + Score. No admin access. After login ΓåÆ /dashboard
+Login Redirect Logic (AuthContext.jsx):Check user_roles table after every login:  super_admin  ΓåÆ  /admin/dashboard  admin        ΓåÆ  /admin/dashboard  collaborator ΓåÆ  /admin/my-profile  no row found ΓåÆ  /dashboard  (public user)
+SECTION 5 ΓÇö COMPLETE DATABASE SCHEMA (Run In Supabase SQL Editor)
+Run this SQL in order. Do not skip any part. All 17 tables + triggers + RLS policies.
+Foundation:
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";CREATE OR REPLACE FUNCTION handle_updated_at()RETURNS TRIGGER AS $$BEGIN NEW.updated_at = NOW(); RETURN NEW; END;$$ LANGUAGE plpgsql;CREATE OR REPLACE FUNCTION get_my_role()RETURNS TEXT AS $$  SELECT role FROM user_roles WHERE user_id = auth.uid()$$ LANGUAGE sql SECURITY DEFINER STABLE;
+Admin Tables (user_roles + profiles):
+CREATE TABLE user_roles (  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),  user_id UUID UNIQUE NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,  role TEXT NOT NULL CHECK (role IN ('super_admin','admin','collaborator')),  created_at TIMESTAMPTZ DEFAULT NOW());ALTER TABLE user_roles ENABLE ROW LEVEL SECURITY;CREATE POLICY "roles_founder" ON user_roles FOR ALL USING (get_my_role()='super_admin') WITH CHECK (get_my_role()='super_admin');CREATE POLICY "roles_own_read" ON user_roles FOR SELECT USING (user_id=auth.uid());CREATE TABLE profiles (  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,  full_name TEXT, role_title TEXT, bio TEXT,  avatar_url TEXT, linkedin_url TEXT, twitter_url TEXT,  is_founder BOOLEAN DEFAULT FALSE,  is_visible_on_team_page BOOLEAN DEFAULT TRUE,  display_order INTEGER DEFAULT 99,  created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW());ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;CREATE POLICY "profiles_public_read" ON profiles FOR SELECT USING (TRUE);CREATE POLICY "profiles_own_update" ON profiles FOR UPDATE USING (auth.uid()=id) WITH CHECK (auth.uid()=id);CREATE POLICY "profiles_founder_insert" ON profiles FOR INSERT WITH CHECK (get_my_role()='super_admin');CREATE POLICY "profiles_founder_delete" ON profiles FOR DELETE USING (get_my_role()='super_admin');CREATE TRIGGER profiles_upd BEFORE UPDATE ON profiles FOR EACH ROW EXECUTE FUNCTION handle_updated_at();CREATE OR REPLACE FUNCTION handle_new_user()RETURNS TRIGGER AS $$BEGIN INSERT INTO profiles(id,full_name) VALUES(NEW.id,NEW.raw_user_meta_data->>'full_name') ON CONFLICT(id) DO NOTHING; RETURN NEW; END;$$ LANGUAGE plpgsql SECURITY DEFINER;CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION handle_new_user();
+Public User Tables:
+CREATE TABLE public_users (  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,  full_name TEXT, email TEXT, avatar_url TEXT, country TEXT,  onboarding_complete BOOLEAN DEFAULT FALSE,  created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW());ALTER TABLE public_users ENABLE ROW LEVEL SECURITY;CREATE POLICY "pub_users_own" ON public_users FOR ALL USING (auth.uid()=id) WITH CHECK (auth.uid()=id);CREATE POLICY "pub_users_founder" ON public_users FOR SELECT USING (get_my_role()='super_admin');CREATE TABLE onboarding_data (  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),  user_id UUID UNIQUE NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,  degree TEXT, study_year TEXT, skills TEXT[], country TEXT, city TEXT,  career_goal TEXT, experience TEXT CHECK (experience IN ('Student','Fresh Graduate','1-2 Years','3+ Years')),  interests TEXT[], created_at TIMESTAMPTZ DEFAULT NOW());ALTER TABLE onboarding_data ENABLE ROW LEVEL SECURITY;CREATE POLICY "onboarding_own" ON onboarding_data FOR ALL USING (auth.uid()=user_id) WITH CHECK (auth.uid()=user_id);CREATE TABLE career_blueprints (  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,  title TEXT, summary TEXT,  recommended_skills JSONB DEFAULT '[]',  recommended_jobs JSONB DEFAULT '[]',  recommended_courses JSONB DEFAULT '[]',  action_steps JSONB DEFAULT '[]',  milestones JSONB DEFAULT '[]',  is_active BOOLEAN DEFAULT TRUE,  generated_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW());ALTER TABLE career_blueprints ENABLE ROW LEVEL SECURITY;CREATE POLICY "blueprints_own" ON career_blueprints FOR ALL USING (auth.uid()=user_id) WITH CHECK (auth.uid()=user_id);CREATE TABLE career_scores (  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),  user_id UUID UNIQUE NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,  total_score INTEGER DEFAULT 0 CHECK (total_score BETWEEN 0 AND 100),  skills_score INTEGER DEFAULT 0,   -- max 25  profile_score INTEGER DEFAULT 0,  -- max 20  activity_score INTEGER DEFAULT 0, -- max 20  education_score INTEGER DEFAULT 0,-- max 20  experience_score INTEGER DEFAULT 0,-- max 15  missing_items JSONB DEFAULT '[]',  score_history JSONB DEFAULT '[]',  last_calculated TIMESTAMPTZ DEFAULT NOW());ALTER TABLE career_scores ENABLE ROW LEVEL SECURITY;CREATE POLICY "scores_own" ON career_scores FOR ALL USING (auth.uid()=user_id) WITH CHECK (auth.uid()=user_id);
+Content Tables (Jobs, Weekly Content, Products, Education):
+-- site_stats SINGLETONCREATE TABLE site_stats (id INT PRIMARY KEY DEFAULT 1 CHECK(id=1),  community_members INTEGER DEFAULT 0, jobs_posted INTEGER DEFAULT 0,  resources_shared INTEGER DEFAULT 0, total_products INTEGER DEFAULT 0,  updated_at TIMESTAMPTZ DEFAULT NOW());INSERT INTO site_stats(id) VALUES(1);ALTER TABLE site_stats ENABLE ROW LEVEL SECURITY;CREATE POLICY "stats_read" ON site_stats FOR SELECT USING(TRUE);CREATE POLICY "stats_update" ON site_stats FOR UPDATE USING(get_my_role()='super_admin');-- jobsCREATE TABLE jobs (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),  title TEXT NOT NULL, company TEXT NOT NULL, location TEXT,  type TEXT CHECK(type IN('Full-time','Part-time','Internship','Freelance','Remote')),  description TEXT, apply_url TEXT NOT NULL, deadline DATE,  tags TEXT[] DEFAULT '{}', slug TEXT UNIQUE,  is_featured BOOLEAN DEFAULT FALSE, is_active BOOLEAN DEFAULT TRUE,  posted_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,  created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW());CREATE INDEX idx_jobs ON jobs(is_active,created_at DESC);CREATE INDEX idx_jobs_tags ON jobs USING GIN(tags);ALTER TABLE jobs ENABLE ROW LEVEL SECURITY;CREATE POLICY "jobs_pub" ON jobs FOR SELECT USING(is_active=TRUE);CREATE POLICY "jobs_admin" ON jobs FOR ALL USING(get_my_role() IN('super_admin','admin')) WITH CHECK(get_my_role() IN('super_admin','admin'));CREATE TRIGGER jobs_upd BEFORE UPDATE ON jobs FOR EACH ROW EXECUTE FUNCTION handle_updated_at();-- weekly_contentCREATE TABLE weekly_content (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),  title TEXT NOT NULL, description TEXT,  category TEXT CHECK(category IN('Roadmap','Guide','AI Tools','Resource Pack','Workshop','Other')),  thumbnail_url TEXT, file_url TEXT, external_link TEXT, week_label TEXT,  is_published BOOLEAN DEFAULT TRUE,  posted_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,  created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW());ALTER TABLE weekly_content ENABLE ROW LEVEL SECURITY;CREATE POLICY "content_pub" ON weekly_content FOR SELECT USING(is_published=TRUE);CREATE POLICY "content_admin" ON weekly_content FOR ALL USING(get_my_role() IN('super_admin','admin')) WITH CHECK(get_my_role() IN('super_admin','admin'));CREATE TRIGGER content_upd BEFORE UPDATE ON weekly_content FOR EACH ROW EXECUTE FUNCTION handle_updated_at();-- productsCREATE TABLE products (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),  title TEXT NOT NULL, description TEXT,  category TEXT CHECK(category IN('File','Course','Template','eBook','Bundle')),  thumbnail_url TEXT, file_url TEXT, preview_url TEXT,  price_pkr INTEGER DEFAULT 0, is_free BOOLEAN DEFAULT FALSE,  is_active BOOLEAN DEFAULT TRUE, external_link TEXT,  whatsapp_number TEXT, bank_details TEXT,  posted_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,  created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW());ALTER TABLE products ENABLE ROW LEVEL SECURITY;CREATE POLICY "products_pub" ON products FOR SELECT USING(is_active=TRUE);CREATE POLICY "products_admin" ON products FOR ALL USING(get_my_role() IN('super_admin','admin')) WITH CHECK(get_my_role() IN('super_admin','admin'));CREATE TRIGGER products_upd BEFORE UPDATE ON products FOR EACH ROW EXECUTE FUNCTION handle_updated_at();-- delivered_orders (manual payment tracking)CREATE TABLE delivered_orders (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),  product_id UUID REFERENCES products(id) ON DELETE SET NULL,  product_title TEXT NOT NULL, buyer_name TEXT, buyer_whatsapp TEXT,  amount_pkr INTEGER, payment_method TEXT,  status TEXT DEFAULT 'pending' CHECK(status IN('pending','confirmed','delivered','rejected')),  notes TEXT, created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW());ALTER TABLE delivered_orders ENABLE ROW LEVEL SECURITY;CREATE POLICY "orders_founder" ON delivered_orders FOR ALL USING(get_my_role()='super_admin');-- education_itemsCREATE TABLE education_items (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),  title TEXT NOT NULL, description TEXT,  type TEXT CHECK(type IN('Course','Book','Guide','Workshop')),  level TEXT CHECK(level IN('Beginner','Intermediate','Advanced')),  thumbnail_url TEXT, is_free BOOLEAN DEFAULT TRUE,  free_access_url TEXT, product_id UUID REFERENCES products(id) ON DELETE SET NULL,  duration_label TEXT, topics_covered TEXT[] DEFAULT '{}',  is_published BOOLEAN DEFAULT TRUE, sort_order INTEGER DEFAULT 99,  created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW());ALTER TABLE education_items ENABLE ROW LEVEL SECURITY;CREATE POLICY "edu_pub" ON education_items FOR SELECT USING(is_published=TRUE);CREATE POLICY "edu_admin" ON education_items FOR ALL USING(get_my_role() IN('super_admin','admin')) WITH CHECK(get_my_role() IN('super_admin','admin'));
+Community + AI Tables:
+-- structure_page SINGLETONCREATE TABLE structure_page (id INT PRIMARY KEY DEFAULT 1 CHECK(id=1),  aim TEXT, mission TEXT, vision TEXT,  core_values JSONB DEFAULT '[]', goals JSONB DEFAULT '[]', milestones JSONB DEFAULT '[]',  updated_at TIMESTAMPTZ DEFAULT NOW());INSERT INTO structure_page(id) VALUES(1);ALTER TABLE structure_page ENABLE ROW LEVEL SECURITY;CREATE POLICY "struct_pub" ON structure_page FOR SELECT USING(TRUE);CREATE POLICY "struct_admin" ON structure_page FOR UPDATE USING(get_my_role() IN('super_admin','admin'));-- about_page SINGLETONCREATE TABLE about_page (id INT PRIMARY KEY DEFAULT 1 CHECK(id=1),  story_heading TEXT DEFAULT 'Our Story', story_text TEXT,  founded_date TEXT, contact_email TEXT, contact_whatsapp TEXT,  community_link TEXT, tagline TEXT, updated_at TIMESTAMPTZ DEFAULT NOW());INSERT INTO about_page(id) VALUES(1);ALTER TABLE about_page ENABLE ROW LEVEL SECURITY;CREATE POLICY "about_pub" ON about_page FOR SELECT USING(TRUE);CREATE POLICY "about_admin" ON about_page FOR UPDATE USING(get_my_role() IN('super_admin','admin'));-- socialsCREATE TABLE socials (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),  platform_name TEXT NOT NULL,  platform_type TEXT CHECK(platform_type IN('whatsapp','youtube','instagram','telegram','linkedin','twitter','discord','tiktok','facebook','other')),  handle_or_name TEXT, url TEXT NOT NULL, description TEXT,  members_count TEXT, is_active BOOLEAN DEFAULT TRUE,  is_primary BOOLEAN DEFAULT FALSE, sort_order INTEGER DEFAULT 99,  created_at TIMESTAMPTZ DEFAULT NOW());ALTER TABLE socials ENABLE ROW LEVEL SECURITY;CREATE POLICY "socials_pub" ON socials FOR SELECT USING(is_active=TRUE);CREATE POLICY "socials_admin" ON socials FOR ALL USING(get_my_role() IN('super_admin','admin')) WITH CHECK(get_my_role() IN('super_admin','admin'));-- collaboratorsCREATE TABLE collaborators (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),  name TEXT NOT NULL, description TEXT, logo_url TEXT,  website_url TEXT, youtube_url TEXT, whatsapp_url TEXT, instagram_url TEXT,  collaboration_type TEXT CHECK(collaboration_type IN('Partner','Sponsor','Affiliate','Friend')),  is_featured BOOLEAN DEFAULT FALSE, is_active BOOLEAN DEFAULT TRUE,  sort_order INTEGER DEFAULT 99, created_at TIMESTAMPTZ DEFAULT NOW());ALTER TABLE collaborators ENABLE ROW LEVEL SECURITY;CREATE POLICY "collab_pub" ON collaborators FOR SELECT USING(is_active=TRUE);CREATE POLICY "collab_admin" ON collaborators FOR ALL USING(get_my_role() IN('super_admin','admin')) WITH CHECK(get_my_role() IN('super_admin','admin'));-- ai_chat_logsCREATE TABLE ai_chat_logs (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),  session_id TEXT NOT NULL, user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,  user_message TEXT NOT NULL, ai_response TEXT NOT NULL,  mode_detected TEXT CHECK(mode_detected IN('career_coach','job_matcher','content_assistant','general')),  created_at TIMESTAMPTZ DEFAULT NOW());ALTER TABLE ai_chat_logs ENABLE ROW LEVEL SECURITY;CREATE POLICY "logs_founder" ON ai_chat_logs FOR SELECT USING(get_my_role()='super_admin');
+SECTION 6 ΓÇö SUPABASE STORAGE BUCKETS
+Bucket | Access | Purpose
+avatars | PUBLIC | Admin + collaborator profile photos
+content-files | PUBLIC | Weekly content downloadable files
+product-thumbnails | PUBLIC | Digital product cover images
+product-files | PRIVATE ΓÜá∩╕Å | Paid product files ΓÇö use signed URLs only
+education-thumbnails | PUBLIC | Course + book covers
+collaborator-logos | PUBLIC | Partner channel logos
+about-assets | PUBLIC | About page images
+user-avatars | PUBLIC | Public registered user photos
+product-files = PRIVATE AlwaysWhen buyer pays ΓåÆ generate signed URL: supabase.storage.from("product-files").createSignedUrl(path, 86400)86400 = 24 hour expiry. Send to buyer via WhatsApp. Never show file_url directly in frontend.
+SECTION 7 ΓÇö REACT BITS COMPONENTS (reactbits.dev)
+React Bits = 100+ animated React components. Copy-paste model ΓÇö no npm package. Install via jsrepo CLI.
+Exact Components For Career Radar:
+Component | Install Path | Where To Use In Career Radar
+Aurora | Backgrounds/Aurora | Hero section background ΓÇö dark navy aurora effect
+Particles | Backgrounds/Particles | Home page floating particles on dark bg
+BlurText | TextAnimations/BlurText | Hero main heading animation ΓÇö blur to clear
+GradientText | TextAnimations/GradientText | "AI-Powered Career GPS" heading ΓÇö green to blue
+CountUp | TextAnimations/CountUp | Stats numbers counting up on scroll
+SplitText | TextAnimations/SplitText | Section headings slide in word by word
+ShinyText | TextAnimations/ShinyText | Navbar + special labels shimmer effect
+AnimatedList | Components/AnimatedList | Job cards + content cards animate in one by one
+InfiniteScroll | Components/InfiniteScroll | Stats ticker marquee ΓÇö infinite horizontal scroll
+CircularProgress | Components/CircularProgress | Career Score ring animation 0ΓåÆscore
+How To Install Each Component:
+# Run in your project root (career-radar folder)npx jsrepo add https://reactbits.dev/tailwind/Backgrounds/Auroranpx jsrepo add https://reactbits.dev/tailwind/Backgrounds/Particlesnpx jsrepo add https://reactbits.dev/tailwind/TextAnimations/BlurTextnpx jsrepo add https://reactbits.dev/tailwind/TextAnimations/GradientTextnpx jsrepo add https://reactbits.dev/tailwind/TextAnimations/CountUpnpx jsrepo add https://reactbits.dev/tailwind/TextAnimations/SplitTextnpx jsrepo add https://reactbits.dev/tailwind/TextAnimations/ShinyTextnpx jsrepo add https://reactbits.dev/tailwind/Components/AnimatedListnpx jsrepo add https://reactbits.dev/tailwind/Components/InfiniteScroll# Components go into src/components/ui/ automatically# Alternative: Go to reactbits.dev ΓåÆ find component# ΓåÆ click "Tailwind" tab ΓåÆ copy code ΓåÆ paste into src/components/ui/
+Card Class To Use On EVERY Card:
+// Standard glass card ΓÇö use this everywhereclassName="bg-white/[0.04] backdrop-blur-xl border border-[#1E1E2E] rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(16,185,129,0.15)]"// Primary buttonclassName="bg-[#10B981] hover:bg-emerald-500 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300"// Ghost buttonclassName="border border-[#10B981] text-[#10B981] hover:bg-[#10B981]/10 font-semibold px-6 py-3 rounded-xl transition-all duration-300"// Page wrapper ΓÇö every pageclassName="min-h-screen bg-[#07070C] text-white font-sans"
+SECTION 8 ΓÇö ALL PUBLIC PAGES (10 Pages)
+Navbar (All Pages):
+Left: Logo (src/assets/logo.png, 44px height)
+Center: Home | Jobs | Education | Shop | Weekly Content | Social | Collaborators | Team | Structure | About
+Right: "Sign In" ghost button + "Get Started Free" green solid button
+Mobile: Hamburger ΓåÆ full screen overlay dark drawer
+Navbar bg on scroll: bg-[#07070C]/90 backdrop-blur-md
+Route | What It Shows + Features
+/ (Home) | Hero (Aurora bg + BlurText heading) + Stats ticker (CountUp+InfiniteScroll) + How It Works (3 steps) + Jobs Preview (AnimatedList, 4 jobs) + Content Preview (3 items) + Live Visitor Counter (Supabase Realtime Presence)
+/jobs | Active jobs grid. Filter chips by type+tags. Pagination 10/page. Featured jobs = gold border. Apply button ΓåÆ apply_url new tab.
+/weekly-content | Published content chronological. Filter by category. Download button (file_url) or View Resource (external_link).
+/education | Courses+books. Filter tabs. Free: Access Now. Paid: links to /shop with product. Level badges (Beginner=green, Inter=orange, Adv=red).
+/shop | Products store. Filter by category. Free: download. Paid: modal shows WhatsApp number + bank details + step-by-step payment instructions.
+/team | profiles table ordered by display_order. is_founder=true = top + gold badge. LinkedIn/Twitter icon buttons.
+/structure | structure_page singleton. Aim + Mission + Vision hero text. Core Values cards. Goals checklist. Milestones timeline.
+/about | about_page + profiles(is_founder=true). Story + founders cards + founded date + contact (email, WhatsApp, community join link).
+/social | socials table. is_primary=true = large hero card top. Others in grid. Platform brand colors. Members badge.
+/collaborators | collaborators table. is_featured=true = large hero card. Others 3-col grid. Logo + description + collaboration type badge + all links.
+SECTION 9 ΓÇö USER REGISTRATION & ONBOARDING FLOW
+Register Page (/register):
+Fields: Full Name, Email, Password, Confirm Password
+On success ΓåÆ insert into public_users ΓåÆ redirect to /onboarding
+DO NOT redirect to home or dashboard before onboarding is complete
+Onboarding Wizard (/onboarding) ΓÇö 5 Steps:
+Step | Fields
+Step 1 ΓÇö Education | Degree field (text input) + Study year dropdown (1st Year ΓåÆ Fresh Graduate ΓåÆ Working Professional)
+Step 2 ΓÇö Skills | Tag input ΓÇö type skill + Enter = chip added. Min 1, max 15 skills.
+Step 3 ΓÇö Location | Country dropdown + City text input
+Step 4 ΓÇö Goals | Career goal textarea + Interests multi-select chips (Tech, Design, Business, Engineering, Medicine, Other)
+Step 5 ΓÇö Experience | Experience radio (Student, Fresh Graduate, 1-2 Years, 3+ Years) + LinkedIn toggle + URL field if yes
+After Onboarding:1. Save to onboarding_data table2. Set public_users.onboarding_complete = true3. Call Edge Function "generate-career-blueprint"4. Create career_scores row for user5. Redirect to /dashboard ΓÇö show "Generating your blueprint..." skeleton
+SECTION 10 ΓÇö AI CAREER BLUEPRINT (Gemini-Powered)
+Blueprint Field | Content
+title | Personalized: "Your Electrical Engineering Career Path"
+summary | 2-3 sentences: current position, recommendation, why
+recommended_skills | 5-8 skills with priority + learning resource URL
+recommended_jobs | 3-5 jobs matched from LIVE jobs table by ID
+recommended_courses | 3-5 courses from LIVE education_items
+action_steps | 5-7 concrete steps with deadlines ΓÇö user checks them off
+milestones | 3-5 milestones: "Get internship by Q3 2026"
+User Dashboard (/dashboard):
+Greeting: "Welcome back, [name]!"
+Career Score ring (animated SVG, color changes by range)
+Blueprint card ΓÇö summary + tabbed sections
+Action Steps checklist ΓÇö user checks completed items ΓåÆ triggers score recalculate
+Recommended jobs from matched job IDs
+Recommended courses from matched education_items
+"Regenerate Blueprint" button ΓÇö calls Edge Function again
+SECTION 11 ΓÇö CAREER RADAR SCORE (0-100)
+Category | Max Points | How Calculated
+Skills Score | 25 pts | 5pts per 5 skills listed ΓÇö max 25
+Profile Score | 20 pts | LinkedIn added 10pts + avatar 5pts + bio 5pts
+Activity Score | 20 pts | Logins this week 5pts + blueprint actions done 15pts
+Education Score | 20 pts | Courses/certs completed from education_items
+Experience Score | 15 pts | Student=0 | FreshGrad=5 | 1-2yr=10 | 3+yr=15
+Score Ring Design:
+0-30 = Red ring  |  31-60 = Orange  |  61-80 = Blue  |  81-100 = Green
+Large JetBrains Mono font score number in gold color
+Label below: "Developing" | "Rising" | "Advanced" | "Expert"
+Missing items shown as red chips: "LinkedIn Profile", "Portfolio" etc.
+Score history line chart ΓÇö last 30 days
+SECTION 12 ΓÇö RADAR AI (Gemini 2.0 Flash)
+Key Facts:
+Floating bubble ΓÇö fixed bottom-right on EVERY page
+Model: Gemini 2.0 Flash (free tier ΓÇö 1,500 requests/day)
+API called ONLY via Supabase Edge Function "radar-ai-chat"
+GEMINI_API_KEY in Edge Function secrets ΓÇö NEVER in frontend
+Place <RadarAIBubble /> in App.jsx OUTSIDE <Routes> ΓÇö never unmounts
+Edge Function radar-ai-chat (Complete Code):
+// supabase/functions/radar-ai-chat/index.tsimport { serve } from "https://deno.land/std@0.168.0/http/server.ts";import { createClient } from "https://esm.sh/@supabase/supabase-js@2";const cors = { "Access-Control-Allow-Origin":"*", "Access-Control-Allow-Headers":"authorization,x-client-info,apikey,content-type" };serve(async(req)=>{  if(req.method==="OPTIONS") return new Response("ok",{headers:cors});  const { messages, session_id } = await req.json();  const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);  // Fetch live data  const {data:jobs} = await sb.from("jobs").select("id,title,company,location,type,tags,apply_url,deadline")    .eq("is_active",true).order("created_at",{ascending:false}).limit(30);  const {data:content} = await sb.from("weekly_content").select("id,title,description,category,week_label,file_url,external_link")    .eq("is_published",true).order("created_at",{ascending:false}).limit(20);  const system = `You are Radar AI ΓÇö career assistant for Career Radar.  AI-powered career GPS for Pakistani students and freelancers.  Be helpful, concise, encouraging. Never fabricate data.  If user writes Roman Urdu, respond in Roman Urdu.  Modes: CAREER COACH (advice), JOB MATCHER (match from LIVE JOBS below),  CONTENT GUIDE (recommend from LIVE CONTENT below).  LIVE JOBS: ${JSON.stringify(jobs)}  LIVE CONTENT: ${JSON.stringify(content)}`;  // Cap at last 20 messages  const trimmed = messages.slice(-20);  // Call Gemini 2.0 Flash  const res = await fetch(    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?key=${Deno.env.get("GEMINI_API_KEY")}`,    { method:"POST", headers:{"Content-Type":"application/json"},      body: JSON.stringify({        system_instruction:{parts:[{text:system}]},        contents: trimmed.map(m=>({role:m.role==="assistant"?"model":"user",parts:[{text:m.content}]})),        generationConfig:{maxOutputTokens:1024,temperature:0.7}      })    }  );  return new Response(res.body,{headers:{...cors,"Content-Type":"text/event-stream"}});});
+Rate Limit + Fallback:Max 10 messages/minute ΓÇö track in useState. If exceeded: disable input, show "Wait a moment! ΓÅ│"Fallback if API fails: "Mujhe abhi ek second chahiye ΓÇö dobara poochho! Browse /jobs or /weekly-content directly."
+SECTION 13 ΓÇö ALL EDGE FUNCTIONS (5 Total)
+Function | Logic
+create-admin-user | Verify super_admin JWT ΓåÆ supabase.auth.admin.createUser({email,password,email_confirm:true}) ΓåÆ insert user_roles + profiles
+delete-admin-user | Verify super_admin JWT ΓåÆ supabase.auth.admin.deleteUser(user_id) ΓåÆ CASCADE deletes user_roles + profiles
+radar-ai-chat | Fetch live jobs+content ΓåÆ build Gemini prompt ΓåÆ call Gemini 2.0 Flash ΓåÆ stream response ΓåÆ log to ai_chat_logs
+generate-career-blueprint | Fetch onboarding_data+jobs+education ΓåÆ Gemini structured JSON ΓåÆ save career_blueprints ΓåÆ create career_scores row
+recalculate-score | Read all score factors for user ΓåÆ calculate total ΓåÆ update career_scores ΓåÆ append to score_history JSONB
+Secrets To Add: Supabase Dashboard ΓåÆ Settings ΓåÆ Edge Functions ΓåÆ SecretsGEMINI_API_KEY  =  (from aistudio.google.com ΓÇö free)SUPABASE_SERVICE_ROLE_KEY  =  (Supabase ΓåÆ Settings ΓåÆ API ΓåÆ service_role)
+SECTION 14 ΓÇö COMPLETE FOLDER STRUCTURE
+career-radar/Γö£ΓöÇΓöÇ src/Γöé   Γö£ΓöÇΓöÇ assets/logo.png              ΓåÉ Client logoΓöé   Γö£ΓöÇΓöÇ components/Γöé   Γöé   Γö£ΓöÇΓöÇ ui/Γöé   Γöé   Γöé   Γö£ΓöÇΓöÇ Button.jsx           ΓåÉ 3 variants: primary, ghost, dangerΓöé   Γöé   Γöé   Γö£ΓöÇΓöÇ Card.jsx             ΓåÉ Glass dark cardΓöé   Γöé   Γöé   Γö£ΓöÇΓöÇ Badge.jsx            ΓåÉ Tag chipsΓöé   Γöé   Γöé   Γö£ΓöÇΓöÇ Modal.jsx            ΓåÉ Overlay modalΓöé   Γöé   Γöé   Γö£ΓöÇΓöÇ Skeleton.jsx         ΓåÉ Loading skeletonΓöé   Γöé   Γöé   Γö£ΓöÇΓöÇ EmptyState.jsx       ΓåÉ Empty data stateΓöé   Γöé   Γöé   Γö£ΓöÇΓöÇ ErrorState.jsx       ΓåÉ Error + retryΓöé   Γöé   Γöé   Γö£ΓöÇΓöÇ ScoreRing.jsx        ΓåÉ Animated SVG scoreΓöé   Γöé   Γöé   Γö£ΓöÇΓöÇ Aurora.jsx           ΓåÉ React Bits (installed)Γöé   Γöé   Γöé   Γö£ΓöÇΓöÇ BlurText.jsx         ΓåÉ React Bits (installed)Γöé   Γöé   Γöé   Γö£ΓöÇΓöÇ GradientText.jsx     ΓåÉ React Bits (installed)Γöé   Γöé   Γöé   Γö£ΓöÇΓöÇ CountUp.jsx          ΓåÉ React Bits (installed)Γöé   Γöé   Γöé   Γö£ΓöÇΓöÇ SplitText.jsx        ΓåÉ React Bits (installed)Γöé   Γöé   Γöé   ΓööΓöÇΓöÇ AnimatedList.jsx     ΓåÉ React Bits (installed)Γöé   Γöé   Γö£ΓöÇΓöÇ layout/Γöé   Γöé   Γöé   Γö£ΓöÇΓöÇ Navbar.jsx           ΓåÉ Logo + links + mobile drawerΓöé   Γöé   Γöé   Γö£ΓöÇΓöÇ Footer.jsxΓöé   Γöé   Γöé   ΓööΓöÇΓöÇ AdminSidebar.jsx     ΓåÉ Role-aware tabsΓöé   Γöé   Γö£ΓöÇΓöÇ sections/Γöé   Γöé   Γöé   Γö£ΓöÇΓöÇ HeroSection.jsx      ΓåÉ Aurora bg + BlurTextΓöé   Γöé   Γöé   Γö£ΓöÇΓöÇ StatsTicker.jsx      ΓåÉ CountUp + InfiniteScrollΓöé   Γöé   Γöé   Γö£ΓöÇΓöÇ HowItWorks.jsxΓöé   Γöé   Γöé   Γö£ΓöÇΓöÇ JobsPreview.jsx      ΓåÉ AnimatedListΓöé   Γöé   Γöé   Γö£ΓöÇΓöÇ ContentPreview.jsxΓöé   Γöé   Γöé   ΓööΓöÇΓöÇ VisitorCounter.jsx   ΓåÉ Supabase RealtimeΓöé   Γöé   ΓööΓöÇΓöÇ ai/Γöé   Γöé       Γö£ΓöÇΓöÇ RadarAIBubble.jsxΓöé   Γöé       Γö£ΓöÇΓöÇ RadarAIChatWindow.jsxΓöé   Γöé       Γö£ΓöÇΓöÇ MessageBubble.jsxΓöé   Γöé       ΓööΓöÇΓöÇ StarterPrompts.jsxΓöé   Γö£ΓöÇΓöÇ pages/Γöé   Γöé   Γö£ΓöÇΓöÇ public/  Home Jobs WeeklyContent Education Shop Team Structure About Social CollaboratorsΓöé   Γöé   Γö£ΓöÇΓöÇ auth/    Login Register OnboardingΓöé   Γöé   Γö£ΓöÇΓöÇ user/    Dashboard Blueprint Score UserProfileΓöé   Γöé   ΓööΓöÇΓöÇ admin/   Dashboard ManageJobs ManageContent ManageProducts ManageEducationΓöé   Γöé                ManageStructure ManageAbout ManageSocials ManageCollaboratorsΓöé   Γöé                ManageTeam(founder) ManagePayments(founder) AIInsights(founder) MyProfile(collab)Γöé   Γö£ΓöÇΓöÇ hooks/  useAuth.js useRole.js useRealtime.js useRadarAI.jsΓöé   Γö£ΓöÇΓöÇ context/ AuthContext.jsxΓöé   Γö£ΓöÇΓöÇ lib/ supabase.js helpers.jsΓöé   Γö£ΓöÇΓöÇ routes/ ProtectedRoute.jsx SuperAdminRoute.jsx CollaboratorRoute.jsx UserRoute.jsxΓöé   ΓööΓöÇΓöÇ App.jsxΓö£ΓöÇΓöÇ supabase/functions/Γöé   Γö£ΓöÇΓöÇ create-admin-user/index.tsΓöé   Γö£ΓöÇΓöÇ delete-admin-user/index.tsΓöé   Γö£ΓöÇΓöÇ radar-ai-chat/index.tsΓöé   Γö£ΓöÇΓöÇ generate-career-blueprint/index.tsΓöé   ΓööΓöÇΓöÇ recalculate-score/index.tsΓööΓöÇΓöÇ .env.local
+SECTION 15 ΓÇö COMPLETE ROUTING
+App.jsx Structure:
+// RadarAIBubble MUST be OUTSIDE <Routes> ΓÇö never unmounts on navigation<AuthProvider>  <BrowserRouter>    <RadarAIBubble />   {/* ΓåÉ OUTSIDE Routes */}    <Toaster />    <Routes>      {/* PUBLIC */}      <Route path="/" element={<Home />} />      <Route path="/jobs" element={<Jobs />} />      <Route path="/weekly-content" element={<WeeklyContent />} />      <Route path="/education" element={<Education />} />      <Route path="/shop" element={<Shop />} />      <Route path="/team" element={<Team />} />      <Route path="/structure" element={<Structure />} />      <Route path="/about" element={<About />} />      <Route path="/social" element={<Social />} />      <Route path="/collaborators" element={<Collaborators />} />      {/* AUTH */}      <Route path="/login" element={<Login />} />      <Route path="/register" element={<Register />} />      <Route path="/onboarding" element={<Onboarding />} />      {/* USER DASHBOARD */}      <Route element={<UserRoute />}>        <Route path="/dashboard" element={<Dashboard />} />        <Route path="/dashboard/blueprint" element={<Blueprint />} />        <Route path="/dashboard/score" element={<Score />} />        <Route path="/dashboard/profile" element={<UserProfile />} />      </Route>      {/* ADMIN ΓÇö super_admin + admin */}      <Route element={<ProtectedRoute allowedRoles={["super_admin","admin"]} />}>        <Route path="/admin/dashboard" element={<AdminDashboard />} />        <Route path="/admin/manage-jobs" element={<ManageJobs />} />        <Route path="/admin/manage-content" element={<ManageContent />} />        <Route path="/admin/manage-products" element={<ManageProducts />} />        <Route path="/admin/manage-education" element={<ManageEducation />} />        <Route path="/admin/manage-structure" element={<ManageStructure />} />        <Route path="/admin/manage-about" element={<ManageAbout />} />        <Route path="/admin/manage-socials" element={<ManageSocials />} />        <Route path="/admin/manage-collaborators" element={<ManageCollaborators />} />      </Route>      {/* FOUNDER ONLY */}      <Route element={<SuperAdminRoute />}>        <Route path="/admin/manage-team" element={<ManageTeam />} />        <Route path="/admin/manage-payments" element={<ManagePayments />} />        <Route path="/admin/ai-insights" element={<AIInsights />} />      </Route>      {/* COLLABORATOR ONLY */}      <Route element={<CollaboratorRoute />}>        <Route path="/admin/my-profile" element={<MyProfile />} />      </Route>    </Routes>  </BrowserRouter></AuthProvider>
+SECTION 16 ΓÇö GOOGLE ANTIGRAVITY GUIDE (How To Use This Document)
+Google Antigravity is an AI-first IDE by Google ΓÇö VS Code fork with autonomous agents. It supports Claude Sonnet 4.6 alongside Gemini models.
+Two Views ΓÇö When To Use Each:
+View | When To Use
+Editor View | Hands-on coding. Use when fixing a specific component, adding React Bits, editing one file.
+Manager View | Autonomous execution. Use when building an entire phase. Agent writes code + runs terminal + tests in browser.
+Session Start Message ΓÇö EVERY Session:
+Paste This At The Start Of Every New Session[PLAN MODE]Read this entire Career Radar specification document completely.Confirm you understand all 16+ sections before writing any code.We are currently on Phase [X] Step [Y] from Section 17 Build Order.Continue from exactly that point.Stack: React + Vite. Dark theme: #07070C. Font: Sora.AI: Gemini 2.0 Flash via Edge Function.
+Phase-by-Phase Messages For Antigravity:
+Phase | Message To Send In Antigravity
+Phase 1 ΓÇö Foundation | [PLAN MODE] Build Phase 1 from Section 17: Create Vite+React project, install all packages, configure Tailwind dark theme, create supabase.js client, build AuthContext with all 4 role redirects, build all 4 route guards.
+Phase 2 ΓÇö Edge Functions | [FAST MODE] Write all 5 Edge Functions from Section 13. Add secrets GEMINI_API_KEY and SUPABASE_SERVICE_ROLE_KEY in Supabase dashboard.
+Phase 3 ΓÇö Admin Panel | [FAST MODE] Build AdminSidebar (role-aware) + all admin pages. Test with real Supabase data. Use React Hook Form + Zod on all forms.
+Phase 4 ΓÇö User System | [PLAN MODE] Build Register + Onboarding 5-step wizard + User Dashboard with Blueprint + Score ring.
+Phase 5 ΓÇö Public Pages | [FAST MODE] Install React Bits components first. Then build all 10 public pages. After each page: take a screenshot Artifact.
+Phase 6 ΓÇö Radar AI | [FAST MODE] Build RadarAIBubble + ChatWindow + useRadarAI hook. Wire into App.jsx OUTSIDE Routes.
+Getting Screenshots As Proof:
+After Every Page ΓÇö Write ThisAfter building any page, write: "Open browser, navigate to that route, take a screenshot, show me as an Artifact."Antigravity agent will open browser, go to the page, capture screenshot, and show you as a verifiable Artifact.If something looks wrong, comment on the Artifact: "This card background is wrong ΓÇö use bg-white/[0.04] not white"
+Frontend Fix Message:
+If Frontend Looks Bad ΓÇö Paste This[FAST MODE]Install React Bits: npx jsrepo add https://reactbits.dev/tailwind/Backgrounds/Auroranpx jsrepo add https://reactbits.dev/tailwind/TextAnimations/BlurTextnpx jsrepo add https://reactbits.dev/tailwind/TextAnimations/GradientTextnpx jsrepo add https://reactbits.dev/tailwind/TextAnimations/CountUpApply dark theme: All pages bg-[#07070C]. All cards: bg-white/[0.04] backdrop-blur-xl border border-[#1E1E2E] rounded-2xl.Rebuild Home page using Aurora background + BlurText heading + CountUp stats + AnimatedList for jobs.Take screenshot after each section. Show as Artifact.
+SECTION 17 ΓÇö BUILD ORDER (40 Steps, Follow Exactly)
+Phase 1 ΓÇö Foundation (Steps 1-6):
+# | Task
+1 | Create Vite+React project. Install all packages from Section 3. Configure Tailwind dark theme. Add Sora+JetBrains Mono. Copy logo to src/assets/logo.png
+2 | Run complete SQL from Section 5 in Supabase SQL Editor (all parts in order)
+3 | Create all 8 Storage buckets from Section 6. Set product-files as PRIVATE
+4 | Build src/lib/supabase.js with .env.local keys
+5 | Build AuthContext.jsx ΓÇö session, user, role, login redirect for all 4 types
+6 | Build all 4 route guards: ProtectedRoute, SuperAdminRoute, CollaboratorRoute, UserRoute
+Phase 2 ΓÇö Edge Functions (Steps 7-12):
+# | Task
+7 | create-admin-user Edge Function
+8 | delete-admin-user Edge Function
+9 | radar-ai-chat Edge Function (Gemini 2.0 Flash)
+10 | generate-career-blueprint Edge Function
+11 | recalculate-score Edge Function
+12 | Add secrets in Supabase: GEMINI_API_KEY + SUPABASE_SERVICE_ROLE_KEY
+Phase 3 ΓÇö Admin Panel (Steps 13-22):
+# | Task
+13 | AdminSidebar ΓÇö role-aware (different links per role)
+14 | Admin Dashboard ΓÇö live stats from all tables
+15-16 | ManageJobs + ManageContent ΓÇö full CRUD + file upload
+17-18 | ManageProducts + ManageEducation ΓÇö with free/paid toggle
+19-20 | ManageStructure + ManageAbout ΓÇö singleton editors
+21-22 | ManageSocials + ManageCollaborators + MyProfile
+23 | ManageTeam (super_admin) ΓÇö calls create/delete Edge Functions
+24 | ManagePayments (super_admin) ΓÇö delivered_orders CRUD + signed URL generator
+Phase 4 ΓÇö User System (Steps 25-28):
+# | Task
+25 | Register page ΓÇö Supabase Auth signup + public_users insert
+26 | Onboarding 5-step wizard ΓÇö saves to onboarding_data ΓåÆ calls generate-career-blueprint
+27 | User Dashboard ΓÇö Blueprint display + Score ring + action checklist
+28 | Score detail page + UserProfile edit page
+Phase 5 ΓÇö Public Pages (Steps 29-34):
+# | Task
+29 | Install all React Bits components (from Section 7 install list)
+30 | Navbar (logo + links + mobile drawer) + Footer
+31 | Home page ΓÇö Aurora hero + StatsTicker + HowItWorks + JobsPreview + ContentPreview + VisitorCounter
+32 | Jobs page ΓÇö filter + pagination | Weekly Content ΓÇö filter + download
+33 | Education + Shop pages ΓÇö free/paid logic + payment modal
+34 | Team + Structure + About + Social + Collaborators pages
+Phase 6 ΓÇö Polish & Deploy (Steps 35-40):
+# | Task
+35 | RadarAIBubble + ChatWindow + useRadarAI hook (streaming + rate limit)
+36 | Wire RadarAIBubble into App.jsx OUTSIDE Routes
+37 | Loading skeletons on all pages
+38 | Error states + empty states everywhere
+39 | Mobile responsiveness check at 320px on every page
+40 | Deploy to Vercel. Connect GitHub. Add VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY in Vercel env vars.
+SECTION 18 ΓÇö MISTAKES TO AVOID
+Mistake | Why It Breaks + Fix
+Using Next.js | React + Vite ONLY. Reject any Next.js suggestion.
+Hardcoding data | Zero dummy data in src/. Everything from Supabase.
+API keys in frontend | GEMINI_API_KEY + SERVICE_ROLE_KEY ΓåÆ Edge Function secrets only.
+Wrong collaborator redirect | Collaborator ΓåÆ /admin/my-profile NOT /admin/dashboard.
+Wrong public user redirect | Public user (no user_roles row) ΓåÆ /dashboard NOT /admin/dashboard.
+Missing RLS | Every table must have RLS enabled + explicit policies.
+Public product-files | product-files bucket = PRIVATE. Signed URLs only (86400s expiry).
+RadarAI inside Routes | <RadarAIBubble /> must be OUTSIDE <Routes> in App.jsx.
+Missing channel cleanup | VisitorCounter: call channel.untrack() + supabase.removeChannel() on unmount.
+Singleton tables INSERT | structure_page, about_page, site_stats ΓÇö already seeded. UPDATE only, never INSERT again.
+Skip onboarding | After register ΓåÆ /onboarding always. Never /dashboard directly.
+Missing 3 states | Every data component needs: skeleton + error + empty. No exceptions.
+Wrong Gemini role | User messages ΓåÆ role:"user". AI messages ΓåÆ role:"model" (NOT "assistant") for Gemini API.
+This Is The Only Document You NeedPaste entire document ΓåÆ Antigravity / Claude / Z.ai at session start.Follow Section 17 build order. One phase at a time. Screenshot after every page.Career Radar ΓÇö AI-Powered Career GPS  |  Find. Prepare. Succeed.
+Career Radar FINAL Master Prompt ΓÇö All Updates Included ΓÇö June 2026

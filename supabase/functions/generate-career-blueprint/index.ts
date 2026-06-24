@@ -1,0 +1,111 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const cors = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type"
+};
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
+
+  try {
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader) throw new Error("Missing authorization header");
+
+    const sb = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    // Verify token
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await sb.auth.getUser(token);
+    if (authError || !user) throw new Error("Invalid token");
+
+    // Fetch user's onboarding data
+    const { data: onboarding } = await sb.from('onboarding_data').select('*').eq('user_id', user.id).single();
+    if (!onboarding) throw new Error("Onboarding data not found");
+
+    // Fetch jobs to match
+    const { data: jobs } = await sb.from('jobs').select('id,title,company,tags').eq('is_active', true).limit(50);
+    // Fetch education to match
+    const { data: education } = await sb.from('education_items').select('id,title,type,topics_covered').eq('is_published', true).limit(50);
+
+    const systemPrompt = `You are an AI Career Strategist for Pakistani students.
+    Generate a JSON blueprint for a user based on their onboarding profile.
+    Profile:
+    Degree: ${onboarding.degree}
+    Year: ${onboarding.study_year}
+    Skills: ${onboarding.skills?.join(', ')}
+    Goals: ${onboarding.career_goal}
+    Interests: ${onboarding.interests?.join(', ')}
+    Experience: ${onboarding.experience}
+
+    LIVE JOBS TO MATCH FROM (use exact IDs):
+    ${JSON.stringify(jobs)}
+
+    LIVE COURSES TO MATCH FROM (use exact IDs):
+    ${JSON.stringify(education)}
+
+    Return ONLY a raw JSON object with this exact structure (no markdown tags, no extra text):
+    {
+      "title": "Your [Field] Career Path",
+      "summary": "2-3 sentences max",
+      "recommended_skills": [{"skill": "Skill Name", "priority": "High/Medium/Low", "resource_url": "URL"}],
+      "recommended_jobs": ["job_id_1", "job_id_2"],
+      "recommended_courses": ["edu_id_1", "edu_id_2"],
+      "action_steps": [{"id": "step_1", "title": "Step Title", "deadline": "MM/YYYY", "completed": false}],
+      "milestones": ["Milestone 1", "Milestone 2"]
+    }`;
+
+    // Call Gemini 2.0 Flash
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${Deno.env.get("GEMINI_API_KEY")}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: systemPrompt }] }],
+          generationConfig: { maxOutputTokens: 2048, temperature: 0.7 }
+        })
+      }
+    );
+
+    const geminiData = await res.json();
+    let responseText = geminiData.candidates[0].content.parts[0].text;
+    
+    // Clean markdown code blocks if Gemini returns them
+    responseText = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    
+    const blueprint = JSON.parse(responseText);
+
+    // Save to database
+    // First, deactivate any old blueprints
+    await sb.from('career_blueprints').update({ is_active: false }).eq('user_id', user.id);
+
+    // Insert new
+    const { data: insertedBlueprint, error: insertError } = await sb.from('career_blueprints').insert({
+      user_id: user.id,
+      title: blueprint.title,
+      summary: blueprint.summary,
+      recommended_skills: blueprint.recommended_skills,
+      recommended_jobs: blueprint.recommended_jobs,
+      recommended_courses: blueprint.recommended_courses,
+      action_steps: blueprint.action_steps,
+      milestones: blueprint.milestones,
+      is_active: true
+    }).select().single();
+
+    if (insertError) throw insertError;
+
+    // Create or trigger score recalculation (handled by separate function or inline here)
+    // We'll just call the recalculate-score logic implicitly or the user can do it via the other function
+    
+    return new Response(JSON.stringify({ success: true, blueprint: insertedBlueprint }), { headers: { ...cors, "Content-Type": "application/json" } });
+
+  } catch (error) {
+    console.error("Blueprint Error:", error);
+    return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
+  }
+});

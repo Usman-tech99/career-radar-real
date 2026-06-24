@@ -1,0 +1,144 @@
+import { useState, useEffect } from 'react'
+import { supabase } from '../../lib/supabase'
+import AdminSidebar from '../../components/layout/AdminSidebar'
+import toast from 'react-hot-toast'
+import { Save } from 'lucide-react'
+
+export default function ManageAbout() {
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [data, setData] = useState({
+    story_heading: 'Our Story',
+    story_text: '',
+    founded_date: '',
+    contact_email: '',
+    contact_whatsapp: '',
+    community_link: '',
+    tagline: ''
+  })
+
+  useEffect(() => {
+    fetchAbout()
+  }, [])
+
+  async function fetchAbout() {
+    const { data: aboutData, error } = await supabase.from('about_page').select('*').eq('id', 1).single()
+    if (error) toast.error('Failed to load about data')
+    else if (aboutData) setData(aboutData)
+    setLoading(false)
+  }
+
+  async function handleSave() {
+    setSaving(true)
+    const { error } = await supabase.from('about_page').update(data).eq('id', 1)
+    if (error) toast.error('Failed to save about data')
+    else toast.success('About page updated successfully')
+    setSaving(false)
+  }
+
+  if (loading) return (
+    <div className="flex min-h-screen bg-surface">
+      <AdminSidebar />
+      <div className="flex-1 ml-64 p-8 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-green border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    </div>
+  )
+
+  return (
+    <div className="flex min-h-screen bg-surface">
+      <AdminSidebar />
+      <div className="flex-1 ml-64 p-8">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold">Manage About Page</h1>
+            <p className="text-muted text-sm mt-1">Edit the Story, Contact info, and Taglines for the public About page.</p>
+          </div>
+          <button onClick={handleSave} disabled={saving} className="btn-primary flex items-center gap-2">
+            <Save size={20} /> {saving ? 'Saving...' : 'Save Changes'}
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="glass-card space-y-4">
+            <h2 className="text-xl font-bold mb-4">Our Story Section</h2>
+            
+            <div>
+              <label className="label">Story Heading</label>
+              <input 
+                value={data.story_heading} 
+                onChange={e => setData({...data, story_heading: e.target.value})} 
+                className="input-field"
+              />
+            </div>
+
+            <div>
+              <label className="label">Story Text</label>
+              <textarea 
+                value={data.story_text} 
+                onChange={e => setData({...data, story_text: e.target.value})} 
+                className="input-field h-48"
+                placeholder="Write the founding story here..."
+              />
+            </div>
+            
+            <div>
+              <label className="label">Tagline (Short punchy phrase)</label>
+              <input 
+                value={data.tagline} 
+                onChange={e => setData({...data, tagline: e.target.value})} 
+                className="input-field"
+                placeholder="e.g. Navigating Careers with AI"
+              />
+            </div>
+          </div>
+
+          <div className="glass-card space-y-4">
+            <h2 className="text-xl font-bold mb-4">Contact & Metadata</h2>
+            
+            <div>
+              <label className="label">Founded Date</label>
+              <input 
+                value={data.founded_date} 
+                onChange={e => setData({...data, founded_date: e.target.value})} 
+                className="input-field"
+                placeholder="e.g. August 2024"
+              />
+            </div>
+
+            <div>
+              <label className="label">Contact Email</label>
+              <input 
+                type="email"
+                value={data.contact_email} 
+                onChange={e => setData({...data, contact_email: e.target.value})} 
+                className="input-field"
+                placeholder="hello@careerradar.com"
+              />
+            </div>
+
+            <div>
+              <label className="label">Contact WhatsApp</label>
+              <input 
+                value={data.contact_whatsapp} 
+                onChange={e => setData({...data, contact_whatsapp: e.target.value})} 
+                className="input-field"
+                placeholder="+92 300 1234567"
+              />
+            </div>
+
+            <div>
+              <label className="label">Main Community Link (Discord/WhatsApp Group)</label>
+              <input 
+                value={data.community_link} 
+                onChange={e => setData({...data, community_link: e.target.value})} 
+                className="input-field"
+                placeholder="https://chat.whatsapp.com/..."
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

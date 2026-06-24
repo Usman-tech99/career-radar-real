@@ -1,0 +1,85 @@
+﻿SECTION 0 ΓÇö ABSOLUTE RULES (Read Before Anything)
+Memorize these. Never break them. They apply to every line of code.
+SECTION 1 ΓÇö PROJECT VISION: AI-Powered Career GPS
+Career Radar is NOT just an opportunity platform. It is the Google Maps of careers for Pakistani students, Gen Z learners, and freelancers.
+Three Core Pillars:
+SECTION 2 ΓÇö DESIGN SYSTEM (Exact Specifications)
+Color Palette ΓÇö Use These Exact Values:
+Typography:
+Animations ΓÇö NexusTech.pk Style:
+Logo:
+SECTION 3 ΓÇö TECH STACK & SETUP
+Install Commands:
+tailwind.config.js:
+.env.local (Frontend ONLY):
+SECTION 4 ΓÇö USER SYSTEM & ROLES (4 Tiers)
+SECTION 5 ΓÇö COMPLETE DATABASE SCHEMA (Run In Supabase SQL Editor)
+Run this SQL in order. Do not skip any part. All 17 tables + triggers + RLS policies.
+Foundation:
+Admin Tables (user_roles + profiles):
+Public User Tables:
+Content Tables (Jobs, Weekly Content, Products, Education):
+Community + AI Tables:
+SECTION 6 ΓÇö SUPABASE STORAGE BUCKETS
+SECTION 7 ΓÇö REACT BITS COMPONENTS (reactbits.dev)
+React Bits = 100+ animated React components. Copy-paste model ΓÇö no npm package. Install via jsrepo CLI.
+Exact Components For Career Radar:
+How To Install Each Component:
+Card Class To Use On EVERY Card:
+SECTION 8 ΓÇö ALL PUBLIC PAGES (10 Pages)
+Navbar (All Pages):
+Left: Logo (src/assets/logo.png, 44px height)
+Center: Home | Jobs | Education | Shop | Weekly Content | Social | Collaborators | Team | Structure | About
+Right: "Sign In" ghost button + "Get Started Free" green solid button
+Mobile: Hamburger ΓåÆ full screen overlay dark drawer
+Navbar bg on scroll: bg-[#07070C]/90 backdrop-blur-md
+SECTION 9 ΓÇö USER REGISTRATION & ONBOARDING FLOW
+Register Page (/register):
+Fields: Full Name, Email, Password, Confirm Password
+On success ΓåÆ insert into public_users ΓåÆ redirect to /onboarding
+DO NOT redirect to home or dashboard before onboarding is complete
+Onboarding Wizard (/onboarding) ΓÇö 5 Steps:
+SECTION 10 ΓÇö AI CAREER BLUEPRINT (Gemini-Powered)
+User Dashboard (/dashboard):
+Greeting: "Welcome back, [name]!"
+Career Score ring (animated SVG, color changes by range)
+Blueprint card ΓÇö summary + tabbed sections
+Action Steps checklist ΓÇö user checks completed items ΓåÆ triggers score recalculate
+Recommended jobs from matched job IDs
+Recommended courses from matched education_items
+"Regenerate Blueprint" button ΓÇö calls Edge Function again
+SECTION 11 ΓÇö CAREER RADAR SCORE (0-100)
+Score Ring Design:
+0-30 = Red ring  |  31-60 = Orange  |  61-80 = Blue  |  81-100 = Green
+Large JetBrains Mono font score number in gold color
+Label below: "Developing" | "Rising" | "Advanced" | "Expert"
+Missing items shown as red chips: "LinkedIn Profile", "Portfolio" etc.
+Score history line chart ΓÇö last 30 days
+SECTION 12 ΓÇö RADAR AI (Gemini 2.0 Flash)
+Key Facts:
+Floating bubble ΓÇö fixed bottom-right on EVERY page
+Model: Gemini 2.0 Flash (free tier ΓÇö 1,500 requests/day)
+API called ONLY via Supabase Edge Function "radar-ai-chat"
+GEMINI_API_KEY in Edge Function secrets ΓÇö NEVER in frontend
+Place <RadarAIBubble /> in App.jsx OUTSIDE <Routes> ΓÇö never unmounts
+Edge Function radar-ai-chat (Complete Code):
+SECTION 13 ΓÇö ALL EDGE FUNCTIONS (5 Total)
+SECTION 14 ΓÇö COMPLETE FOLDER STRUCTURE
+SECTION 15 ΓÇö COMPLETE ROUTING
+App.jsx Structure:
+SECTION 16 ΓÇö GOOGLE ANTIGRAVITY GUIDE (How To Use This Document)
+Google Antigravity is an AI-first IDE by Google ΓÇö VS Code fork with autonomous agents. It supports Claude Sonnet 4.6 alongside Gemini models.
+Two Views ΓÇö When To Use Each:
+Session Start Message ΓÇö EVERY Session:
+Phase-by-Phase Messages For Antigravity:
+Getting Screenshots As Proof:
+Frontend Fix Message:
+SECTION 17 ΓÇö BUILD ORDER (40 Steps, Follow Exactly)
+Phase 1 ΓÇö Foundation (Steps 1-6):
+Phase 2 ΓÇö Edge Functions (Steps 7-12):
+Phase 3 ΓÇö Admin Panel (Steps 13-22):
+Phase 4 ΓÇö User System (Steps 25-28):
+Phase 5 ΓÇö Public Pages (Steps 29-34):
+Phase 6 ΓÇö Polish & Deploy (Steps 35-40):
+SECTION 18 ΓÇö MISTAKES TO AVOID
+Career Radar FINAL Master Prompt ΓÇö All Updates Included ΓÇö June 2026
