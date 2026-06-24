@@ -60,7 +60,7 @@ serve(async (req) => {
     let activity_score = 0;
     if (blueprint?.action_steps) {
       const completedSteps = blueprint.action_steps.filter((s: any) => s.completed).length;
-      activity_score = Math.min(15, completedSteps * 5); // 5 pts per completed action step
+      activity_score = Math.min(20, completedSteps * 4); // 4 pts per completed action step, max 20
     }
 
     // Default education score for now

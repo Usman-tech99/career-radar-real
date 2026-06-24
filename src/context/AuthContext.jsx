@@ -95,6 +95,13 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
+  // Called by Onboarding page after completing setup
+  async function refreshOnboardingStatus() {
+    if (!user) return
+    const status = await fetchOnboardingStatus(user.id, role)
+    setOnboardingComplete(status)
+  }
+
   async function signOut() {
     await supabase.auth.signOut()
     setUser(null)
@@ -117,6 +124,7 @@ export function AuthProvider({ children }) {
     loading,
     onboardingComplete,
     setOnboardingComplete,
+    refreshOnboardingStatus,
     signOut,
     getRedirectPath,
     isAdmin: role === 'super_admin' || role === 'admin',

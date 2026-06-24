@@ -46,7 +46,7 @@ serve(async (req) => {
 
     // Call Gemini 2.0 Flash
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?key=${Deno.env.get("GEMINI_API_KEY")}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${Deno.env.get("GEMINI_API_KEY")}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -61,7 +61,8 @@ serve(async (req) => {
       }
     );
 
-    return new Response(res.body, { headers: { ...cors, "Content-Type": "text/event-stream" } });
+    const geminiData = await res.json();
+    return new Response(JSON.stringify(geminiData), { headers: { ...cors, "Content-Type": "application/json" } });
 
   } catch (error) {
     console.error("Radar AI Error:", error);

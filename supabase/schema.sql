@@ -15,19 +15,15 @@ CREATE TABLE user_roles (
   role TEXT NOT NULL CHECK (role IN ('super_admin','admin','collaborator')),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-ALTER TABLE user_roles ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "roles_founder" ON user_roles FOR ALL USING (get_my_role()='super_admin') WITH CHECK (get_my_role()='super_admin');
-CREATE POLICY "roles_own_read" ON user_roles FOR SELECT USING (user_id=auth.uid());
 
--- Now create the function after the table exists
+-- Create the function BEFORE using it in policies
 CREATE OR REPLACE FUNCTION get_my_role()
 RETURNS TEXT AS $$
   SELECT role FROM user_roles WHERE user_id = auth.uid()
 $$ LANGUAGE sql SECURITY DEFINER STABLE;
 
--- Recreate policies that depend on get_my_role()
-DROP POLICY IF EXISTS "roles_founder" ON user_roles;
-DROP POLICY IF EXISTS "roles_own_read" ON user_roles;
+-- Now we can use the function in RLS policies
+ALTER TABLE user_roles ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "roles_founder" ON user_roles FOR ALL USING (get_my_role()='super_admin') WITH CHECK (get_my_role()='super_admin');
 CREATE POLICY "roles_own_read" ON user_roles FOR SELECT USING (user_id=auth.uid());
 
