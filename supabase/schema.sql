@@ -8,11 +8,6 @@ RETURNS TRIGGER AS $$
 BEGIN NEW.updated_at = NOW(); RETURN NEW; END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION get_my_role()
-RETURNS TEXT AS $$
-  SELECT role FROM user_roles WHERE user_id = auth.uid()
-$$ LANGUAGE sql SECURITY DEFINER STABLE;
-
 -- Admin Tables (user_roles + profiles):
 CREATE TABLE user_roles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -21,6 +16,18 @@ CREATE TABLE user_roles (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE user_roles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "roles_founder" ON user_roles FOR ALL USING (get_my_role()='super_admin') WITH CHECK (get_my_role()='super_admin');
+CREATE POLICY "roles_own_read" ON user_roles FOR SELECT USING (user_id=auth.uid());
+
+-- Now create the function after the table exists
+CREATE OR REPLACE FUNCTION get_my_role()
+RETURNS TEXT AS $$
+  SELECT role FROM user_roles WHERE user_id = auth.uid()
+$$ LANGUAGE sql SECURITY DEFINER STABLE;
+
+-- Recreate policies that depend on get_my_role()
+DROP POLICY IF EXISTS "roles_founder" ON user_roles;
+DROP POLICY IF EXISTS "roles_own_read" ON user_roles;
 CREATE POLICY "roles_founder" ON user_roles FOR ALL USING (get_my_role()='super_admin') WITH CHECK (get_my_role()='super_admin');
 CREATE POLICY "roles_own_read" ON user_roles FOR SELECT USING (user_id=auth.uid());
 
