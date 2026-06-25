@@ -99,7 +99,9 @@ export default function UserProfile() {
 
       const { error: scoreError } = await supabase.functions.invoke('recalculate-score', { body: {} })
       if (scoreError) {
-        console.error('Score recalc error:', scoreError.context?.status, scoreError.context?.body)
+        const errorBody = scoreError.context?.body || scoreError.message
+        console.error('Score recalc error:', scoreError.context?.status, errorBody)
+        throw new Error(typeof errorBody === 'string' ? errorBody : 'Score recalculation failed')
       }
 
       toast.success('Profile updated successfully')

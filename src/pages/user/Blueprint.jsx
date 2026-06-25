@@ -72,11 +72,9 @@ export default function Blueprint() {
     try {
       const { data, error } = await supabase.functions.invoke('recalculate-score', { body: {} })
       if (error) {
-        console.error('Blueprint: recalculate-score invoke error:', error)
-        if (error.context) {
-          console.error('Blueprint: recalculate-score status:', error.context.status)
-        }
-        throw new Error(typeof error === 'object' ? error.message : 'Score calculation failed')
+        const errorBody = error.context?.body || error.message
+        console.error('Blueprint: recalculate-score error:', error.context?.status, errorBody)
+        throw new Error(typeof errorBody === 'string' ? errorBody : 'Score calculation failed')
       }
       toast.success('Score updated successfully!', { id: loadToast })
     } catch (err) {
