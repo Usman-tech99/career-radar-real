@@ -38,14 +38,13 @@ export default function RadarAIBubble() {
 
     try {
       const { data: { session } } = await supabase.auth.getSession()
-      
-      // Call edge function
+
       const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/radar-ai-chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session?.access_token}`,
-          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
         },
         body: JSON.stringify({ 
           messages: newMessages,
@@ -55,29 +54,8 @@ export default function RadarAIBubble() {
 
       if (!res.ok) throw new Error('Failed to get AI response')
       
-      const text = await res.text()
-      // Note: Edge function uses streamGenerateContent, we'll assume it returns the full text here for simplicity 
-      // or handle stream. But let's assume it returns text for now based on typical Deno edge func setup.
-      // Actually, my Edge function used `text/event-stream`. To keep it simple in React without a full stream parser:
-      // We will just read the response (Gemini REST API returns a JSON structure even if streaming depending on how we fetch).
-      // Wait, in my edge function I just piped res.body. We need to parse it.
-      // For simplicity, let's just assume we get a string or JSON. 
-      // A more robust app would use an EventSource or reader.
-      
-      let aiText = ''
-      try {
-        const json = JSON.parse(text)
-        // Non-stream response format
-        aiText = json.candidates[0].content.parts[0].text
-      } catch {
-        // If it was streamed, this is a rough fallback to strip out the text from the stream chunks
-        const matches = [...text.matchAll(/"text":\s*"([^"]+)"/g)]
-        if (matches.length > 0) {
-          aiText = matches.map(m => m[1]).join('').replace(/\\n/g, '\n')
-        } else {
-          aiText = text
-        }
-      }
+      const geminiData = await res.json()
+      const aiText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || JSON.stringify(geminiData)
 
       setMessages([...newMessages, { role: 'assistant', content: aiText }])
       

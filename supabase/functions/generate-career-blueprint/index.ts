@@ -32,13 +32,16 @@ Deno.serve(async (req: Request) => {
     if (authError || !user) throw new Error("Invalid token");
 
     // Fetch user's onboarding data
-    const { data: onboarding } = await sb.from('onboarding_data').select('*').eq('user_id', user.id).single();
-    if (!onboarding) throw new Error("Onboarding data not found");
+    const { data: onboarding, error: onboardingError } = await sb.from('onboarding_data').select('*').eq('user_id', user.id).maybeSingle();
+    if (onboardingError || !onboarding) throw new Error("Onboarding data not found");
 
     // Fetch jobs to match
-    const { data: jobs } = await sb.from('jobs').select('id,title,company,tags').eq('is_active', true).limit(50);
+    const { data: jobs, error: jobsError } = await sb.from('jobs').select('id,title,company,tags').eq('is_active', true).limit(50);
+    if (jobsError) throw jobsError;
+
     // Fetch education to match
-    const { data: education } = await sb.from('education_items').select('id,title,type,topics_covered').eq('is_published', true).limit(50);
+    const { data: education, error: eduError } = await sb.from('education_items').select('id,title,type,topics_covered').eq('is_published', true).limit(50);
+    if (eduError) throw eduError;
 
     const systemPrompt = `You are an AI Career Strategist for Pakistani students.
     Generate a JSON blueprint for a user based on their onboarding profile.
@@ -67,9 +70,8 @@ Deno.serve(async (req: Request) => {
       "milestones": ["Milestone 1", "Milestone 2"]
     }`;
 
-    // FIX: Swapped to v1 endpoint + gemini-3.1-flash-lite + responseMimeType config
     const res = await fetch(
-      `[https://generativelanguage.googleapis.com/v1/models/gemini-3.1-flash-lite:generateContent?key=$](https://generativelanguage.googleapis.com/v1/models/gemini-3.1-flash-lite:generateContent?key=$){Deno.env.get("GEMINI_API_KEY")}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${Deno.env.get("GEMINI_API_KEY")}`
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

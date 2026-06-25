@@ -42,6 +42,7 @@ import AIInsights from './pages/admin/AIInsights'
 import MyProfile from './pages/admin/MyProfile'
 
 import RadarAIBubble from './components/ai/RadarAIBubble'
+import RadarCursor from './components/ui/RadarCursor'
 
 function HomeRedirect() {
   const { user, role, loading, roleChecked } = useAuth()
@@ -74,6 +75,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <RadarCursor />
         <RadarAIBubble />
         <Toaster position="bottom-center" />
         <Routes>

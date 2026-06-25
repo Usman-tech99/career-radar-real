@@ -24,8 +24,11 @@ serve(async (req) => {
     if (authError || !user) throw new Error("Invalid token");
 
     // Fetch data for scoring
-    const { data: onboarding } = await sb.from('onboarding_data').select('*').eq('user_id', user.id).single();
-    const { data: profile } = await sb.from('profiles').select('linkedin_url, avatar_url, bio').eq('id', user.id).single();
+    const { data: onboarding, error: onboardingError } = await sb.from('onboarding_data').select('*').eq('user_id', user.id).maybeSingle();
+    if (onboardingError) throw onboardingError;
+
+    const { data: profile, error: profileError } = await sb.from('profiles').select('linkedin_url, avatar_url, bio').eq('id', user.id).maybeSingle();
+    if (profileError) throw profileError;
     const { data: blueprint } = await sb.from('career_blueprints').select('action_steps').eq('user_id', user.id).eq('is_active', true).maybeSingle();
     
     // We would ideally fetch education completions and login activity here, but keeping it simple based on spec:

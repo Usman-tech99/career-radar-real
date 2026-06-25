@@ -18,12 +18,19 @@ Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
 
   try {
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader) throw new Error("Missing authorization header");
+
     const { messages } = await req.json();
 
     const sb = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await sb.auth.getUser(token);
+    if (authError || !user) throw new Error("Invalid token");
 
     // Fetch live data
     const { data: jobs } = await sb
@@ -73,7 +80,7 @@ Deno.serve(async (req: Request) => {
 
     // Call working free-tier model pool
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-3.1-flash-lite:generateContent?key=${Deno.env.get("GEMINI_API_KEY")}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${Deno.env.get("GEMINI_API_KEY")}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

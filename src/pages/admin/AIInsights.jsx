@@ -15,16 +15,21 @@ export default function AIInsights() {
   }, [])
 
   async function fetchLogs() {
-    const { data, error } = await supabase
-      .from('ai_chat_logs')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(100) // Keep it light, only fetch last 100 queries
+    try {
+      const { data, error } = await supabase
+        .from('ai_chat_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100)
 
-    if (error) toast.error('Failed to fetch AI logs')
-    else setLogs(data || [])
-    
-    setLoading(false)
+      if (error) toast.error('Failed to fetch AI logs')
+      else setLogs(data || [])
+    } catch (err) {
+      console.error(err)
+      toast.error('Failed to fetch AI logs')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const filteredLogs = logs.filter(log => 
