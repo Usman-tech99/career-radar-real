@@ -20,7 +20,7 @@ const onboardingSchema = z.object({
 })
 
 export default function Onboarding() {
-  const { user, refreshOnboardingStatus, signOut } = useAuth()
+  const { user, setOnboardingComplete, refreshOnboardingStatus, signOut } = useAuth()
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -42,6 +42,11 @@ export default function Onboarding() {
   }
 
   async function onSubmit(data) {
+    if (!user?.id) {
+      toast.error("User session not found. Please log in again.");
+      return;
+    }
+    
     setLoading(true)
 
     const payload = {
@@ -57,37 +62,55 @@ export default function Onboarding() {
     }
 
     try {
-      const { error: insertError } = await supabase.from('onboarding_data').insert([payload])
-      if (insertError) throw insertError
+      // FIX 1: Swapped .insert() out for .upsert() with an onConflict constraint to stop unique key error
+      const { error: upsertError } = await supabase
+        .from('onboarding_data')
+        .upsert(payload, { onConflict: 'user_id' })
+        
+      if (upsertError) throw upsertError
 
-      // Update public_users table
-      const { error: updateError } = await supabase.from('public_users').update({ 
-        country: data.country, 
-        onboarding_complete: true 
-      }).eq('id', user.id)
+      // Update public_users table status flags
+      const { error: updateError } = await supabase
+        .from('public_users')
+        .update({ 
+          country: data.country, 
+          onboarding_complete: true 
+        })
+        .eq('id', user.id)
 
       if (updateError) throw updateError
 
-      // Also trigger initial score calculation using edge function (or we can let Dashboard handle it)
-      // We will trigger score recalculation via Edge function
-      try {
-        const { data: { session } } = await supabase.auth.getSession()
-        await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/recalculate-score`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${session.access_token}` }
-        })
-      } catch (e) {
-        console.warn("Score calc failed, but onboarding succeeded", e)
+      // FIX 2: Explicitly flip the local state flag to true immediately 
+      // This stops React context middleware from kicking the user out during navigation transitions
+      if (setOnboardingComplete) {
+        setOnboardingComplete(true)
       }
 
+      // Trigger background calculations via Edge function
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session?.access_token) {
+          // Fire-and-forget background task so the frontend doesn't hang waiting on Gemini
+          fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/recalculate-score`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${session.access_token}` }
+          }).catch(e => console.warn("Background edge service error", e));
+        }
+      } catch (e) {
+        console.warn("Score context processing omitted or pending", e)
+      }
+
+      // Refresh the context variables globally
       await refreshOnboardingStatus()
+      
       toast.success('Onboarding complete! Generating your blueprint...')
       
-      // Send them to blueprint generation or dashboard
-      navigate('/dashboard')
+      // Clear navigation history transitions and load dashboard panel layout safely
+      navigate('/dashboard', { replace: true })
 
     } catch (error) {
-      toast.error(error.message)
+      console.error("Submission operational failure:", error)
+      toast.error(error.message || "An error occurred during profiling sync.")
     } finally {
       setLoading(false)
     }
@@ -101,6 +124,7 @@ export default function Onboarding() {
       {/* Sign out button */}
       <button 
         onClick={signOut}
+        type="button"
         className="absolute top-4 right-4 flex items-center gap-2 text-muted hover:text-white transition-colors z-20"
       >
         <LogOut size={18} />
