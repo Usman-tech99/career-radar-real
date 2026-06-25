@@ -60,17 +60,22 @@ export default function UserProfile() {
     const filePath = `${user.id}/${fileName}`
     const bucket = 'avatars'
 
+    const previewUrl = URL.createObjectURL(file)
+    setProfile({ ...profile, avatar_url: previewUrl })
+
     try {
       const { error: uploadError } = await supabase.storage.from(bucket).upload(filePath, file, { upsert: true })
       if (uploadError) throw uploadError
 
-      const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(filePath)
-      setProfile({ ...profile, avatar_url: publicUrl })
-      toast.success('Avatar uploaded')
+      const { data } = supabase.storage.from(bucket).getPublicUrl(filePath)
+      const publicUrl = data?.publicUrl || `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${bucket}/${filePath}`
+      setProfile(prev => ({ ...prev, avatar_url: publicUrl }))
     } catch (err) {
+      setProfile(prev => ({ ...prev, avatar_url: '' }))
       toast.error(`Upload failed: ${err.message}`)
     } finally {
       setUploading(false)
+      URL.revokeObjectURL(previewUrl)
     }
   }
 
@@ -144,10 +149,11 @@ export default function UserProfile() {
             </div>
 
             <div className="glass-card flex flex-col sm:flex-row gap-8 items-start mb-8">
-              <div className="flex flex-col items-center">
-                <div className="w-40 h-40 rounded-full border-4 border-white/[0.05] overflow-hidden mb-4 relative group">
+              <div className="flex flex-col gap-3 items-start">
+                <label className="label text-sm font-medium text-muted">Avatar</label>
+                <div className="w-40 h-40 rounded-full border-4 border-white/[0.05] overflow-hidden relative group">
                   {profile.avatar_url ? (
-                    <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" />
+                    <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover rounded-full" crossOrigin="anonymous" />
                   ) : (
                     <div className="w-full h-full bg-white/[0.02] flex items-center justify-center text-4xl text-muted font-bold">
                       {profile.full_name ? profile.full_name[0] : <User size={40} />}
@@ -159,7 +165,7 @@ export default function UserProfile() {
                   </label>
                 </div>
                 {uploading && <p className="text-xs text-blue-accent">Uploading...</p>}
-                <p className="text-xs text-muted mt-2 text-center w-40">Click to upload new avatar</p>
+                <p className="text-xs text-muted">Click to upload new avatar</p>
               </div>
 
               <div className="flex-1 space-y-5 w-full">
