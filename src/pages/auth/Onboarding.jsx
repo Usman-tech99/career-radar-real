@@ -7,6 +7,39 @@ import { ArrowRight, GraduationCap, Wrench, Target, X } from 'lucide-react'
 
 const EXPERIENCE_LEVELS = ['Student', 'Fresh Graduate', '1-2 Years', '3+ Years']
 
+function TagInput({ label, required, tags, field, inputField, placeholder, icon: Icon, inputRef, form, updateField, addTag, removeTag, handleTagKeyDown }) {
+  return (
+    <div>
+      <label className="label flex items-center gap-2">
+        <Icon size={16} className="text-green" /> {label}{required && <span className="text-red-400">*</span>}
+      </label>
+      <div className="flex flex-wrap gap-2 mb-2">
+        {tags.map(tag => (
+          <span key={tag} className="flex items-center gap-1 text-sm bg-green/10 text-green px-2 py-1 rounded border border-green/20">
+            {tag}
+            <button type="button" onClick={() => removeTag(field, tag)} className="hover:text-red-400 transition-colors">
+              <X size={14} />
+            </button>
+          </span>
+        ))}
+      </div>
+      <div className="flex gap-2">
+        <input
+          ref={inputRef}
+          value={form[inputField]}
+          onChange={e => updateField(inputField, e.target.value)}
+          onKeyDown={e => handleTagKeyDown(e, field, inputField)}
+          className="input-field flex-1"
+          placeholder={placeholder}
+        />
+        <button type="button" onClick={() => addTag(field, inputField)} className="btn-primary px-3 text-sm">
+          Add
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export default function Onboarding() {
   const { user, refreshOnboardingStatus } = useAuth()
   const navigate = useNavigate()
@@ -133,39 +166,6 @@ export default function Onboarding() {
     }
   }
 
-  function TagInput({ label, required, tags, field, inputField, placeholder, icon: Icon, inputRef }) {
-    return (
-      <div>
-        <label className="label flex items-center gap-2">
-          <Icon size={16} className="text-green" /> {label}{required && <span className="text-red-400">*</span>}
-        </label>
-        <div className="flex flex-wrap gap-2 mb-2">
-          {tags.map(tag => (
-            <span key={tag} className="flex items-center gap-1 text-sm bg-green/10 text-green px-2 py-1 rounded border border-green/20">
-              {tag}
-              <button type="button" onClick={() => removeTag(field, tag)} className="hover:text-red-400 transition-colors">
-                <X size={14} />
-              </button>
-            </span>
-          ))}
-        </div>
-        <div className="flex gap-2">
-          <input
-            ref={inputRef}
-            value={form[inputField]}
-            onChange={e => updateField(inputField, e.target.value)}
-            onKeyDown={e => handleTagKeyDown(e, field, inputField)}
-            className="input-field flex-1"
-            placeholder={placeholder}
-          />
-          <button type="button" onClick={() => addTag(field, inputField)} className="btn-primary px-3 text-sm">
-            Add
-          </button>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="min-h-screen bg-[#07070C] flex items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-accent/20 blur-[120px] rounded-full pointer-events-none" />
@@ -252,6 +252,11 @@ export default function Onboarding() {
                 inputField="skillsInput"
                 placeholder="Type a skill and press Enter or Add"
                 icon={Wrench}
+                form={form}
+                updateField={updateField}
+                addTag={addTag}
+                removeTag={removeTag}
+                handleTagKeyDown={handleTagKeyDown}
               />
               <TagInput
                 label="Interests"
@@ -261,6 +266,11 @@ export default function Onboarding() {
                 placeholder="e.g. Web Development, AI, Design"
                 icon={Target}
                 inputRef={interestsRef}
+                form={form}
+                updateField={updateField}
+                addTag={addTag}
+                removeTag={removeTag}
+                handleTagKeyDown={handleTagKeyDown}
               />
             </div>
           )}
