@@ -86,7 +86,7 @@ export default function Onboarding() {
       const fullName = user.user_metadata?.full_name || ''
       const email = user.email || ''
 
-      await supabase.from('public_users').upsert({
+      const profileResult = await supabase.from('public_users').upsert({
         id: user.id,
         full_name: fullName,
         email: email,
@@ -94,7 +94,12 @@ export default function Onboarding() {
         onboarding_complete: true,
       }, { onConflict: 'id' })
 
-      const { error: dataError } = await supabase.from('onboarding_data').upsert({
+      if (profileResult.error) {
+        console.error('Onboarding: public_users upsert failed:', profileResult.error.message, profileResult.error.code, profileResult.error.details)
+        throw new Error(`Profile save failed: ${profileResult.error.message}`)
+      }
+
+      const dataResult = await supabase.from('onboarding_data').upsert({
         user_id: user.id,
         degree: form.degree,
         study_year: form.studyYear,
@@ -106,9 +111,16 @@ export default function Onboarding() {
         interests: form.interests,
       }, { onConflict: 'user_id' })
 
-      if (dataError) throw dataError
+      if (dataResult.error) {
+        console.error('Onboarding: onboarding_data upsert failed:', dataResult.error.message, dataResult.error.code, dataResult.error.details)
+        throw new Error(`Data save failed: ${dataResult.error.message}`)
+      }
 
-      await refreshOnboardingStatus()
+      const refreshed = await refreshOnboardingStatus()
+      if (!refreshed) {
+        console.warn('Onboarding: refreshOnboardingStatus returned false, will retry on next navigation')
+      }
+
       toast.success('Welcome aboard! Your profile is set up.')
       navigate('/dashboard', { replace: true })
     } catch (err) {

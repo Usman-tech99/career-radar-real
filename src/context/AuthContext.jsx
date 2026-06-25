@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
           .eq('user_id', userId)
           .maybeSingle()
         if (error) {
-          console.error(`Auth: fetchRole attempt ${attempt + 1} failed:`, error.message, error.code)
+          console.error(`Auth: fetchRole attempt ${attempt + 1} failed:`, error.message, 'code:', error.code, 'details:', error.details)
           throw error
         }
         if (data?.role) return data.role
@@ -42,13 +42,19 @@ export function AuthProvider({ children }) {
       return true
     }
     try {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('public_users')
         .select('onboarding_complete')
         .eq('id', userId)
         .maybeSingle()
-      return data?.onboarding_complete || false
-    } catch {
+      if (error) {
+        console.error('Auth: fetchOnboardingStatus query error:', error.message, error.code, error.details)
+        return false
+      }
+      const status = data?.onboarding_complete || false
+      return status
+    } catch (err) {
+      console.error('Auth: fetchOnboardingStatus exception:', err)
       return false
     }
   }
@@ -117,6 +123,7 @@ export function AuthProvider({ children }) {
     if (!user) return
     const status = await fetchOnboardingStatus(user.id, role)
     setOnboardingComplete(status)
+    return status
   }
 
   async function signOut() {

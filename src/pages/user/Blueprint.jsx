@@ -26,7 +26,14 @@ export default function Blueprint() {
         .eq('is_active', true)
         .maybeSingle()
 
-      if (data) setBlueprint(data)
+      if (error) {
+        console.error('Blueprint: fetch error:', error.message, error.code, error.details)
+        toast.error('Failed to load blueprint')
+      } else if (data) {
+        setBlueprint(data)
+      } else {
+        console.log('Blueprint: no active blueprint found for user', user.id)
+      }
     } catch (err) {
       toast.error('Failed to load blueprint')
       console.error(err)
@@ -40,7 +47,16 @@ export default function Blueprint() {
     const loadToast = toast.loading('Triggering AI Blueprint Engine...')
     try {
       const { data, error } = await supabase.functions.invoke('generate-career-blueprint', { body: {} })
-      if (error) throw error
+      if (error) {
+        console.error('Blueprint: edge function invoke error:', error)
+        if (error.context) {
+          console.error('Blueprint: edge function status:', error.context.status, 'statusText:', error.context.statusText)
+          if (error.context.body) {
+            console.error('Blueprint: edge function response body:', error.context.body)
+          }
+        }
+        throw new Error(typeof error === 'object' ? error.message : 'Edge function returned an error')
+      }
       toast.success('Blueprint generated successfully!', { id: loadToast })
       await fetchBlueprint()
     } catch (err) {
@@ -55,7 +71,13 @@ export default function Blueprint() {
     const loadToast = toast.loading('Re-calculating career score...')
     try {
       const { data, error } = await supabase.functions.invoke('recalculate-score', { body: {} })
-      if (error) throw error
+      if (error) {
+        console.error('Blueprint: recalculate-score invoke error:', error)
+        if (error.context) {
+          console.error('Blueprint: recalculate-score status:', error.context.status)
+        }
+        throw new Error(typeof error === 'object' ? error.message : 'Score calculation failed')
+      }
       toast.success('Score updated successfully!', { id: loadToast })
     } catch (err) {
       toast.error(err.message || 'Score calculation failed', { id: loadToast })
@@ -75,12 +97,16 @@ export default function Blueprint() {
         .update({ action_steps: newSteps })
         .eq('id', blueprint.id)
 
-      if (error) throw error
+      if (error) {
+        console.error('Blueprint: step toggle error:', error.message, error.code, error.details)
+        throw error
+      }
       setBlueprint({ ...blueprint, action_steps: newSteps })
 
       await supabase.functions.invoke('recalculate-score', { body: {} }).catch(() => {})
     } catch (err) {
       toast.error('Failed to update step')
+      console.error(err)
     } finally {
       setUpdatingStep(null)
     }
@@ -121,7 +147,7 @@ export default function Blueprint() {
           <div className="glass-card text-center py-20 flex flex-col items-center">
             <Zap size={48} className="text-muted mb-4" />
             <h2 className="text-2xl font-bold mb-2">AI Blueprint Not Ready</h2>
-            <p className="text-muted mb-6">Generate your personalized career blueprint to get started.</p>
+            <p className="text-muted mb-6 break-words">Generate your personalized career blueprint to get started.</p>
             <button
               type="button"
               onClick={handleGenerateBlueprint}
@@ -134,10 +160,10 @@ export default function Blueprint() {
           </div>
         ) : (
           <div className="space-y-8 max-w-5xl">
-            <div className="flex items-start justify-between">
-              <div>
-                <h1 className="text-4xl font-bold font-sora text-green mb-3 tracking-tight">{blueprint.title}</h1>
-                <p className="text-lg text-muted">{blueprint.summary}</p>
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-4xl font-bold font-sora text-green mb-3 tracking-tight break-words">{blueprint.title}</h1>
+                <p className="text-lg text-muted break-words">{blueprint.summary}</p>
               </div>
               <button
                 type="button"
@@ -174,12 +200,12 @@ export default function Blueprint() {
                             <CheckCircle size={16} className="text-surface" />
                           ) : null}
                         </div>
-                        <div className="flex-1">
-                          <h3 className={`font-bold text-lg ${step.completed ? 'text-muted line-through' : 'text-white'}`}>
+                        <div className="min-w-0 flex-1">
+                          <h3 className={`font-bold text-lg break-words ${step.completed ? 'text-muted line-through' : 'text-white'}`}>
                             {step.title}
                           </h3>
                           {step.deadline && (
-                            <p className="text-sm text-blue-accent mt-1">Deadline: {step.deadline}</p>
+                            <p className="text-sm text-blue-accent mt-1 break-words">Deadline: {step.deadline}</p>
                           )}
                         </div>
                       </div>
@@ -193,7 +219,7 @@ export default function Blueprint() {
                     {blueprint.milestones?.map((m, i) => (
                       <div key={i} className="relative">
                         <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-surface border-2 border-green"></div>
-                        <p className="text-white font-medium">{m}</p>
+                        <p className="text-white font-medium break-words">{m}</p>
                       </div>
                     ))}
                   </div>
@@ -202,13 +228,13 @@ export default function Blueprint() {
 
               <div className="lg:col-span-1 space-y-6">
                 <div className="glass-card">
-                  <h2 className="font-bold text-lg mb-4 text-purple-accent">Recommended Skills</h2>
+                  <h2 className="font-bold text-lg mb-4 text-purple-accent break-words">Recommended Skills</h2>
                   <div className="space-y-3">
                     {blueprint.recommended_skills?.map((skill, i) => (
                       <div key={i} className="p-3 bg-white/[0.02] border border-border rounded-lg">
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="font-bold">{skill.skill}</span>
-                          <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
+                        <div className="flex justify-between items-center mb-1 gap-2">
+                          <span className="font-bold break-words">{skill.skill}</span>
+                          <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded shrink-0 ${
                             skill.priority === 'High' ? 'bg-red-500/20 text-red-400' :
                             skill.priority === 'Medium' ? 'bg-amber-500/20 text-amber-400' :
                             'bg-green/20 text-green'
@@ -217,7 +243,7 @@ export default function Blueprint() {
                           </span>
                         </div>
                         {skill.resource_url && (
-                          <a href={skill.resource_url} target="_blank" rel="noreferrer" className="text-xs text-blue-400 hover:underline flex items-center gap-1 mt-2">
+                          <a href={skill.resource_url} target="_blank" rel="noreferrer" className="text-xs text-blue-400 hover:underline flex items-center gap-1 mt-2 truncate block">
                             Resource <ExternalLink size={12} />
                           </a>
                         )}
@@ -228,7 +254,7 @@ export default function Blueprint() {
 
                 <div className="glass-card border border-gold/20 bg-gold/5">
                   <h2 className="font-bold text-lg mb-4 text-gold">Matched Jobs</h2>
-                  <p className="text-sm text-muted mb-4">Based on your blueprint, check the live jobs board.</p>
+                  <p className="text-sm text-muted mb-4 break-words">Based on your blueprint, check the live jobs board.</p>
                   <Link to="/jobs" className="btn-primary w-full text-center py-2">View Matches</Link>
                 </div>
 

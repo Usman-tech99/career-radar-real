@@ -25,10 +25,26 @@ export default function Dashboard() {
         supabase.from('career_blueprints').select('title, summary, action_steps').eq('user_id', user.id).eq('is_active', true).maybeSingle()
       ])
 
-      if (scoreRes?.data) setScore(scoreRes.data)
-      if (blueprintRes?.data) setBlueprint(blueprintRes.data)
+      if (scoreRes.error) {
+        console.error('Dashboard: career_scores query error:', scoreRes.error.message, scoreRes.error.code, scoreRes.error.details)
+      } else if (scoreRes?.data) {
+        setScore(scoreRes.data)
+      }
+
+      if (blueprintRes.error) {
+        console.error('Dashboard: career_blueprints query error:', blueprintRes.error.message, blueprintRes.error.code, blueprintRes.error.details)
+      } else if (blueprintRes?.data) {
+        setBlueprint(blueprintRes.data)
+      }
+
+      if (!scoreRes?.data && !scoreRes?.error) {
+        console.log('Dashboard: no career_scores row found for user', user.id, '- user needs onboarding or score generation')
+      }
+      if (!blueprintRes?.data && !blueprintRes?.error) {
+        console.log('Dashboard: no active career_blueprint found for user', user.id)
+      }
     } catch (err) {
-      console.error(err)
+      console.error('Dashboard: fetchDashboardData exception:', err)
     } finally {
       setLoading(false)
     }
@@ -39,7 +55,13 @@ export default function Dashboard() {
     const loadToast = toast.loading('Triggering AI Blueprint Engine...')
     try {
       const { data, error } = await supabase.functions.invoke('generate-career-blueprint', { body: {} })
-      if (error) throw error
+      if (error) {
+        console.error('Dashboard: edge function invoke error:', error)
+        if (error.context) {
+          console.error('Dashboard: edge function status:', error.context.status, 'statusText:', error.context.statusText)
+        }
+        throw new Error(typeof error === 'object' ? error.message : 'Edge function returned an error')
+      }
       toast.success('Blueprint generated successfully!', { id: loadToast })
       await fetchDashboardData()
     } catch (err) {
@@ -126,8 +148,8 @@ export default function Dashboard() {
                 </h2>
                 {blueprint ? (
                   <>
-                    <h3 className="text-2xl font-bold mb-2">{blueprint.title}</h3>
-                    <p className="text-muted mb-6">{blueprint.summary}</p>
+                    <h3 className="text-2xl font-bold mb-2 break-words">{blueprint.title}</h3>
+                    <p className="text-muted mb-6 break-words">{blueprint.summary}</p>
 
                     <div className="space-y-3">
                       <p className="text-sm font-bold uppercase tracking-wider text-green">Next Steps</p>
@@ -136,8 +158,8 @@ export default function Dashboard() {
                           <div className={`mt-0.5 shrink-0 w-4 h-4 rounded border flex items-center justify-center ${step.completed ? 'bg-green border-green' : 'border-muted'}`}>
                             {step.completed && <div className="w-2 h-2 bg-surface rounded-sm" />}
                           </div>
-                          <div>
-                            <p className={`text-sm ${step.completed ? 'line-through text-muted' : 'font-medium'}`}>{step.title}</p>
+                          <div className="min-w-0">
+                            <p className={`text-sm break-words ${step.completed ? 'line-through text-muted' : 'font-medium'}`}>{step.title}</p>
                             {step.deadline && <p className="text-xs text-muted mt-1">Due: {step.deadline}</p>}
                           </div>
                         </div>
@@ -147,7 +169,7 @@ export default function Dashboard() {
                 ) : (
                   <div className="text-center py-8">
                     <Zap size={32} className="text-gold mx-auto mb-4" />
-                    <p className="text-muted">No active blueprint found.</p>
+                    <p className="text-muted break-words">No active blueprint found.</p>
                     <button
                       type="button"
                       onClick={handleGenerateBlueprint}
@@ -170,12 +192,12 @@ export default function Dashboard() {
             <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="glass-card">
                 <h3 className="font-bold flex items-center gap-2 mb-4"><Briefcase size={18} /> Recommended Jobs</h3>
-                <p className="text-sm text-muted">Based on your blueprint, Radar AI has found matches.</p>
+                <p className="text-sm text-muted break-words">Based on your blueprint, Radar AI has found matches.</p>
                 <Link to="/jobs" className="text-green text-sm font-bold mt-4 inline-block hover:underline">Browse Jobs ↗</Link>
               </div>
               <div className="glass-card">
                 <h3 className="font-bold flex items-center gap-2 mb-4"><Zap size={18} /> Radar AI Assistant</h3>
-                <p className="text-sm text-muted">Stuck? Ask the AI coach for interview tips or resume reviews.</p>
+                <p className="text-sm text-muted break-words">Stuck? Ask the AI coach for interview tips or resume reviews.</p>
                 <button type="button" onClick={() => window.dispatchEvent(new CustomEvent('open-radar-ai'))} className="text-purple-accent text-sm font-bold mt-4 inline-block hover:underline">Open Chat ↗</button>
               </div>
             </div>
