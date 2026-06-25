@@ -1,16 +1,24 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+// @ts-ignore: Suppress local module resolution error for the editor environment
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+// Declare global Deno namespace properties so the editor linter recognizes it immediately
+declare const Deno: {
+  serve: (handler: (req: Request) => Promise<Response>) => void;
+  env: {
+    get: (key: string) => string | undefined;
+  };
+};
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type"
 };
 
-serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
 
   try {
-    const { messages, session_id } = await req.json();
+    const { messages } = await req.json();
 
     const sb = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -41,21 +49,37 @@ serve(async (req) => {
     LIVE JOBS: ${JSON.stringify(jobs)}
     LIVE CONTENT: ${JSON.stringify(content)}`;
 
-    // Cap at last 20 messages
+    // Trim to last 20 messages
     const trimmed = messages.slice(-20);
 
-    // Call Gemini 2.0 Flash
+    // Map and filter to ensure valid, alternating roles (User -> Model -> User)
+    const formattedContents = [];
+    let lastRole = null;
+
+    for (const m of trimmed as any[]) {
+      const currentRole = m.role === "assistant" ? "model" : "user";
+      if (currentRole !== lastRole) {
+        formattedContents.push({
+          role: currentRole,
+          parts: [{ text: m.content || "" }]
+        });
+        lastRole = currentRole;
+      }
+    }
+
+    if (formattedContents.length === 0) {
+      return new Response(JSON.stringify({ error: "No valid messages found" }), { status: 400, headers: cors });
+    }
+
+    // Call working free-tier model pool
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${Deno.env.get("GEMINI_API_KEY")}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-3.1-flash-lite:generateContent?key=${Deno.env.get("GEMINI_API_KEY")}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           system_instruction: { parts: [{ text: system }] },
-          contents: trimmed.map((m: any) => ({
-            role: m.role === "assistant" ? "model" : "user",
-            parts: [{ text: m.content }]
-          })),
+          contents: formattedContents,
           generationConfig: { maxOutputTokens: 1024, temperature: 0.7 }
         })
       }
@@ -64,8 +88,8 @@ serve(async (req) => {
     const geminiData = await res.json();
     return new Response(JSON.stringify(geminiData), { headers: { ...cors, "Content-Type": "application/json" } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Radar AI Error:", error);
-    return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: cors });
+    return new Response(JSON.stringify({ error: error?.message || "An unknown error occurred" }), { status: 500, headers: cors });
   }
 });
