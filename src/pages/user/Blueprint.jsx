@@ -70,12 +70,18 @@ export default function Blueprint() {
   async function handleRecalculateScore() {
     const loadToast = toast.loading('Re-calculating career score...')
     try {
-      const response = await supabase.functions.invoke('recalculate-score', { body: {} })
-      if (response.error) {
-        const raw = JSON.stringify(response.error)
-        console.error('Blueprint: recalculate-score full error:', raw)
-        throw new Error(raw)
-      }
+      const { data: { session } } = await supabase.auth.getSession()
+      const rawRes = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/recalculate-score`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`,
+        },
+        body: '{}'
+      })
+      const rawBody = await rawRes.text()
+      console.error('Raw response:', rawRes.status, rawBody)
+      if (!rawRes.ok) throw new Error(rawBody)
       toast.success('Score updated successfully!', { id: loadToast })
     } catch (err) {
       toast.error(err.message || 'Score calculation failed', { id: loadToast })
