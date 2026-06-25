@@ -1,7 +1,5 @@
-// @ts-ignore: Suppress local module resolution error for the editor environment
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-// Declare global Deno namespace properties so the editor linter recognizes it immediately
 declare const Deno: {
   serve: (handler: (req: Request) => Promise<Response>) => void;
   env: {
@@ -25,7 +23,6 @@ Deno.serve(async (req: Request) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Fetch live data
     const { data: jobs } = await sb
       .from("jobs")
       .select("id,title,company,location,type,tags,apply_url,deadline")
@@ -40,57 +37,42 @@ Deno.serve(async (req: Request) => {
       .order("created_at", { ascending: false })
       .limit(20);
 
-    const system = `You are Radar AI — career assistant for Career Radar.
-    AI-powered career GPS for Pakistani students and freelancers.
-    Be helpful, concise, encouraging. Never fabricate data.
-    If user writes Roman Urdu, respond in Roman Urdu.
-    Modes: CAREER COACH (advice), JOB MATCHER (match from LIVE JOBS below),
-    CONTENT GUIDE (recommend from LIVE CONTENT below).
-    LIVE JOBS: ${JSON.stringify(jobs)}
-    LIVE CONTENT: ${JSON.stringify(content)}`;
+    const liveData = `LIVE JOBS: ${JSON.stringify(jobs)}\nLIVE CONTENT: ${JSON.stringify(content)}`;
 
-    // Trim to last 20 messages
-    const trimmed = messages.slice(-20);
-
-    // Map and filter to ensure valid, alternating roles (User -> Model -> User)
-    const formattedContents = [];
-    let lastRole = null;
-
-    for (const m of trimmed as any[]) {
-      const currentRole = m.role === "assistant" ? "model" : "user";
-      if (currentRole !== lastRole) {
-        // Prepend system context to the first user message
-        let text = m.content || "";
-        if (currentRole === "user" && formattedContents.length === 0 && system) {
-          text = `${system}\n\nUser message: ${text}`;
-        }
-        formattedContents.push({
-          role: currentRole,
-          parts: [{ text }]
-        });
-        lastRole = currentRole;
-      }
-    }
-
-    if (formattedContents.length === 0) {
-      return new Response(JSON.stringify({ error: "No valid messages found" }), { status: 400, headers: cors });
-    }
-
-    // Call working free-tier model pool
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=${Deno.env.get("GEMINI_API_KEY")}`,
+    const groqMessages = [
       {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: formattedContents,
-          generationConfig: { maxOutputTokens: 1024, temperature: 0.7 }
-        })
-      }
-    );
+        role: "system",
+        content: `You are Radar AI — career assistant for Career Radar. AI-powered career GPS for Pakistani students and freelancers. Be helpful, concise, encouraging. Never fabricate data. If user writes Roman Urdu, respond in Roman Urdu. Modes: CAREER COACH (advice), JOB MATCHER (match from LIVE JOBS below), CONTENT GUIDE (recommend from LIVE CONTENT below).\n\n${liveData}`
+      },
+      ...messages.slice(-20).map((m: any) => ({
+        role: m.role === "assistant" ? "assistant" : "user",
+        content: m.content || ""
+      }))
+    ];
 
-    const geminiData = await res.json();
-    return new Response(JSON.stringify(geminiData), { headers: { ...cors, "Content-Type": "application/json" } });
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${Deno.env.get("GROQ_API_KEY")}`
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: groqMessages,
+        max_tokens: 1024,
+        temperature: 0.7
+      })
+    });
+
+    const groqData = await res.json();
+
+    if (!res.ok) {
+      throw new Error(groqData.error?.message || `Groq API error: ${res.status}`);
+    }
+
+    const aiText = groqData.choices?.[0]?.message?.content || "No response generated.";
+
+    return new Response(JSON.stringify({ content: aiText }), { headers: { ...cors, "Content-Type": "application/json" } });
 
   } catch (error: any) {
     console.error("Radar AI Error:", error);

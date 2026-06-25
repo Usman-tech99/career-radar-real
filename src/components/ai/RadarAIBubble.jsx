@@ -57,8 +57,8 @@ export default function RadarAIBubble() {
         throw new Error(errorBody || `HTTP ${res.status}`)
       }
       
-      const geminiData = await res.json()
-      const aiText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || JSON.stringify(geminiData)
+      const data = await res.json()
+      const aiText = data?.content || JSON.stringify(data)
 
       setMessages([...newMessages, { role: 'assistant', content: aiText }])
       

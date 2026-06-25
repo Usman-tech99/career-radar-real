@@ -1,7 +1,5 @@
-// @ts-ignore: Suppress local module resolution error for the editor environment
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-// Declare global Deno namespace properties so the editor linter recognizes it immediately
 declare const Deno: {
   serve: (handler: (req: Request) => Promise<Response>) => void;
   env: {
@@ -26,80 +24,74 @@ Deno.serve(async (req: Request) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Verify token
     const token = authHeader.replace('Bearer ', '');
     const { data: { user }, error: authError } = await sb.auth.getUser(token);
     if (authError || !user) throw new Error("Invalid token");
 
-    // Fetch user's onboarding data
     const { data: onboarding, error: onboardingError } = await sb.from('onboarding_data').select('*').eq('user_id', user.id).maybeSingle();
     if (onboardingError || !onboarding) throw new Error("Onboarding data not found");
 
-    // Fetch jobs to match
     const { data: jobs, error: jobsError } = await sb.from('jobs').select('id,title,company,tags').eq('is_active', true).limit(50);
     if (jobsError) throw jobsError;
 
-    // Fetch education to match
     const { data: education, error: eduError } = await sb.from('education_items').select('id,title,type,topics_covered').eq('is_published', true).limit(50);
     if (eduError) throw eduError;
 
-    const systemPrompt = `You are an AI Career Strategist for Pakistani students.
-    Generate a JSON blueprint for a user based on their onboarding profile.
-    Profile:
-    Degree: ${onboarding.degree}
-    Year: ${onboarding.study_year}
-    Skills: ${onboarding.skills?.join(', ')}
-    Goals: ${onboarding.career_goal}
-    Interests: ${onboarding.interests?.join(', ')}
-    Experience: ${onboarding.experience}
+    const systemPrompt = `You are an AI Career Strategist for Pakistani students. Generate a JSON blueprint based on the user's profile.
 
-    LIVE JOBS TO MATCH FROM (use exact IDs):
-    ${JSON.stringify(jobs)}
+Profile:
+- Degree: ${onboarding.degree}
+- Year: ${onboarding.study_year}
+- Skills: ${onboarding.skills?.join(', ')}
+- Goals: ${onboarding.career_goal}
+- Interests: ${onboarding.interests?.join(', ')}
+- Experience: ${onboarding.experience}
 
-    LIVE COURSES TO MATCH FROM (use exact IDs):
-    ${JSON.stringify(education)}
+LIVE JOBS TO MATCH FROM (use exact IDs):
+${JSON.stringify(jobs)}
 
-    Return a JSON object with this exact structure:
-    {
-      "title": "Your [Field] Career Path",
-      "summary": "2-3 sentences max",
-      "recommended_skills": [{"skill": "Skill Name", "priority": "High/Medium/Low", "resource_url": "URL"}],
-      "recommended_jobs": ["job_id_1", "job_id_2"],
-      "recommended_courses": ["edu_id_1", "edu_id_2"],
-      "action_steps": [{"id": "step_1", "title": "Step Title", "deadline": "MM/YYYY", "completed": false}],
-      "milestones": ["Milestone 1", "Milestone 2"]
-    }`;
+LIVE COURSES TO MATCH FROM (use exact IDs):
+${JSON.stringify(education)}
 
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=${Deno.env.get("GEMINI_API_KEY")}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: systemPrompt }] }],
-          generationConfig: { 
-            maxOutputTokens: 2048, 
-            temperature: 0.7,
-            responseMimeType: "application/json"
-          }
-        })
-      }
-    );
+Return ONLY valid JSON (no markdown, no code fences) with this exact structure:
+{
+  "title": "Your [Field] Career Path",
+  "summary": "2-3 sentences max",
+  "recommended_skills": [{"skill": "Skill Name", "priority": "High/Medium/Low", "resource_url": "URL"}],
+  "recommended_jobs": ["job_id_1", "job_id_2"],
+  "recommended_courses": ["edu_id_1", "edu_id_2"],
+  "action_steps": [{"id": "step_1", "title": "Step Title", "deadline": "MM/YYYY", "completed": false}],
+  "milestones": ["Milestone 1", "Milestone 2"]
+}`;
 
-    const geminiData = await res.json();
-    
-    if (!geminiData.candidates || geminiData.candidates.length === 0) {
-      throw new Error("Gemini failed to return content candidates. Check API quota.");
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${Deno.env.get("GROQ_API_KEY")}`
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "user", content: systemPrompt }],
+        max_tokens: 2048,
+        temperature: 0.7,
+        response_format: { type: "json_object" }
+      })
+    });
+
+    const groqData = await res.json();
+
+    if (!res.ok) {
+      throw new Error(groqData.error?.message || `Groq API error: ${res.status}`);
     }
 
-    const responseText = geminiData.candidates[0].content.parts[0].text.trim();
+    const responseText = groqData.choices?.[0]?.message?.content?.trim();
+    if (!responseText) throw new Error("Groq returned empty response");
+
     const blueprint = JSON.parse(responseText);
 
-    // Save to database
-    // First, deactivate any old blueprints
     await sb.from('career_blueprints').update({ is_active: false }).eq('user_id', user.id);
 
-    // Insert new
     const { data: insertedBlueprint, error: insertError } = await sb.from('career_blueprints').insert({
       user_id: user.id,
       title: blueprint.title,
@@ -113,7 +105,7 @@ Deno.serve(async (req: Request) => {
     }).select().single();
 
     if (insertError) throw insertError;
-    
+
     return new Response(JSON.stringify({ success: true, blueprint: insertedBlueprint }), { headers: { ...cors, "Content-Type": "application/json" } });
 
   } catch (error: any) {
