@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
-import { LayoutDashboard, Target, Activity, User, LogOut, ArrowRight, Zap, Briefcase } from 'lucide-react'
+import { LayoutDashboard, Target, Activity, User, LogOut, ArrowRight, Zap, Briefcase, Loader2 } from 'lucide-react'
 
 export default function Dashboard() {
   const { user, signOut } = useAuth()
@@ -12,6 +12,7 @@ export default function Dashboard() {
   const [score, setScore] = useState(null)
   const [blueprint, setBlueprint] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [generating, setGenerating] = useState(false)
 
   useEffect(() => {
     if (user) fetchDashboardData()
@@ -33,7 +34,22 @@ export default function Dashboard() {
     }
   }
 
-  // Sidebar link component with dynamic active state
+  async function handleGenerateBlueprint() {
+    setGenerating(true)
+    const loadToast = toast.loading('Triggering AI Blueprint Engine...')
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-career-blueprint', { body: {} })
+      if (error) throw error
+      toast.success('Blueprint generated successfully!', { id: loadToast })
+      await fetchDashboardData()
+    } catch (err) {
+      toast.error(err.message || 'Failed to generate blueprint', { id: loadToast })
+      console.error(err)
+    } finally {
+      setGenerating(false)
+    }
+  }
+
   const NavLink = ({ to, icon: Icon, label }) => {
     const isActive = location.pathname === to
     return (
@@ -48,7 +64,6 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen bg-surface">
-      {/* User Sidebar */}
       <div className="w-64 h-screen bg-surface border-r border-border flex flex-col fixed left-0 top-0 pt-20">
         <div className="flex-1 px-4 py-6 space-y-2">
           <NavLink to="/dashboard" icon={LayoutDashboard} label="Overview" />
@@ -57,13 +72,12 @@ export default function Dashboard() {
           <NavLink to="/dashboard/profile" icon={User} label="Profile Settings" />
         </div>
         <div className="p-4 border-t border-border">
-          <button onClick={signOut} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-400 hover:bg-red-500/10 transition-colors font-medium">
+          <button type="button" onClick={signOut} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-400 hover:bg-red-500/10 transition-colors font-medium">
             <LogOut size={20} /> Sign Out
           </button>
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 ml-64 p-8">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -76,8 +90,7 @@ export default function Dashboard() {
           <div className="skeleton w-full h-64 rounded-2xl"></div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            {/* Score Card */}
+
             <div className="lg:col-span-1 glass-card relative overflow-hidden flex flex-col justify-between">
               <div className="absolute top-0 right-0 w-32 h-32 bg-green/20 blur-[50px] rounded-full pointer-events-none" />
               <div>
@@ -87,7 +100,7 @@ export default function Dashboard() {
                 <div className="text-6xl font-black font-mono mt-4 text-green">
                   {score?.total_score || 0}<span className="text-2xl text-muted">/100</span>
                 </div>
-                
+
                 {score?.missing_items && score.missing_items.length > 0 && (
                   <div className="mt-6">
                     <p className="text-sm font-bold text-amber-400 mb-2">Missing to improve:</p>
@@ -106,7 +119,6 @@ export default function Dashboard() {
               </Link>
             </div>
 
-            {/* Blueprint Snapshot */}
             <div className="lg:col-span-2 glass-card flex flex-col justify-between">
               <div>
                 <h2 className="text-lg font-bold text-muted flex items-center gap-2 mb-4">
@@ -116,7 +128,7 @@ export default function Dashboard() {
                   <>
                     <h3 className="text-2xl font-bold mb-2">{blueprint.title}</h3>
                     <p className="text-muted mb-6">{blueprint.summary}</p>
-                    
+
                     <div className="space-y-3">
                       <p className="text-sm font-bold uppercase tracking-wider text-green">Next Steps</p>
                       {blueprint.action_steps?.slice(0, 3).map((step, i) => (
@@ -136,16 +148,25 @@ export default function Dashboard() {
                   <div className="text-center py-8">
                     <Zap size={32} className="text-gold mx-auto mb-4" />
                     <p className="text-muted">No active blueprint found.</p>
-                    <button onClick={() => navigate('/onboarding')} className="btn-primary mt-4">Generate One Now</button>
+                    <button
+                      type="button"
+                      onClick={handleGenerateBlueprint}
+                      disabled={generating}
+                      className="btn-primary mt-4 inline-flex items-center gap-2"
+                    >
+                      {generating ? <Loader2 size={18} className="animate-spin" /> : <Zap size={18} />}
+                      {generating ? 'Generating...' : 'Generate AI Blueprint'}
+                    </button>
                   </div>
                 )}
               </div>
-              <Link to="/dashboard/blueprint" className="btn-primary mt-6 text-sm flex justify-center items-center gap-2">
-                Open Full Blueprint <ArrowRight size={16} />
-              </Link>
+              {blueprint && (
+                <Link to="/dashboard/blueprint" className="btn-primary mt-6 text-sm flex justify-center items-center gap-2">
+                  Open Full Blueprint <ArrowRight size={16} />
+                </Link>
+              )}
             </div>
 
-            {/* Quick Actions / Recommendations (Static for overview) */}
             <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="glass-card">
                 <h3 className="font-bold flex items-center gap-2 mb-4"><Briefcase size={18} /> Recommended Jobs</h3>
@@ -155,7 +176,7 @@ export default function Dashboard() {
               <div className="glass-card">
                 <h3 className="font-bold flex items-center gap-2 mb-4"><Zap size={18} /> Radar AI Assistant</h3>
                 <p className="text-sm text-muted">Stuck? Ask the AI coach for interview tips or resume reviews.</p>
-                <button onClick={() => window.dispatchEvent(new CustomEvent('open-radar-ai'))} className="text-purple-accent text-sm font-bold mt-4 inline-block hover:underline">Open Chat ↗</button>
+                <button type="button" onClick={() => window.dispatchEvent(new CustomEvent('open-radar-ai'))} className="text-purple-accent text-sm font-bold mt-4 inline-block hover:underline">Open Chat ↗</button>
               </div>
             </div>
 

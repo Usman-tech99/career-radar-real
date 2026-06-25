@@ -111,7 +111,7 @@ export default function UserProfile() {
           <NavLink to="/dashboard/profile" icon={User} label="Profile Settings" active={true} />
         </div>
         <div className="p-4 border-t border-border">
-          <button onClick={signOut} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-400 hover:bg-red-500/10 transition-colors font-medium">
+          <button type="button" onClick={signOut} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-400 hover:bg-red-500/10 transition-colors font-medium">
             <LogOut size={20} /> Sign Out
           </button>
         </div>

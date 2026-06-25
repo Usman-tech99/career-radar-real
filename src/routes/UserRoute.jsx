@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 export function UserRoute() {
-  const { user, role, loading: authLoading, onboardingComplete, setOnboardingComplete } = useAuth()
+  const { user, role, loading: authLoading, roleChecked, onboardingComplete, setOnboardingComplete } = useAuth()
   const [checkingDatabase, setCheckingDatabase] = useState(true)
   const [hasProfile, setHasProfile] = useState(false)
 
@@ -45,16 +45,16 @@ export function UserRoute() {
       }
     }
 
-    if (!authLoading) {
+    if (!authLoading && roleChecked) {
       verifyOnboardingFromDB()
     }
 
     return () => {
       isMounted = false
     }
-  }, [user, authLoading, onboardingComplete, setOnboardingComplete])
+  }, [user, authLoading, roleChecked, onboardingComplete, setOnboardingComplete])
 
-  if (authLoading || checkingDatabase) {
+  if (authLoading || !roleChecked || checkingDatabase) {
     return (
       <div className="min-h-screen bg-[#07070C] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-[#10B981] border-t-transparent rounded-full animate-spin" />

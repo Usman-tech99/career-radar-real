@@ -3,13 +3,15 @@ import { Link, useLocation } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
-import { LayoutDashboard, Target, Activity, User, LogOut, CheckCircle, ExternalLink, Zap } from 'lucide-react'
+import { LayoutDashboard, Target, Activity, User, LogOut, CheckCircle, ExternalLink, Zap, Loader2 } from 'lucide-react'
 
 export default function Blueprint() {
   const { user, signOut } = useAuth()
   const location = useLocation()
   const [blueprint, setBlueprint] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [generating, setGenerating] = useState(false)
+  const [updatingStep, setUpdatingStep] = useState(null)
 
   useEffect(() => {
     if (user) fetchBlueprint()
@@ -22,7 +24,7 @@ export default function Blueprint() {
         .select('*')
         .eq('user_id', user.id)
         .eq('is_active', true)
-        .maybeSingle() // Adjusted to safely receive null without failing completely
+        .maybeSingle()
 
       if (data) setBlueprint(data)
     } catch (err) {
@@ -33,8 +35,37 @@ export default function Blueprint() {
     }
   }
 
+  async function handleGenerateBlueprint() {
+    setGenerating(true)
+    const loadToast = toast.loading('Triggering AI Blueprint Engine...')
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-career-blueprint', { body: {} })
+      if (error) throw error
+      toast.success('Blueprint generated successfully!', { id: loadToast })
+      await fetchBlueprint()
+    } catch (err) {
+      toast.error(err.message || 'Failed to generate blueprint', { id: loadToast })
+      console.error(err)
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  async function handleRecalculateScore() {
+    const loadToast = toast.loading('Re-calculating career score...')
+    try {
+      const { data, error } = await supabase.functions.invoke('recalculate-score', { body: {} })
+      if (error) throw error
+      toast.success('Score updated successfully!', { id: loadToast })
+    } catch (err) {
+      toast.error(err.message || 'Score calculation failed', { id: loadToast })
+      console.error(err)
+    }
+  }
+
   async function toggleStep(index, currentStatus) {
     if (!blueprint) return
+    setUpdatingStep(index)
     const newSteps = [...blueprint.action_steps]
     newSteps[index].completed = !currentStatus
 
@@ -46,23 +77,15 @@ export default function Blueprint() {
 
       if (error) throw error
       setBlueprint({ ...blueprint, action_steps: newSteps })
-      
-      const { data: { session } } = await supabase.auth.getSession()
-      fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/recalculate-score`, {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${session?.access_token}`,
-          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-          'Content-Type': 'application/json'
-        }
-      }).catch(e => console.warn(e))
 
+      await supabase.functions.invoke('recalculate-score', { body: {} }).catch(() => {})
     } catch (err) {
       toast.error('Failed to update step')
+    } finally {
+      setUpdatingStep(null)
     }
   }
 
-  // Sidebar link component with dynamic active state
   const NavLink = ({ to, icon: Icon, label }) => {
     const isActive = location.pathname === to
     return (
@@ -85,7 +108,7 @@ export default function Blueprint() {
           <NavLink to="/dashboard/profile" icon={User} label="Profile Settings" />
         </div>
         <div className="p-4 border-t border-border">
-          <button onClick={signOut} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-400 hover:bg-red-500/10 transition-colors font-medium">
+          <button type="button" onClick={signOut} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-400 hover:bg-red-500/10 transition-colors font-medium">
             <LogOut size={20} /> Sign Out
           </button>
         </div>
@@ -97,40 +120,37 @@ export default function Blueprint() {
         ) : !blueprint ? (
           <div className="glass-card text-center py-20 flex flex-col items-center">
             <Zap size={48} className="text-muted mb-4" />
-            <h2 className="text-2xl font-bold mb-2">AI Blueprint Compiling</h2>
-            <p className="text-muted mb-6">Your profile is safely registered. We are building your personalized dashboard recommendations right now.</p>
-            <button 
-              onClick={async () => {
-                const loadToast = toast.loading("Re-triggering score optimization pipeline...");
-                try {
-                  const { data: { session } } = await supabase.auth.getSession();
-                  await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/recalculate-score`, {
-                    method: 'POST',
-                    headers: { 
-                      'Authorization': `Bearer ${session?.access_token}`,
-                      'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-                      'Content-Type': 'application/json'
-                    }
-                  });
-                  toast.success("Optimization request synchronized successfully!", { id: loadToast });
-                } catch (e) {
-                  toast.error("Engine processing queue full. Retrying shortly.", { id: loadToast });
-                }
-              }} 
-              className="btn-primary"
+            <h2 className="text-2xl font-bold mb-2">AI Blueprint Not Ready</h2>
+            <p className="text-muted mb-6">Generate your personalized career blueprint to get started.</p>
+            <button
+              type="button"
+              onClick={handleGenerateBlueprint}
+              disabled={generating}
+              className="btn-primary inline-flex items-center gap-2"
             >
-              Refresh Generation Engine
+              {generating ? <Loader2 size={18} className="animate-spin" /> : <Zap size={18} />}
+              {generating ? 'Generating...' : 'Generate AI Blueprint'}
             </button>
           </div>
         ) : (
           <div className="space-y-8 max-w-5xl">
-            <div>
-              <h1 className="text-4xl font-bold font-sora text-green mb-3 tracking-tight">{blueprint.title}</h1>
-              <p className="text-lg text-muted">{blueprint.summary}</p>
+            <div className="flex items-start justify-between">
+              <div>
+                <h1 className="text-4xl font-bold font-sora text-green mb-3 tracking-tight">{blueprint.title}</h1>
+                <p className="text-lg text-muted">{blueprint.summary}</p>
+              </div>
+              <button
+                type="button"
+                onClick={handleGenerateBlueprint}
+                disabled={generating}
+                className="btn-ghost border border-border flex items-center gap-2 text-sm shrink-0"
+              >
+                {generating ? <Loader2 size={16} className="animate-spin" /> : <Zap size={16} />}
+                {generating ? 'Regenerating...' : 'Regenerate'}
+              </button>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Action Plan */}
               <div className="lg:col-span-2 space-y-8">
                 <div className="glass-card">
                   <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
@@ -138,8 +158,8 @@ export default function Blueprint() {
                   </h2>
                   <div className="space-y-4">
                     {blueprint.action_steps?.map((step, i) => (
-                      <div 
-                        key={i} 
+                      <div
+                        key={i}
                         onClick={() => toggleStep(i, step.completed)}
                         className={`flex items-start gap-4 p-4 rounded-xl border transition-all cursor-pointer hover:bg-white/[0.04] ${
                           step.completed ? 'bg-white/[0.02] border-border' : 'bg-white/[0.05] border-white/10'
@@ -148,7 +168,11 @@ export default function Blueprint() {
                         <div className={`mt-1 shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${
                           step.completed ? 'bg-green border-green' : 'border-muted'
                         }`}>
-                          {step.completed && <CheckCircle size={16} className="text-surface" />}
+                          {updatingStep === i ? (
+                            <Loader2 size={14} className="animate-spin text-white" />
+                          ) : step.completed ? (
+                            <CheckCircle size={16} className="text-surface" />
+                          ) : null}
                         </div>
                         <div className="flex-1">
                           <h3 className={`font-bold text-lg ${step.completed ? 'text-muted line-through' : 'text-white'}`}>
@@ -176,7 +200,6 @@ export default function Blueprint() {
                 </div>
               </div>
 
-              {/* Recommendations */}
               <div className="lg:col-span-1 space-y-6">
                 <div className="glass-card">
                   <h2 className="font-bold text-lg mb-4 text-purple-accent">Recommended Skills</h2>
@@ -208,6 +231,14 @@ export default function Blueprint() {
                   <p className="text-sm text-muted mb-4">Based on your blueprint, check the live jobs board.</p>
                   <Link to="/jobs" className="btn-primary w-full text-center py-2">View Matches</Link>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={handleRecalculateScore}
+                  className="btn-ghost border border-border w-full text-sm"
+                >
+                  Recalculate Score
+                </button>
               </div>
             </div>
           </div>

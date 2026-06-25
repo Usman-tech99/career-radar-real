@@ -7,9 +7,10 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [role, setRole] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [roleChecked, setRoleChecked] = useState(false)
   const [onboardingComplete, setOnboardingComplete] = useState(false)
 
-  async function fetchRoleWithRetry(userId, retries = 2) {
+  async function fetchRoleWithRetry(userId, retries = 3) {
     for (let attempt = 0; attempt < retries; attempt++) {
       try {
         const { data, error } = await supabase
@@ -17,14 +18,20 @@ export function AuthProvider({ children }) {
           .select('role')
           .eq('user_id', userId)
           .maybeSingle()
-        if (error) throw error
+        if (error) {
+          console.error(`Auth: fetchRole attempt ${attempt + 1} failed:`, error.message, error.code)
+          throw error
+        }
         if (data?.role) return data.role
         if (attempt < retries - 1) {
-          await new Promise(r => setTimeout(r, 500))
+          await new Promise(r => setTimeout(r, 600))
         }
-      } catch {
-        if (attempt >= retries - 1) return null
-        await new Promise(r => setTimeout(r, 500))
+      } catch (err) {
+        if (attempt >= retries - 1) {
+          console.error('Auth: all role fetch attempts exhausted for user', userId)
+          return null
+        }
+        await new Promise(r => setTimeout(r, 600))
       }
     }
     return null
@@ -51,13 +58,16 @@ export function AuthProvider({ children }) {
       setUser(null)
       setRole(null)
       setOnboardingComplete(false)
+      setRoleChecked(true)
       return
     }
     setUser(sessionUser)
+    setRoleChecked(false)
     const userRole = await fetchRoleWithRetry(sessionUser.id)
     const onboardStatus = await fetchOnboardingStatus(sessionUser.id, userRole)
     setRole(userRole)
     setOnboardingComplete(onboardStatus)
+    setRoleChecked(true)
   }
 
   useEffect(() => {
@@ -68,9 +78,12 @@ export function AuthProvider({ children }) {
         const { data: { session } } = await supabase.auth.getSession()
         if (session?.user && mounted) {
           await refreshState(session.user)
+        } else if (mounted) {
+          setRoleChecked(true)
         }
       } catch (err) {
         console.error('Auth init error:', err)
+        if (mounted) setRoleChecked(true)
       } finally {
         if (mounted) setLoading(false)
       }
@@ -88,6 +101,7 @@ export function AuthProvider({ children }) {
           setUser(null)
           setRole(null)
           setOnboardingComplete(false)
+          setRoleChecked(true)
         }
         if (mounted) setLoading(false)
       }
@@ -114,6 +128,7 @@ export function AuthProvider({ children }) {
       setUser(null)
       setRole(null)
       setOnboardingComplete(false)
+      setRoleChecked(true)
       window.localStorage.clear()
       window.location.href = '/login'
     }
@@ -131,6 +146,7 @@ export function AuthProvider({ children }) {
     user,
     role,
     loading,
+    roleChecked,
     onboardingComplete,
     setOnboardingComplete,
     refreshOnboardingStatus,
