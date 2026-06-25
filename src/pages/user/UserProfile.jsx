@@ -15,7 +15,9 @@ export default function UserProfile() {
   const [profile, setProfile] = useState({
     full_name: '',
     country: '',
-    avatar_url: ''
+    avatar_url: '',
+    bio: '',
+    linkedin_url: ''
   })
   const [email, setEmail] = useState('')
 
@@ -25,19 +27,20 @@ export default function UserProfile() {
 
   async function fetchProfile() {
     try {
-      const { data, error } = await supabase
-        .from('public_users')
-        .select('*')
-        .eq('id', user.id)
-        .maybeSingle()
+      const [pubResult, profResult] = await Promise.all([
+        supabase.from('public_users').select('*').eq('id', user.id).maybeSingle(),
+        supabase.from('profiles').select('bio, linkedin_url').eq('id', user.id).maybeSingle()
+      ])
 
-      if (data) {
+      if (pubResult.data) {
         setProfile({
-          full_name: data.full_name || '',
-          country: data.country || '',
-          avatar_url: data.avatar_url || ''
+          full_name: pubResult.data.full_name || '',
+          country: pubResult.data.country || '',
+          avatar_url: pubResult.data.avatar_url || '',
+          bio: profResult.data?.bio || '',
+          linkedin_url: profResult.data?.linkedin_url || ''
         })
-        setEmail(data.email)
+        setEmail(pubResult.data.email)
       }
     } catch (err) {
       toast.error('Failed to load profile')
@@ -55,7 +58,7 @@ export default function UserProfile() {
     const fileExt = file.name.split('.').pop()
     const fileName = `${user.id}-${Math.random()}.${fileExt}`
     const filePath = `${user.id}/${fileName}`
-    const bucket = 'user-avatars'
+    const bucket = 'avatars'
 
     try {
       const { error: uploadError } = await supabase.storage.from(bucket).upload(filePath, file, { upsert: true })
@@ -74,13 +77,21 @@ export default function UserProfile() {
   async function handleSave() {
     setSaving(true)
     try {
-      const { error } = await supabase.from('public_users').update({
+      const { error: pubError } = await supabase.from('public_users').update({
         full_name: profile.full_name,
         country: profile.country,
         avatar_url: profile.avatar_url
       }).eq('id', user.id)
-      
-      if (error) throw error
+      if (pubError) throw pubError
+
+      const { error: profError } = await supabase.from('profiles').upsert({
+        id: user.id,
+        bio: profile.bio || null,
+        linkedin_url: profile.linkedin_url || null,
+        avatar_url: profile.avatar_url
+      }, { onConflict: 'id' })
+      if (profError) throw profError
+
       toast.success('Profile updated successfully')
     } catch (err) {
       toast.error(err.message)
@@ -175,6 +186,25 @@ export default function UserProfile() {
                     value={profile.country} 
                     onChange={e => setProfile({...profile, country: e.target.value})} 
                     className="input-field"
+                  />
+                </div>
+                <div>
+                  <label className="label">LinkedIn URL</label>
+                  <input 
+                    value={profile.linkedin_url} 
+                    onChange={e => setProfile({...profile, linkedin_url: e.target.value})} 
+                    className="input-field"
+                    placeholder="https://linkedin.com/in/your-profile"
+                  />
+                </div>
+                <div>
+                  <label className="label">Bio</label>
+                  <textarea 
+                    value={profile.bio} 
+                    onChange={e => setProfile({...profile, bio: e.target.value})} 
+                    className="input-field min-h-[80px] resize-y"
+                    placeholder="Tell us about yourself..."
+                    rows={3}
                   />
                 </div>
               </div>
