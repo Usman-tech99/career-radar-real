@@ -9,8 +9,7 @@ export default function ManageTeam() {
   const { user } = useAuth()
   const [team, setTeam] = useState([])
   const [loading, setLoading] = useState(true)
-  
-  // Create user state
+
   const [isCreating, setIsCreating] = useState(false)
   const [newEmail, setNewEmail] = useState('')
   const [newPassword, setNewPassword] = useState('')
@@ -22,16 +21,49 @@ export default function ManageTeam() {
   }, [])
 
   async function fetchTeam() {
-    // We join profiles with user_roles
-    const { data, error } = await supabase
-      .from('user_roles')
-      .select('*, profiles(full_name, role_title)')
-      .order('created_at', { ascending: false })
+    setLoading(true)
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('*')
 
-    if (error) toast.error('Failed to fetch team')
-    else setTeam(data || [])
-    
-    setLoading(false)
+      if (error) {
+        console.error("Team Fetch Error:", error.message, error.code, error.details)
+        setTeam([])
+        setLoading(false)
+        return
+      }
+
+      const rows = data || []
+
+      const userIds = rows.map(r => r.user_id).filter(Boolean)
+
+      let profileMap = {}
+      if (userIds.length > 0) {
+        const { data: profiles, error: profileError } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', userIds)
+
+        if (profileError) {
+          console.error("Team Fetch: profiles query error:", profileError.message, profileError.code)
+        } else if (profiles) {
+          profileMap = Object.fromEntries(profiles.map(p => [p.id, p]))
+        }
+      }
+
+      const enriched = rows.map(member => ({
+        ...member,
+        profiles: profileMap[member.user_id] || null
+      }))
+
+      setTeam(enriched)
+    } catch (err) {
+      console.error("Team Fetch Error:", err)
+      setTeam([])
+    } finally {
+      setLoading(false)
+    }
   }
 
   async function handleCreateUser(e) {
@@ -39,9 +71,8 @@ export default function ManageTeam() {
     setIsCreating(true)
 
     try {
-      // Call edge function to create user bypassing normal signup
       const { data: { session } } = await supabase.auth.getSession()
-      
+
       const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-admin-user`, {
         method: 'POST',
         headers: {
@@ -76,12 +107,12 @@ export default function ManageTeam() {
       toast.error('You cannot delete yourself')
       return
     }
-    
+
     if (!window.confirm('Are you absolutely sure you want to permanently delete this user and all their data?')) return
-    
+
     try {
       const { data: { session } } = await supabase.auth.getSession()
-      
+
       const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-admin-user`, {
         method: 'POST',
         headers: {
@@ -115,7 +146,6 @@ export default function ManageTeam() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Create User Form */}
           <div className="lg:col-span-1">
             <div className="glass-card">
               <h2 className="text-xl font-bold mb-6">Create New Member</h2>
@@ -147,12 +177,13 @@ export default function ManageTeam() {
             </div>
           </div>
 
-          {/* Team List */}
           <div className="lg:col-span-2">
             <div className="glass-card">
               <h2 className="text-xl font-bold mb-6">Current Team Members</h2>
               {loading ? (
                 <div className="skeleton w-full h-32 rounded-xl"></div>
+              ) : team.length === 0 ? (
+                <p className="text-muted text-sm py-8 text-center">No team members found. Create the first one.</p>
               ) : (
                 <div className="space-y-4">
                   {team.map(member => (
@@ -170,10 +201,10 @@ export default function ManageTeam() {
                         </div>
                         <p className="text-sm text-muted mt-1">ID: {member.user_id}</p>
                       </div>
-                      
+
                       {member.user_id !== user.id && (
-                        <button 
-                          onClick={() => handleDeleteUser(member.user_id)} 
+                        <button
+                          onClick={() => handleDeleteUser(member.user_id)}
                           className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg flex items-center gap-2"
                         >
                           <Trash2 size={18} /> <span className="text-sm">Delete</span>
