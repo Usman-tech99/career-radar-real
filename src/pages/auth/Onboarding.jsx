@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
@@ -13,6 +13,7 @@ export default function Onboarding() {
   const [step, setStep] = useState(1)
   const [submitting, setSubmitting] = useState(false)
 
+  const interestsRef = useRef(null)
   const [form, setForm] = useState({
     degree: '',
     studyYear: '',
@@ -39,6 +40,7 @@ export default function Onboarding() {
     }
     updateField(field, [...form[field], value])
     updateField(inputField, '')
+    if (field === 'skills') interestsRef.current?.focus()
   }
 
   function removeTag(field, tag) {
@@ -131,11 +133,11 @@ export default function Onboarding() {
     }
   }
 
-  function TagInput({ label, tags, field, inputField, placeholder, icon: Icon }) {
+  function TagInput({ label, required, tags, field, inputField, placeholder, icon: Icon, inputRef }) {
     return (
       <div>
         <label className="label flex items-center gap-2">
-          <Icon size={16} className="text-green" /> {label}
+          <Icon size={16} className="text-green" /> {label}{required && <span className="text-red-400">*</span>}
         </label>
         <div className="flex flex-wrap gap-2 mb-2">
           {tags.map(tag => (
@@ -149,6 +151,7 @@ export default function Onboarding() {
         </div>
         <div className="flex gap-2">
           <input
+            ref={inputRef}
             value={form[inputField]}
             onChange={e => updateField(inputField, e.target.value)}
             onKeyDown={e => handleTagKeyDown(e, field, inputField)}
@@ -242,7 +245,8 @@ export default function Onboarding() {
                 <Wrench size={20} className="text-green" /> Skills & Interests
               </h2>
               <TagInput
-                label="Skills <span class='text-red-400'>*</span>"
+                label="Skills"
+                required
                 tags={form.skills}
                 field="skills"
                 inputField="skillsInput"
@@ -256,6 +260,7 @@ export default function Onboarding() {
                 inputField="interestsInput"
                 placeholder="e.g. Web Development, AI, Design"
                 icon={Target}
+                inputRef={interestsRef}
               />
             </div>
           )}
