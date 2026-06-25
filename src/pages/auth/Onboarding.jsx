@@ -148,9 +148,14 @@ export default function Dashboard() {
                           const { data: { session } } = await supabase.auth.getSession();
                           if (!session?.access_token) throw new Error("No active session");
                           
+                          // ✅ Attached mandatory 'apikey' header below to verify your project with Supabase
                           await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/recalculate-score`, {
                             method: 'POST',
-                            headers: { 'Authorization': `Bearer ${session.access_token}` }
+                            headers: { 
+                              'Authorization': `Bearer ${session.access_token}`,
+                              'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+                              'Content-Type': 'application/json'
+                            }
                           });
                           toast.success("Generation requested! Refresh in a moment.", { id: loadToast });
                         } catch (e) {
