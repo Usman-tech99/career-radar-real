@@ -59,9 +59,14 @@ Deno.serve(async (req: Request) => {
     for (const m of trimmed as any[]) {
       const currentRole = m.role === "assistant" ? "model" : "user";
       if (currentRole !== lastRole) {
+        // Prepend system context to the first user message
+        let text = m.content || "";
+        if (currentRole === "user" && formattedContents.length === 0 && system) {
+          text = `${system}\n\nUser message: ${text}`;
+        }
         formattedContents.push({
           role: currentRole,
-          parts: [{ text: m.content || "" }]
+          parts: [{ text }]
         });
         lastRole = currentRole;
       }
@@ -78,7 +83,6 @@ Deno.serve(async (req: Request) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          system_instruction: { parts: [{ text: system }] },
           contents: formattedContents,
           generationConfig: { maxOutputTokens: 1024, temperature: 0.7 }
         })
