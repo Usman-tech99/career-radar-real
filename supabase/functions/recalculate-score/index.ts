@@ -110,7 +110,7 @@ Deno.serve(async (req) => {
       missing_items,
       score_history,
       last_calculated: new Date().toISOString()
-    }).select().single();
+    }, { onConflict: 'user_id' }).select().single();
 
     if (upsertError) throw upsertError;
 
