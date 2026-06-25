@@ -110,7 +110,6 @@ export default function App() {
             <Route path="/admin/manage-content" element={<ManageContent />} />
             <Route path="/admin/manage-products" element={<ManageProducts />} />
             <Route path="/admin/manage-education" element={<ManageEducation />} />
-            <Route path="/admin/manage-structure" element={<ManageStructure />} />
             <Route path="/admin/manage-about" element={<ManageAbout />} />
             <Route path="/admin/manage-socials" element={<ManageSocials />} />
             <Route path="/admin/manage-collaborators" element={<ManageCollaborators />} />
@@ -118,6 +117,7 @@ export default function App() {
 
           {/* FOUNDER ONLY */}
           <Route element={<SuperAdminRoute />}>
+            <Route path="/admin/manage-structure" element={<ManageStructure />} />
             <Route path="/admin/manage-team" element={<ManageTeam />} />
             <Route path="/admin/manage-payments" element={<ManagePayments />} />
             <Route path="/admin/ai-insights" element={<AIInsights />} />

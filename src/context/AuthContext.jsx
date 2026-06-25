@@ -137,7 +137,7 @@ export function AuthProvider({ children }) {
       setOnboardingComplete(false)
       setRoleChecked(true)
       window.localStorage.clear()
-      window.location.href = '/login'
+      window.location.href = '/'
     }
   }
 
