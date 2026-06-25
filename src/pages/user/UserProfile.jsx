@@ -72,7 +72,6 @@ export default function UserProfile() {
       const publicUrl = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${bucket}/${filePath}`
       setProfile(prev => ({ ...prev, avatar_url: publicUrl }))
     } catch (err) {
-      setProfile(prev => ({ ...prev, avatar_url: '' }))
       toast.error(`Upload failed: ${err.message}`)
     } finally {
       setUploading(false)
@@ -97,6 +96,8 @@ export default function UserProfile() {
         avatar_url: profile.avatar_url
       }, { onConflict: 'id' })
       if (profError) throw profError
+
+      await supabase.functions.invoke('recalculate-score', { body: {} })
 
       toast.success('Profile updated successfully')
     } catch (err) {
