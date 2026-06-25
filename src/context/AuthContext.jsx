@@ -9,25 +9,28 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
   const [onboardingComplete, setOnboardingComplete] = useState(false)
 
-  // Fetch role from user_roles table
-  async function fetchRole(userId) {
-    try {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .maybeSingle()
-
-      if (error) throw error
-      return data?.role || null
-    } catch {
-      return null
+  async function fetchRoleWithRetry(userId, retries = 2) {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      try {
+        const { data, error } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', userId)
+          .maybeSingle()
+        if (error) throw error
+        if (data?.role) return data.role
+        if (attempt < retries - 1) {
+          await new Promise(r => setTimeout(r, 500))
+        }
+      } catch {
+        if (attempt >= retries - 1) return null
+        await new Promise(r => setTimeout(r, 500))
+      }
     }
+    return null
   }
 
-  // Fetch onboarding status (skip for admin roles)
   async function fetchOnboardingStatus(userId, userRole) {
-    // Admins don't need onboarding
     if (userRole === 'super_admin' || userRole === 'admin' || userRole === 'collaborator') {
       return true
     }
@@ -43,7 +46,20 @@ export function AuthProvider({ children }) {
     }
   }
 
-  // Initialize session
+  async function refreshState(sessionUser) {
+    if (!sessionUser) {
+      setUser(null)
+      setRole(null)
+      setOnboardingComplete(false)
+      return
+    }
+    setUser(sessionUser)
+    const userRole = await fetchRoleWithRetry(sessionUser.id)
+    const onboardStatus = await fetchOnboardingStatus(sessionUser.id, userRole)
+    setRole(userRole)
+    setOnboardingComplete(onboardStatus)
+  }
+
   useEffect(() => {
     let mounted = true
 
@@ -51,13 +67,7 @@ export function AuthProvider({ children }) {
       try {
         const { data: { session } } = await supabase.auth.getSession()
         if (session?.user && mounted) {
-          setUser(session.user)
-          const userRole = await fetchRole(session.user.id)
-          const onboardStatus = await fetchOnboardingStatus(session.user.id, userRole)
-          if (mounted) {
-            setRole(userRole)
-            setOnboardingComplete(onboardStatus)
-          }
+          await refreshState(session.user)
         }
       } catch (err) {
         console.error('Auth init error:', err)
@@ -68,18 +78,12 @@ export function AuthProvider({ children }) {
 
     init()
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (!mounted) return
+        setLoading(true)
         if (session?.user) {
-          setUser(session.user)
-          const userRole = await fetchRole(session.user.id)
-          const onboardStatus = await fetchOnboardingStatus(session.user.id, userRole)
-          if (mounted) {
-            setRole(userRole)
-            setOnboardingComplete(onboardStatus)
-          }
+          await refreshState(session.user)
         } else {
           setUser(null)
           setRole(null)
@@ -95,41 +99,32 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
-  // Called by Onboarding page after completing setup
   async function refreshOnboardingStatus() {
     if (!user) return
     const status = await fetchOnboardingStatus(user.id, role)
     setOnboardingComplete(status)
   }
 
-  // Fully clean sign out with hard fallback to login
   async function signOut() {
     try {
-      // 1. Terminate session globally and locally on Supabase
       await supabase.auth.signOut({ scope: 'local' })
     } catch (err) {
       console.error('Supabase sign out error:', err)
     } finally {
-      // 2. Wipe memory states immediately
       setUser(null)
       setRole(null)
       setOnboardingComplete(false)
-      
-      // 3. Purge browser's lingering memory caches
       window.localStorage.clear()
-      
-      // 4. Force a clean, hard reload away from protected paths to break loops
       window.location.href = '/login'
     }
   }
 
-  // Get redirect path based on role
   function getRedirectPath() {
-    if (!role) return '/dashboard'          // public user (no row in user_roles)
     if (role === 'super_admin') return '/admin/dashboard'
     if (role === 'admin') return '/admin/dashboard'
     if (role === 'collaborator') return '/admin/my-profile'
-    return '/dashboard'
+    if (role) return '/dashboard'
+    return '/login'
   }
 
   const value = {

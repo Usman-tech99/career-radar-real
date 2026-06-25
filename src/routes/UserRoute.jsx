@@ -12,7 +12,6 @@ export function UserRoute() {
     let isMounted = true
 
     async function verifyOnboardingFromDB() {
-      // If auth states are already active, use them directly
       if (onboardingComplete) {
         setHasProfile(true)
         setCheckingDatabase(false)
@@ -25,7 +24,6 @@ export function UserRoute() {
       }
 
       try {
-        // Double-check the live user status records in the database
         const { data, error } = await supabase
           .from('public_users')
           .select('onboarding_complete')
@@ -34,7 +32,6 @@ export function UserRoute() {
 
         if (data?.onboarding_complete && isMounted) {
           setHasProfile(true)
-          // Sync the global context so other pages know onboarding is complete
           if (setOnboardingComplete) {
             setOnboardingComplete(true)
           }
@@ -57,7 +54,6 @@ export function UserRoute() {
     }
   }, [user, authLoading, onboardingComplete, setOnboardingComplete])
 
-  // Show loading spinner while Auth context OR DB verification is running
   if (authLoading || checkingDatabase) {
     return (
       <div className="min-h-screen bg-[#07070C] flex items-center justify-center">
@@ -66,20 +62,16 @@ export function UserRoute() {
     )
   }
 
-  // Not logged in -> redirect to login page
   if (!user) return <Navigate to="/login" replace />
 
-  // Admin users shouldn't access /dashboard
   if (role === 'super_admin' || role === 'admin') {
     return <Navigate to="/admin/dashboard" replace />
   }
 
-  // Collaborators shouldn't access /dashboard
   if (role === 'collaborator') {
     return <Navigate to="/admin/my-profile" replace />
   }
 
-  // ✅ FIX: Only redirect to onboarding if memory AND live database checks both confirm it's incomplete
   if (!onboardingComplete && !hasProfile) {
     return <Navigate to="/onboarding" replace />
   }

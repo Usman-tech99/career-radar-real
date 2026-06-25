@@ -1,7 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
-// For super_admin + admin
 export function ProtectedRoute({ allowedRoles }) {
   const { user, role, loading } = useAuth()
 
@@ -16,7 +15,7 @@ export function ProtectedRoute({ allowedRoles }) {
   if (!user) return <Navigate to="/login" replace />
 
   if (allowedRoles && !allowedRoles.includes(role)) {
-    return <Navigate to="/dashboard" replace />
+    return <Navigate to="/" replace />
   }
 
   return <Outlet />

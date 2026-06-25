@@ -1,195 +1,312 @@
-import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
-import { LayoutDashboard, Target, Activity, User, LogOut, ArrowRight, Zap, Briefcase } from 'lucide-react'
+import { ArrowRight, GraduationCap, Wrench, Target, X } from 'lucide-react'
 
-export default function Dashboard() {
-  const { user, signOut } = useAuth()
+const EXPERIENCE_LEVELS = ['Student', 'Fresh Graduate', '1-2 Years', '3+ Years']
+
+export default function Onboarding() {
+  const { user, refreshOnboardingStatus } = useAuth()
   const navigate = useNavigate()
-  const [score, setScore] = useState(null)
-  const [blueprint, setBlueprint] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [step, setStep] = useState(1)
+  const [submitting, setSubmitting] = useState(false)
 
-  useEffect(() => {
-    if (user) fetchDashboardData()
-  }, [user])
+  const [form, setForm] = useState({
+    degree: '',
+    studyYear: '',
+    country: '',
+    city: '',
+    skillsInput: '',
+    skills: [],
+    interestsInput: '',
+    interests: [],
+    careerGoal: '',
+    experience: '',
+  })
 
-  async function fetchDashboardData() {
-    try {
-      // Using .maybeSingle() prevents PGRST116 errors if records don't exist yet
-      const scoreRes = await supabase
-        .from('career_scores')
-        .select('total_score, missing_items')
-        .eq('user_id', user.id)
-        .maybeSingle()
+  function updateField(field, value) {
+    setForm(prev => ({ ...prev, [field]: value }))
+  }
 
-      const blueprintRes = await supabase
-        .from('career_blueprints')
-        .select('title, summary, action_steps')
-        .eq('user_id', user.id)
-        .eq('is_active', true)
-        .maybeSingle()
+  function addTag(field, inputField) {
+    const value = form[inputField].trim()
+    if (!value) return
+    if (form[field].includes(value)) {
+      toast.error('Already added')
+      return
+    }
+    updateField(field, [...form[field], value])
+    updateField(inputField, '')
+  }
 
-      if (scoreRes?.data) setScore(scoreRes.data)
-      if (blueprintRes?.data) setBlueprint(blueprintRes.data)
-    } catch (err) {
-      console.error("Dashboard fetching failure:", err)
-    } finally {
-      setLoading(false)
+  function removeTag(field, tag) {
+    updateField(field, form[field].filter(t => t !== tag))
+  }
+
+  function handleTagKeyDown(e, field, inputField) {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      addTag(field, inputField)
     }
   }
 
-  // Sidebar link component
-  const NavLink = ({ to, icon: Icon, label, active }) => (
-    <Link to={to} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
-      active ? 'bg-green/10 text-green border border-green/20' : 'text-muted hover:bg-white/[0.04] hover:text-white'
-    }`}>
-      <Icon size={20} className={active ? 'text-green' : 'text-muted'} />
-      {label}
-    </Link>
-  )
+  function isStepValid() {
+    if (step === 1) return form.degree.trim() && form.country.trim()
+    if (step === 2) return form.skills.length > 0
+    if (step === 3) return form.careerGoal.trim() && form.experience
+    return true
+  }
 
-  return (
-    <div className="flex min-h-screen bg-surface">
-      {/* User Sidebar */}
-      <div className="w-64 h-screen bg-surface border-r border-border flex flex-col fixed left-0 top-0 pt-20">
-        <div className="flex-1 px-4 py-6 space-y-2">
-          <NavLink to="/dashboard" icon={LayoutDashboard} label="Overview" active={true} />
-          <NavLink to="/dashboard/blueprint" icon={Target} label="AI Blueprint" />
-          <NavLink to="/dashboard/score" icon={Activity} label="Career Score" />
-          <NavLink to="/dashboard/profile" icon={User} label="Profile Settings" />
+  function nextStep() {
+    if (!isStepValid()) {
+      toast.error('Please fill in all required fields')
+      return
+    }
+    setStep(s => Math.min(s + 1, 3))
+  }
+
+  function prevStep() {
+    setStep(s => Math.max(s - 1, 1))
+  }
+
+  async function handleSubmit() {
+    if (!isStepValid()) {
+      toast.error('Please fill in all required fields')
+      return
+    }
+    if (!user) {
+      toast.error('You must be logged in')
+      return
+    }
+
+    setSubmitting(true)
+    try {
+      const fullName = user.user_metadata?.full_name || ''
+      const email = user.email || ''
+
+      await supabase.from('public_users').upsert({
+        id: user.id,
+        full_name: fullName,
+        email: email,
+        country: form.country,
+        onboarding_complete: true,
+      }, { onConflict: 'id' })
+
+      const { error: dataError } = await supabase.from('onboarding_data').upsert({
+        user_id: user.id,
+        degree: form.degree,
+        study_year: form.studyYear,
+        skills: form.skills,
+        country: form.country,
+        city: form.city,
+        career_goal: form.careerGoal,
+        experience: form.experience,
+        interests: form.interests,
+      }, { onConflict: 'user_id' })
+
+      if (dataError) throw dataError
+
+      await refreshOnboardingStatus()
+      toast.success('Welcome aboard! Your profile is set up.')
+      navigate('/dashboard', { replace: true })
+    } catch (err) {
+      toast.error(err.message || 'Failed to save profile')
+      console.error(err)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  function TagInput({ label, tags, field, inputField, placeholder, icon: Icon }) {
+    return (
+      <div>
+        <label className="label flex items-center gap-2">
+          <Icon size={16} className="text-green" /> {label}
+        </label>
+        <div className="flex flex-wrap gap-2 mb-2">
+          {tags.map(tag => (
+            <span key={tag} className="flex items-center gap-1 text-sm bg-green/10 text-green px-2 py-1 rounded border border-green/20">
+              {tag}
+              <button type="button" onClick={() => removeTag(field, tag)} className="hover:text-red-400 transition-colors">
+                <X size={14} />
+              </button>
+            </span>
+          ))}
         </div>
-        <div className="p-4 border-t border-border">
-          <button onClick={signOut} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-400 hover:bg-red-500/10 transition-colors font-medium">
-            <LogOut size={20} /> Sign Out
+        <div className="flex gap-2">
+          <input
+            value={form[inputField]}
+            onChange={e => updateField(inputField, e.target.value)}
+            onKeyDown={e => handleTagKeyDown(e, field, inputField)}
+            className="input-field flex-1"
+            placeholder={placeholder}
+          />
+          <button type="button" onClick={() => addTag(field, inputField)} className="btn-primary px-3 text-sm">
+            Add
           </button>
         </div>
       </div>
+    )
+  }
 
-      {/* Main Content */}
-      <div className="flex-1 ml-64 p-8">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">Welcome Back!</h1>
-            <p className="text-muted mt-1">Here's your career snapshot for today.</p>
-          </div>
+  return (
+    <div className="min-h-screen bg-[#07070C] flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-accent/20 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-green/20 blur-[120px] rounded-full pointer-events-none" />
+
+      <div className="w-full max-w-2xl relative z-10">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold font-sora tracking-tight text-white mb-2">
+            Welcome to <span className="text-green">Career Radar</span>
+          </h1>
+          <p className="text-muted">Let's set up your profile to unlock personalized career insights</p>
         </div>
 
-        {loading ? (
-          <div className="skeleton w-full h-64 rounded-2xl"></div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            {/* Score Card */}
-            <div className="lg:col-span-1 glass-card relative overflow-hidden flex flex-col justify-between">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-green/20 blur-[50px] rounded-full pointer-events-none" />
+        <div className="flex items-center justify-center gap-2 mb-8">
+          {[1, 2, 3].map(s => (
+            <div key={s} className="flex items-center gap-2">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
+                s <= step ? 'bg-green text-black' : 'bg-white/10 text-muted'
+              }`}>
+                {s}
+              </div>
+              {s < 3 && <div className={`w-16 h-0.5 transition-all ${s < step ? 'bg-green' : 'bg-white/10'}`} />}
+            </div>
+          ))}
+        </div>
+
+        <div className="glass-card p-8">
+          {step === 1 && (
+            <div className="space-y-5">
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                <GraduationCap size={20} className="text-green" /> Academic Background
+              </h2>
               <div>
-                <h2 className="text-lg font-bold text-muted flex items-center gap-2">
-                  <Activity size={18} /> Current Score
-                </h2>
-                <div className="text-6xl font-black font-mono mt-4 text-green">
-                  {score?.total_score || 0}<span className="text-2xl text-muted">/100</span>
+                <label className="label">Degree / Field of Study <span className="text-red-400">*</span></label>
+                <input
+                  value={form.degree}
+                  onChange={e => updateField('degree', e.target.value)}
+                  className="input-field"
+                  placeholder="e.g. BS Computer Science, MBA, Self-taught"
+                />
+              </div>
+              <div>
+                <label className="label">Study Year / Status</label>
+                <input
+                  value={form.studyYear}
+                  onChange={e => updateField('studyYear', e.target.value)}
+                  className="input-field"
+                  placeholder="e.g. 3rd Year, Graduated 2023, Not applicable"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="label">Country <span className="text-red-400">*</span></label>
+                  <input
+                    value={form.country}
+                    onChange={e => updateField('country', e.target.value)}
+                    className="input-field"
+                    placeholder="e.g. Pakistan"
+                  />
                 </div>
-                
-                {score?.missing_items && score.missing_items.length > 0 && (
-                  <div className="mt-6">
-                    <p className="text-sm font-bold text-amber-400 mb-2">Missing to improve:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {score.missing_items.map((item, i) => (
-                        <span key={i} className="text-xs bg-amber-400/10 text-amber-400 px-2 py-1 rounded border border-amber-400/20">
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                <div>
+                  <label className="label">City</label>
+                  <input
+                    value={form.city}
+                    onChange={e => updateField('city', e.target.value)}
+                    className="input-field"
+                    placeholder="e.g. Lahore"
+                  />
+                </div>
               </div>
-              <Link to="/dashboard/score" className="btn-ghost mt-6 text-sm flex justify-center items-center gap-2 border border-border">
-                View Breakdown <ArrowRight size={16} />
-              </Link>
             </div>
+          )}
 
-            {/* Blueprint Snapshot */}
-            <div className="lg:col-span-2 glass-card flex flex-col justify-between">
+          {step === 2 && (
+            <div className="space-y-6">
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                <Wrench size={20} className="text-green" /> Skills & Interests
+              </h2>
+              <TagInput
+                label="Skills <span class='text-red-400'>*</span>"
+                tags={form.skills}
+                field="skills"
+                inputField="skillsInput"
+                placeholder="Type a skill and press Enter or Add"
+                icon={Wrench}
+              />
+              <TagInput
+                label="Interests"
+                tags={form.interests}
+                field="interests"
+                inputField="interestsInput"
+                placeholder="e.g. Web Development, AI, Design"
+                icon={Target}
+              />
+            </div>
+          )}
+
+          {step === 3 && (
+            <div className="space-y-5">
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                <Target size={20} className="text-green" /> Career Goals
+              </h2>
               <div>
-                <h2 className="text-lg font-bold text-muted flex items-center gap-2 mb-4">
-                  <Target size={18} /> Active Blueprint
-                </h2>
-                {blueprint ? (
-                  <>
-                    <h3 className="text-2xl font-bold mb-2">{blueprint.title}</h3>
-                    <p className="text-muted mb-6">{blueprint.summary}</p>
-                    
-                    <div className="space-y-3">
-                      <p className="text-sm font-bold uppercase tracking-wider text-green">Next Steps</p>
-                      {blueprint.action_steps?.slice(0, 3).map((step, i) => (
-                        <div key={i} className="flex items-start gap-3 p-3 bg-white/[0.02] border border-border rounded-xl">
-                          <div className={`mt-0.5 shrink-0 w-4 h-4 rounded border flex items-center justify-center ${step.completed ? 'bg-green border-green' : 'border-muted'}`}>
-                            {step.completed && <div className="w-2 h-2 bg-surface rounded-sm" />}
-                          </div>
-                          <div>
-                            <p className={`text-sm ${step.completed ? 'line-through text-muted' : 'font-medium'}`}>{step.title}</p>
-                            {step.deadline && <p className="text-xs text-muted mt-1">Due: {step.deadline}</p>}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-center py-8">
-                    <Zap size={32} className="text-gold mx-auto mb-4" />
-                    <p className="text-muted">Your profile is registered! Your blueprint is compiling...</p>
-                    <button 
-                      onClick={async () => {
-                        const loadToast = toast.loading("Requesting AI blueprint generation...");
-                        try {
-                          const { data: { session } } = await supabase.auth.getSession();
-                          if (!session?.access_token) throw new Error("No active session");
-                          
-                          // ✅ Attached mandatory 'apikey' header below to verify your project with Supabase
-                          await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/recalculate-score`, {
-                            method: 'POST',
-                            headers: { 
-                              'Authorization': `Bearer ${session.access_token}`,
-                              'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-                              'Content-Type': 'application/json'
-                            }
-                          });
-                          toast.success("Generation requested! Refresh in a moment.", { id: loadToast });
-                        } catch (e) {
-                          toast.error("Engine busy. Trying again shortly.", { id: loadToast });
-                        }
-                      }} 
-                      className="btn-primary mt-4"
+                <label className="label">Career Goal <span className="text-red-400">*</span></label>
+                <textarea
+                  value={form.careerGoal}
+                  onChange={e => updateField('careerGoal', e.target.value)}
+                  className="input-field min-h-[100px] resize-y"
+                  placeholder="What do you want to achieve in your career? e.g. Become a full-stack developer at a top tech company"
+                />
+              </div>
+              <div>
+                <label className="label">Experience Level <span className="text-red-400">*</span></label>
+                <div className="grid grid-cols-2 gap-3 mt-2">
+                  {EXPERIENCE_LEVELS.map(level => (
+                    <button
+                      key={level}
+                      type="button"
+                      onClick={() => updateField('experience', level)}
+                      className={`p-3 rounded-xl border text-sm font-medium text-left transition-all ${
+                        form.experience === level
+                          ? 'bg-green/10 border-green text-green'
+                          : 'bg-white/[0.02] border-border text-muted hover:border-white/20 hover:text-white'
+                      }`}
                     >
-                      Trigger AI Blueprint Engine
+                      {level}
                     </button>
-                  </div>
-                )}
-              </div>
-              <Link to="/dashboard/blueprint" className="btn-primary mt-6 text-sm flex justify-center items-center gap-2">
-                Open Full Blueprint <ArrowRight size={16} />
-              </Link>
-            </div>
-
-            {/* Quick Actions / Recommendations */}
-            <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="glass-card">
-                <h3 className="font-bold flex items-center gap-2 mb-4"><Briefcase size={18} /> Recommended Jobs</h3>
-                <p className="text-sm text-muted">Based on your blueprint, Radar AI has found matches.</p>
-                <Link to="/jobs" className="text-green text-sm font-bold mt-4 inline-block hover:underline">Browse Jobs ↗</Link>
-              </div>
-              <div className="glass-card">
-                <h3 className="font-bold flex items-center gap-2 mb-4"><Zap size={18} /> Radar AI Assistant</h3>
-                <p className="text-sm text-muted">Stuck? Ask the AI coach for interview tips or resume reviews.</p>
-                <button onClick={() => window.dispatchEvent(new CustomEvent('open-radar-ai'))} className="text-purple-accent text-sm font-bold mt-4 inline-block hover:underline">Open Chat ↗</button>
+                  ))}
+                </div>
               </div>
             </div>
+          )}
 
+          <div className="flex justify-between mt-8 pt-6 border-t border-border">
+            {step > 1 ? (
+              <button onClick={prevStep} className="btn-ghost border border-border px-6">
+                Back
+              </button>
+            ) : (
+              <div />
+            )}
+            {step < 3 ? (
+              <button onClick={nextStep} disabled={!isStepValid()} className="btn-primary flex items-center gap-2 px-6">
+                Next <ArrowRight size={18} />
+              </button>
+            ) : (
+              <button
+                onClick={handleSubmit}
+                disabled={submitting || !isStepValid()}
+                className="btn-primary flex items-center gap-2 px-6"
+              >
+                {submitting ? 'Setting up...' : 'Complete Setup'} <ArrowRight size={18} />
+              </button>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   )

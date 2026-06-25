@@ -23,10 +23,6 @@ export default function Login() {
       if (error) throw error
 
       toast.success('Welcome back!')
-      
-      // We rely on AuthContext's getRedirectPath to handle where they go
-      // The ProtectedRoutes will catch them and bounce them to the right place,
-      // but we can proactively redirect to '/' which will trigger the AuthContext logic.
       navigate('/')
     } catch (error) {
       toast.error(error.message)
@@ -37,7 +33,6 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background elements */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-accent/20 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-green/20 blur-[120px] rounded-full pointer-events-none" />
 
