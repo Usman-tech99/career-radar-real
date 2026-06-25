@@ -102,11 +102,25 @@ export function AuthProvider({ children }) {
     setOnboardingComplete(status)
   }
 
+  // Fully clean sign out with hard fallback to login
   async function signOut() {
-    await supabase.auth.signOut()
-    setUser(null)
-    setRole(null)
-    setOnboardingComplete(false)
+    try {
+      // 1. Terminate session globally and locally on Supabase
+      await supabase.auth.signOut({ scope: 'local' })
+    } catch (err) {
+      console.error('Supabase sign out error:', err)
+    } finally {
+      // 2. Wipe memory states immediately
+      setUser(null)
+      setRole(null)
+      setOnboardingComplete(false)
+      
+      // 3. Purge browser's lingering memory caches
+      window.localStorage.clear()
+      
+      // 4. Force a clean, hard reload away from protected paths to break loops
+      window.location.href = '/login'
+    }
   }
 
   // Get redirect path based on role
