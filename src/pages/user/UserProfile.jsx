@@ -145,7 +145,7 @@ export default function UserProfile() {
 
             <div className="glass-card flex flex-col sm:flex-row gap-8 items-start mb-8">
               <div className="flex flex-col items-center">
-                <div className="w-32 h-32 rounded-full border-4 border-white/[0.05] overflow-hidden mb-4 relative group">
+                <div className="w-40 h-40 rounded-full border-4 border-white/[0.05] overflow-hidden mb-4 relative group">
                   {profile.avatar_url ? (
                     <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" />
                   ) : (
@@ -159,7 +159,7 @@ export default function UserProfile() {
                   </label>
                 </div>
                 {uploading && <p className="text-xs text-blue-accent">Uploading...</p>}
-                <p className="text-xs text-muted mt-2 text-center w-32">Click to upload new avatar</p>
+                <p className="text-xs text-muted mt-2 text-center w-40">Click to upload new avatar</p>
               </div>
 
               <div className="flex-1 space-y-5 w-full">
