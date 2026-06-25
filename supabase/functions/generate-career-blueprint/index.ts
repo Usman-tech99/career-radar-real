@@ -1,5 +1,5 @@
 // @ts-ignore: Suppress local module resolution error for the editor environment
-import { createClient } from "[https://esm.sh/@supabase/supabase-js@2](https://esm.sh/@supabase/supabase-js@2)";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 // Declare global Deno namespace properties so the editor linter recognizes it immediately
 declare const Deno: {
@@ -71,7 +71,7 @@ Deno.serve(async (req: Request) => {
     }`;
 
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${Deno.env.get("GEMINI_API_KEY")}`
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${Deno.env.get("GEMINI_API_KEY")}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -80,7 +80,7 @@ Deno.serve(async (req: Request) => {
           generationConfig: { 
             maxOutputTokens: 2048, 
             temperature: 0.7,
-            responseMimeType: "application/json" // Tells Gemini to send pure JSON directly
+            responseMimeType: "application/json"
           }
         })
       }
