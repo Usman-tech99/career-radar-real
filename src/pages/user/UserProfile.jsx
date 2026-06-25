@@ -11,6 +11,7 @@ export default function UserProfile() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [avatarError, setAvatarError] = useState(false)
   
   const [profile, setProfile] = useState({
     full_name: '',
@@ -50,25 +51,27 @@ export default function UserProfile() {
     }
   }
 
+  const [avatarError, setAvatarError] = useState(false)
+
   async function handleAvatarUpload(e) {
     const file = e.target.files[0]
     if (!file) return
     
     setUploading(true)
+    setAvatarError(false)
     const fileExt = file.name.split('.').pop()
     const fileName = `${user.id}-${Math.random()}.${fileExt}`
     const filePath = `${user.id}/${fileName}`
     const bucket = 'avatars'
 
     const previewUrl = URL.createObjectURL(file)
-    setProfile({ ...profile, avatar_url: previewUrl })
+    setProfile(prev => ({ ...prev, avatar_url: previewUrl }))
 
     try {
       const { error: uploadError } = await supabase.storage.from(bucket).upload(filePath, file, { upsert: true })
       if (uploadError) throw uploadError
 
-      const { data } = supabase.storage.from(bucket).getPublicUrl(filePath)
-      const publicUrl = data?.publicUrl || `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${bucket}/${filePath}`
+      const publicUrl = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${bucket}/${filePath}`
       setProfile(prev => ({ ...prev, avatar_url: publicUrl }))
     } catch (err) {
       setProfile(prev => ({ ...prev, avatar_url: '' }))
@@ -152,8 +155,8 @@ export default function UserProfile() {
               <div className="flex flex-col gap-3 items-start">
                 <label className="label text-sm font-medium text-muted">Avatar</label>
                 <div className="w-40 h-40 rounded-full border-4 border-white/[0.05] overflow-hidden relative group">
-                  {profile.avatar_url ? (
-                    <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover rounded-full" crossOrigin="anonymous" />
+                  {profile.avatar_url && !avatarError ? (
+                    <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover rounded-full" crossOrigin="anonymous" onError={() => setAvatarError(true)} />
                   ) : (
                     <div className="w-full h-full bg-white/[0.02] flex items-center justify-center text-4xl text-muted font-bold">
                       {profile.full_name ? profile.full_name[0] : <User size={40} />}
