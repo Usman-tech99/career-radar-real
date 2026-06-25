@@ -16,13 +16,42 @@ export default function Shop() {
   }, [])
 
   async function fetchProducts() {
-    const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .eq('is_active', true)
-      .order('created_at', { ascending: false })
+    const [productsRes, educationRes] = await Promise.all([
+      supabase.from('products').select('*').eq('is_active', true).order('created_at', { ascending: false }),
+      supabase.from('education_items').select('*').eq('is_published', true).order('created_at', { ascending: false })
+    ])
 
-    if (!error && data) setProducts(data)
+    const merged = []
+
+    if (!productsRes.error && productsRes.data) {
+      merged.push(...productsRes.data.map(p => ({ ...p, _source: 'product' })))
+    }
+
+    if (!educationRes.error && educationRes.data) {
+      const paidItems = educationRes.data.filter(e => !e.is_free && e.product_id)
+      for (const edu of paidItems) {
+        const existingProduct = merged.find(m => m.id === edu.product_id)
+        if (!existingProduct) {
+          merged.push({
+            id: edu.product_id,
+            title: edu.title,
+            description: edu.description,
+            category: edu.type || 'Course',
+            thumbnail_url: edu.thumbnail_url,
+            is_free: false,
+            price_pkr: 0,
+            whatsapp_number: null,
+            bank_details: null,
+            file_url: edu.free_access_url || null,
+            external_link: null,
+            _source: 'education',
+            _edu_ref: edu.id,
+          })
+        }
+      }
+    }
+
+    setProducts(merged)
     setLoading(false)
   }
 
