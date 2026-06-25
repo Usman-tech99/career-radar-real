@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import { z } from z
 import toast from 'react-hot-toast'
 import { ArrowRight, ArrowLeft, LogOut } from 'lucide-react'
 
@@ -62,14 +62,14 @@ export default function Onboarding() {
     }
 
     try {
-      // FIX 1: Swapped .insert() out for .upsert() with an onConflict constraint to stop unique key error
+      // 1. Upsert onboarding data to avoid unique constraint key violations
       const { error: upsertError } = await supabase
         .from('onboarding_data')
         .upsert(payload, { onConflict: 'user_id' })
         
       if (upsertError) throw upsertError
 
-      // Update public_users table status flags
+      // 2. Set onboarding_complete to true in public_users table
       const { error: updateError } = await supabase
         .from('public_users')
         .update({ 
@@ -80,33 +80,38 @@ export default function Onboarding() {
 
       if (updateError) throw updateError
 
-      // FIX 2: Explicitly flip the local state flag to true immediately 
-      // This stops React context middleware from kicking the user out during navigation transitions
+      // 3. Immediately lower frontend route shields by forcing local state to true
       if (setOnboardingComplete) {
         setOnboardingComplete(true)
       }
 
-      // Trigger background calculations via Edge function
+      // 4. Update core global auth state context properties
+      await refreshOnboardingStatus()
+      
+      toast.success('Onboarding complete! Loading your dashboard...')
+      
+      // 5. Navigate to the dashboard layout panel immediately 
+      navigate('/dashboard', { replace: true })
+
+      // 6. Isolated background dispatch for the edge score engine calculation
       try {
         const { data: { session } } = await supabase.auth.getSession()
         if (session?.access_token) {
-          // Fire-and-forget background task so the frontend doesn't hang waiting on Gemini
           fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/recalculate-score`, {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${session.access_token}` }
-          }).catch(e => console.warn("Background edge service error", e));
+            headers: { 
+              'Authorization': `Bearer ${session.access_token}`,
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(res => {
+            if (!res.ok) console.warn(`recalculate-score backend service failure status: ${res.status}`);
+          })
+          .catch(e => console.warn("Background edge service calculation failed silently:", e));
         }
       } catch (e) {
-        console.warn("Score context processing omitted or pending", e)
+        console.warn("Could not fetch user session for score processing background pipeline:", e)
       }
-
-      // Refresh the context variables globally
-      await refreshOnboardingStatus()
-      
-      toast.success('Onboarding complete! Generating your blueprint...')
-      
-      // Clear navigation history transitions and load dashboard panel layout safely
-      navigate('/dashboard', { replace: true })
 
     } catch (error) {
       console.error("Submission operational failure:", error)
