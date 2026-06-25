@@ -1,12 +1,20 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+// @ts-ignore: Suppress local module resolution error for the editor environment
+import { createClient } from "[https://esm.sh/@supabase/supabase-js@2](https://esm.sh/@supabase/supabase-js@2)";
+
+// Declare global Deno namespace properties so the editor linter recognizes it immediately
+declare const Deno: {
+  serve: (handler: (req: Request) => Promise<Response>) => void;
+  env: {
+    get: (key: string) => string | undefined;
+  };
+};
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type"
 };
 
-serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
 
   try {
@@ -48,7 +56,7 @@ serve(async (req) => {
     LIVE COURSES TO MATCH FROM (use exact IDs):
     ${JSON.stringify(education)}
 
-    Return ONLY a raw JSON object with this exact structure (no markdown tags, no extra text):
+    Return a JSON object with this exact structure:
     {
       "title": "Your [Field] Career Path",
       "summary": "2-3 sentences max",
@@ -59,25 +67,30 @@ serve(async (req) => {
       "milestones": ["Milestone 1", "Milestone 2"]
     }`;
 
-    // Call Gemini 2.0 Flash
+    // FIX: Swapped to v1 endpoint + gemini-3.1-flash-lite + responseMimeType config
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${Deno.env.get("GEMINI_API_KEY")}`,
+      `[https://generativelanguage.googleapis.com/v1/models/gemini-3.1-flash-lite:generateContent?key=$](https://generativelanguage.googleapis.com/v1/models/gemini-3.1-flash-lite:generateContent?key=$){Deno.env.get("GEMINI_API_KEY")}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{ role: "user", parts: [{ text: systemPrompt }] }],
-          generationConfig: { maxOutputTokens: 2048, temperature: 0.7 }
+          generationConfig: { 
+            maxOutputTokens: 2048, 
+            temperature: 0.7,
+            responseMimeType: "application/json" // Tells Gemini to send pure JSON directly
+          }
         })
       }
     );
 
     const geminiData = await res.json();
-    let responseText = geminiData.candidates[0].content.parts[0].text;
     
-    // Clean markdown code blocks if Gemini returns them
-    responseText = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-    
+    if (!geminiData.candidates || geminiData.candidates.length === 0) {
+      throw new Error("Gemini failed to return content candidates. Check API quota.");
+    }
+
+    const responseText = geminiData.candidates[0].content.parts[0].text.trim();
     const blueprint = JSON.parse(responseText);
 
     // Save to database
@@ -98,14 +111,11 @@ serve(async (req) => {
     }).select().single();
 
     if (insertError) throw insertError;
-
-    // Create or trigger score recalculation (handled by separate function or inline here)
-    // We'll just call the recalculate-score logic implicitly or the user can do it via the other function
     
     return new Response(JSON.stringify({ success: true, blueprint: insertedBlueprint }), { headers: { ...cors, "Content-Type": "application/json" } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Blueprint Error:", error);
-    return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ error: error?.message || "An unknown error occurred" }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
   }
 });

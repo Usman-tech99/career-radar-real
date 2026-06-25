@@ -1,12 +1,20 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+// @ts-ignore: Suppress local module resolution error for the editor environment
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+// Declare global Deno namespace properties so the editor linter recognizes it immediately
+declare const Deno: {
+  serve: (handler: (req: Request) => Promise<Response>) => void;
+  env: {
+    get: (key: string) => string | undefined;
+  };
+};
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type"
 };
 
-serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
 
   try {
@@ -47,7 +55,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ success: true, user: newAuthUser.user }), { headers: { ...cors, "Content-Type": "application/json" } });
 
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
+  } catch (error: any) {
+    return new Response(JSON.stringify({ error: error?.message || "An unknown error occurred" }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
   }
 });
