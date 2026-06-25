@@ -51,8 +51,6 @@ export default function UserProfile() {
     }
   }
 
-  const [avatarError, setAvatarError] = useState(false)
-
   async function handleAvatarUpload(e) {
     const file = e.target.files[0]
     if (!file) return
