@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
@@ -8,6 +8,7 @@ import { LayoutDashboard, Target, Activity, User, LogOut, ArrowRight, Zap, Brief
 export default function Dashboard() {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [score, setScore] = useState(null)
   const [blueprint, setBlueprint] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -19,12 +20,12 @@ export default function Dashboard() {
   async function fetchDashboardData() {
     try {
       const [scoreRes, blueprintRes] = await Promise.all([
-        supabase.from('career_scores').select('total_score, missing_items').eq('user_id', user.id).single(),
-        supabase.from('career_blueprints').select('title, summary, action_steps').eq('user_id', user.id).eq('is_active', true).single()
+        supabase.from('career_scores').select('total_score, missing_items').eq('user_id', user.id).maybeSingle(),
+        supabase.from('career_blueprints').select('title, summary, action_steps').eq('user_id', user.id).eq('is_active', true).maybeSingle()
       ])
 
-      if (scoreRes.data) setScore(scoreRes.data)
-      if (blueprintRes.data) setBlueprint(blueprintRes.data)
+      if (scoreRes?.data) setScore(scoreRes.data)
+      if (blueprintRes?.data) setBlueprint(blueprintRes.data)
     } catch (err) {
       console.error(err)
     } finally {
@@ -32,22 +33,25 @@ export default function Dashboard() {
     }
   }
 
-  // Sidebar link component
-  const NavLink = ({ to, icon: Icon, label, active }) => (
-    <Link to={to} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
-      active ? 'bg-green/10 text-green border border-green/20' : 'text-muted hover:bg-white/[0.04] hover:text-white'
-    }`}>
-      <Icon size={20} className={active ? 'text-green' : 'text-muted'} />
-      {label}
-    </Link>
-  )
+  // Sidebar link component with dynamic active state
+  const NavLink = ({ to, icon: Icon, label }) => {
+    const isActive = location.pathname === to
+    return (
+      <Link to={to} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
+        isActive ? 'bg-green/10 text-green border border-green/20' : 'text-muted hover:bg-white/[0.04] hover:text-white'
+      }`}>
+        <Icon size={20} className={isActive ? 'text-green' : 'text-muted'} />
+        {label}
+      </Link>
+    )
+  }
 
   return (
     <div className="flex min-h-screen bg-surface">
       {/* User Sidebar */}
       <div className="w-64 h-screen bg-surface border-r border-border flex flex-col fixed left-0 top-0 pt-20">
         <div className="flex-1 px-4 py-6 space-y-2">
-          <NavLink to="/dashboard" icon={LayoutDashboard} label="Overview" active={true} />
+          <NavLink to="/dashboard" icon={LayoutDashboard} label="Overview" />
           <NavLink to="/dashboard/blueprint" icon={Target} label="AI Blueprint" />
           <NavLink to="/dashboard/score" icon={Activity} label="Career Score" />
           <NavLink to="/dashboard/profile" icon={User} label="Profile Settings" />

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
@@ -7,6 +7,7 @@ import { LayoutDashboard, Target, Activity, User, LogOut, Upload, Save } from 'l
 
 export default function UserProfile() {
   const { user, signOut } = useAuth()
+  const location = useLocation()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -28,9 +29,8 @@ export default function UserProfile() {
         .from('public_users')
         .select('*')
         .eq('id', user.id)
-        .single()
+        .maybeSingle()
 
-      if (error && error.code !== 'PGRST116') throw error
       if (data) {
         setProfile({
           full_name: data.full_name || '',
@@ -89,14 +89,17 @@ export default function UserProfile() {
     }
   }
 
-  const NavLink = ({ to, icon: Icon, label, active }) => (
-    <Link to={to} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
-      active ? 'bg-green/10 text-green border border-green/20' : 'text-muted hover:bg-white/[0.04] hover:text-white'
-    }`}>
-      <Icon size={20} className={active ? 'text-green' : 'text-muted'} />
-      {label}
-    </Link>
-  )
+  const NavLink = ({ to, icon: Icon, label }) => {
+    const isActive = location.pathname === to
+    return (
+      <Link to={to} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
+        isActive ? 'bg-green/10 text-green border border-green/20' : 'text-muted hover:bg-white/[0.04] hover:text-white'
+      }`}>
+        <Icon size={20} className={isActive ? 'text-green' : 'text-muted'} />
+        {label}
+      </Link>
+    )
+  }
 
   return (
     <div className="flex min-h-screen bg-surface">

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
@@ -7,6 +7,7 @@ import { LayoutDashboard, Target, Activity, User, LogOut, TrendingUp, AlertTrian
 
 export default function Score() {
   const { user, signOut } = useAuth()
+  const location = useLocation()
   const [score, setScore] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -20,9 +21,8 @@ export default function Score() {
         .from('career_scores')
         .select('*')
         .eq('user_id', user.id)
-        .single()
+        .maybeSingle()
 
-      if (error && error.code !== 'PGRST116') throw error
       if (data) setScore(data)
     } catch (err) {
       toast.error('Failed to load score')
@@ -32,14 +32,17 @@ export default function Score() {
     }
   }
 
-  const NavLink = ({ to, icon: Icon, label, active }) => (
-    <Link to={to} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
-      active ? 'bg-green/10 text-green border border-green/20' : 'text-muted hover:bg-white/[0.04] hover:text-white'
-    }`}>
-      <Icon size={20} className={active ? 'text-green' : 'text-muted'} />
-      {label}
-    </Link>
-  )
+  const NavLink = ({ to, icon: Icon, label }) => {
+    const isActive = location.pathname === to
+    return (
+      <Link to={to} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
+        isActive ? 'bg-green/10 text-green border border-green/20' : 'text-muted hover:bg-white/[0.04] hover:text-white'
+      }`}>
+        <Icon size={20} className={isActive ? 'text-green' : 'text-muted'} />
+        {label}
+      </Link>
+    )
+  }
 
   // Progress bar component
   const ScoreBar = ({ label, value, max, color }) => (
@@ -63,7 +66,7 @@ export default function Score() {
         <div className="flex-1 px-4 py-6 space-y-2">
           <NavLink to="/dashboard" icon={LayoutDashboard} label="Overview" />
           <NavLink to="/dashboard/blueprint" icon={Target} label="AI Blueprint" />
-          <NavLink to="/dashboard/score" icon={Activity} label="Career Score" active={true} />
+          <NavLink to="/dashboard/score" icon={Activity} label="Career Score" />
           <NavLink to="/dashboard/profile" icon={User} label="Profile Settings" />
         </div>
         <div className="p-4 border-t border-border">

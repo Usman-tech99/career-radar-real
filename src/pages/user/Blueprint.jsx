@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
@@ -7,6 +7,7 @@ import { LayoutDashboard, Target, Activity, User, LogOut, CheckCircle, ExternalL
 
 export default function Blueprint() {
   const { user, signOut } = useAuth()
+  const location = useLocation()
   const [blueprint, setBlueprint] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -49,7 +50,11 @@ export default function Blueprint() {
       const { data: { session } } = await supabase.auth.getSession()
       fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/recalculate-score`, {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${session?.access_token}` }
+        headers: { 
+          'Authorization': `Bearer ${session?.access_token}`,
+          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          'Content-Type': 'application/json'
+        }
       }).catch(e => console.warn(e))
 
     } catch (err) {
@@ -57,22 +62,25 @@ export default function Blueprint() {
     }
   }
 
-  // Sidebar link component
-  const NavLink = ({ to, icon: Icon, label, active }) => (
-    <Link to={to} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
-      active ? 'bg-green/10 text-green border border-green/20' : 'text-muted hover:bg-white/[0.04] hover:text-white'
-    }`}>
-      <Icon size={20} className={active ? 'text-green' : 'text-muted'} />
-      {label}
-    </Link>
-  )
+  // Sidebar link component with dynamic active state
+  const NavLink = ({ to, icon: Icon, label }) => {
+    const isActive = location.pathname === to
+    return (
+      <Link to={to} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
+        isActive ? 'bg-green/10 text-green border border-green/20' : 'text-muted hover:bg-white/[0.04] hover:text-white'
+      }`}>
+        <Icon size={20} className={isActive ? 'text-green' : 'text-muted'} />
+        {label}
+      </Link>
+    )
+  }
 
   return (
     <div className="flex min-h-screen bg-surface">
       <div className="w-64 h-screen bg-surface border-r border-border flex flex-col fixed left-0 top-0 pt-20">
         <div className="flex-1 px-4 py-6 space-y-2">
           <NavLink to="/dashboard" icon={LayoutDashboard} label="Overview" />
-          <NavLink to="/dashboard/blueprint" icon={Target} label="AI Blueprint" active={true} />
+          <NavLink to="/dashboard/blueprint" icon={Target} label="AI Blueprint" />
           <NavLink to="/dashboard/score" icon={Activity} label="Career Score" />
           <NavLink to="/dashboard/profile" icon={User} label="Profile Settings" />
         </div>
@@ -98,7 +106,11 @@ export default function Blueprint() {
                   const { data: { session } } = await supabase.auth.getSession();
                   await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/recalculate-score`, {
                     method: 'POST',
-                    headers: { 'Authorization': `Bearer ${session?.access_token}` }
+                    headers: { 
+                      'Authorization': `Bearer ${session?.access_token}`,
+                      'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+                      'Content-Type': 'application/json'
+                    }
                   });
                   toast.success("Optimization request synchronized successfully!", { id: loadToast });
                 } catch (e) {
