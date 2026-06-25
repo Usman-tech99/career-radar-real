@@ -17,13 +17,14 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
 
   try {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!supabaseUrl || !serviceRoleKey) throw new Error("Missing SUPABASE_URL or SERVICE_ROLE_KEY env vars");
+
     const authHeader = req.headers.get('authorization');
     if (!authHeader) throw new Error("Missing authorization header");
 
-    const sb = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    const sb = createClient(supabaseUrl, serviceRoleKey);
 
     // Verify token
     const token = authHeader.replace('Bearer ', '');
@@ -117,6 +118,7 @@ Deno.serve(async (req) => {
 
   } catch (error) {
     console.error("Score Error:", error);
-    return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
+    const message = error instanceof Error ? error.message : (typeof error === "string" ? error : "Unknown error");
+    return new Response(JSON.stringify({ error: message }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
   }
 });

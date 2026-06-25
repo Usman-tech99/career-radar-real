@@ -97,7 +97,10 @@ export default function UserProfile() {
       }, { onConflict: 'id' })
       if (profError) throw profError
 
-      await supabase.functions.invoke('recalculate-score', { body: {} })
+      const { error: scoreError } = await supabase.functions.invoke('recalculate-score', { body: {} })
+      if (scoreError) {
+        console.error('Score recalc error:', scoreError.context?.status, scoreError.context?.body)
+      }
 
       toast.success('Profile updated successfully')
     } catch (err) {
