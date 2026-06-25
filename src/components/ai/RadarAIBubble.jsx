@@ -52,7 +52,10 @@ export default function RadarAIBubble() {
         })
       })
 
-      if (!res.ok) throw new Error('Failed to get AI response')
+      if (!res.ok) {
+        const errorBody = await res.text().catch(() => '')
+        throw new Error(errorBody || `HTTP ${res.status}`)
+      }
       
       const geminiData = await res.json()
       const aiText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || JSON.stringify(geminiData)
@@ -71,8 +74,8 @@ export default function RadarAIBubble() {
       }
 
     } catch (err) {
-      console.error(err)
-      toast.error('Radar AI is currently unavailable.')
+      console.error('Radar AI Chat error:', err)
+      toast.error(err.message || 'Radar AI is currently unavailable.')
       setMessages([...newMessages, { role: 'assistant', content: "Sorry, I'm experiencing technical difficulties." }])
     } finally {
       setLoading(false)
