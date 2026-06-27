@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { 
   LayoutDashboard, Briefcase, FileText, ShoppingBag, 
-  BookOpen, LayoutTemplate, Info, Share2, Users, 
+  BookOpen, LayoutTemplate, Info, Share2, Users, UserCheck,
   ShieldAlert, CreditCard, BrainCircuit, UserCircle, LogOut 
 } from 'lucide-react'
 
@@ -23,6 +23,7 @@ export default function AdminSidebar() {
     
     // Founder Only
     { label: 'Manage Team', path: '/admin/manage-team', icon: ShieldAlert, roles: ['super_admin'] },
+    { label: 'Team Members', path: '/admin/manage-team-members', icon: UserCheck, roles: ['super_admin'] },
     { label: 'Payments', path: '/admin/manage-payments', icon: CreditCard, roles: ['super_admin'] },
     { label: 'AI Insights', path: '/admin/ai-insights', icon: BrainCircuit, roles: ['super_admin'] },
 

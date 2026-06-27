@@ -15,8 +15,9 @@ export default function Navbar() {
     { name: 'Resources', path: '/weekly-content' },
     { name: 'Education', path: '/education' },
     { name: 'Shop', path: '/shop' },
-    { name: 'Structure', path: '/structure' },
+    { name: 'Team', path: '/team' },
     { name: 'About', path: '/about' },
+    { name: 'Socials', path: '/social' },
   ]
 
   // If user is logged in, their dashboard path depends on role

@@ -37,6 +37,7 @@ import ManageAbout from './pages/admin/ManageAbout'
 import ManageSocials from './pages/admin/ManageSocials'
 import ManageCollaborators from './pages/admin/ManageCollaborators'
 import ManageTeam from './pages/admin/ManageTeam'
+import ManageTeamMembers from './pages/admin/ManageTeamMembers'
 import ManagePayments from './pages/admin/ManagePayments'
 import AIInsights from './pages/admin/AIInsights'
 import MyProfile from './pages/admin/MyProfile'
@@ -121,6 +122,7 @@ export default function App() {
           <Route element={<SuperAdminRoute />}>
             <Route path="/admin/manage-structure" element={<ManageStructure />} />
             <Route path="/admin/manage-team" element={<ManageTeam />} />
+            <Route path="/admin/manage-team-members" element={<ManageTeamMembers />} />
             <Route path="/admin/manage-payments" element={<ManagePayments />} />
             <Route path="/admin/ai-insights" element={<AIInsights />} />
           </Route>

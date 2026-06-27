@@ -1,6 +1,20 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
+import { MessageCircle, Youtube, Instagram, Linkedin, Twitter, Send, Users as UsersIcon, Globe } from 'lucide-react'
+
+const platformIcons = {
+  whatsapp: MessageCircle,
+  youtube: Youtube,
+  instagram: Instagram,
+  telegram: Send,
+  linkedin: Linkedin,
+  twitter: Twitter,
+  discord: UsersIcon,
+  tiktok: UsersIcon,
+  facebook: UsersIcon,
+  other: Globe,
+}
 
 export default function Footer() {
   const [socials, setSocials] = useState([])
@@ -22,7 +36,7 @@ export default function Footer() {
   return (
     <footer className="bg-surface border-t border-border mt-20 pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-12">
           
           {/* Brand Col */}
           <div className="col-span-1 md:col-span-2">
@@ -49,12 +63,12 @@ export default function Footer() {
             <ul className="space-y-4">
               <li><Link to="/jobs" className="text-sm text-muted hover:text-white transition-colors">Jobs Board</Link></li>
               <li><Link to="/weekly-content" className="text-sm text-muted hover:text-white transition-colors">Resources</Link></li>
-              <li><Link to="/education" className="text-sm text-muted hover:text-white transition-colors">Education & Courses</Link></li>
-              <li><Link to="/shop" className="text-sm text-muted hover:text-white transition-colors">Premium Shop</Link></li>
+              <li><Link to="/education" className="text-sm text-muted hover:text-white transition-colors">Courses</Link></li>
+              <li><Link to="/shop" className="text-sm text-muted hover:text-white transition-colors">Shop</Link></li>
             </ul>
           </div>
 
-          {/* About Links */}
+          {/* Company Links */}
           <div>
             <h4 className="font-bold text-white mb-6">Company</h4>
             <ul className="space-y-4">
@@ -64,22 +78,57 @@ export default function Footer() {
               <li><Link to="/collaborators" className="text-sm text-muted hover:text-white transition-colors">Partners</Link></li>
             </ul>
           </div>
+
+          {/* Socials Column */}
+          <div>
+            <h4 className="font-bold text-white mb-6">Socials</h4>
+            {socials.length === 0 ? (
+              <p className="text-xs text-muted">Follow us on social media.</p>
+            ) : (
+              <ul className="space-y-3">
+                {socials.map(social => {
+                  const Icon = platformIcons[social.platform_type] || Globe
+                  return (
+                    <li key={social.id}>
+                      <a
+                        href={social.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-2 text-sm text-muted hover:text-white transition-colors"
+                      >
+                        <Icon size={16} className="shrink-0" />
+                        <span>{social.platform_name}</span>
+                        {social.members_count && (
+                          <span className="text-[10px] text-green bg-green/10 px-1.5 py-0.5 rounded-full">{social.members_count}</span>
+                        )}
+                      </a>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+            <Link to="/social" className="inline-block mt-4 text-xs text-green hover:underline">View all →</Link>
+          </div>
         </div>
 
-        {/* Social Links Row */}
+        {/* Bottom Bar */}
         <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-4 flex-wrap">
-            {socials.map(social => (
-              <a 
-                key={social.id} 
-                href={social.url} 
-                target="_blank" 
-                rel="noreferrer"
-                className="text-muted hover:text-white transition-colors text-sm font-medium px-3 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.05]"
-              >
-                {social.platform_name}
-              </a>
-            ))}
+            {socials.slice(0, 6).map(social => {
+              const Icon = platformIcons[social.platform_type] || Globe
+              return (
+                <a
+                  key={social.id}
+                  href={social.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-muted hover:text-white transition-colors"
+                  title={social.platform_name}
+                >
+                  <Icon size={18} />
+                </a>
+              )
+            })}
           </div>
           <p className="text-xs text-muted">
             &copy; {new Date().getFullYear()} Career Radar. Founded {about?.founded_date || '2024'}. All rights reserved.

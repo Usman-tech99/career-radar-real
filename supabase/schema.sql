@@ -234,6 +234,27 @@ ALTER TABLE collaborators ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "collab_pub" ON collaborators FOR SELECT USING(is_active=TRUE);
 CREATE POLICY "collab_admin" ON collaborators FOR ALL USING(get_my_role() IN('super_admin','admin')) WITH CHECK(get_my_role() IN('super_admin','admin'));
 
+-- team_members (dedicated table — only super admin populates)
+CREATE TABLE team_members (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  image_url TEXT,
+  role TEXT NOT NULL,
+  skills TEXT[] DEFAULT '{}',
+  age INTEGER,
+  education TEXT,
+  goal TEXT,
+  social_links JSONB DEFAULT '{}',
+  sort_order INTEGER DEFAULT 99,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE team_members ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "team_members_pub" ON team_members FOR SELECT USING (is_active = TRUE);
+CREATE POLICY "team_members_admin" ON team_members FOR ALL USING (get_my_role() = 'super_admin') WITH CHECK (get_my_role() = 'super_admin');
+CREATE TRIGGER team_members_upd BEFORE UPDATE ON team_members FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
+
 -- ai_chat_logs
 CREATE TABLE ai_chat_logs (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   session_id TEXT NOT NULL, user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,

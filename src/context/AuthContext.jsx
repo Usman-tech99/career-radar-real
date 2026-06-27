@@ -100,7 +100,7 @@ export function AuthProvider({ children }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (!mounted) return
-        setLoading(true)
+        if (event === 'TOKEN_REFRESHED') return
         if (session?.user) {
           await refreshState(session.user)
         } else {
@@ -109,7 +109,6 @@ export function AuthProvider({ children }) {
           setOnboardingComplete(false)
           setRoleChecked(true)
         }
-        if (mounted) setLoading(false)
       }
     )
 
