@@ -5,7 +5,20 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import toast from 'react-hot-toast'
-import { Plus, Edit2, Trash2, X } from 'lucide-react'
+import { Plus, Edit2, Trash2, X, Linkedin, Github, Youtube, Twitter, Instagram, Facebook, Globe, MessageCircle, Send, Users, ExternalLink } from 'lucide-react'
+
+const platformIcons = {
+  whatsapp: MessageCircle, youtube: Youtube, instagram: Instagram,
+  telegram: Send, linkedin: Linkedin, twitter: Twitter, discord: Users,
+  tiktok: ExternalLink, facebook: Facebook, other: ExternalLink,
+}
+
+const platformColors = {
+  whatsapp: 'text-green-400', youtube: 'text-red-500', instagram: 'text-pink-400',
+  telegram: 'text-blue-400', linkedin: 'text-blue-500', twitter: 'text-sky-400',
+  discord: 'text-indigo-400', tiktok: 'text-gray-300', facebook: 'text-blue-500',
+  other: 'text-muted',
+}
 
 const socialSchema = z.object({
   platform_name: z.string().min(2, "Name is required"),
@@ -113,11 +126,11 @@ export default function ManageSocials() {
                   </div>
                 )}
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-white/[0.05] flex items-center justify-center text-xl">
-                    {/* Cheap icon mapping */}
-                    {item.platform_type === 'whatsapp' ? '📱' : 
-                     item.platform_type === 'youtube' ? '📺' : 
-                     item.platform_type === 'linkedin' ? '💼' : '🔗'}
+                  <div className={`w-10 h-10 rounded-full bg-white/[0.05] flex items-center justify-center ${platformColors[item.platform_type] || 'text-muted'}`}>
+                    {(() => {
+                      const Icon = platformIcons[item.platform_type] || ExternalLink
+                      return <Icon size={20} />
+                    })()}
                   </div>
                   <div>
                     <h3 className="font-bold">{item.platform_name}</h3>

@@ -3,12 +3,24 @@ import { supabase } from '../../lib/supabase'
 import AdminSidebar from '../../components/layout/AdminSidebar'
 import toast from 'react-hot-toast'
 import SafeImage from '../../components/ui/SafeImage'
-import { Plus, Edit2, Trash2, X, Users, Upload, Image as ImageIcon, Loader2 } from 'lucide-react'
+import { Plus, Edit2, Trash2, X, Users, Upload, Image as ImageIcon, Loader2, Linkedin, Github, Youtube, Twitter, Instagram, Facebook, Globe, MessageCircle, Send, ExternalLink } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
 const platforms = ['linkedin', 'github', 'youtube', 'twitter', 'instagram', 'facebook', 'discord', 'website', 'other']
+
+const platformIcons = {
+  linkedin: Linkedin, github: Github, youtube: Youtube, twitter: Twitter,
+  instagram: Instagram, facebook: Facebook, discord: MessageCircle,
+  website: Globe, other: ExternalLink,
+}
+
+const platformColors = {
+  linkedin: 'text-blue-500', github: 'text-gray-300', youtube: 'text-red-500',
+  twitter: 'text-sky-400', instagram: 'text-pink-400', facebook: 'text-blue-500',
+  discord: 'text-indigo-400', website: 'text-green', other: 'text-muted',
+}
 
 const teamMemberSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -245,6 +257,18 @@ export default function ManageTeamMembers() {
                     {member.skills.length > 3 && (
                       <span className="text-[10px] text-muted">+{member.skills.length - 3}</span>
                     )}
+                  </div>
+                )}
+                {member.social_links && typeof member.social_links === 'object' && Object.keys(member.social_links).length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {Object.entries(member.social_links).map(([platform, url]) => {
+                      const Icon = platformIcons[platform] || ExternalLink
+                      return (
+                        <a key={platform} href={url} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()} title={platform} className={`${platformColors[platform] || 'text-muted'} hover:opacity-80 transition-opacity`}>
+                          <Icon size={16} />
+                        </a>
+                      )
+                    })}
                   </div>
                 )}
                 <div className="flex justify-between items-center border-t border-border mt-auto pt-4">

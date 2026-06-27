@@ -113,6 +113,22 @@ ALTER TABLE site_stats ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "stats_read" ON site_stats FOR SELECT USING(TRUE);
 CREATE POLICY "stats_update" ON site_stats FOR UPDATE USING(get_my_role()='super_admin');
 
+CREATE OR REPLACE FUNCTION increment_jobs_posted()
+RETURNS void LANGUAGE sql SECURITY DEFINER
+AS $$ UPDATE site_stats SET jobs_posted = jobs_posted + 1, updated_at = NOW() WHERE id = 1; $$;
+
+CREATE OR REPLACE FUNCTION increment_total_products()
+RETURNS void LANGUAGE sql SECURITY DEFINER
+AS $$ UPDATE site_stats SET total_products = total_products + 1, updated_at = NOW() WHERE id = 1; $$;
+
+CREATE OR REPLACE FUNCTION increment_community_members()
+RETURNS void LANGUAGE sql SECURITY DEFINER
+AS $$ UPDATE site_stats SET community_members = community_members + 1, updated_at = NOW() WHERE id = 1; $$;
+
+CREATE OR REPLACE FUNCTION increment_resources_shared()
+RETURNS void LANGUAGE sql SECURITY DEFINER
+AS $$ UPDATE site_stats SET resources_shared = resources_shared + 1, updated_at = NOW() WHERE id = 1; $$;
+
 -- jobs
 CREATE TABLE jobs (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL, company TEXT NOT NULL, location TEXT,
