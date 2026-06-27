@@ -2,6 +2,7 @@
 import { supabase } from '../../lib/supabase'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
+import SafeImage from '../../components/ui/SafeImage'
 import { Handshake, ExternalLink, Youtube, MessageCircle, Instagram, Globe } from 'lucide-react'
 
 const collaborationTypeColors = {
@@ -60,13 +61,7 @@ export default function Collaborators() {
               <div className="glass-card p-8 md:p-12 border-2 border-blue-accent/30 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-blue-accent/10 blur-[100px] rounded-full pointer-events-none" />
                 <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-                  {featuredCollaborator.logo_url ? (
-                    <img src={featuredCollaborator.logo_url} alt={featuredCollaborator.name} className="w-32 h-32 rounded-2xl object-cover border-4 border-blue-accent/20" />
-                  ) : (
-                    <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-blue-accent/20 to-purple-accent/20 flex items-center justify-center border-4 border-blue-accent/20">
-                      <Handshake size={48} className="text-blue-accent" />
-                    </div>
-                  )}
+                  <SafeImage src={featuredCollaborator.logo_url} alt={featuredCollaborator.name} className="w-32 h-32 rounded-2xl object-cover border-4 border-blue-accent/20" />
                   <div className="flex-1 text-center md:text-left">
                     <span className="inline-block px-3 py-1 rounded-full bg-blue-accent/20 text-blue-accent text-xs font-bold uppercase tracking-wider mb-3">
                       Featured Partner
@@ -114,13 +109,7 @@ export default function Collaborators() {
                     className="glass-card p-6 hover:-translate-y-1 transition-transform"
                   >
                     <div className="flex flex-col items-center text-center mb-6">
-                      {collab.logo_url ? (
-                        <img src={collab.logo_url} alt={collab.name} className="w-20 h-20 rounded-xl object-cover border-2 border-white/[0.05] mb-4" />
-                      ) : (
-                        <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-blue-accent/20 to-purple-accent/20 flex items-center justify-center border-2 border-white/[0.05] mb-4">
-                          <Handshake size={32} className="text-blue-accent" />
-                        </div>
-                      )}
+                      <SafeImage src={collab.logo_url} alt={collab.name} className="w-20 h-20 rounded-xl object-cover border-2 border-white/[0.05] mb-4" />
                       <h3 className="text-xl font-bold text-white mb-1">{collab.name}</h3>
                       {collab.description && (
                         <p className="text-sm text-muted line-clamp-2">{collab.description}</p>

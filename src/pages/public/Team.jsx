@@ -2,6 +2,7 @@
 import { supabase } from '../../lib/supabase'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
+import SafeImage from '../../components/ui/SafeImage'
 import { Users, Linkedin, Github, Youtube, Twitter, Instagram, Globe, X, ExternalLink, MapPin, GraduationCap, Target, Sparkles } from 'lucide-react'
 
 const platformIcons = {
@@ -76,13 +77,7 @@ export default function Team() {
                 className="glass-card flex flex-col items-center text-center p-8 hover:-translate-y-1 transition-transform cursor-pointer text-left"
               >
                 <div className="relative mb-6">
-                  {member.image_url ? (
-                    <img src={member.image_url} alt={member.name} className="w-32 h-32 rounded-full object-cover border-4 border-white/[0.05]" />
-                  ) : (
-                    <div className="w-32 h-32 rounded-full bg-gradient-to-br from-green/20 to-blue-accent/20 flex items-center justify-center border-4 border-white/[0.05]">
-                      <span className="text-4xl font-bold text-white">{member.name?.[0] || '?'}</span>
-                    </div>
-                  )}
+                  <SafeImage src={member.image_url} alt={member.name} className="w-32 h-32 rounded-full object-cover border-4 border-white/[0.05]" />
                 </div>
                 
                 <h3 className="text-xl font-bold text-white mb-1">{member.name}</h3>
@@ -134,13 +129,7 @@ export default function Team() {
             </div>
             
             <div className="flex flex-col items-center text-center mb-6">
-              {selected.image_url ? (
-                <img src={selected.image_url} alt={selected.name} className="w-28 h-28 rounded-full object-cover border-4 border-white/[0.05] mb-4" />
-              ) : (
-                <div className="w-28 h-28 rounded-full bg-gradient-to-br from-green/20 to-blue-accent/20 flex items-center justify-center border-4 border-white/[0.05] mb-4">
-                  <span className="text-4xl font-bold text-white">{selected.name?.[0] || '?'}</span>
-                </div>
-              )}
+              <SafeImage src={selected.image_url} alt={selected.name} className="w-28 h-28 rounded-full object-cover border-4 border-white/[0.05] mb-4" />
               <h2 className="text-2xl font-bold text-white">{selected.name}</h2>
               <p className="text-green font-medium">{selected.role}</p>
             </div>

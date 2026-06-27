@@ -5,6 +5,7 @@ import AdminSidebar from '../../components/layout/AdminSidebar'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import SafeImage from '../../components/ui/SafeImage'
 import toast from 'react-hot-toast'
 import { Plus, Edit2, Trash2, X, Upload } from 'lucide-react'
 import { formatDate } from '../../lib/helpers'
@@ -164,9 +165,7 @@ export default function ManageProducts() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map(item => (
               <div key={item.id} className="glass-card flex flex-col">
-                {item.thumbnail_url && (
-                  <img src={item.thumbnail_url} alt="thumbnail" className="w-full h-40 object-cover rounded-xl mb-4 border border-border" />
-                )}
+                <SafeImage src={item.thumbnail_url} alt={item.title || 'thumbnail'} className="w-full h-40 object-cover rounded-xl mb-4 border border-border" />
                 <div className="flex justify-between items-start mb-2">
                   <span className="badge-gold">{item.category}</span>
                   <span className={`text-xs font-bold ${item.is_free ? 'text-green' : 'text-amber-400'}`}>

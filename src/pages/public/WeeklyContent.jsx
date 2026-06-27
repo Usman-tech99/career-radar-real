@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
+import SafeImage from '../../components/ui/SafeImage'
 import { Calendar, Tag, ExternalLink, PlayCircle, FileText } from 'lucide-react'
 
 export default function WeeklyContent() {
@@ -46,15 +47,7 @@ export default function WeeklyContent() {
                 key={item.id} 
                 className="glass-card flex flex-col overflow-hidden p-0 hover:-translate-y-1 transition-transform group border border-border hover:border-purple-accent/50"
               >
-                {item.thumbnail_url ? (
-                  <div className="w-full h-48 relative overflow-hidden bg-black/50">
-                    <img src={item.thumbnail_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  </div>
-                ) : (
-                  <div className="w-full h-48 bg-gradient-to-br from-purple-accent/20 to-blue-accent/20 flex items-center justify-center">
-                    <FileText size={48} className="text-purple-accent" />
-                  </div>
-                )}
+                <SafeImage src={item.thumbnail_url} alt={item.title} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500" />
                 
                 <div className="p-6 flex-1 flex flex-col">
                   <div className="flex justify-between items-center mb-3">

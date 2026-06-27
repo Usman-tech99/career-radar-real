@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import AdminSidebar from '../../components/layout/AdminSidebar'
+import SafeImage from '../../components/ui/SafeImage'
 import toast from 'react-hot-toast'
 import { Save, Upload } from 'lucide-react'
 
@@ -97,13 +98,7 @@ export default function MyProfile() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1 glass-card flex flex-col items-center justify-center py-12">
             <div className="w-32 h-32 rounded-full border-4 border-white/[0.05] overflow-hidden mb-6 relative group">
-              {data.avatar_url ? (
-                <img src={data.avatar_url} alt="avatar" className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full bg-white/[0.02] flex items-center justify-center text-4xl text-muted font-bold">
-                  {data.full_name ? data.full_name[0] : '?'}
-                </div>
-              )}
+              <SafeImage src={data.avatar_url} alt={data.full_name || 'avatar'} className="w-full h-full object-cover" />
               <label className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
                 <Upload size={24} className="text-white" />
                 <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} disabled={uploading} />

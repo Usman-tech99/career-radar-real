@@ -5,6 +5,7 @@ import AdminSidebar from '../../components/layout/AdminSidebar'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import SafeImage from '../../components/ui/SafeImage'
 import toast from 'react-hot-toast'
 import { Plus, Edit2, Trash2, X, Upload } from 'lucide-react'
 
@@ -149,11 +150,7 @@ export default function ManageCollaborators() {
                 
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-16 h-16 rounded-xl bg-white/[0.02] border border-border flex items-center justify-center shrink-0 overflow-hidden p-2">
-                    {item.logo_url ? (
-                      <img src={item.logo_url} alt="logo" className="max-w-full max-h-full object-contain" />
-                    ) : (
-                      <span className="text-2xl font-bold text-muted">{item.name[0]}</span>
-                    )}
+                    <SafeImage src={item.logo_url} alt={item.name || 'logo'} className="max-w-full max-h-full object-contain" />
                   </div>
                   <div>
                     <h3 className="font-bold text-lg leading-tight">{item.name}</h3>

@@ -2,6 +2,7 @@
 import { supabase } from '../../lib/supabase'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
+import SafeImage from '../../components/ui/SafeImage'
 import { ShoppingBag, Download, ExternalLink, MessageCircle, DollarSign, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -113,20 +114,14 @@ export default function Shop() {
                 key={product.id} 
                 className="glass-card flex flex-col overflow-hidden hover:-translate-y-1 transition-transform group"
               >
-                {product.thumbnail_url ? (
-                  <div className="w-full h-48 relative overflow-hidden bg-black/50">
-                    <img src={product.thumbnail_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    {product.is_free && (
-                      <span className="absolute top-3 right-3 bg-green text-[#07070C] text-xs font-bold px-3 py-1 rounded-full">
-                        FREE
-                      </span>
-                    )}
-                  </div>
-                ) : (
-                  <div className="w-full h-48 bg-gradient-to-br from-gold/20 to-orange-500/20 flex items-center justify-center">
-                    <ShoppingBag size={48} className="text-gold" />
-                  </div>
-                )}
+                <div className="w-full h-48 relative overflow-hidden bg-black/50">
+                  <SafeImage src={product.thumbnail_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  {product.is_free && (
+                    <span className="absolute top-3 right-3 bg-green text-[#07070C] text-xs font-bold px-3 py-1 rounded-full">
+                      FREE
+                    </span>
+                  )}
+                </div>
                 
                 <div className="p-6 flex-1 flex flex-col">
                   <div className="flex justify-between items-center mb-3">

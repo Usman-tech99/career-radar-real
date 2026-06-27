@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import AdminSidebar from '../../components/layout/AdminSidebar'
 import toast from 'react-hot-toast'
+import SafeImage from '../../components/ui/SafeImage'
 import { Plus, Edit2, Trash2, X, Users, Upload, Image as ImageIcon, Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -230,13 +231,7 @@ export default function ManageTeamMembers() {
             {members.map(member => (
               <div key={member.id} className="glass-card flex flex-col relative overflow-hidden">
                 <div className="flex items-center gap-4 mb-4">
-                  {member.image_url ? (
-                    <img src={member.image_url} alt={member.name} className="w-16 h-16 rounded-full object-cover border-2 border-white/[0.05]" />
-                  ) : (
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green/20 to-blue-accent/20 flex items-center justify-center">
-                      <span className="text-2xl font-bold text-white">{member.name?.[0] || '?'}</span>
-                    </div>
-                  )}
+                  <SafeImage src={member.image_url} alt={member.name} className="w-16 h-16 rounded-full object-cover border-2 border-white/[0.05]" />
                   <div>
                     <h3 className="font-bold">{member.name}</h3>
                     <p className="text-sm text-green">{member.role}</p>
@@ -299,7 +294,7 @@ export default function ManageTeamMembers() {
                     <div className="shrink-0">
                       {previewUrl ? (
                         <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-white/[0.05]">
-                          <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                          <SafeImage src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
                         </div>
                       ) : (
                         <div className="w-20 h-20 rounded-full bg-white/[0.05] flex items-center justify-center border-2 border-dashed border-white/[0.1]">

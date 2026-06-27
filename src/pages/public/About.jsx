@@ -2,6 +2,7 @@
 import { supabase } from '../../lib/supabase'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
+import SafeImage from '../../components/ui/SafeImage'
 import { Mail, MessageCircle, Crown, Calendar } from 'lucide-react'
 
 export default function About() {
@@ -61,13 +62,7 @@ export default function About() {
                       className="glass-card flex flex-col items-center text-center p-8 hover:-translate-y-1 transition-transform border border-gold/20"
                     >
                       <div className="relative mb-6">
-                        {founder.avatar_url ? (
-                          <img src={founder.avatar_url} alt={founder.full_name} className="w-32 h-32 rounded-full object-cover border-4 border-gold/30" />
-                        ) : (
-                          <div className="w-32 h-32 rounded-full bg-gradient-to-br from-gold/20 to-orange-500/20 flex items-center justify-center border-4 border-gold/30">
-                            <span className="text-4xl font-bold text-gold">{founder.full_name?.[0] || '?'}</span>
-                          </div>
-                        )}
+                        <SafeImage src={founder.avatar_url} alt={founder.full_name} className="w-32 h-32 rounded-full object-cover border-4 border-gold/30" />
                         <div className="absolute -top-2 -right-2 bg-gold text-[#07070C] p-2 rounded-full">
                           <Crown size={16} />
                         </div>
