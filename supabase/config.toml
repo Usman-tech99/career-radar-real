@@ -1,2 +1,5 @@
 [functions.radar-ai-chat]
 verify_jwt = false
+
+[functions.generate-career-blueprint]
+verify_jwt = true

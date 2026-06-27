@@ -107,6 +107,15 @@ Return ONLY valid JSON (no markdown, no code fences) with this exact structure:
 
     if (insertError) throw insertError;
 
+    // Log to ai_chat_logs
+    sb.from('ai_chat_logs').insert({
+      session_id: 'blueprint-' + user.id,
+      user_id: user.id,
+      user_message: `Generate career blueprint (${onboarding.career_goal || 'general'})`,
+      ai_response: blueprint.summary || 'Blueprint generated',
+      mode_detected: 'career_coach'
+    }).catch((err: any) => console.error('Blueprint log insert failed:', err));
+
     return new Response(JSON.stringify({ success: true, blueprint: insertedBlueprint }), { headers: { ...cors, "Content-Type": "application/json" } });
 
   } catch (error: any) {

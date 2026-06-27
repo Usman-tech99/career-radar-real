@@ -12,11 +12,19 @@ const cors = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type"
 };
 
+function detectMode(messages: { role: string; content: string }[]): string {
+  const lastUserMsg = [...messages].reverse().find(m => m.role === "user")?.content?.toLowerCase() || "";
+  if (/\b(job|hiring|vacancy|position|opening|apply|career opportunity|remote job|freelance gig)\b/i.test(lastUserMsg)) return "job_matcher";
+  if (/\b(course|learn|study|tutorial|guide|resource|lesson|education|skill development|training)\b/i.test(lastUserMsg)) return "content_assistant";
+  if (/\b(career|advice|roadmap|strategy|path|goal|future|plan|growth|recommendation|suggestion)\b/i.test(lastUserMsg)) return "career_coach";
+  return "general";
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
 
   try {
-    const { messages } = await req.json();
+    const { messages, session_id, user_id } = await req.json();
 
     const sb = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -72,7 +80,18 @@ Deno.serve(async (req: Request) => {
 
     const aiText = groqData.choices?.[0]?.message?.content || "No response generated.";
 
-    return new Response(JSON.stringify({ content: aiText }), { headers: { ...cors, "Content-Type": "application/json" } });
+    // Log to ai_chat_logs (SERVICE_ROLE_KEY bypasses RLS)
+    const userMessage = [...messages].reverse().find(m => m.role === "user")?.content || "";
+    const mode = detectMode(messages);
+    sb.from("ai_chat_logs").insert({
+      session_id: session_id || "anon",
+      user_id: user_id || null,
+      user_message: userMessage,
+      ai_response: aiText,
+      mode_detected: mode
+    }).catch((err: any) => console.error("Log insert failed:", err))
+
+    return new Response(JSON.stringify({ content: aiText, mode }), { headers: { ...cors, "Content-Type": "application/json" } });
 
   } catch (error: any) {
     console.error("Radar AI Error:", error);

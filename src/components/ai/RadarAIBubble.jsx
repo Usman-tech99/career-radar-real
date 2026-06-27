@@ -38,6 +38,7 @@ export default function RadarAIBubble() {
 
     try {
       const { data: { session } } = await supabase.auth.getSession()
+      const sessionId = Date.now().toString(36) + Math.random().toString(36).slice(2, 6)
 
       const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/radar-ai-chat`, {
         method: 'POST',
@@ -48,7 +49,8 @@ export default function RadarAIBubble() {
         },
         body: JSON.stringify({ 
           messages: newMessages,
-          session_id: 'temp-session-' + Date.now()
+          session_id: sessionId,
+          user_id: user?.id || null
         })
       })
 
@@ -61,17 +63,6 @@ export default function RadarAIBubble() {
       const aiText = data?.content || JSON.stringify(data)
 
       setMessages([...newMessages, { role: 'assistant', content: aiText }])
-      
-      // Log interaction asynchronously
-      if (user) {
-        supabase.from('ai_chat_logs').insert([{
-          session_id: 'temp',
-          user_id: user.id,
-          user_message: userMessage.content,
-          ai_response: aiText,
-          mode_detected: 'general' // We can infer mode based on regex, or just log general
-        }]).then() // fire and forget
-      }
 
     } catch (err) {
       console.error('Radar AI Chat error:', err)

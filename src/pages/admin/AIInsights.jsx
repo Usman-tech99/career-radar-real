@@ -22,10 +22,14 @@ export default function AIInsights() {
         .order('created_at', { ascending: false })
         .limit(100)
 
-      if (error) toast.error('Failed to fetch AI logs')
-      else setLogs(data || [])
+      if (error) {
+        console.error('AI Insights fetch error:', error.message, error.code, error.details)
+        toast.error('Failed to fetch AI logs')
+      } else {
+        setLogs(data || [])
+      }
     } catch (err) {
-      console.error(err)
+      console.error('AI Insights exception:', err)
       toast.error('Failed to fetch AI logs')
     } finally {
       setLoading(false)

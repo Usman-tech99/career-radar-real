@@ -255,6 +255,12 @@ CREATE POLICY "team_members_pub" ON team_members FOR SELECT USING (is_active = T
 CREATE POLICY "team_members_admin" ON team_members FOR ALL USING (get_my_role() = 'super_admin') WITH CHECK (get_my_role() = 'super_admin');
 CREATE TRIGGER team_members_upd BEFORE UPDATE ON team_members FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
 
+-- Storage RLS for team-avatars bucket
+CREATE POLICY "team_avatars_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'team-avatars');
+CREATE POLICY "team_avatars_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'team-avatars' AND auth.role() = 'authenticated');
+CREATE POLICY "team_avatars_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'team-avatars' AND auth.role() = 'authenticated');
+CREATE POLICY "team_avatars_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'team-avatars' AND auth.role() = 'authenticated');
+
 -- ai_chat_logs
 CREATE TABLE ai_chat_logs (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   session_id TEXT NOT NULL, user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
@@ -263,4 +269,6 @@ CREATE TABLE ai_chat_logs (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE ai_chat_logs ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "logs_founder" ON ai_chat_logs FOR SELECT USING(get_my_role()='super_admin');
+CREATE POLICY "logs_insert" ON ai_chat_logs FOR INSERT WITH CHECK (true);
+CREATE POLICY "logs_founder_select" ON ai_chat_logs FOR SELECT USING(get_my_role()='super_admin');
+CREATE POLICY "logs_founder_delete" ON ai_chat_logs FOR DELETE USING(get_my_role()='super_admin');

@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { useAuth } from '../../context/AuthContext'
 import AdminSidebar from '../../components/layout/AdminSidebar'
 import toast from 'react-hot-toast'
-import { Plus, Edit2, Trash2, X, Users } from 'lucide-react'
+import { Plus, Edit2, Trash2, X, Users, Upload, Image as ImageIcon, Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -13,7 +12,6 @@ const platforms = ['linkedin', 'github', 'youtube', 'twitter', 'instagram', 'fac
 const teamMemberSchema = z.object({
   name: z.string().min(2, "Name is required"),
   role: z.string().min(2, "Role is required"),
-  image_url: z.string().url("Must be a valid URL").optional().or(z.literal('')),
   skills: z.string().optional(),
   age: z.preprocess((val) => (val === '' || val === undefined || val === null) ? undefined : Number(val), z.number().int().min(1).max(120).optional()),
   education: z.string().optional(),
@@ -22,13 +20,19 @@ const teamMemberSchema = z.object({
   is_active: z.boolean().default(true),
 })
 
+const STORAGE_BUCKET = 'team-avatars'
+
 export default function ManageTeamMembers() {
-  const { user } = useAuth()
   const [members, setMembers] = useState([])
   const [loading, setLoading] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [socialLinks, setSocialLinks] = useState([{ platform: '', url: '' }])
+
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [previewUrl, setPreviewUrl] = useState(null)
+  const [existingImageUrl, setExistingImageUrl] = useState(null)
+  const [uploading, setUploading] = useState(false)
 
   const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm({
     resolver: zodResolver(teamMemberSchema),
@@ -39,6 +43,12 @@ export default function ManageTeamMembers() {
     fetchMembers()
   }, [])
 
+  useEffect(() => {
+    return () => {
+      if (previewUrl && previewUrl.startsWith('blob:')) URL.revokeObjectURL(previewUrl)
+    }
+  }, [previewUrl])
+
   async function fetchMembers() {
     const { data, error } = await supabase.from('team_members').select('*').order('sort_order', { ascending: true })
     if (error) toast.error('Failed to fetch team members')
@@ -46,18 +56,47 @@ export default function ManageTeamMembers() {
     setLoading(false)
   }
 
+  function handleFileSelect(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file')
+      return
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be under 5MB')
+      return
+    }
+
+    setSelectedFile(file)
+    if (previewUrl && previewUrl.startsWith('blob:')) URL.revokeObjectURL(previewUrl)
+    setPreviewUrl(URL.createObjectURL(file))
+  }
+
+  function clearFileSelection() {
+    setSelectedFile(null)
+    if (previewUrl && previewUrl.startsWith('blob:')) URL.revokeObjectURL(previewUrl)
+    setPreviewUrl(existingImageUrl || null)
+    document.getElementById('team-avatar-input')?.value && (document.getElementById('team-avatar-input').value = '')
+  }
+
   function openModal(member = null) {
     if (member) {
       setEditingId(member.id)
       setValue('name', member.name)
       setValue('role', member.role)
-      setValue('image_url', member.image_url || '')
       setValue('skills', member.skills ? member.skills.join(', ') : '')
       setValue('age', member.age || '')
       setValue('education', member.education || '')
       setValue('goal', member.goal || '')
       setValue('sort_order', member.sort_order)
       setValue('is_active', member.is_active)
+
+      setExistingImageUrl(member.image_url || null)
+      setPreviewUrl(member.image_url || null)
+      setSelectedFile(null)
 
       const links = member.social_links && typeof member.social_links === 'object'
         ? Object.entries(member.social_links).map(([platform, url]) => ({ platform, url: url || '' }))
@@ -66,9 +105,29 @@ export default function ManageTeamMembers() {
     } else {
       setEditingId(null)
       reset()
+      setExistingImageUrl(null)
+      setPreviewUrl(null)
+      setSelectedFile(null)
       setSocialLinks([{ platform: '', url: '' }])
     }
     setIsModalOpen(true)
+  }
+
+  async function uploadImage(file) {
+    const ext = file.name.split('.').pop()?.toLowerCase() || 'png'
+    const filename = `avatar-${Date.now()}.${ext}`
+
+    const { error: uploadError } = await supabase.storage
+      .from(STORAGE_BUCKET)
+      .upload(filename, file, { contentType: file.type })
+
+    if (uploadError) throw new Error(uploadError.message || 'Failed to upload image')
+
+    const { data: urlData } = supabase.storage
+      .from(STORAGE_BUCKET)
+      .getPublicUrl(filename)
+
+    return urlData?.publicUrl || null
   }
 
   async function onSubmit(data) {
@@ -80,10 +139,25 @@ export default function ManageTeamMembers() {
       if (platform && url) socialsObj[platform] = url
     })
 
+    let imageUrl = existingImageUrl
+
+    if (selectedFile) {
+      setUploading(true)
+      try {
+        imageUrl = await uploadImage(selectedFile)
+      } catch (err) {
+        toast.error(err.message)
+        setUploading(false)
+        return
+      } finally {
+        setUploading(false)
+      }
+    }
+
     const payload = {
       name: data.name,
       role: data.role,
-      image_url: data.image_url || null,
+      image_url: imageUrl || null,
       skills,
       age: data.age || null,
       education: data.education || null,
@@ -218,10 +292,41 @@ export default function ManageTeamMembers() {
                   </div>
                 </div>
 
+                {/* Avatar Upload */}
                 <div>
-                  <label className="label">Image URL</label>
-                  <input {...register('image_url')} className="input-field" placeholder="https://..." />
-                  {errors.image_url && <p className="text-red-400 text-sm mt-1">{errors.image_url.message}</p>}
+                  <label className="label">Avatar Image</label>
+                  <div className="flex items-center gap-4">
+                    <div className="shrink-0">
+                      {previewUrl ? (
+                        <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-white/[0.05]">
+                          <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                        </div>
+                      ) : (
+                        <div className="w-20 h-20 rounded-full bg-white/[0.05] flex items-center justify-center border-2 border-dashed border-white/[0.1]">
+                          <ImageIcon size={24} className="text-muted" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.05] border border-white/[0.1] hover:bg-white/[0.08] transition-colors text-sm font-medium">
+                        <Upload size={16} />
+                        {selectedFile ? 'Change Image' : 'Choose File'}
+                        <input
+                          id="team-avatar-input"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileSelect}
+                          className="hidden"
+                        />
+                      </label>
+                      {selectedFile && (
+                        <button type="button" onClick={clearFileSelection} className="ml-2 text-xs text-red-400 hover:underline">
+                          Remove
+                        </button>
+                      )}
+                      <p className="text-[10px] text-muted mt-1">PNG, JPG, WEBP. Max 5MB.</p>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -289,7 +394,9 @@ export default function ManageTeamMembers() {
 
                 <div className="pt-4 flex justify-end gap-4 border-t border-border mt-6">
                   <button type="button" onClick={() => setIsModalOpen(false)} className="btn-ghost">Cancel</button>
-                  <button type="submit" className="btn-primary">Save Member</button>
+                  <button type="submit" className="btn-primary flex items-center gap-2" disabled={uploading}>
+                    {uploading ? <><Loader2 size={16} className="animate-spin" /> Uploading image...</> : 'Save Member'}
+                  </button>
                 </div>
               </form>
             </div>
