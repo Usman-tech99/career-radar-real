@@ -42,7 +42,10 @@ export default function Footer() {
           {/* Brand Col */}
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="inline-flex items-center gap-2 mb-4">
-              <img src={logo} alt="Career Radar" className="h-10 w-10" />
+              <div className="relative shrink-0">
+                <div className="absolute inset-0 bg-green/20 rounded-full blur-xl" />
+                <img src={logo} alt="Career Radar" className="h-10 w-10 relative brightness-110" />
+              </div>
               <span className="font-sora font-bold text-2xl tracking-tight text-white">
                 Career <span className="text-green">Radar</span>
               </span>
