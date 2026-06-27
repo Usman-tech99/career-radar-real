@@ -300,7 +300,7 @@ CREATE TABLE scholarships (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 CREATE INDEX idx_scholarships ON scholarships(country,coverage);
 ALTER TABLE scholarships ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "scholarships_pub" ON scholarships FOR SELECT USING(TRUE);
-CREATE POLICY "scholarships_admin" ON scholarships FOR ALL USING(get_my_role()='super_admin') WITH CHECK(get_my_role()='super_admin');
+CREATE POLICY "scholarships_admin" ON scholarships FOR ALL USING(get_my_role() IN('super_admin','admin')) WITH CHECK(get_my_role() IN('super_admin','admin'));
 CREATE TRIGGER scholarships_upd BEFORE UPDATE ON scholarships FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
 
 -- Storage RLS for scholarship-logos bucket

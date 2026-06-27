@@ -78,11 +78,13 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     let mounted = true
+    let trackedUserId = null
 
     async function init() {
       try {
         const { data: { session } } = await supabase.auth.getSession()
         if (session?.user && mounted) {
+          trackedUserId = session.user.id
           await refreshState(session.user)
         } else if (mounted) {
           setRoleChecked(true)
@@ -102,8 +104,11 @@ export function AuthProvider({ children }) {
         if (!mounted) return
         if (event === 'TOKEN_REFRESHED') return
         if (session?.user) {
+          if (trackedUserId === session.user.id) return
+          trackedUserId = session.user.id
           await refreshState(session.user)
         } else {
+          trackedUserId = null
           setUser(null)
           setRole(null)
           setOnboardingComplete(false)
