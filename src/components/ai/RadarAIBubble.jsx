@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Zap, X, Send, User, Loader2 } from 'lucide-react'
+import { X, Send, User, Loader2 } from 'lucide-react'
+import logo from '../../assets/logo1.png'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
@@ -94,9 +95,15 @@ export default function RadarAIBubble() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-green to-blue-accent rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center z-50 hover:scale-110 transition-transform"
+            className="fixed bottom-6 right-6 w-14 h-14 rounded-full z-50 hover:scale-110 transition-transform"
           >
-            <Zap className="text-[#07070C]" size={28} />
+            <div className="relative w-full h-full flex items-center justify-center">
+              <div className="absolute -inset-4 bg-[#00FF66]/10 rounded-full blur-[30px] animate-pulse" />
+              <div className="absolute -inset-3 bg-[#00FF00]/15 rounded-full blur-[20px]" />
+              <div className="absolute -inset-2 rounded-full border border-[#00FF66]/40 shadow-[0_0_20px_4px_rgba(0,255,102,0.3)]" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#00FF66]/10 to-transparent" />
+              <img src={logo} alt="Radar AI" className="relative w-9 h-9 brightness-125 drop-shadow-[0_0_12px_rgba(0,255,102,0.6)]" />
+            </div>
           </motion.button>
         )}
       </AnimatePresence>
