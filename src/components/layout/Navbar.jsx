@@ -39,7 +39,7 @@ export default function Navbar() {
             <div className="absolute -inset-2 rounded-full border border-[#00FF66]/40 shadow-[0_0_20px_4px_rgba(0,255,102,0.3),inset_0_0_12px_2px_rgba(0,255,102,0.15)]" />
             <div className="absolute -inset-0.5 rounded-full border border-[#00FF66]/20" />
             <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#00FF66]/10 to-transparent" />
-            <img src={logo} alt=" Career Radar" className="relative h-10 w-10 brightness-125 drop-shadow-[0_0_12px_rgba(0,255,102,0.6)_0_0_24px_rgba(0,255,102,0.3)]" />
+            <img src={logo} alt="  Career Radar" className="relative h-10 w-10 brightness-125 drop-shadow-[0_0_12px_rgba(0,255,102,0.6)_0_0_24px_rgba(0,255,102,0.3)]" />
           </div>
           <span className="font-sora font-bold text-xl tracking-tight text-white drop-shadow-[0_0_4px_rgba(255,255,255,0.2)]">
             Career <span className="text-[#00FF66] drop-shadow-[0_0_12px_rgba(0,255,102,0.6)]">Radar</span>
