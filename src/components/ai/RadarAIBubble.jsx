@@ -5,6 +5,17 @@ import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
 
+function formatAIResponse(text) {
+  if (!text) return null
+  const parts = text.split(/(\*\*.*?\*\*)/g)
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i}>{part.slice(2, -2)}</strong>
+    }
+    return part
+  })
+}
+
 export default function RadarAIBubble() {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState([
@@ -132,7 +143,7 @@ export default function RadarAIBubble() {
                       ? 'bg-blue-accent text-white rounded-tr-none' 
                       : 'bg-white/[0.05] text-white/90 rounded-tl-none border border-white/[0.05]'
                   }`}>
-                    {msg.content}
+                    {msg.role === 'assistant' ? formatAIResponse(msg.content) : msg.content}
                   </div>
                 </div>
               ))}
