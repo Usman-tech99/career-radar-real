@@ -11,6 +11,7 @@ import Home from './pages/public/Home'
 import Jobs from './pages/public/Jobs'
 import WeeklyContent from './pages/public/WeeklyContent'
 import Education from './pages/public/Education'
+import Scholarships from './pages/public/Scholarships'
 import Shop from './pages/public/Shop'
 import Team from './pages/public/Team'
 import Structure from './pages/public/Structure'
@@ -32,6 +33,7 @@ import ManageJobs from './pages/admin/ManageJobs'
 import ManageContent from './pages/admin/ManageContent'
 import ManageProducts from './pages/admin/ManageProducts'
 import ManageEducation from './pages/admin/ManageEducation'
+import ManageScholarships from './pages/admin/ManageScholarships'
 import ManageStructure from './pages/admin/ManageStructure'
 import ManageAbout from './pages/admin/ManageAbout'
 import ManageSocials from './pages/admin/ManageSocials'
@@ -86,6 +88,7 @@ export default function App() {
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/weekly-content" element={<WeeklyContent />} />
           <Route path="/education" element={<Education />} />
+          <Route path="/scholarships" element={<Scholarships />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/team" element={<Team />} />
           <Route path="/structure" element={<Structure />} />
@@ -113,6 +116,7 @@ export default function App() {
             <Route path="/admin/manage-content" element={<ManageContent />} />
             <Route path="/admin/manage-products" element={<ManageProducts />} />
             <Route path="/admin/manage-education" element={<ManageEducation />} />
+            <Route path="/admin/manage-scholarships" element={<ManageScholarships />} />
             <Route path="/admin/manage-about" element={<ManageAbout />} />
             <Route path="/admin/manage-socials" element={<ManageSocials />} />
             <Route path="/admin/manage-collaborators" element={<ManageCollaborators />} />

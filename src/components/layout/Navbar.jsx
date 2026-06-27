@@ -14,6 +14,7 @@ export default function Navbar() {
     { name: 'Jobs', path: '/jobs' },
     { name: 'Resources', path: '/weekly-content' },
     { name: 'Education', path: '/education' },
+    { name: 'Scholarships', path: '/scholarships' },
     { name: 'Shop', path: '/shop' },
     { name: 'Team', path: '/team' },
     { name: 'About', path: '/about' },

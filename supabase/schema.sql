@@ -288,3 +288,23 @@ ALTER TABLE ai_chat_logs ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "logs_insert" ON ai_chat_logs FOR INSERT WITH CHECK (true);
 CREATE POLICY "logs_founder_select" ON ai_chat_logs FOR SELECT USING(get_my_role()='super_admin');
 CREATE POLICY "logs_founder_delete" ON ai_chat_logs FOR DELETE USING(get_my_role()='super_admin');
+
+-- scholarships
+CREATE TABLE scholarships (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL, provider TEXT NOT NULL,
+  coverage TEXT CHECK(coverage IN('Fully Funded','Partial Tuition','Monthly Stipend','Other')),
+  country TEXT NOT NULL, deadline DATE, description TEXT,
+  eligibility TEXT, apply_url TEXT NOT NULL, image_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX idx_scholarships ON scholarships(country,coverage);
+ALTER TABLE scholarships ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "scholarships_pub" ON scholarships FOR SELECT USING(TRUE);
+CREATE POLICY "scholarships_admin" ON scholarships FOR ALL USING(get_my_role()='super_admin') WITH CHECK(get_my_role()='super_admin');
+CREATE TRIGGER scholarships_upd BEFORE UPDATE ON scholarships FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
+
+-- Storage RLS for scholarship-logos bucket
+CREATE POLICY "sclogos_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'scholarship-logos');
+CREATE POLICY "sclogos_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'scholarship-logos' AND auth.role() = 'authenticated');
+CREATE POLICY "sclogos_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'scholarship-logos' AND auth.role() = 'authenticated');
+CREATE POLICY "sclogos_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'scholarship-logos' AND auth.role() = 'authenticated');

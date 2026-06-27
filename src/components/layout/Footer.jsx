@@ -64,6 +64,7 @@ export default function Footer() {
               <li><Link to="/jobs" className="text-sm text-muted hover:text-white transition-colors">Jobs Board</Link></li>
               <li><Link to="/weekly-content" className="text-sm text-muted hover:text-white transition-colors">Resources</Link></li>
               <li><Link to="/education" className="text-sm text-muted hover:text-white transition-colors">Courses</Link></li>
+              <li><Link to="/scholarships" className="text-sm text-muted hover:text-white transition-colors">Scholarships</Link></li>
               <li><Link to="/shop" className="text-sm text-muted hover:text-white transition-colors">Shop</Link></li>
             </ul>
           </div>

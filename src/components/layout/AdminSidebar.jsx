@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext'
 import { 
   LayoutDashboard, Briefcase, FileText, ShoppingBag, 
   BookOpen, LayoutTemplate, Info, Share2, Users, UserCheck,
-  ShieldAlert, CreditCard, BrainCircuit, UserCircle, LogOut 
+  ShieldAlert, CreditCard, BrainCircuit, UserCircle, GraduationCap, LogOut 
 } from 'lucide-react'
 
 export default function AdminSidebar() {
@@ -16,6 +16,7 @@ export default function AdminSidebar() {
     { label: 'Manage Content', path: '/admin/manage-content', icon: FileText, roles: ['super_admin', 'admin'] },
     { label: 'Manage Products', path: '/admin/manage-products', icon: ShoppingBag, roles: ['super_admin', 'admin'] },
     { label: 'Manage Education', path: '/admin/manage-education', icon: BookOpen, roles: ['super_admin', 'admin'] },
+    { label: 'Manage Scholarships', path: '/admin/manage-scholarships', icon: GraduationCap, roles: ['super_admin', 'admin'] },
     { label: 'Manage Structure', path: '/admin/manage-structure', icon: LayoutTemplate, roles: ['super_admin'] },
     { label: 'Manage About', path: '/admin/manage-about', icon: Info, roles: ['super_admin', 'admin'] },
     { label: 'Manage Socials', path: '/admin/manage-socials', icon: Share2, roles: ['super_admin', 'admin'] },
