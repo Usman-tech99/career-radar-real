@@ -83,13 +83,16 @@ Deno.serve(async (req: Request) => {
     // Log to ai_chat_logs (SERVICE_ROLE_KEY bypasses RLS)
     const userMessage = [...messages].reverse().find(m => m.role === "user")?.content || "";
     const mode = detectMode(messages);
-    sb.from("ai_chat_logs").insert({
-      session_id: session_id || "anon",
-      user_id: user_id || null,
-      user_message: userMessage,
-      ai_response: aiText,
-      mode_detected: mode
-    }).catch((err: any) => console.error("Log insert failed:", err))
+    (async () => {
+      const { error: logErr } = await sb.from("ai_chat_logs").insert({
+        session_id: session_id || "anon",
+        user_id: user_id || null,
+        user_message: userMessage,
+        ai_response: aiText,
+        mode_detected: mode
+      });
+      if (logErr) console.error("Log insert failed:", logErr);
+    })()
 
     return new Response(JSON.stringify({ content: aiText, mode }), { headers: { ...cors, "Content-Type": "application/json" } });
 
