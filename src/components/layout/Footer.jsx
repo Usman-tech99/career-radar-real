@@ -43,12 +43,15 @@ export default function Footer() {
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="inline-flex items-center gap-2 mb-4">
               <div className="relative shrink-0">
-                <div className="absolute -inset-1 bg-green/20 rounded-full blur-xl" />
-                <div className="absolute -inset-0.5 rounded-full border border-white/20" />
-                <img src={logo} alt="Career Radar" className="h-10 w-10 relative brightness-110" />
+                <div className="absolute -inset-4 bg-[#00FF66]/10 rounded-full blur-[30px] animate-pulse" />
+                <div className="absolute -inset-3 bg-[#00FF00]/15 rounded-full blur-[20px]" />
+                <div className="absolute -inset-2 rounded-full border border-[#00FF66]/40 shadow-[0_0_20px_4px_rgba(0,255,102,0.3),inset_0_0_12px_2px_rgba(0,255,102,0.15)]" />
+                <div className="absolute -inset-0.5 rounded-full border border-[#00FF66]/20" />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#00FF66]/10 to-transparent" />
+                <img src={logo} alt="Career Radar" className="relative h-10 w-10 brightness-125 drop-shadow-[0_0_12px_rgba(0,255,102,0.6)_0_0_24px_rgba(0,255,102,0.3)]" />
               </div>
-              <span className="font-sora font-bold text-2xl tracking-tight text-white">
-                Career <span className="text-green">Radar</span>
+              <span className="font-sora font-bold text-2xl tracking-tight text-white drop-shadow-[0_0_4px_rgba(255,255,255,0.2)]">
+                Career <span className="text-[#00FF66] drop-shadow-[0_0_12px_rgba(0,255,102,0.6)]">Radar</span>
               </span>
             </Link>
             <p className="text-muted text-sm max-w-sm mb-6">
