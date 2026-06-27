@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext'
 import { Menu, X, User } from 'lucide-react'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import logo from '../../assets/logo.png'
 
 export default function Navbar() {
   const { user, role } = useAuth()
@@ -32,7 +33,7 @@ export default function Navbar() {
         
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          {/* Logo image could go here if available. For now, text logo */}
+          <img src={logo} alt="Career Radar" className="h-10 w-10" />
           <span className="font-sora font-bold text-xl tracking-tight text-white">
             Career <span className="text-green">Radar</span>
           </span>

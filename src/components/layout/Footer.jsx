@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { MessageCircle, Youtube, Instagram, Linkedin, Twitter, Send, Users as UsersIcon, Globe } from 'lucide-react'
+import logo from '../../assets/logo.png'
 
 const platformIcons = {
   whatsapp: MessageCircle,
@@ -40,7 +41,8 @@ export default function Footer() {
           
           {/* Brand Col */}
           <div className="col-span-1 md:col-span-2">
-            <Link to="/" className="inline-block mb-4">
+            <Link to="/" className="inline-flex items-center gap-2 mb-4">
+              <img src={logo} alt="Career Radar" className="h-10 w-10" />
               <span className="font-sora font-bold text-2xl tracking-tight text-white">
                 Career <span className="text-green">Radar</span>
               </span>
