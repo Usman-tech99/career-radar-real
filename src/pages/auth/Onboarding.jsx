@@ -130,7 +130,7 @@ export default function Onboarding() {
       }, { onConflict: 'id' })
 
       if (profileResult.error) {
-        console.error('Onboarding: public_users upsert failed:', profileResult.error.message, profileResult.error.code, profileResult.error.details)
+        console.error('Onboarding: public_users upsert failed:', profileResult.error.message)
         throw new Error(`Profile save failed: ${profileResult.error.message}`)
       }
 
@@ -147,7 +147,7 @@ export default function Onboarding() {
       }, { onConflict: 'user_id' })
 
       if (dataResult.error) {
-        console.error('Onboarding: onboarding_data upsert failed:', dataResult.error.message, dataResult.error.code, dataResult.error.details)
+        console.error('Onboarding: onboarding_data upsert failed:', dataResult.error.message)
         throw new Error(`Data save failed: ${dataResult.error.message}`)
       }
 
@@ -160,7 +160,7 @@ export default function Onboarding() {
       navigate('/dashboard', { replace: true })
     } catch (err) {
       toast.error(err.message || 'Failed to save profile')
-      console.error(err)
+      console.error('Onboarding: error:', err.message)
     } finally {
       setSubmitting(false)
     }

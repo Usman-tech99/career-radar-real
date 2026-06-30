@@ -23,13 +23,13 @@ export default function AIInsights() {
         .limit(100)
 
       if (error) {
-        console.error('AI Insights fetch error:', error.message, error.code, error.details)
+        console.error('AI Insights fetch error:', error.message)
         toast.error('Failed to fetch AI logs')
       } else {
         setLogs(data || [])
       }
     } catch (err) {
-      console.error('AI Insights exception:', err)
+      console.error('AI Insights exception:', err.message)
       toast.error('Failed to fetch AI logs')
     } finally {
       setLoading(false)

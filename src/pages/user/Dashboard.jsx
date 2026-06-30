@@ -26,13 +26,13 @@ export default function Dashboard() {
       ])
 
       if (scoreRes.error) {
-        console.error('Dashboard: career_scores query error:', scoreRes.error.message, scoreRes.error.code, scoreRes.error.details)
+        console.error('Dashboard: career_scores query error:', scoreRes.error.message)
       } else if (scoreRes?.data) {
         setScore(scoreRes.data)
       }
 
       if (blueprintRes.error) {
-        console.error('Dashboard: career_blueprints query error:', blueprintRes.error.message, blueprintRes.error.code, blueprintRes.error.details)
+        console.error('Dashboard: career_blueprints query error:', blueprintRes.error.message)
       } else if (blueprintRes?.data) {
         setBlueprint(blueprintRes.data)
       }
@@ -56,17 +56,14 @@ export default function Dashboard() {
     try {
       const { data, error } = await supabase.functions.invoke('generate-career-blueprint', { body: {} })
       if (error) {
-        console.error('Dashboard: edge function invoke error:', error)
-        if (error.context) {
-          console.error('Dashboard: edge function status:', error.context.status, 'statusText:', error.context.statusText)
-        }
+        console.error('Dashboard: edge function invoke error:', error.message)
         throw new Error(typeof error === 'object' ? error.message : 'Edge function returned an error')
       }
       toast.success('Blueprint generated successfully!', { id: loadToast })
       await fetchDashboardData()
     } catch (err) {
       toast.error(err.message || 'Failed to generate blueprint', { id: loadToast })
-      console.error(err)
+      console.error('Dashboard: handleGenerateBlueprint error:', err.message)
     } finally {
       setGenerating(false)
     }

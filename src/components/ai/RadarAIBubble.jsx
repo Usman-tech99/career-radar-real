@@ -76,7 +76,7 @@ export default function RadarAIBubble() {
       setMessages([...newMessages, { role: 'assistant', content: aiText }])
 
     } catch (err) {
-      console.error('Radar AI Chat error:', err)
+      console.error('Radar AI Chat error:', err.message)
       toast.error(err.message || 'Radar AI is currently unavailable.')
       setMessages([...newMessages, { role: 'assistant', content: "Sorry, I'm experiencing technical difficulties." }])
     } finally {

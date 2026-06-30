@@ -26,7 +26,7 @@ export default function Score() {
       if (data) setScore(data)
     } catch (err) {
       toast.error('Failed to load score')
-      console.error(err)
+      console.error('Score: load error:', err.message)
     } finally {
       setLoading(false)
     }

@@ -24,12 +24,24 @@ Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
 
   try {
-    const { messages, session_id, user_id } = await req.json();
-
+    // Verify caller JWT so we log the real user_id, not a spoofed one
+    const authHeader = req.headers.get("authorization") || "";
+    const token = authHeader.replace("Bearer ", "");
     const sb = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
+    let callerUserId: string | null = null;
+    if (token) {
+      const { data: { user }, error: authError } = await sb.auth.getUser(token);
+      if (!authError && user) {
+        callerUserId = user.id;
+      }
+    }
+
+    const { messages, session_id } = await req.json();
+    // Use the verified caller ID; never trust the body's user_id
+    const verifiedUserId = callerUserId;
 
     const { data: jobs } = await sb
       .from("jobs")
@@ -80,13 +92,13 @@ Deno.serve(async (req: Request) => {
 
     const aiText = groqData.choices?.[0]?.message?.content || "No response generated.";
 
-    // Log to ai_chat_logs (SERVICE_ROLE_KEY bypasses RLS)
+    // Log to ai_chat_logs using verified caller ID
     const userMessage = [...messages].reverse().find(m => m.role === "user")?.content || "";
     const mode = detectMode(messages);
     (async () => {
       const { error: logErr } = await sb.from("ai_chat_logs").insert({
         session_id: session_id || "anon",
-        user_id: user_id || null,
+        user_id: verifiedUserId,
         user_message: userMessage,
         ai_response: aiText,
         mode_detected: mode

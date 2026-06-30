@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
           .eq('user_id', userId)
           .maybeSingle()
         if (error) {
-          console.error(`Auth: fetchRole attempt ${attempt + 1} failed:`, error.message, 'code:', error.code, 'details:', error.details)
+          console.error(`Auth: fetchRole attempt ${attempt + 1} failed:`, error.message)
           throw error
         }
         if (data?.role) return data.role
@@ -48,7 +48,7 @@ export function AuthProvider({ children }) {
         .eq('id', userId)
         .maybeSingle()
       if (error) {
-        console.error('Auth: fetchOnboardingStatus query error:', error.message, error.code, error.details)
+        console.error('Auth: fetchOnboardingStatus query error:', error.message)
         return false
       }
       const status = data?.onboarding_complete || false
@@ -90,7 +90,7 @@ export function AuthProvider({ children }) {
           setRoleChecked(true)
         }
       } catch (err) {
-        console.error('Auth init error:', err)
+        console.error('Auth init error')
         if (mounted) setRoleChecked(true)
       } finally {
         if (mounted) setLoading(false)
@@ -132,7 +132,7 @@ export function AuthProvider({ children }) {
 
   async function signOut() {
     try {
-      await supabase.auth.signOut({ scope: 'local' })
+      await supabase.auth.signOut()
     } catch (err) {
       console.error('Supabase sign out error:', err)
     } finally {
@@ -140,7 +140,9 @@ export function AuthProvider({ children }) {
       setRole(null)
       setOnboardingComplete(false)
       setRoleChecked(true)
-      window.localStorage.clear()
+      // Remove only Supabase keys instead of nuking all localStorage
+      const keysToRemove = Object.keys(localStorage).filter(k => k.startsWith('sb-'))
+      keysToRemove.forEach(k => localStorage.removeItem(k))
       window.location.href = '/'
     }
   }
@@ -149,6 +151,7 @@ export function AuthProvider({ children }) {
     if (role === 'super_admin') return '/admin/dashboard'
     if (role === 'admin') return '/admin/dashboard'
     if (role === 'collaborator') return '/admin/my-profile'
+    if (user && !role) return '/onboarding'
     if (role) return '/dashboard'
     return '/login'
   }
@@ -166,7 +169,7 @@ export function AuthProvider({ children }) {
     isAdmin: role === 'super_admin' || role === 'admin',
     isSuperAdmin: role === 'super_admin',
     isCollaborator: role === 'collaborator',
-    isPublicUser: !role,
+    isPublicUser: !user,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

@@ -285,7 +285,7 @@ CREATE TABLE ai_chat_logs (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE ai_chat_logs ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "logs_insert" ON ai_chat_logs FOR INSERT WITH CHECK (true);
+CREATE POLICY "logs_insert" ON ai_chat_logs FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 CREATE POLICY "logs_founder_select" ON ai_chat_logs FOR SELECT USING(get_my_role()='super_admin');
 CREATE POLICY "logs_founder_delete" ON ai_chat_logs FOR DELETE USING(get_my_role()='super_admin');
 
@@ -302,6 +302,42 @@ ALTER TABLE scholarships ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "scholarships_pub" ON scholarships FOR SELECT USING(TRUE);
 CREATE POLICY "scholarships_admin" ON scholarships FOR ALL USING(get_my_role() IN('super_admin','admin')) WITH CHECK(get_my_role() IN('super_admin','admin'));
 CREATE TRIGGER scholarships_upd BEFORE UPDATE ON scholarships FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
+
+-- Storage RLS for avatars bucket
+CREATE POLICY "avatars_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'avatars');
+CREATE POLICY "avatars_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'avatars' AND auth.role() = 'authenticated');
+CREATE POLICY "avatars_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'avatars' AND auth.role() = 'authenticated');
+CREATE POLICY "avatars_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'avatars' AND auth.role() = 'authenticated');
+
+-- Storage RLS for collaborator-logos bucket
+CREATE POLICY "collab_logos_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'collaborator-logos');
+CREATE POLICY "collab_logos_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'collaborator-logos' AND auth.role() = 'authenticated');
+CREATE POLICY "collab_logos_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'collaborator-logos' AND auth.role() = 'authenticated');
+CREATE POLICY "collab_logos_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'collaborator-logos' AND auth.role() = 'authenticated');
+
+-- Storage RLS for product-thumbnails bucket
+CREATE POLICY "prod_thumbs_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'product-thumbnails');
+CREATE POLICY "prod_thumbs_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'product-thumbnails' AND auth.role() = 'authenticated');
+CREATE POLICY "prod_thumbs_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'product-thumbnails' AND auth.role() = 'authenticated');
+CREATE POLICY "prod_thumbs_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'product-thumbnails' AND auth.role() = 'authenticated');
+
+-- Storage RLS for product-files bucket (private — super_admin only for read)
+CREATE POLICY "prod_files_admin_read" ON storage.objects FOR SELECT USING (bucket_id = 'product-files' AND get_my_role() = 'super_admin');
+CREATE POLICY "prod_files_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'product-files' AND auth.role() = 'authenticated');
+CREATE POLICY "prod_files_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'product-files' AND auth.role() = 'authenticated');
+CREATE POLICY "prod_files_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'product-files' AND auth.role() = 'authenticated');
+
+-- Storage RLS for education-thumbnails bucket
+CREATE POLICY "edu_thumbs_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'education-thumbnails');
+CREATE POLICY "edu_thumbs_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'education-thumbnails' AND auth.role() = 'authenticated');
+CREATE POLICY "edu_thumbs_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'education-thumbnails' AND auth.role() = 'authenticated');
+CREATE POLICY "edu_thumbs_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'education-thumbnails' AND auth.role() = 'authenticated');
+
+-- Storage RLS for content-files bucket
+CREATE POLICY "content_files_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'content-files');
+CREATE POLICY "content_files_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'content-files' AND auth.role() = 'authenticated');
+CREATE POLICY "content_files_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'content-files' AND auth.role() = 'authenticated');
+CREATE POLICY "content_files_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'content-files' AND auth.role() = 'authenticated');
 
 -- Storage RLS for scholarship-logos bucket
 CREATE POLICY "sclogos_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'scholarship-logos');

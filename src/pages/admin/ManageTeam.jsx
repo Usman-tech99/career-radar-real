@@ -28,7 +28,7 @@ export default function ManageTeam() {
         .select('*')
 
       if (error) {
-        console.error("Team Fetch Error:", error.message, error.code, error.details)
+        console.error("Team Fetch Error:", error.message)
         setTeam([])
         setLoading(false)
         return
@@ -46,7 +46,7 @@ export default function ManageTeam() {
           .in('id', userIds)
 
         if (profileError) {
-          console.error("Team Fetch: profiles query error:", profileError.message, profileError.code)
+          console.error("Team Fetch: profiles query error:", profileError.message)
         } else if (profiles) {
           profileMap = Object.fromEntries(profiles.map(p => [p.id, p]))
         }
@@ -59,7 +59,7 @@ export default function ManageTeam() {
 
       setTeam(enriched)
     } catch (err) {
-      console.error("Team Fetch Error:", err)
+      console.error("Team Fetch Error:", err.message)
       setTeam([])
     } finally {
       setLoading(false)

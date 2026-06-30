@@ -37,7 +37,7 @@ export function UserRoute() {
           }
         }
       } catch (err) {
-        console.error("Database route verification failed:", err)
+        console.error("Database route verification failed:", err.message)
       } finally {
         if (isMounted) {
           setCheckingDatabase(false)

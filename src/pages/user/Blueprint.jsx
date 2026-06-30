@@ -27,7 +27,7 @@ export default function Blueprint() {
         .maybeSingle()
 
       if (error) {
-        console.error('Blueprint: fetch error:', error.message, error.code, error.details)
+        console.error('Blueprint: fetch error:', error.message)
         toast.error('Failed to load blueprint')
       } else if (data) {
         setBlueprint(data)
@@ -36,7 +36,7 @@ export default function Blueprint() {
       }
     } catch (err) {
       toast.error('Failed to load blueprint')
-      console.error(err)
+      console.error('Blueprint: fetch error:', err.message)
     } finally {
       setLoading(false)
     }
@@ -48,20 +48,14 @@ export default function Blueprint() {
     try {
       const { data, error } = await supabase.functions.invoke('generate-career-blueprint', { body: {} })
       if (error) {
-        console.error('Blueprint: edge function invoke error:', error)
-        if (error.context) {
-          console.error('Blueprint: edge function status:', error.context.status, 'statusText:', error.context.statusText)
-          if (error.context.body) {
-            console.error('Blueprint: edge function response body:', error.context.body)
-          }
-        }
+        console.error('Blueprint: edge function invoke error:', error.message)
         throw new Error(typeof error === 'object' ? error.message : 'Edge function returned an error')
       }
       toast.success('Blueprint generated successfully!', { id: loadToast })
       await fetchBlueprint()
     } catch (err) {
       toast.error(err.message || 'Failed to generate blueprint', { id: loadToast })
-      console.error(err)
+      console.error('Blueprint: handleGenerate error:', err.message)
     } finally {
       setGenerating(false)
     }
@@ -80,12 +74,11 @@ export default function Blueprint() {
         body: '{}'
       })
       const rawBody = await rawRes.text()
-      console.error('Raw response:', rawRes.status, rawBody)
       if (!rawRes.ok) throw new Error(rawBody)
       toast.success('Score updated successfully!', { id: loadToast })
     } catch (err) {
       toast.error(err.message || 'Score calculation failed', { id: loadToast })
-      console.error(err)
+      console.error('Blueprint: score calculation error:', err.message)
     }
   }
 
@@ -102,7 +95,7 @@ export default function Blueprint() {
         .eq('id', blueprint.id)
 
       if (error) {
-        console.error('Blueprint: step toggle error:', error.message, error.code, error.details)
+        console.error('Blueprint: step toggle error:', error.message)
         throw error
       }
       setBlueprint({ ...blueprint, action_steps: newSteps })
@@ -110,7 +103,7 @@ export default function Blueprint() {
       await supabase.functions.invoke('recalculate-score', { body: {} }).catch(() => {})
     } catch (err) {
       toast.error('Failed to update step')
-      console.error(err)
+      console.error('Blueprint: step toggle error:', err.message)
     } finally {
       setUpdatingStep(null)
     }
