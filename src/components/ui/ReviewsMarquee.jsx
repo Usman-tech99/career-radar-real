@@ -48,23 +48,31 @@ export default function ReviewsMarquee({ className = '' }) {
             key={i}
             whileHover={{ y: -6, scale: 1.02 }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-            className="glass-card shrink-0 flex flex-col p-6 cursor-default group"
+            className="shrink-0 cursor-default group relative rounded-xl p-[1px]"
             style={{ width: CARD_W - 24 }}
           >
-            <div className="flex gap-1 mb-3">
-              {Array.from({ length: 5 }).map((_, j) => (
-                <Star key={j} size={13} className={j < r.stars ? 'text-gold fill-gold' : 'text-white/10'} />
-              ))}
-            </div>
-            <Quote size={18} className="text-green/20 mb-2" />
-            <p className="text-sm text-muted leading-relaxed flex-1 mb-4 line-clamp-3">{r.text}</p>
-            <div className="flex items-center gap-3 pt-3 border-t border-white/[0.05] mt-auto">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-green/30 to-blue-accent/30 flex items-center justify-center text-xs font-bold text-white shrink-0">
-                {r.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+            {/* neon gradient border */}
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-green/40 via-green/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            {/* glow layers */}
+            <div className="absolute -inset-[1px] rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500 blur-[6px] bg-green/20" />
+            <div className="absolute -inset-[3px] rounded-xl opacity-0 group-hover:opacity-40 transition-all duration-700 blur-[12px] bg-green/20" />
+            {/* card body */}
+            <div className="glass-card relative z-10 flex flex-col p-6 rounded-xl h-full bg-[#0D0D14]">
+              <div className="flex gap-1 mb-3">
+                {Array.from({ length: 5 }).map((_, j) => (
+                  <Star key={j} size={13} className={j < r.stars ? 'text-gold fill-gold' : 'text-white/10'} />
+                ))}
               </div>
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-white truncate">{r.name}</p>
-                <p className="text-[11px] text-muted truncate">{r.role}</p>
+              <Quote size={18} className="text-green/20 mb-2" />
+              <p className="text-sm text-muted leading-relaxed flex-1 mb-4 line-clamp-3">{r.text}</p>
+              <div className="flex items-center gap-3 pt-3 border-t border-white/[0.05] mt-auto">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-green/30 to-blue-accent/30 flex items-center justify-center text-xs font-bold text-white shrink-0">
+                  {r.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-white truncate">{r.name}</p>
+                  <p className="text-[11px] text-muted truncate">{r.role}</p>
+                </div>
               </div>
             </div>
           </motion.div>

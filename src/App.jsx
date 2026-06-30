@@ -18,6 +18,7 @@ import Structure from './pages/public/Structure'
 import About from './pages/public/About'
 import Social from './pages/public/Social'
 import Collaborators from './pages/public/Collaborators'
+import NotFound from './pages/public/NotFound'
 
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
@@ -135,6 +136,8 @@ export default function App() {
           <Route element={<CollaboratorRoute />}>
             <Route path="/admin/my-profile" element={<MyProfile />} />
           </Route>
+
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
