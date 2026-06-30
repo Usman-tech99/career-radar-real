@@ -1,8 +1,10 @@
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
-import { ArrowRight, Zap, Target, Users, BookOpen } from 'lucide-react'
+import DataFusion from '../../components/ui/DataFusion'
+import { ArrowRight, Zap, Target, Users, BookOpen, Sparkles } from 'lucide-react'
 
 const containerVariants = {
   hidden: {},
@@ -15,6 +17,19 @@ const cardVariants = {
 }
 
 export default function Home() {
+  const [fusionTrigger, setFusionTrigger] = useState(false)
+  const fusionRef = useRef(null)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setFusionTrigger(true), 1200)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const handleReTrigger = () => {
+    setFusionTrigger(false)
+    setTimeout(() => setFusionTrigger(true), 100)
+  }
+
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col relative overflow-hidden">
       <Navbar />
@@ -74,13 +89,32 @@ export default function Home() {
           </div>
         </motion.div>
 
+        {/* 3D Data Fusion Engine */}
+        <motion.div
+          ref={fusionRef}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="relative w-full max-w-sm h-64 mt-20 mb-8"
+        >
+          <DataFusion trigger={fusionTrigger} className="w-full h-full" />
+
+          {/* Re-trigger button */}
+          <button
+            onClick={handleReTrigger}
+            className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs text-muted hover:text-white hover:border-green/30 transition-colors"
+          >
+            <Sparkles size={12} /> Replay
+          </button>
+        </motion.div>
+
         {/* Feature Cards Grid — staggered entrance on scroll */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
           variants={containerVariants}
-          className="max-w-7xl w-full mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-32"
+          className="max-w-7xl w-full mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8"
         >
           <FeatureCard icon={Zap} title="Radar AI Assistant" desc="Chat with our intelligent career coach for instant guidance and resume reviews." color="text-green" />
           <FeatureCard icon={Target} title="Dynamic Blueprints" desc="Generate personalized action plans tailored to your specific goals and skills." color="text-blue-accent" />
