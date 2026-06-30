@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
 import RadarScan from '../../components/ui/RadarScan'
+import TeamMarquee from '../../components/ui/TeamMarquee'
 import { ArrowRight, Zap, Target, Users, BookOpen } from 'lucide-react'
 
 const containerVariants = {
@@ -85,6 +86,12 @@ export default function Home() {
         >
           <RadarScan />
         </motion.div>
+
+        {/* Team Marquee — horizontal infinite scroll */}
+        <div className="w-full mt-16">
+          <h3 className="text-center text-xs font-bold tracking-[0.2em] text-muted uppercase mb-6">Our Team</h3>
+          <TeamMarquee />
+        </div>
 
         {/* Feature Cards Grid — staggered entrance on scroll */}
         <motion.div
