@@ -3,7 +3,8 @@ import { motion } from 'framer-motion'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
 import RadarScan from '../../components/ui/RadarScan'
-import { ArrowRight, Zap, Target, Users, BookOpen, Star, Quote } from 'lucide-react'
+import ReviewsMarquee from '../../components/ui/ReviewsMarquee'
+import { ArrowRight, Zap, Target, Users, BookOpen } from 'lucide-react'
 
 const containerVariants = {
   hidden: {},
@@ -14,12 +15,6 @@ const cardVariants = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
 }
-
-const reviews = [
-  { name: 'Ayesha Khan', role: 'CS Student, LUMS', stars: 5, text: 'Career Radar helped me land my first remote internship. The AI roadmap was eerily accurate about what skills I needed.' },
-  { name: 'Bilal Ahmed', role: 'Freelance Developer', stars: 5, text: 'The job matching algorithm actually understands Pakistani job market. Found 3 quality leads in my first week.' },
-  { name: 'Fatima Tariq', role: 'Fresh Graduate', stars: 5, text: 'From confused graduate to having a clear 6-month action plan. The blueprint feature is a game changer.' },
-]
 
 export default function Home() {
   return (
@@ -81,6 +76,20 @@ export default function Home() {
           </div>
         </motion.div>
 
+        {/* Feature Cards Grid — staggered entrance on scroll */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-100px' }}
+          variants={containerVariants}
+          className="max-w-7xl w-full mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-20"
+        >
+          <FeatureCard icon={Zap} title="Radar AI Assistant" desc="Chat with our intelligent career coach for instant guidance and resume reviews." color="text-green" />
+          <FeatureCard icon={Target} title="Dynamic Blueprints" desc="Generate personalized action plans tailored to your specific goals and skills." color="text-blue-accent" />
+          <FeatureCard icon={BookOpen} title="Premium Education" desc="Access curated courses, ebooks, and templates to upskill rapidly." color="text-gold" />
+          <FeatureCard icon={Users} title="Elite Community" desc="Connect with mentors, collaborators, and top-tier freelancers." color="text-purple-accent" />
+        </motion.div>
+
         {/* Radar Scanning Animation */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -92,54 +101,12 @@ export default function Home() {
           <RadarScan />
         </motion.div>
 
-        {/* Testimonials */}
+        {/* Testimonials — infinite marquee */}
         <div className="w-full mt-24">
           <h3 className="text-center text-xs font-bold tracking-[0.2em] text-muted uppercase mb-2">Testimonials</h3>
-          <p className="text-center text-2xl md:text-3xl font-bold font-sora text-white mb-10">What Our <span className="text-green">Users</span> Say</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {reviews.map((r, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.15 }}
-                className="glass-card flex flex-col p-6"
-              >
-                <div className="flex gap-1 mb-4">
-                  {Array.from({ length: 5 }).map((_, j) => (
-                    <Star key={j} size={14} className={j < r.stars ? 'text-gold fill-gold' : 'text-white/10'} />
-                  ))}
-                </div>
-                <Quote size={20} className="text-green/30 mb-3" />
-                <p className="text-sm text-muted leading-relaxed flex-1 mb-4">"{r.text}"</p>
-                <div className="flex items-center gap-3 pt-3 border-t border-white/[0.05]">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-green/30 to-blue-accent/30 flex items-center justify-center text-xs font-bold text-white">
-                    {r.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-white">{r.name}</p>
-                    <p className="text-[11px] text-muted">{r.role}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          <p className="text-center text-2xl md:text-3xl font-bold font-sora text-white mb-6">What Our <span className="text-green">Users</span> Say</p>
+          <ReviewsMarquee />
         </div>
-
-        {/* Feature Cards Grid — staggered entrance on scroll */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
-          variants={containerVariants}
-          className="max-w-7xl w-full mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8"
-        >
-          <FeatureCard icon={Zap} title="Radar AI Assistant" desc="Chat with our intelligent career coach for instant guidance and resume reviews." color="text-green" />
-          <FeatureCard icon={Target} title="Dynamic Blueprints" desc="Generate personalized action plans tailored to your specific goals and skills." color="text-blue-accent" />
-          <FeatureCard icon={BookOpen} title="Premium Education" desc="Access curated courses, ebooks, and templates to upskill rapidly." color="text-gold" />
-          <FeatureCard icon={Users} title="Elite Community" desc="Connect with mentors, collaborators, and top-tier freelancers." color="text-purple-accent" />
-        </motion.div>
       </main>
 
       <Footer />
