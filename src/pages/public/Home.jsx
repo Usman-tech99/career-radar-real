@@ -1,10 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
-import DataFusion from '../../components/ui/DataFusion'
-import { ArrowRight, Zap, Target, Users, BookOpen, Sparkles } from 'lucide-react'
+import RadarScan from '../../components/ui/RadarScan'
+import { ArrowRight, Zap, Target, Users, BookOpen } from 'lucide-react'
 
 const containerVariants = {
   hidden: {},
@@ -17,19 +16,6 @@ const cardVariants = {
 }
 
 export default function Home() {
-  const [fusionTrigger, setFusionTrigger] = useState(false)
-  const fusionRef = useRef(null)
-
-  useEffect(() => {
-    const timer = setTimeout(() => setFusionTrigger(true), 1200)
-    return () => clearTimeout(timer)
-  }, [])
-
-  const handleReTrigger = () => {
-    setFusionTrigger(false)
-    setTimeout(() => setFusionTrigger(true), 100)
-  }
-
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col relative overflow-hidden">
       <Navbar />
@@ -89,23 +75,15 @@ export default function Home() {
           </div>
         </motion.div>
 
-        {/* 3D Data Fusion Engine */}
+        {/* Radar Scanning Animation */}
         <motion.div
-          ref={fusionRef}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="relative w-full max-w-sm h-64 mt-20 mb-8"
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="mt-20 mb-8"
         >
-          <DataFusion trigger={fusionTrigger} className="w-full h-full" />
-
-          {/* Re-trigger button */}
-          <button
-            onClick={handleReTrigger}
-            className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs text-muted hover:text-white hover:border-green/30 transition-colors"
-          >
-            <Sparkles size={12} /> Replay
-          </button>
+          <RadarScan />
         </motion.div>
 
         {/* Feature Cards Grid — staggered entrance on scroll */}
