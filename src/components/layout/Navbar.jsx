@@ -20,6 +20,7 @@ export default function Navbar() {
     { name: 'Team', path: '/team' },
     { name: 'About', path: '/about' },
     { name: 'Socials', path: '/social' },
+    { name: 'Donate', path: '/donate' },
   ]
 
   // If user is logged in, their dashboard path depends on role

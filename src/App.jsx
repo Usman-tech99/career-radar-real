@@ -14,6 +14,7 @@ import Education from './pages/public/Education'
 import Scholarships from './pages/public/Scholarships'
 import Shop from './pages/public/Shop'
 import Team from './pages/public/Team'
+import Donate from './pages/public/Donate'
 import Structure from './pages/public/Structure'
 import About from './pages/public/About'
 import Social from './pages/public/Social'
@@ -49,7 +50,7 @@ import RadarAIBubble from './components/ai/RadarAIBubble'
 import RadarCursor from './components/ui/RadarCursor'
 
 function HomeRedirect() {
-  const { user, role, loading, roleChecked } = useAuth()
+  const { user, role, loading, roleChecked, onboardingComplete } = useAuth()
 
   if (loading || !roleChecked) {
     return (
@@ -66,7 +67,7 @@ function HomeRedirect() {
     if (role === 'collaborator') {
       return <Navigate to="/admin/my-profile" replace />
     }
-    if (role) {
+    if (role || onboardingComplete) {
       return <Navigate to="/dashboard" replace />
     }
     return <Navigate to="/onboarding" replace />
@@ -96,6 +97,7 @@ export default function App() {
           <Route path="/about" element={<About />} />
           <Route path="/social" element={<Social />} />
           <Route path="/collaborators" element={<Collaborators />} />
+          <Route path="/donate" element={<Donate />} />
 
           {/* AUTH */}
           <Route path="/login" element={<Login />} />

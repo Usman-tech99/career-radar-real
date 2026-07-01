@@ -86,6 +86,7 @@ export default function Footer() {
               <li><Link to="/structure" className="text-sm text-muted hover:text-white transition-colors">Aim & Vision</Link></li>
               <li><Link to="/team" className="text-sm text-muted hover:text-white transition-colors">The Team</Link></li>
               <li><Link to="/collaborators" className="text-sm text-muted hover:text-white transition-colors">Partners</Link></li>
+              <li><Link to="/donate" className="text-sm text-green hover:text-green/80 transition-colors font-medium">Support Us</Link></li>
             </ul>
           </div>
 

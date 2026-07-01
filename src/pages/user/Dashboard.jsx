@@ -56,8 +56,15 @@ export default function Dashboard() {
     try {
       const { data, error } = await supabase.functions.invoke('generate-career-blueprint', { body: {} })
       if (error) {
-        console.error('Dashboard: edge function invoke error:', error.message)
-        throw new Error(typeof error === 'object' ? error.message : 'Edge function returned an error')
+        let msg
+        try {
+          const parsed = JSON.parse(error.message)
+          msg = parsed.error || error.message
+        } catch {
+          msg = error.message
+        }
+        console.error('Dashboard: edge function invoke error:', msg)
+        throw new Error(msg)
       }
       toast.success('Blueprint generated successfully!', { id: loadToast })
       await fetchDashboardData()
