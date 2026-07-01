@@ -4,6 +4,10 @@ import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
+import { BlurFade } from '../../components/magicui/blur-fade'
+import { BorderBeam } from '../../components/magicui/border-beam'
+import { AnimatedGradientText } from '../../components/magicui/animated-gradient-text'
+import { NumberTicker } from '../../components/magicui/number-ticker'
 import { LayoutDashboard, Target, Activity, User, LogOut, ArrowRight, Zap, Briefcase, Loader2, Sparkles, ChevronRight, Clock } from 'lucide-react'
 
 const steps = [
@@ -103,7 +107,7 @@ export default function Dashboard() {
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-between items-center mb-10">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold font-sora">
-              Welcome back<span className="text-green">,</span>
+              Welcome back<AnimatedGradientText colorFrom="#10B981" colorTo="#3B82F6" className="text-3xl md:text-4xl font-bold">,</AnimatedGradientText>
             </h1>
             <p className="text-muted mt-1 flex items-center gap-2">
               <Sparkles size={14} className="text-gold" /> Here's your career snapshot for today.
@@ -139,10 +143,10 @@ export default function Dashboard() {
             </div>
           </div>
         ) : (
-          <motion.div initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.1 } } }} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             {/* Score Card */}
-            <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="lg:col-span-1 relative group">
+            <BlurFade delay={0} offset={10} blur="3px" className="lg:col-span-1 relative group">
               <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-br from-green/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               <div className="glass-card relative h-full flex flex-col justify-between p-6 rounded-2xl overflow-hidden">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-green/10 blur-[70px] rounded-full pointer-events-none" />
@@ -152,7 +156,7 @@ export default function Dashboard() {
                   </div>
                   <div className="flex items-end gap-2">
                     <span className="text-6xl font-black font-mono text-transparent bg-clip-text bg-gradient-to-r from-green to-emerald-300">
-                      {score?.total_score || 0}
+                      <NumberTicker value={score?.total_score || 0} />
                     </span>
                     <span className="text-lg text-muted font-mono mb-2">/100</span>
                   </div>
@@ -173,10 +177,10 @@ export default function Dashboard() {
                   View Breakdown <ChevronRight size={14} className="group-hover/link:translate-x-0.5 transition-transform" />
                 </Link>
               </div>
-            </motion.div>
+            </BlurFade>
 
             {/* Blueprint Card */}
-            <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="lg:col-span-2 relative group">
+            <BlurFade delay={0.1} offset={10} blur="3px" className="lg:col-span-2 relative group">
               <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-br from-blue-accent/20 via-green/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               <div className="glass-card relative h-full flex flex-col justify-between p-6 rounded-2xl overflow-hidden">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-blue-accent/10 blur-[70px] rounded-full pointer-events-none" />
@@ -227,13 +231,14 @@ export default function Dashboard() {
                   </Link>
                 )}
               </div>
-            </motion.div>
+            </BlurFade>
 
             {/* Bottom Cards */}
-            <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 relative group">
+            <BlurFade delay={0.2} offset={10} blur="3px" className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 relative group">
               {/* Recommended Jobs */}
               <div className="relative group/card">
                 <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-br from-gold/20 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <BorderBeam size={60} duration={8} colorFrom="#F59E0B" colorTo="#F59E0B" borderWidth={1} />
                 <div className="glass-card relative p-6 rounded-2xl flex items-start gap-4 overflow-hidden">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gold/20 to-amber-500/10 flex items-center justify-center shrink-0 border border-gold/10">
                     <Briefcase size={20} className="text-gold" />
@@ -251,6 +256,7 @@ export default function Dashboard() {
               {/* AI Assistant */}
               <div className="relative group/card">
                 <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-br from-purple-accent/20 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <BorderBeam size={60} duration={8} colorFrom="#8B5CF6" colorTo="#8B5CF6" borderWidth={1} />
                 <div className="glass-card relative p-6 rounded-2xl flex items-start gap-4 overflow-hidden">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-accent/20 to-pink-500/10 flex items-center justify-center shrink-0 border border-purple-accent/10">
                     <Zap size={20} className="text-purple-accent" />
@@ -265,9 +271,9 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </BlurFade>
 
-          </motion.div>
+          </div>
         )}
       </div>
     </div>
