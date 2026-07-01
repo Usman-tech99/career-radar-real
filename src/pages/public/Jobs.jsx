@@ -72,7 +72,29 @@ export default function Jobs() {
         {/* Jobs List */}
         {loading ? (
           <div className="space-y-4">
-            {[1,2,3].map(i => <div key={i} className="skeleton h-32 rounded-2xl w-full" />)}
+            {[1,2,3,4,5].map(i => (
+              <div key={i} className="glass-card p-6 animate-pulse rounded-2xl">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                  <div className="flex-1 min-w-0 space-y-3 w-full">
+                    <div className="h-4 w-20 rounded bg-white/[0.06]" />
+                    <div className="h-6 w-3/4 rounded bg-white/[0.06]" />
+                    <div className="flex flex-wrap items-center gap-4">
+                      <div className="h-4 w-28 rounded bg-white/[0.06]" />
+                      <div className="h-4 w-24 rounded bg-white/[0.06]" />
+                      <div className="h-4 w-20 rounded bg-white/[0.06]" />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 w-full md:w-auto mt-4 md:mt-0 justify-between md:justify-end">
+                    <div className="flex gap-2">
+                      <div className="h-6 w-16 rounded-md bg-white/[0.06]" />
+                      <div className="h-6 w-20 rounded-md bg-white/[0.06]" />
+                      <div className="h-6 w-14 rounded-md bg-white/[0.06]" />
+                    </div>
+                    <div className="w-10 h-10 rounded-full bg-white/[0.06] shrink-0" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : filteredJobs.length === 0 ? (
           <div className="glass-card text-center py-20 text-muted">

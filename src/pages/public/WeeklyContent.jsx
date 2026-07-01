@@ -35,8 +35,23 @@ export default function WeeklyContent() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1,2,3].map(i => <div key={i} className="skeleton h-64 rounded-2xl w-full" />)}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1,2,3,4,5,6].map(i => (
+              <div key={i} className="glass-card overflow-hidden animate-pulse rounded-2xl">
+                <div className="w-full h-48 bg-white/[0.04]" />
+                <div className="p-6 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <div className="h-5 w-20 rounded bg-white/[0.06]" />
+                    <div className="h-4 w-24 rounded bg-white/[0.06]" />
+                  </div>
+                  <div className="h-5 w-full rounded bg-white/[0.06]" />
+                  <div className="h-5 w-2/3 rounded bg-white/[0.06]" />
+                  <div className="h-4 w-full rounded bg-white/[0.06]" />
+                  <div className="h-4 w-4/5 rounded bg-white/[0.06]" />
+                  <div className="h-10 w-full rounded-xl bg-white/[0.06] mt-2" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : content.length === 0 ? (
           <div className="glass-card text-center py-20 text-muted">No content available right now. Check back soon!</div>

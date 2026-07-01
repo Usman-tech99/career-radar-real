@@ -85,8 +85,28 @@ export default function Education() {
 
         {/* Education Items */}
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1,2,3].map(i => <div key={i} className="skeleton h-80 rounded-2xl w-full" />)}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1,2,3,4,5,6].map(i => (
+              <div key={i} className="glass-card overflow-hidden animate-pulse">
+                <div className="w-full h-48 bg-white/[0.04]" />
+                <div className="p-6 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <div className="h-5 w-16 rounded bg-white/[0.06]" />
+                    <div className="h-4 w-20 rounded bg-white/[0.06]" />
+                  </div>
+                  <div className="h-5 w-full rounded bg-white/[0.06]" />
+                  <div className="h-5 w-3/4 rounded bg-white/[0.06]" />
+                  <div className="h-4 w-full rounded bg-white/[0.06]" />
+                  <div className="h-4 w-2/3 rounded bg-white/[0.06]" />
+                  <div className="flex gap-2 pt-2">
+                    <div className="h-6 w-14 rounded-full bg-white/[0.06]" />
+                    <div className="h-6 w-20 rounded-full bg-white/[0.06]" />
+                    <div className="h-6 w-16 rounded-full bg-white/[0.06]" />
+                  </div>
+                  <div className="h-10 w-full rounded-xl bg-white/[0.06] mt-2" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : filteredItems.length === 0 ? (
           <div className="glass-card text-center py-20 text-muted">
