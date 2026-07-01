@@ -30,6 +30,9 @@ export default {
         "fade-in": "fadeIn 0.5s ease-out forwards",
         "slide-up": "slideUp 0.6s ease-out forwards",
         marquee: "marquee 25s linear infinite",
+        gradient: "gradient 8s linear infinite",
+        "shimmer-slide": "shimmer-slide 3s linear infinite",
+        "spin-around": "spin-around 3s linear infinite",
       },
       keyframes: {
         fadeIn: {
@@ -43,6 +46,20 @@ export default {
         marquee: {
           "0%": { transform: "translateX(0%)" },
           "100%": { transform: "translateX(-50%)" },
+        },
+        gradient: {
+          "0%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+          "100%": { backgroundPosition: "0% 50%" },
+        },
+        "shimmer-slide": {
+          to: { transform: "translate(calc(100cqw - 100%), 0)" },
+        },
+        "spin-around": {
+          "0%": { transform: "translateZ(0) rotate(0)" },
+          "15%, 35%": { transform: "translateZ(0) rotate(90deg)" },
+          "65%, 85%": { transform: "translateZ(0) rotate(270deg)" },
+          "100%": { transform: "translateZ(0) rotate(360deg)" },
         },
       },
       backgroundImage: {

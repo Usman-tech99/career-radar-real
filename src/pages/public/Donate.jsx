@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Heart, Server, Users, BookOpen, Globe, ChevronDown, Copy, ExternalLink, MessageCircle } from 'lucide-react'
+import { Heart, Server, Users, BookOpen, Globe, ChevronDown, Copy, MessageCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 const AMOUNT_OPTIONS = [
@@ -178,7 +178,7 @@ export default function Donate() {
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-16">
           <h2 className="text-2xl font-bold font-sora text-white mb-6 text-center">Frequently Asked Questions</h2>
           <div className="max-w-2xl mx-auto space-y-3">
-            {faqs.map((faq, i) => (
+            {FAQS.map((faq, i) => (
               <div key={i} className="glass-card overflow-hidden">
                 <button onClick={() => setFaqOpen(faqOpen === i ? null : i)}
                   className="w-full flex items-center justify-between p-4 text-left">
