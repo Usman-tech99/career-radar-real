@@ -8,12 +8,13 @@ import { BlurFade } from '../../components/magicui/blur-fade'
 import { BorderBeam } from '../../components/magicui/border-beam'
 import { AnimatedGradientText } from '../../components/magicui/animated-gradient-text'
 import { NumberTicker } from '../../components/magicui/number-ticker'
-import { LayoutDashboard, Target, Activity, User, LogOut, ArrowRight, Zap, Briefcase, Loader2, Sparkles, ChevronRight, Clock } from 'lucide-react'
+import { LayoutDashboard, Target, Activity, User, LogOut, ArrowRight, Zap, Briefcase, Loader2, Sparkles, ChevronRight, Clock, FileText } from 'lucide-react'
 
 const steps = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Overview' },
   { to: '/dashboard/blueprint', icon: Target, label: 'AI Blueprint' },
   { to: '/dashboard/score', icon: Activity, label: 'Career Score' },
+  { to: '/dashboard/resume', icon: FileText, label: 'Resume Builder' },
   { to: '/dashboard/profile', icon: User, label: 'Profile Settings' },
 ]
 

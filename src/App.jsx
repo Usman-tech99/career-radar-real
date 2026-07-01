@@ -33,6 +33,7 @@ const Dashboard = lazy(() => import('./pages/user/Dashboard'))
 const Blueprint = lazy(() => import('./pages/user/Blueprint'))
 const Score = lazy(() => import('./pages/user/Score'))
 const UserProfile = lazy(() => import('./pages/user/UserProfile'))
+const ResumeBuilder = lazy(() => import('./pages/user/ResumeBuilder'))
 
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'))
 const ManageJobs = lazy(() => import('./pages/admin/ManageJobs'))
@@ -107,8 +108,9 @@ export default function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/dashboard/blueprint" element={<Blueprint />} />
               <Route path="/dashboard/score" element={<Score />} />
-              <Route path="/dashboard/profile" element={<UserProfile />} />
-            </Route>
+            <Route path="/dashboard/profile" element={<UserProfile />} />
+            <Route path="/dashboard/resume" element={<ResumeBuilder />} />
+          </Route>
 
             {/* ADMIN — super_admin + admin */}
             <Route element={<ProtectedRoute allowedRoles={["super_admin","admin"]} />}>

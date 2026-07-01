@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
-import { LayoutDashboard, Target, Activity, User, LogOut, CheckCircle, ExternalLink, Zap, Loader2 } from 'lucide-react'
+import { LayoutDashboard, Target, Activity, User, LogOut, CheckCircle, ExternalLink, Zap, Loader2, FileText } from 'lucide-react'
 
 export default function Blueprint() {
   const { user, signOut } = useAuth()
@@ -135,6 +135,7 @@ export default function Blueprint() {
           <NavLink to="/dashboard" icon={LayoutDashboard} label="Overview" />
           <NavLink to="/dashboard/blueprint" icon={Target} label="AI Blueprint" />
           <NavLink to="/dashboard/score" icon={Activity} label="Career Score" />
+          <NavLink to="/dashboard/resume" icon={FileText} label="Resume Builder" />
           <NavLink to="/dashboard/profile" icon={User} label="Profile Settings" />
         </div>
         <div className="p-4 border-t border-border">

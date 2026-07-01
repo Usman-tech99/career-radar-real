@@ -101,6 +101,17 @@ CREATE TABLE career_scores (
 ALTER TABLE career_scores ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "scores_own" ON career_scores FOR ALL USING (auth.uid()=user_id) WITH CHECK (auth.uid()=user_id);
 
+-- Resumes
+CREATE TABLE resumes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID UNIQUE NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  data JSONB NOT NULL DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE resumes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "resumes_own" ON resumes FOR ALL USING (auth.uid()=user_id) WITH CHECK (auth.uid()=user_id);
+
 -- Content Tables (Jobs, Weekly Content, Products, Education):
 -- site_stats SINGLETON
 CREATE TABLE site_stats (id INT PRIMARY KEY DEFAULT 1 CHECK(id=1),
