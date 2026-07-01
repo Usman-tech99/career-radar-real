@@ -173,7 +173,7 @@ export default function ResumeBuilder() {
 
   function handlePrint() {
     setActiveTab('preview')
-    setTimeout(() => window.print(), 300)
+    setTimeout(() => window.print(), 800)
   }
 
   if (loading) {
@@ -194,7 +194,7 @@ export default function ResumeBuilder() {
   return (
     <div className="flex min-h-screen bg-[#07070C]">
       {/* Sidebar */}
-      <div className="w-64 h-screen bg-[#0A0A12]/90 backdrop-blur-xl border-r border-white/[0.05] flex flex-col fixed left-0 top-0 pt-20 z-20">
+      <div className="w-64 h-screen bg-[#0A0A12]/90 backdrop-blur-xl border-r border-white/[0.05] flex flex-col fixed left-0 top-0 pt-20 z-20 print:hidden">
         <div className="flex-1 px-3 py-6 space-y-1">
           {NAV_STEPS.map(s => <NavLink key={s.to} {...s} />)}
         </div>
@@ -362,7 +362,7 @@ export default function ResumeBuilder() {
 
           {/* Preview View */}
           {activeTab === 'preview' && (
-            <BlurFade offset={8} blur="3px" className="print:block">
+            <div className="print:block">
               <div className="bg-white text-black rounded-2xl p-8 md:p-12 print:rounded-none print:p-8 shadow-2xl">
                 {/* Header */}
                 <div className="text-center border-b-2 border-gray-200 pb-6 mb-6">
@@ -473,7 +473,7 @@ export default function ResumeBuilder() {
                   </div>
                 )}
               </div>
-            </BlurFade>
+            </div>
           )}
         </div>
       </div>
