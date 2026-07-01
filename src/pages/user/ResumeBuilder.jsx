@@ -35,6 +35,40 @@ function NavLink({ to, icon: Icon, label }) {
   )
 }
 
+function Input({ label, value, onChange, placeholder, type = 'text', className = '' }) {
+  return (
+    <div className={className}>
+      <label className="text-xs font-medium text-muted mb-1.5 block">{label}</label>
+      {type === 'textarea' ? (
+        <textarea value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
+          className="w-full bg-white/[0.04] border border-border rounded-xl px-4 py-3 text-white text-sm placeholder:text-muted/50 focus:outline-none focus:border-green/50 transition-colors resize-none h-24" />
+      ) : (
+        <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
+          className="w-full bg-white/[0.04] border border-border rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-muted/50 focus:outline-none focus:border-green/50 transition-colors" />
+      )}
+    </div>
+  )
+}
+
+function SectionCard({ title, icon: Icon, children, onAdd, addLabel }) {
+  return (
+    <BlurFade delay={0.1} offset={8} blur="3px">
+      <div className="glass-card p-6 rounded-2xl relative">
+        <BorderBeam size={50} duration={10} colorFrom="#10B981" colorTo="#3B82F6" borderWidth={1} />
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="font-bold text-white flex items-center gap-2"><Icon size={18} className="text-green" /> {title}</h3>
+          {onAdd && (
+            <button onClick={onAdd} className="text-xs flex items-center gap-1 text-green hover:text-green/80 transition-colors font-medium">
+              <Plus size={14} /> {addLabel || 'Add'}
+            </button>
+          )}
+        </div>
+        {children}
+      </div>
+    </BlurFade>
+  )
+}
+
 export default function ResumeBuilder() {
   const { user, signOut } = useAuth()
   const [loading, setLoading] = useState(true)
@@ -141,36 +175,6 @@ export default function ResumeBuilder() {
     setActiveTab('preview')
     setTimeout(() => window.print(), 300)
   }
-
-  const Input = ({ label, value, onChange, placeholder, type = 'text', className = '' }) => (
-    <div className={className}>
-      <label className="text-xs font-medium text-muted mb-1.5 block">{label}</label>
-      {type === 'textarea' ? (
-        <textarea value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
-          className="w-full bg-white/[0.04] border border-border rounded-xl px-4 py-3 text-white text-sm placeholder:text-muted/50 focus:outline-none focus:border-green/50 transition-colors resize-none h-24" />
-      ) : (
-        <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
-          className="w-full bg-white/[0.04] border border-border rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-muted/50 focus:outline-none focus:border-green/50 transition-colors" />
-      )}
-    </div>
-  )
-
-  const SectionCard = ({ title, icon: Icon, children, onAdd, addLabel }) => (
-    <BlurFade delay={0.1} offset={8} blur="3px">
-      <div className="glass-card p-6 rounded-2xl relative">
-        <BorderBeam size={50} duration={10} colorFrom="#10B981" colorTo="#3B82F6" borderWidth={1} />
-        <div className="flex items-center justify-between mb-5">
-          <h3 className="font-bold text-white flex items-center gap-2"><Icon size={18} className="text-green" /> {title}</h3>
-          {onAdd && (
-            <button onClick={onAdd} className="text-xs flex items-center gap-1 text-green hover:text-green/80 transition-colors font-medium">
-              <Plus size={14} /> {addLabel || 'Add'}
-            </button>
-          )}
-        </div>
-        {children}
-      </div>
-    </BlurFade>
-  )
 
   if (loading) {
     return (

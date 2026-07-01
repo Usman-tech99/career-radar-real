@@ -3,13 +3,62 @@ import { Link, useLocation } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
-import { LayoutDashboard, Target, Activity, User, LogOut, TrendingUp, AlertTriangle, FileText } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { BlurFade } from '../../components/magicui/blur-fade'
+import { BorderBeam } from '../../components/magicui/border-beam'
+import { NumberTicker } from '../../components/magicui/number-ticker'
+import { LayoutDashboard, Target, Activity, User, LogOut, TrendingUp, AlertTriangle, FileText, RotateCcw, Sparkles, ChevronRight, BarChart3 } from 'lucide-react'
+
+const NAV_STEPS = [
+  { to: '/dashboard', icon: LayoutDashboard, label: 'Overview' },
+  { to: '/dashboard/blueprint', icon: Target, label: 'AI Blueprint' },
+  { to: '/dashboard/score', icon: Activity, label: 'Career Score' },
+  { to: '/dashboard/resume', icon: FileText, label: 'Resume Builder' },
+  { to: '/dashboard/profile', icon: User, label: 'Profile Settings' },
+]
+
+function NavLink({ to, icon: Icon, label }) {
+  const location = useLocation()
+  const isActive = location.pathname === to
+  return (
+    <Link to={to} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium relative ${
+      isActive ? 'text-green' : 'text-muted hover:bg-white/[0.04] hover:text-white'
+    }`}>
+      {isActive && <motion.div layoutId="activeNavScore" className="absolute inset-0 rounded-xl bg-green/10 border border-green/20" transition={{ type: 'spring', stiffness: 400, damping: 30 }} />}
+      <Icon size={20} className="relative z-10" />
+      <span className="relative z-10">{label}</span>
+    </Link>
+  )
+}
+
+const ScoreBar = ({ label, value, max, color, icon: Icon }) => (
+  <div className="mb-5 group">
+    <div className="flex justify-between items-end mb-2">
+      <span className="font-bold text-sm text-white flex items-center gap-2">
+        {Icon && <Icon size={14} className={color.replace('bg-', 'text-').replace('bg-', '')} />}
+        {label}
+      </span>
+      <span className="text-xs font-mono text-muted">{value} / {max}</span>
+    </div>
+    <div className="h-3 w-full bg-white/[0.04] rounded-full overflow-hidden relative">
+      <motion.div
+        initial={{ width: 0 }}
+        animate={{ width: `${Math.min(100, (value / max) * 100)}%` }}
+        transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
+        className={`h-full rounded-full ${color} relative`}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer-slide opacity-0 group-hover:opacity-100" />
+      </motion.div>
+    </div>
+  </div>
+)
 
 export default function Score() {
   const { user, signOut } = useAuth()
   const location = useLocation()
   const [score, setScore] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [calculating, setCalculating] = useState(false)
 
   useEffect(() => {
     if (user) fetchScore()
@@ -23,7 +72,14 @@ export default function Score() {
         .eq('user_id', user.id)
         .maybeSingle()
 
-      if (data) setScore(data)
+      if (data) {
+        setScore(data)
+      } else if (!error) {
+        // Auto-calculate if no score exists
+        supabase.functions.invoke('recalculate-score', { body: {} }).then(({ data: d }) => {
+          if (d?.score) setScore(d.score)
+        }).catch(() => {})
+      }
     } catch (err) {
       toast.error('Failed to load score')
       console.error('Score: load error:', err.message)
@@ -32,134 +88,196 @@ export default function Score() {
     }
   }
 
-  const NavLink = ({ to, icon: Icon, label }) => {
-    const isActive = location.pathname === to
-    return (
-      <Link to={to} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
-        isActive ? 'bg-green/10 text-green border border-green/20' : 'text-muted hover:bg-white/[0.04] hover:text-white'
-      }`}>
-        <Icon size={20} className={isActive ? 'text-green' : 'text-muted'} />
-        {label}
-      </Link>
-    )
+  async function handleRecalculate() {
+    setCalculating(true)
+    const loadToast = toast.loading('Recalculating career score...')
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const rawRes = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/recalculate-score`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
+        body: '{}'
+      })
+      const rawBody = await rawRes.text()
+      if (!rawRes.ok) throw new Error(rawBody)
+      const json = JSON.parse(rawBody)
+      if (json?.score) setScore(json.score)
+      toast.success('Score recalculated!', { id: loadToast })
+    } catch (err) {
+      toast.error(err.message || 'Calculation failed', { id: loadToast })
+      console.error('Score: recalculate error:', err.message)
+    } finally {
+      setCalculating(false)
+    }
   }
 
-  // Progress bar component
-  const ScoreBar = ({ label, value, max, color }) => (
-    <div className="mb-6">
-      <div className="flex justify-between items-end mb-2">
-        <span className="font-bold text-sm text-white">{label}</span>
-        <span className="text-xs font-mono text-muted">{value} / {max}</span>
-      </div>
-      <div className="h-3 w-full bg-white/[0.05] rounded-full overflow-hidden">
-        <div 
-          className={`h-full rounded-full ${color}`} 
-          style={{ width: `${Math.min(100, (value / max) * 100)}%` }} 
-        />
-      </div>
-    </div>
-  )
+  const getScoreColor = (s) => {
+    if (s >= 80) return 'from-green to-emerald-300'
+    if (s >= 60) return 'from-blue-accent to-blue-300'
+    if (s >= 40) return 'from-gold to-amber-300'
+    return 'from-red-500 to-rose-300'
+  }
 
   return (
-    <div className="flex min-h-screen bg-surface">
-      <div className="w-64 h-screen bg-surface border-r border-border flex flex-col fixed left-0 top-0 pt-20">
-        <div className="flex-1 px-4 py-6 space-y-2">
-          <NavLink to="/dashboard" icon={LayoutDashboard} label="Overview" />
-          <NavLink to="/dashboard/blueprint" icon={Target} label="AI Blueprint" />
-          <NavLink to="/dashboard/score" icon={Activity} label="Career Score" />
-          <NavLink to="/dashboard/resume" icon={FileText} label="Resume Builder" />
-          <NavLink to="/dashboard/profile" icon={User} label="Profile Settings" />
+    <div className="flex min-h-screen bg-[#07070C]">
+      {/* Sidebar */}
+      <div className="w-64 h-screen bg-[#0A0A12]/90 backdrop-blur-xl border-r border-white/[0.05] flex flex-col fixed left-0 top-0 pt-20 z-20">
+        <div className="flex-1 px-3 py-6 space-y-1">
+          {NAV_STEPS.map(s => <NavLink key={s.to} {...s} />)}
         </div>
-        <div className="p-4 border-t border-border">
-          <button type="button" onClick={signOut} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-400 hover:bg-red-500/10 transition-colors font-medium">
-            <LogOut size={20} /> Sign Out
+        <div className="p-3 border-t border-white/[0.05]">
+          <button onClick={signOut}
+            className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-400/70 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 font-medium text-sm">
+            <LogOut size={18} /> Sign Out
           </button>
         </div>
       </div>
 
-      <div className="flex-1 ml-64 p-8">
+      {/* Main */}
+      <div className="flex-1 ml-64 p-6 md:p-10">
         {loading ? (
-          <div className="skeleton w-full h-full min-h-[500px] rounded-2xl"></div>
-        ) : !score ? (
-          <div className="glass-card text-center py-20">
-            <h2 className="text-2xl font-bold mb-2">No Score Data</h2>
-            <p className="text-muted">Complete your onboarding to calculate your initial score.</p>
-          </div>
-        ) : (
-          <div className="space-y-8 max-w-5xl">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-border pb-8">
-              <div>
-                <h1 className="text-4xl font-bold font-sora tracking-tight mb-2">Career Score</h1>
-                <p className="text-muted">Your employability index based on skills, profile, and activity.</p>
+          <div className="max-w-5xl mx-auto space-y-6 animate-pulse">
+            <div className="h-8 w-48 rounded bg-white/[0.06]" />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="glass-card p-6 rounded-2xl space-y-4">
+                <div className="h-5 w-36 rounded bg-white/[0.06]" />
+                <div className="h-5 w-full rounded bg-white/[0.06]" />
+                <div className="h-5 w-full rounded bg-white/[0.06]" />
+                <div className="h-5 w-full rounded bg-white/[0.06]" />
+                <div className="h-5 w-full rounded bg-white/[0.06]" />
+                <div className="h-5 w-full rounded bg-white/[0.06]" />
               </div>
-              <div className="glass-card flex items-center gap-6 px-8 py-6 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-green/20 blur-[40px] rounded-full pointer-events-none" />
-                <Activity size={40} className="text-green relative z-10" />
-                <div className="relative z-10">
-                  <div className="text-6xl font-black font-mono text-white leading-none">
-                    {score.total_score}<span className="text-2xl text-muted font-bold">/100</span>
-                  </div>
-                </div>
+              <div className="space-y-6">
+                <div className="glass-card p-6 rounded-2xl h-40" />
+                <div className="glass-card p-6 rounded-2xl h-40" />
               </div>
             </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Score Breakdown */}
-              <div className="glass-card">
-                <h2 className="text-xl font-bold mb-8 flex items-center gap-2">
-                  <TrendingUp className="text-blue-accent" /> Score Breakdown
-                </h2>
-                
-                <ScoreBar label="Skills Assessment" value={score.skills_score} max={25} color="bg-purple-accent" />
-                <ScoreBar label="Profile Completeness" value={score.profile_score} max={20} color="bg-blue-400" />
-                <ScoreBar label="Blueprint Activity" value={score.activity_score} max={20} color="bg-green" />
-                <ScoreBar label="Education & Courses" value={score.education_score} max={20} color="bg-gold" />
-                <ScoreBar label="Experience Level" value={score.experience_score} max={15} color="bg-indigo-400" />
+          </div>
+        ) : !score ? (
+          <div className="max-w-5xl mx-auto glass-card text-center py-20 rounded-2xl">
+            <BarChart3 size={48} className="text-muted mx-auto mb-4" />
+            <h2 className="text-2xl font-bold mb-2">No Score Data</h2>
+            <p className="text-muted mb-6">Complete your onboarding and generate a blueprint to calculate your score.</p>
+            <button onClick={handleRecalculate} disabled={calculating}
+              className="btn-primary inline-flex items-center gap-2">
+              <RotateCcw size={16} className={calculating ? 'animate-spin' : ''} />
+              {calculating ? 'Calculating...' : 'Calculate Now'}
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-8 max-w-5xl mx-auto">
+            {/* Header */}
+            <BlurFade offset={8} blur="3px">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-8 border-b border-white/[0.05]">
+                <div>
+                  <h1 className="text-3xl md:text-4xl font-bold font-sora mb-1">Career <span className="text-green">Score</span></h1>
+                  <p className="text-muted text-sm">Your employability index based on skills, profile, and activity.</p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <button onClick={handleRecalculate} disabled={calculating}
+                    className="btn-ghost border border-border flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl">
+                    <RotateCcw size={14} className={calculating ? 'animate-spin' : ''} />
+                    {calculating ? 'Recalculating...' : 'Recalculate'}
+                  </button>
+                  <div className="glass-card flex items-center gap-4 px-6 py-4 rounded-2xl relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-green/15 blur-[50px] rounded-full pointer-events-none" />
+                    <Activity size={28} className="text-green relative z-10" />
+                    <div className="relative z-10">
+                      <div className="text-4xl md:text-5xl font-black font-mono leading-none">
+                        <span className={`text-transparent bg-clip-text bg-gradient-to-r ${getScoreColor(score.total_score)}`}>
+                          <NumberTicker value={score.total_score} />
+                        </span>
+                        <span className="text-lg text-muted font-bold ml-1">/100</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
+            </BlurFade>
 
-              {/* Action Items */}
-              <div className="space-y-6">
-                <div className="glass-card border border-amber-500/20 bg-amber-500/5">
-                  <h2 className="text-xl font-bold text-amber-400 mb-4 flex items-center gap-2">
-                    <AlertTriangle size={20} /> Action Items to Improve
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Score Breakdown */}
+              <BlurFade delay={0.1} offset={10} blur="3px">
+                <div className="glass-card p-6 rounded-2xl relative">
+                  <BorderBeam size={60} duration={10} colorFrom="#10B981" colorTo="#3B82F6" borderWidth={1} />
+                  <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
+                    <TrendingUp className="text-blue-accent" size={18} /> Score Breakdown
                   </h2>
-                  {score.missing_items?.length > 0 ? (
-                    <ul className="space-y-3">
-                      {score.missing_items.map((item, i) => (
-                        <li key={i} className="flex items-center gap-3 text-white font-medium">
-                          <div className="w-2 h-2 rounded-full bg-amber-400" />
-                          Complete: {item}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-green font-medium">Your profile is highly optimized! Keep completing blueprint tasks.</p>
-                  )}
-                  <div className="mt-6 pt-4 border-t border-amber-500/20">
-                    <p className="text-xs text-muted">
-                      To recalculate your score, complete actions and visit the AI Assistant or refresh your dashboard.
-                    </p>
-                  </div>
+                  <ScoreBar label="Skills Assessment" value={score.skills_score} max={25} color="bg-purple-accent" icon={Sparkles} />
+                  <ScoreBar label="Profile Completeness" value={score.profile_score} max={20} color="bg-blue-accent" icon={User} />
+                  <ScoreBar label="Blueprint Activity" value={score.activity_score} max={20} color="bg-green" icon={Target} />
+                  <ScoreBar label="Education & Courses" value={score.education_score} max={20} color="bg-gold" icon={FileText} />
+                  <ScoreBar label="Experience Level" value={score.experience_score} max={15} color="bg-indigo-400" icon={TrendingUp} />
                 </div>
+              </BlurFade>
 
-                {/* Optional History Chart Placeholder */}
-                <div className="glass-card">
-                  <h2 className="text-lg font-bold mb-4">Score History</h2>
-                  <div className="h-32 flex items-end gap-2 border-b border-l border-border pl-2 pb-2">
-                    {score.score_history?.length > 0 ? (
-                      score.score_history.map((h, i) => (
-                        <div key={i} className="flex-1 bg-green/20 hover:bg-green/40 transition-colors rounded-t-sm relative group cursor-pointer" 
-                             style={{ height: `${h.score}%` }}>
-                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-surface border border-border px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">
-                            {h.score} ({new Date(h.date).toLocaleDateString()})
-                          </div>
-                        </div>
-                      ))
+              {/* Right Column */}
+              <div className="space-y-6">
+                {/* Action Items */}
+                <BlurFade delay={0.15} offset={10} blur="3px">
+                  <div className="glass-card p-6 rounded-2xl border border-amber-500/20 bg-amber-500/[0.02] relative">
+                    <BorderBeam size={50} duration={12} colorFrom="#F59E0B" colorTo="#F59E0B" borderWidth={1} />
+                    <h2 className="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2">
+                      <AlertTriangle size={18} /> Action Items
+                    </h2>
+                    {score.missing_items?.length > 0 ? (
+                      <ul className="space-y-3">
+                        {score.missing_items.map((item, i) => (
+                          <motion.li key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }}
+                            className="flex items-center gap-3 text-white/90 text-sm font-medium">
+                            <div className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+                            {item}
+                          </motion.li>
+                        ))}
+                      </ul>
                     ) : (
-                      <p className="text-xs text-muted flex-1 text-center self-center">Not enough history</p>
+                      <div className="flex items-center gap-3 text-green">
+                        <Sparkles size={18} />
+                        <p className="font-medium">Your profile is highly optimized!</p>
+                      </div>
                     )}
+                    <div className="mt-6 pt-4 border-t border-amber-500/10">
+                      <p className="text-xs text-muted/70">
+                        Complete the items above and recalculate to improve your score.
+                      </p>
+                    </div>
                   </div>
-                </div>
+                </BlurFade>
+
+                {/* Score History */}
+                <BlurFade delay={0.2} offset={10} blur="3px">
+                  <div className="glass-card p-6 rounded-2xl relative">
+                    <BorderBeam size={50} duration={12} colorFrom="#8B5CF6" colorTo="#3B82F6" borderWidth={1} />
+                    <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                      <BarChart3 size={18} className="text-purple-accent" /> Score History
+                    </h2>
+                    <div className="h-36 flex items-end gap-1.5 border-b border-l border-white/[0.06] pl-2 pb-2">
+                      {score.score_history?.length > 1 ? (
+                        score.score_history.map((h, i) => {
+                          const pct = Math.max(5, h.score)
+                          return (
+                            <div key={i} className="flex-1 relative group cursor-pointer" style={{ height: '100%', display: 'flex', alignItems: 'flex-end' }}>
+                              <motion.div
+                                initial={{ height: 0 }}
+                                animate={{ height: `${pct}%` }}
+                                transition={{ duration: 0.6, delay: i * 0.05 }}
+                                className={`w-full rounded-t-sm transition-all duration-300 group-hover:opacity-80 ${h.score >= 70 ? 'bg-green/50' : h.score >= 40 ? 'bg-gold/50' : 'bg-red-500/50'}`}
+                              >
+                                <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-surface border border-white/[0.1] px-2 py-0.5 text-[10px] text-muted rounded opacity-0 group-hover:opacity-100 whitespace-nowrap transition-opacity">
+                                  {h.score} — {new Date(h.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                </div>
+                              </motion.div>
+                            </div>
+                          )
+                        })
+                      ) : (
+                        <div className="flex-1 flex items-center justify-center">
+                          <p className="text-xs text-muted/50">Not enough history yet. Recalculate to track progress.</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </BlurFade>
               </div>
             </div>
           </div>

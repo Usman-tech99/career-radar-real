@@ -26,79 +26,156 @@ Deno.serve(async (req) => {
 
     const sb = createClient(supabaseUrl, serviceRoleKey);
 
-    // Verify token
     const token = authHeader.replace('Bearer ', '');
     const { data: { user }, error: authError } = await sb.auth.getUser(token);
     if (authError || !user) throw new Error("Invalid token");
 
-    // Fetch data for scoring
-    const { data: onboarding, error: onboardingError } = await sb.from('onboarding_data').select('*').eq('user_id', user.id).maybeSingle();
-    if (onboardingError) throw onboardingError;
+    // Fetch all data for scoring
+    const { data: onboarding } = await sb.from('onboarding_data').select('*').eq('user_id', user.id).maybeSingle();
+    const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
+    const { data: publicUser } = await sb.from('public_users').select('*').eq('id', user.id).maybeSingle();
+    const { data: blueprint } = await sb.from('career_blueprints').select('action_steps, title, recommended_skills').eq('user_id', user.id).eq('is_active', true).maybeSingle();
+    const { data: resume } = await sb.from('resumes').select('data').eq('user_id', user.id).maybeSingle();
 
-    const { data: profile, error: profileError } = await sb.from('profiles').select('linkedin_url, avatar_url, bio').eq('id', user.id).maybeSingle();
-    if (profileError) throw profileError;
-    const { data: blueprint } = await sb.from('career_blueprints').select('action_steps').eq('user_id', user.id).eq('is_active', true).maybeSingle();
-    
-    // We would ideally fetch education completions and login activity here, but keeping it simple based on spec:
-    
+    const missing_items = [];
+
+    // --- Skills Score (max 25) ---
     let skills_score = 0;
-    if (onboarding && onboarding.skills) {
-      skills_score = Math.min(25, Math.floor(onboarding.skills.length / 5) * 5); 
-      // e.g. 5 skills = 5 pts, wait prompt says: "5pts per 5 skills listed" -> 5 skills = 5, 10 skills = 10, max 25
+    let allSkills = [];
+
+    if (onboarding?.skills?.length) {
+      allSkills = [...allSkills, ...onboarding.skills];
+    }
+    // Also count skills from resume
+    if (resume?.data?.skills?.length) {
+      resume.data.skills.forEach(s => { if (!allSkills.includes(s)) allSkills.push(s); });
+    }
+    // Deduplicate
+    allSkills = [...new Set(allSkills)];
+
+    // 3 pts per skill, max 15
+    skills_score = Math.min(15, allSkills.length * 3);
+
+    // +5 if career goal is specific (more than 10 chars)
+    if (onboarding?.career_goal && onboarding.career_goal.length > 10) {
+      skills_score += 5;
     }
 
-    let profile_score = 0;
-    const missing_items = [];
-    if (profile?.linkedin_url) profile_score += 10;
-    else missing_items.push("LinkedIn Profile");
-    
-    if (profile?.avatar_url) profile_score += 5;
-    else missing_items.push("Avatar");
-    
-    if (profile?.bio) profile_score += 5;
-    else missing_items.push("Bio");
+    // +5 if interests exist
+    if (onboarding?.interests?.length) {
+      skills_score += 5;
+    }
 
+    skills_score = Math.min(25, skills_score);
+    if (allSkills.length === 0) missing_items.push("Add Skills");
+
+    // --- Profile Score (max 20) ---
+    let profile_score = 0;
+
+    const hasName = publicUser?.full_name || profile?.full_name;
+    if (hasName) profile_score += 4;
+    else missing_items.push("Full Name");
+
+    if (profile?.avatar_url || publicUser?.avatar_url) profile_score += 4;
+    else missing_items.push("Profile Avatar");
+
+    if (profile?.bio) profile_score += 4;
+    else missing_items.push("Bio / Summary");
+
+    if (profile?.linkedin_url) profile_score += 4;
+    else missing_items.push("LinkedIn URL");
+
+    if (profile?.twitter_url || onboarding?.city || publicUser?.country) profile_score += 4;
+
+    profile_score = Math.min(20, profile_score);
+
+    // --- Education Score (max 20) ---
+    let education_score = 0;
+
+    if (onboarding?.degree) {
+      education_score += 6;
+    } else {
+      missing_items.push("Degree / Education");
+    }
+
+    if (onboarding?.study_year) education_score += 4;
+
+    // Check resume for education entries
+    const eduEntries = resume?.data?.education?.filter(e => e.institution || e.degree) || [];
+    if (eduEntries.length > 0) {
+      education_score += 6; // Has detailed education on resume
+    }
+    if (eduEntries.length > 1) {
+      education_score += 4; // Multiple entries = bonus
+    }
+
+    // Location awareness
+    if (onboarding?.country || onboarding?.city || publicUser?.country) {
+      education_score += 4;
+    }
+
+    education_score = Math.min(20, education_score);
+
+    // --- Experience Score (max 15) ---
     let experience_score = 0;
+
     if (onboarding?.experience) {
-      if (onboarding.experience === 'Student') experience_score = 0;
-      else if (onboarding.experience === 'Fresh Graduate') experience_score = 5;
-      else if (onboarding.experience === '1-2 Years') experience_score = 10;
-      else if (onboarding.experience === '3+ Years') experience_score = 15;
+      const expMap = { 'Student': 3, 'Fresh Graduate': 5, '1-2 Years': 10, '3+ Years': 15 };
+      experience_score = expMap[onboarding.experience] || 0;
     } else {
       missing_items.push("Experience Level");
     }
 
-    let activity_score = 0;
-    if (blueprint?.action_steps) {
-      const completedSteps = blueprint.action_steps.filter((s: any) => s.completed).length;
-      activity_score = Math.min(20, completedSteps * 4); // 4 pts per completed action step, max 20
+    // Bonus: resume has work entries
+    const workEntries = resume?.data?.experience?.filter(e => e.title || e.company) || [];
+    if (workEntries.length > 0) {
+      experience_score = Math.min(15, experience_score + 2);
     }
 
-    // Default education score for now
-    let education_score = 0; 
+    experience_score = Math.min(15, experience_score);
 
-    const total_score = skills_score + profile_score + activity_score + education_score + experience_score;
+    // --- Activity Score (max 20) ---
+    let activity_score = 0;
 
-    // Fetch existing score to update history
+    if (blueprint) {
+      activity_score += 5; // Has an active blueprint
+
+      if (blueprint.action_steps?.length) {
+        const completedSteps = blueprint.action_steps.filter(s => s.completed).length;
+        activity_score += Math.min(10, completedSteps * 2); // 2 pts per completed step
+        const totalSteps = blueprint.action_steps.length;
+        activity_score += Math.min(5, totalSteps); // 1 pt per step defined
+      }
+    } else {
+      missing_items.push("Generate AI Blueprint");
+    }
+
+    // Resume projects bonus
+    const projectEntries = resume?.data?.projects?.filter(p => p.name) || [];
+    if (projectEntries.length > 0) {
+      activity_score = Math.min(20, activity_score + 3);
+    }
+
+    activity_score = Math.min(20, activity_score);
+
+    // --- Total ---
+    const total_score = Math.min(100, skills_score + profile_score + activity_score + education_score + experience_score);
+
+    // --- History ---
     const { data: existingScore } = await sb.from('career_scores').select('score_history').eq('user_id', user.id).maybeSingle();
-    
     const newHistoryEntry = { date: new Date().toISOString(), score: total_score };
     let score_history = existingScore?.score_history || [];
-    
-    // Check if we already logged a score today, if so, replace it, else append
+
     const today = new Date().toISOString().split('T')[0];
     const lastEntry = score_history.length > 0 ? score_history[score_history.length - 1] : null;
-    
     if (lastEntry && lastEntry.date.startsWith(today)) {
       score_history[score_history.length - 1] = newHistoryEntry;
     } else {
       score_history.push(newHistoryEntry);
     }
-    
-    // Keep only last 30 entries
     if (score_history.length > 30) score_history = score_history.slice(-30);
 
-    // Upsert the score
+    // --- Upsert ---
     const { data: updatedScore, error: upsertError } = await sb.from('career_scores').upsert({
       user_id: user.id,
       total_score,

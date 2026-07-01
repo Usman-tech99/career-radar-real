@@ -37,8 +37,16 @@ export default function Dashboard() {
         supabase.from('career_scores').select('total_score, missing_items').eq('user_id', user.id).maybeSingle(),
         supabase.from('career_blueprints').select('title, summary, action_steps').eq('user_id', user.id).eq('is_active', true).maybeSingle()
       ])
-      if (scoreRes.error) console.error('Dashboard: career_scores query error:', scoreRes.error.message)
-      else if (scoreRes?.data) setScore(scoreRes.data)
+
+      if (scoreRes?.data) {
+        setScore(scoreRes.data)
+      } else if (!scoreRes?.error) {
+        // No score found — auto-calculate
+        supabase.functions.invoke('recalculate-score', { body: {} }).then(({ data, error }) => {
+          if (data?.score) setScore({ total_score: data.score.total_score, missing_items: data.score.missing_items })
+        }).catch(() => {})
+      }
+
       if (blueprintRes.error) console.error('Dashboard: career_blueprints query error:', blueprintRes.error.message)
       else if (blueprintRes?.data) setBlueprint(blueprintRes.data)
     } catch (err) {
