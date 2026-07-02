@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from './context/AuthContext'
+import { ThemeProvider } from './context/ThemeContext'
 
 import { ProtectedRoute } from './routes/ProtectedRoute'
 import { SuperAdminRoute } from './routes/SuperAdminRoute'
@@ -77,6 +78,7 @@ function HomeRedirect() {
 export default function App() {
   return (
     <BrowserRouter>
+      <ThemeProvider>
       <AuthProvider>
         <RadarCursor />
         <RadarAIBubble />
@@ -143,6 +145,7 @@ export default function App() {
           </Routes>
         </Suspense>
       </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   )
 }

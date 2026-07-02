@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Theme Variables ── */
+:root {
+  --color-surface: #07070C;
+  --color-card: rgba(255,255,255,0.04);
+  --color-border: #1E1E2E;
+  --color-muted: #94A3B8;
+  --color-white: #ffffff;
+  --color-bg-dark: #07070C;
+}
+
+[data-theme="light"] {
+  --color-surface: #FFFFFF;
+  --color-card: rgba(0,0,0,0.04);
+  --color-border: #E2E8F0;
+  --color-muted: #64748B;
+  --color-white: #0F172A;
+  --color-bg-dark: #F8FAFC;
+}
+
 @layer base {
   * {
     box-sizing: border-box;
@@ -14,30 +33,28 @@
   }
 
   body {
-    background-color: #07070C;
-    color: #ffffff;
+    background-color: var(--color-bg-dark);
+    color: var(--color-white);
     font-family: "Sora", sans-serif;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #07070C;
+    background: var(--color-bg-dark);
   }
   ::-webkit-scrollbar-thumb {
-    background: #1E1E2E;
+    background: var(--color-border);
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
     background: #10B981;
   }
 
-  /* Selection */
   ::selection {
     background: rgba(16, 185, 129, 0.3);
     color: #fff;
@@ -46,11 +63,14 @@
 
 @layer components {
   .glass-card {
-    @apply bg-white/[0.04] backdrop-blur-xl border border-[#1E1E2E] rounded-2xl p-6;
+    @apply backdrop-blur-xl rounded-2xl p-6;
+    background-color: var(--color-card);
+    border-color: var(--color-border);
   }
 
   .btn-primary {
-    @apply bg-[#10B981] hover:bg-emerald-500 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)];
+    @apply bg-[#10B981] hover:bg-emerald-500 font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)];
+    color: #fff;
   }
 
   .btn-ghost {
@@ -62,7 +82,9 @@
   }
 
   .page-wrapper {
-    @apply min-h-screen bg-[#07070C] text-white font-sans;
+    @apply min-h-screen font-sans;
+    background-color: var(--color-bg-dark);
+    color: var(--color-white);
   }
 
   .gradient-text {
@@ -74,15 +96,23 @@
   }
 
   .section-heading {
-    @apply text-3xl md:text-4xl font-bold text-white;
+    @apply text-3xl md:text-4xl font-bold;
+    color: var(--color-white);
   }
 
   .input-field {
-    @apply w-full bg-white/[0.06] border border-[#1E1E2E] rounded-xl px-4 py-3 text-white placeholder-[#94A3B8] focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981]/50 transition-all duration-300;
+    @apply w-full border rounded-xl px-4 py-3 focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981]/50 transition-all duration-300;
+    background-color: var(--color-card);
+    border-color: var(--color-border);
+    color: var(--color-white);
+  }
+  .input-field::placeholder {
+    color: var(--color-muted);
   }
 
   .label {
-    @apply block text-sm font-medium text-[#94A3B8] mb-2;
+    @apply block text-sm font-medium mb-2;
+    color: var(--color-muted);
   }
 
   .badge-green {
@@ -105,6 +135,33 @@
     @apply bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-semibold px-3 py-1 rounded-full;
   }
 }
+
+/* ── Light Theme Overrides (flat selectors — no nesting to avoid PostCSS conflict with @apply) ── */
+[data-theme="light"] .bg-green.text-\[\#07070C\],
+[data-theme="light"] .bg-\[\#10B981\].text-\[\#07070C\] { background-color: #10B981 !important; color: #fff !important; }
+[data-theme="light"] .bg-blue-accent.text-\[\#07070C\] { background-color: #3B82F6 !important; color: #fff !important; }
+
+[data-theme="light"] .bg-\[\#07070C\] { background-color: #FFFFFF !important; }
+[data-theme="light"] .bg-\[\#07070C\]\/80 { background-color: rgba(255,255,255,0.8) !important; }
+[data-theme="light"] .btn-primary.text-\[\#07070C\] { background-color: #10B981 !important; color: #fff !important; }
+
+[data-theme="light"] .text-white { color: #0F172A !important; }
+[data-theme="light"] .text-white\/90 { color: rgba(15,23,42,0.9) !important; }
+[data-theme="light"] .text-white\/70 { color: rgba(15,23,42,0.7) !important; }
+[data-theme="light"] .text-white\/50 { color: rgba(15,23,42,0.5) !important; }
+[data-theme="light"] .text-white\/10 { color: rgba(15,23,42,0.1) !important; }
+
+[data-theme="light"] [class*="border-white/"] { border-color: #E2E8F0 !important; }
+
+[data-theme="light"] .skeleton {
+  background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%) !important;
+  background-size: 1000px 100% !important;
+}
+
+[data-theme="light"] [class*="drop-shadow"] { filter: none !important; }
+
+[data-theme="light"] .glow-green { box-shadow: 0 0 30px rgba(16, 185, 129, 0.08) !important; }
+[data-theme="light"] .glow-green-strong { box-shadow: 0 0 50px rgba(16, 185, 129, 0.15) !important; }
 
 /* Animations */
 @keyframes aurora {

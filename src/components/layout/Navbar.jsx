@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import { Menu, X, User } from 'lucide-react'
+import { useTheme } from '../../context/ThemeContext'
+import { Menu, X, User, Sun, Moon } from 'lucide-react'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import logo from '../../assets/logo.png'
@@ -21,6 +22,8 @@ export default function Navbar() {
     { name: 'About', path: '/about' },
     { name: 'Socials', path: '/social' },
   ]
+
+  const { theme, toggleTheme } = useTheme()
 
   // If user is logged in, their dashboard path depends on role
   let dashPath = '/dashboard'
@@ -63,13 +66,18 @@ export default function Navbar() {
 
         {/* Actions */}
         <div className="hidden lg:flex items-center gap-4">
+          {/* Theme Toggle */}
+          <button onClick={toggleTheme} className="p-2 rounded-xl hover:bg-white/[0.04] transition-colors"
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
+            {theme === 'dark' ? <Sun size={18} className="text-muted" /> : <Moon size={18} className="text-muted" />}
+          </button>
           {user ? (
             <Link to={dashPath} className="btn-primary py-2 px-4 text-sm flex items-center gap-2">
               <User size={16} /> Dashboard
             </Link>
           ) : (
             <>
-              <Link to="/login" className="text-sm font-medium text-white hover:text-green transition-colors">Login</Link>
+              <Link to="/login" className="text-sm font-medium hover:text-green transition-colors" style={{color: 'var(--color-white)'}}>Login</Link>
               <Link to="/register" className="btn-primary py-2 px-4 text-sm">Join Free</Link>
             </>
           )}
@@ -102,6 +110,12 @@ export default function Navbar() {
                 </Link>
               ))}
               <hr className="border-border my-4" />
+              <button onClick={() => { toggleTheme(); setIsOpen(false) }}
+                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-border text-sm font-medium transition-colors"
+                style={{color: 'var(--color-muted)'}}>
+                {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+                {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+              </button>
               {user ? (
                 <Link to={dashPath} onClick={() => setIsOpen(false)} className="btn-primary w-full text-center py-3">
                   Dashboard

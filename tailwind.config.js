@@ -8,9 +8,9 @@ export default {
         mono: ["JetBrains Mono", "monospace"],
       },
       colors: {
-        surface: "#07070C",
-        card: "rgba(255,255,255,0.04)",
-        border: "#1E1E2E",
+        surface: "var(--color-surface)",
+        card: "var(--color-card)",
+        border: "var(--color-border)",
         green: {
           DEFAULT: "#10B981",
           hover: "#059669",
@@ -22,7 +22,7 @@ export default {
         purple: {
           accent: "#8B5CF6",
         },
-        muted: "#94A3B8",
+        muted: "var(--color-muted)",
       },
       animation: {
         "spin-slow": "spin 3s linear infinite",
