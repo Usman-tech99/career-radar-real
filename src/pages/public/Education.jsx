@@ -164,8 +164,8 @@ export default function Education() {
                         <span className="text-green text-sm font-medium">Free Content</span>
                       )
                     ) : (
-                      <Link to="/shop" className="btn-ghost w-full text-center py-2">
-                        View in Shop
+                      <Link to="/products" className="btn-ghost w-full text-center py-2">
+                        View in Products
                       </Link>
                     )}
                   </div>

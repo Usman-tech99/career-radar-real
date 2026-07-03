@@ -166,7 +166,7 @@ export default function ManageEducation() {
                     <span className="badge-purple">{item.level}</span>
                   </div>
                   <span className={`text-xs font-bold ${item.is_free ? 'text-green' : 'text-amber-400'}`}>
-                    {item.is_free ? 'FREE' : 'PAID (Shop)'}
+                    {item.is_free ? 'FREE' : 'PAID (Products)'}
                   </span>
                 </div>
                 <h3 className="font-bold text-lg mb-1">{item.title}</h3>
@@ -261,7 +261,7 @@ export default function ManageEducation() {
                     </div>
                   ) : (
                     <div>
-                      <label className="label text-amber-400">Link to Paid Product in Shop</label>
+                      <label className="label text-amber-400">Link to Paid Product</label>
                       <select {...register('product_id')} className="input-field border-amber-400/30">
                         <option value="">-- Select a Paid Product --</option>
                         {products.map(p => (

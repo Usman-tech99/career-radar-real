@@ -101,10 +101,10 @@ export default function Home() {
               borderRadius="14px"
               className="text-lg px-8 py-4 font-semibold gap-2 w-full sm:w-auto"
             >
-              Start Free Trial <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
+              Join Free <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
             </ShimmerButton>
             <Link to="/about" className="btn-ghost w-full sm:w-auto text-lg px-8 py-4 border border-white/10 hover:border-white/20">
-              Our Story
+              Learn More
             </Link>
           </div>
         </motion.div>

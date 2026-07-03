@@ -17,7 +17,7 @@ const Jobs = lazy(() => import('./pages/public/Jobs'))
 const WeeklyContent = lazy(() => import('./pages/public/WeeklyContent'))
 const Education = lazy(() => import('./pages/public/Education'))
 const Scholarships = lazy(() => import('./pages/public/Scholarships'))
-const Shop = lazy(() => import('./pages/public/Shop'))
+const Products = lazy(() => import('./pages/public/Shop'))
 const Team = lazy(() => import('./pages/public/Team'))
 const Donate = lazy(() => import('./pages/public/Donate'))
 const Structure = lazy(() => import('./pages/public/Structure'))
@@ -92,7 +92,8 @@ export default function App() {
             <Route path="/weekly-content" element={<WeeklyContent />} />
             <Route path="/education" element={<Education />} />
             <Route path="/scholarships" element={<Scholarships />} />
-            <Route path="/shop" element={<Shop />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/shop" element={<Navigate to="/products" replace />} />
             <Route path="/team" element={<Team />} />
             <Route path="/structure" element={<Structure />} />
             <Route path="/about" element={<About />} />

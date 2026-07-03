@@ -74,7 +74,7 @@ export default function Footer() {
               <li><Link to="/weekly-content" className="text-sm text-muted hover:text-white transition-colors">Resources</Link></li>
               <li><Link to="/education" className="text-sm text-muted hover:text-white transition-colors">Courses</Link></li>
               <li><Link to="/scholarships" className="text-sm text-muted hover:text-white transition-colors">Scholarships</Link></li>
-              <li><Link to="/shop" className="text-sm text-muted hover:text-white transition-colors">Shop</Link></li>
+              <li><Link to="/products" className="text-sm text-muted hover:text-white transition-colors">Products</Link></li>
             </ul>
           </div>
 
@@ -82,7 +82,7 @@ export default function Footer() {
           <div>
             <h4 className="font-bold text-white mb-6">Company</h4>
             <ul className="space-y-4">
-              <li><Link to="/about" className="text-sm text-muted hover:text-white transition-colors">Our Story</Link></li>
+              <li><Link to="/about" className="text-sm text-muted hover:text-white transition-colors">Learn More</Link></li>
               <li><Link to="/structure" className="text-sm text-muted hover:text-white transition-colors">Aim & Vision</Link></li>
               <li><Link to="/team" className="text-sm text-muted hover:text-white transition-colors">The Team</Link></li>
               <li><Link to="/collaborators" className="text-sm text-muted hover:text-white transition-colors">Partners</Link></li>

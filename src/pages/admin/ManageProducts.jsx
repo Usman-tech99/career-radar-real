@@ -12,7 +12,7 @@ import { formatDate } from '../../lib/helpers'
 
 const productSchema = z.object({
   title: z.string().min(3, "Title is required"),
-  category: z.enum(['File', 'Course', 'Template', 'eBook', 'Bundle']),
+  category: z.enum(['File', 'Course', 'Template', 'eBook', 'Bundle', 'Physical']),
   description: z.string().optional(),
   price_pkr: z.preprocess((val) => Number(val), z.number().min(0)),
   is_free: z.boolean().default(false),
@@ -151,7 +151,7 @@ export default function ManageProducts() {
       <AdminSidebar />
       <div className="flex-1 ml-64 p-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Manage Products (Shop)</h1>
+          <h1 className="text-3xl font-bold">Manage Products</h1>
           <button onClick={() => openModal()} className="btn-primary flex items-center gap-2">
             <Plus size={20} /> Add Product
           </button>
@@ -176,7 +176,7 @@ export default function ManageProducts() {
                 
                 <div className="flex justify-between items-center border-t border-border mt-4 pt-4">
                   <span className={`text-xs ${item.is_active ? 'text-green' : 'text-red-400'}`}>
-                    {item.is_active ? 'Active in Shop' : 'Hidden'}
+                    {item.is_active ? 'Active' : 'Hidden'}
                   </span>
                   <div className="flex gap-2">
                     <button onClick={() => openModal(item)} className="p-2 text-blue-accent hover:bg-blue-500/10 rounded-lg">
@@ -215,6 +215,7 @@ export default function ManageProducts() {
                       <option value="Template">Template</option>
                       <option value="eBook">eBook</option>
                       <option value="Bundle">Bundle</option>
+                      <option value="Physical">Physical</option>
                     </select>
                   </div>
                 </div>
@@ -285,7 +286,7 @@ export default function ManageProducts() {
                 <div className="flex gap-6 mt-4">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" {...register('is_active')} className="w-4 h-4 accent-green rounded" />
-                    <span className="text-sm">Active (Visible in Shop)</span>
+                    <span className="text-sm">Active (Visible)</span>
                   </label>
                 </div>
 

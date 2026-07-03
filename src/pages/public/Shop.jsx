@@ -56,9 +56,13 @@ export default function Shop() {
     setLoading(false)
   }
 
-  const filteredProducts = products.filter(product => 
-    filterCategory === 'All' || product.category === filterCategory
-  )
+  const DIGITAL_CATS = ['File', 'Course', 'Template', 'eBook', 'Bundle']
+  const filteredProducts = products.filter(product => {
+    if (filterCategory === 'All') return true
+    if (filterCategory === 'Digital') return DIGITAL_CATS.includes(product.category)
+    if (filterCategory === 'Physical') return product.category === 'Physical'
+    return product.category === filterCategory
+  })
 
   const handlePurchaseClick = (product) => {
     if (product.is_free) {
@@ -78,21 +82,21 @@ export default function Shop() {
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold font-sora mb-4">Digital <span className="text-gold">Store</span></h1>
+          <h1 className="text-4xl md:text-5xl font-bold font-sora mb-4">Our <span className="text-gold">Products</span></h1>
           <p className="text-muted text-lg max-w-2xl mx-auto">Premium resources to accelerate your career. Free downloads and paid products available.</p>
         </div>
 
         {/* Filters */}
         <div className="flex gap-2 overflow-x-auto mb-10 justify-center pb-2">
-          {['All', 'File', 'Course', 'Template', 'eBook', 'Bundle'].map(category => (
+          {['All', 'Digital', 'Physical'].map(cat => (
             <button 
-              key={category}
-              onClick={() => setFilterCategory(category)}
-              className={`px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-colors ${
-                filterCategory === category ? 'bg-gold text-[#07070C]' : 'bg-white/[0.05] text-muted hover:text-white'
+              key={cat}
+              onClick={() => setFilterCategory(cat)}
+              className={`px-5 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-colors ${
+                filterCategory === cat ? 'bg-gold text-[#07070C]' : 'bg-white/[0.05] text-muted hover:text-white'
               }`}
             >
-              {category}
+              {cat}
             </button>
           ))}
         </div>

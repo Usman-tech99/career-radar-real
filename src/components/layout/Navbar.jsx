@@ -17,9 +17,10 @@ export default function Navbar() {
     { name: 'Resources', path: '/weekly-content' },
     { name: 'Education', path: '/education' },
     { name: 'Scholarships', path: '/scholarships' },
-    { name: 'Shop', path: '/shop' },
+    { name: 'Products', path: '/products' },
     { name: 'Team', path: '/team' },
     { name: 'About', path: '/about' },
+    { name: 'Support Us', path: '/donate' },
     { name: 'Socials', path: '/social' },
   ]
 

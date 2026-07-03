@@ -174,7 +174,7 @@ CREATE TRIGGER content_upd BEFORE UPDATE ON weekly_content FOR EACH ROW EXECUTE 
 -- products
 CREATE TABLE products (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL, description TEXT,
-  category TEXT CHECK(category IN('File','Course','Template','eBook','Bundle')),
+  category TEXT CHECK(category IN('File','Course','Template','eBook','Bundle','Physical')),
   thumbnail_url TEXT, file_url TEXT, preview_url TEXT,
   price_pkr INTEGER DEFAULT 0, is_free BOOLEAN DEFAULT FALSE,
   is_active BOOLEAN DEFAULT TRUE, external_link TEXT,
