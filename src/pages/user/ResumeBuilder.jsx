@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
 import { BlurFade } from '../../components/magicui/blur-fade'
 import { BorderBeam } from '../../components/magicui/border-beam'
-import { FileText, Plus, Trash2, Save, Download, Sparkles, ChevronRight, Briefcase, GraduationCap, Code, Award, Globe, Mail, Phone, MapPin, ExternalLink, GripVertical, X, User } from 'lucide-react'
+import { FileText, Plus, Trash2, Save, Download, Sparkles, ChevronRight, Briefcase, GraduationCap, Code, Award, Globe, Mail, Phone, MapPin, ExternalLink, GripVertical, X, User, Camera } from 'lucide-react'
 
 const EMPTY_EDUCATION = { institution: '', degree: '', field: '', startYear: '', endYear: '', gpa: '' }
 const EMPTY_EXPERIENCE = { company: '', title: '', location: '', startDate: '', endDate: '', current: false, description: '' }
@@ -52,7 +52,7 @@ export default function ResumeBuilder() {
   const [saving, setSaving] = useState(false)
   const [activeTab, setActiveTab] = useState('edit')
 
-  const [personal, setPersonal] = useState({ fullName: '', email: '', phone: '', location: '', title: '', linkedin: '', portfolio: '', bio: '' })
+  const [personal, setPersonal] = useState({ fullName: '', email: '', phone: '', location: '', title: '', linkedin: '', portfolio: '', bio: '', avatarUrl: '' })
   const [education, setEducation] = useState([{ ...EMPTY_EDUCATION }])
   const [skills, setSkills] = useState([])
   const [newSkill, setNewSkill] = useState('')
@@ -95,6 +95,7 @@ export default function ResumeBuilder() {
         linkedin: profileRes?.data?.linkedin_url || '',
         portfolio: '',
         bio: profileRes?.data?.bio || '',
+        avatarUrl: profileRes?.data?.avatar_url || publicRes?.data?.avatar_url || '',
       })
       if (onboardRes?.data?.skills?.length) setSkills(onboardRes.data.skills)
       if (onboardRes?.data?.degree) setEducation([{ ...EMPTY_EDUCATION, degree: onboardRes.data.degree, institution: onboardRes.data.study_year || '' }])
@@ -332,9 +333,13 @@ export default function ResumeBuilder() {
                   <div className="md:w-[35%] bg-[#1a3a4a] text-white p-6 md:p-8 print:p-6 flex flex-col gap-5">
                     {/* Name & Title */}
                     <div className="text-center">
-                      <div className="w-20 h-20 rounded-full bg-white/20 mx-auto mb-3 flex items-center justify-center text-2xl font-bold">
-                        {personal.fullName ? personal.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : '?'}
-                      </div>
+                      {personal.avatarUrl ? (
+                        <img src={personal.avatarUrl} alt={personal.fullName} className="w-20 h-20 rounded-full mx-auto mb-3 object-cover border-2 border-white/30" />
+                      ) : (
+                        <div className="w-20 h-20 rounded-full bg-white/20 mx-auto mb-3 flex items-center justify-center text-2xl font-bold">
+                          {personal.fullName ? personal.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : '?'}
+                        </div>
+                      )}
                       <h1 className="text-xl font-bold leading-tight">{personal.fullName || 'Your Name'}</h1>
                       {personal.title && <p className="text-sm text-white/70 mt-1">{personal.title}</p>}
                     </div>
