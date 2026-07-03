@@ -6,7 +6,7 @@ import SafeImage from '../../components/ui/SafeImage'
 import { ShoppingBag, Download, ExternalLink, MessageCircle, DollarSign, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 
-export default function Shop() {
+export default function Shop({ navless } = {}) {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [filterCategory, setFilterCategory] = useState('All')
@@ -78,7 +78,7 @@ export default function Shop() {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
-      <Navbar />
+      {!navless && <Navbar />}
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">
         <div className="text-center mb-16">
@@ -242,7 +242,7 @@ export default function Shop() {
         </div>
       )}
 
-      <Footer />
+      {!navless && <Footer />}
     </div>
   )
 }

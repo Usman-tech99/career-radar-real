@@ -30,7 +30,7 @@ const platformColors = {
   other: 'bg-white/[0.05] text-muted border-white/10'
 }
 
-export default function Social() {
+export default function Social({ navless } = {}) {
   const [socials, setSocials] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -55,7 +55,7 @@ export default function Social() {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
-      <Navbar />
+      {!navless && <Navbar />}
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">
         <div className="text-center mb-16">
@@ -150,7 +150,7 @@ export default function Social() {
           </div>
         )}
       </main>
-      <Footer />
+      {!navless && <Footer />}
     </div>
   )
 }

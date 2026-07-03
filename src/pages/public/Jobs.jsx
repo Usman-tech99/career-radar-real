@@ -5,7 +5,7 @@ import Footer from '../../components/layout/Footer'
 import { Briefcase, MapPin, Clock, Search, ArrowUpRight } from 'lucide-react'
 import { formatDate } from '../../lib/helpers'
 
-export default function Jobs() {
+export default function Jobs({ navless } = {}) {
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -35,7 +35,7 @@ export default function Jobs() {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
-      <Navbar />
+      {!navless && <Navbar />}
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">
         <div className="text-center mb-16">
@@ -145,7 +145,7 @@ export default function Jobs() {
           </div>
         )}
       </main>
-      <Footer />
+      {!navless && <Footer />}
     </div>
   )
 }

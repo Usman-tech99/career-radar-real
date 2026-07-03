@@ -4,7 +4,7 @@ import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
 import { Target, CheckCircle, Award, TrendingUp } from 'lucide-react'
 
-export default function Structure() {
+export default function Structure({ navless } = {}) {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -25,7 +25,7 @@ export default function Structure() {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
-      <Navbar />
+      {!navless && <Navbar />}
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">
         {loading ? (
@@ -119,7 +119,7 @@ export default function Structure() {
           </div>
         )}
       </main>
-      <Footer />
+      {!navless && <Footer />}
     </div>
   )
 }

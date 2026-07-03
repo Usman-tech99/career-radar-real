@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
 import SafeImage from '../../components/ui/SafeImage'
-import { LayoutDashboard, Target, Activity, User, LogOut, Upload, Save, FileText } from 'lucide-react'
+import { Upload, Save } from 'lucide-react'
 
 export default function UserProfile() {
-  const { user, signOut } = useAuth()
-  const location = useLocation()
+  const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -110,36 +109,8 @@ export default function UserProfile() {
     }
   }
 
-  const NavLink = ({ to, icon: Icon, label }) => {
-    const isActive = location.pathname === to
-    return (
-      <Link to={to} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
-        isActive ? 'bg-green/10 text-green border border-green/20' : 'text-muted hover:bg-white/[0.04] hover:text-white'
-      }`}>
-        <Icon size={20} className={isActive ? 'text-green' : 'text-muted'} />
-        {label}
-      </Link>
-    )
-  }
-
   return (
-    <div className="flex min-h-screen bg-surface">
-      <div className="w-64 h-screen bg-surface border-r border-border flex flex-col fixed left-0 top-0 pt-20">
-        <div className="flex-1 px-4 py-6 space-y-2">
-          <NavLink to="/dashboard" icon={LayoutDashboard} label="Overview" />
-          <NavLink to="/dashboard/blueprint" icon={Target} label="AI Blueprint" />
-          <NavLink to="/dashboard/score" icon={Activity} label="Career Score" />
-          <NavLink to="/dashboard/resume" icon={FileText} label="Resume Builder" />
-          <NavLink to="/dashboard/profile" icon={User} label="Profile Settings" active={true} />
-        </div>
-        <div className="p-4 border-t border-border">
-          <button type="button" onClick={signOut} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-400 hover:bg-red-500/10 transition-colors font-medium">
-            <LogOut size={20} /> Sign Out
-          </button>
-        </div>
-      </div>
-
-      <div className="flex-1 ml-64 p-8">
+    <div className="p-8">
         {loading ? (
           <div className="skeleton w-full h-full min-h-[500px] rounded-2xl"></div>
         ) : (
@@ -228,7 +199,6 @@ export default function UserProfile() {
             </div>
           </div>
         )}
-      </div>
     </div>
   )
 }

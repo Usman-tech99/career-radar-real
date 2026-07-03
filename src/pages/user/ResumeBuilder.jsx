@@ -1,39 +1,16 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
-import { motion } from 'framer-motion'
 import { BlurFade } from '../../components/magicui/blur-fade'
 import { BorderBeam } from '../../components/magicui/border-beam'
-import { LayoutDashboard, Target, Activity, User, LogOut, FileText, Plus, Trash2, Save, Download, Sparkles, ChevronRight, Briefcase, GraduationCap, Code, Award, Globe, Mail, Phone, MapPin, ExternalLink, GripVertical, X } from 'lucide-react'
+import { FileText, Plus, Trash2, Save, Download, Sparkles, ChevronRight, Briefcase, GraduationCap, Code, Award, Globe, Mail, Phone, MapPin, ExternalLink, GripVertical, X } from 'lucide-react'
 
 const EMPTY_EDUCATION = { institution: '', degree: '', field: '', startYear: '', endYear: '', gpa: '' }
 const EMPTY_EXPERIENCE = { company: '', title: '', location: '', startDate: '', endDate: '', current: false, description: '' }
 const EMPTY_PROJECT = { name: '', description: '', technologies: '', link: '' }
 const EMPTY_CERTIFICATION = { name: '', issuer: '', date: '', link: '' }
-
-const NAV_STEPS = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Overview' },
-  { to: '/dashboard/blueprint', icon: Target, label: 'AI Blueprint' },
-  { to: '/dashboard/score', icon: Activity, label: 'Career Score' },
-  { to: '/dashboard/resume', icon: FileText, label: 'Resume Builder' },
-  { to: '/dashboard/profile', icon: User, label: 'Profile Settings' },
-]
-
-function NavLink({ to, icon: Icon, label }) {
-  const location = useLocation()
-  const isActive = location.pathname === to
-  return (
-    <Link to={to} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium relative ${
-      isActive ? 'text-green' : 'text-muted hover:bg-white/[0.04] hover:text-white'
-    }`}>
-      {isActive && <motion.div layoutId="activeNavResume" className="absolute inset-0 rounded-xl bg-green/10 border border-green/20" transition={{ type: 'spring', stiffness: 400, damping: 30 }} />}
-      <Icon size={20} className="relative z-10" />
-      <span className="relative z-10">{label}</span>
-    </Link>
-  )
-}
 
 function Input({ label, value, onChange, placeholder, type = 'text', className = '' }) {
   return (
@@ -70,7 +47,7 @@ function SectionCard({ title, icon: Icon, children, onAdd, addLabel }) {
 }
 
 export default function ResumeBuilder() {
-  const { user, signOut } = useAuth()
+  const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [activeTab, setActiveTab] = useState('edit')
@@ -192,23 +169,8 @@ export default function ResumeBuilder() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#07070C]">
-      {/* Sidebar */}
-      <div className="w-64 h-screen bg-[#0A0A12]/90 backdrop-blur-xl border-r border-white/[0.05] flex flex-col fixed left-0 top-0 pt-20 z-20 print:hidden">
-        <div className="flex-1 px-3 py-6 space-y-1">
-          {NAV_STEPS.map(s => <NavLink key={s.to} {...s} />)}
-        </div>
-        <div className="p-3 border-t border-white/[0.05]">
-          <button onClick={signOut}
-            className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-400/70 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 font-medium text-sm">
-            <LogOut size={18} /> Sign Out
-          </button>
-        </div>
-      </div>
-
-      {/* Main */}
-      <div className="flex-1 ml-64 p-6 md:p-10 print:ml-0 print:p-0">
-        <div className="max-w-5xl mx-auto">
+    <div className="p-6 md:p-10 print:p-0">
+      <div className="max-w-5xl mx-auto">
           {/* Header */}
           <BlurFade offset={8} blur="3px" className="flex items-center justify-between mb-8 print:hidden">
             <div>
@@ -477,6 +439,5 @@ export default function ResumeBuilder() {
           )}
         </div>
       </div>
-    </div>
   )
 }

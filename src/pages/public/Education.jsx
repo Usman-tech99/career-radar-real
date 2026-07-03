@@ -6,7 +6,7 @@ import Footer from '../../components/layout/Footer'
 import SafeImage from '../../components/ui/SafeImage'
 import { BookOpen, Clock, ExternalLink, Filter } from 'lucide-react'
 
-export default function Education() {
+export default function Education({ navless } = {}) {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [filterType, setFilterType] = useState('All')
@@ -44,7 +44,7 @@ export default function Education() {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
-      <Navbar />
+      {!navless && <Navbar />}
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">
         <div className="text-center mb-16">
@@ -175,7 +175,7 @@ export default function Education() {
           </div>
         )}
       </main>
-      <Footer />
+      {!navless && <Footer />}
     </div>
   )
 }

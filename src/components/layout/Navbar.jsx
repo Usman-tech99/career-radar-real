@@ -11,17 +11,30 @@ export default function Navbar() {
   const location = useLocation()
   const [isOpen, setIsOpen] = useState(false)
 
+  const dashMap = {
+    '/': '/dashboard',
+    '/jobs': '/dashboard/jobs',
+    '/weekly-content': '/dashboard/resources',
+    '/education': '/dashboard/education',
+    '/scholarships': '/dashboard/scholarships',
+    '/products': '/dashboard/products',
+    '/team': '/dashboard/team',
+    '/about': '/dashboard/about',
+    '/donate': '/donate',
+    '/social': '/dashboard/socials',
+  }
+
   const links = [
-    { name: 'Home', path: '/' },
-    { name: 'Jobs', path: '/jobs' },
-    { name: 'Resources', path: '/weekly-content' },
-    { name: 'Education', path: '/education' },
-    { name: 'Scholarships', path: '/scholarships' },
-    { name: 'Products', path: '/products' },
-    { name: 'Team', path: '/team' },
-    { name: 'About', path: '/about' },
-    { name: 'Support Us', path: '/donate' },
-    { name: 'Socials', path: '/social' },
+    { name: 'Home', path: user ? dashMap['/'] : '/' },
+    { name: 'Jobs', path: user ? dashMap['/jobs'] : '/jobs' },
+    { name: 'Resources', path: user ? dashMap['/weekly-content'] : '/weekly-content' },
+    { name: 'Education', path: user ? dashMap['/education'] : '/education' },
+    { name: 'Scholarships', path: user ? dashMap['/scholarships'] : '/scholarships' },
+    { name: 'Products', path: user ? dashMap['/products'] : '/products' },
+    { name: 'Team', path: user ? dashMap['/team'] : '/team' },
+    { name: 'About', path: user ? dashMap['/about'] : '/about' },
+    { name: 'Support Us', path: user ? '/dashboard/donate' : '/donate' },
+    { name: 'Socials', path: user ? dashMap['/social'] : '/social' },
   ]
 
   const { theme, toggleTheme } = useTheme()

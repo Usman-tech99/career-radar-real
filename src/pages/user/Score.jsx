@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
@@ -7,29 +7,7 @@ import { motion } from 'framer-motion'
 import { BlurFade } from '../../components/magicui/blur-fade'
 import { BorderBeam } from '../../components/magicui/border-beam'
 import { NumberTicker } from '../../components/magicui/number-ticker'
-import { LayoutDashboard, Target, Activity, User, LogOut, TrendingUp, AlertTriangle, FileText, RotateCcw, Sparkles, ChevronRight, BarChart3 } from 'lucide-react'
-
-const NAV_STEPS = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Overview' },
-  { to: '/dashboard/blueprint', icon: Target, label: 'AI Blueprint' },
-  { to: '/dashboard/score', icon: Activity, label: 'Career Score' },
-  { to: '/dashboard/resume', icon: FileText, label: 'Resume Builder' },
-  { to: '/dashboard/profile', icon: User, label: 'Profile Settings' },
-]
-
-function NavLink({ to, icon: Icon, label }) {
-  const location = useLocation()
-  const isActive = location.pathname === to
-  return (
-    <Link to={to} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium relative ${
-      isActive ? 'text-green' : 'text-muted hover:bg-white/[0.04] hover:text-white'
-    }`}>
-      {isActive && <motion.div layoutId="activeNavScore" className="absolute inset-0 rounded-xl bg-green/10 border border-green/20" transition={{ type: 'spring', stiffness: 400, damping: 30 }} />}
-      <Icon size={20} className="relative z-10" />
-      <span className="relative z-10">{label}</span>
-    </Link>
-  )
-}
+import { Activity, User, Target, FileText, TrendingUp, AlertTriangle, RotateCcw, Sparkles, BarChart3 } from 'lucide-react'
 
 const ScoreBar = ({ label, value, max, color, icon: Icon }) => (
   <div className="mb-5 group">
@@ -54,8 +32,7 @@ const ScoreBar = ({ label, value, max, color, icon: Icon }) => (
 )
 
 export default function Score() {
-  const { user, signOut } = useAuth()
-  const location = useLocation()
+  const { user } = useAuth()
   const [score, setScore] = useState(null)
   const [loading, setLoading] = useState(true)
   const [calculating, setCalculating] = useState(false)
@@ -119,22 +96,7 @@ export default function Score() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#07070C]">
-      {/* Sidebar */}
-      <div className="w-64 h-screen bg-[#0A0A12]/90 backdrop-blur-xl border-r border-white/[0.05] flex flex-col fixed left-0 top-0 pt-20 z-20">
-        <div className="flex-1 px-3 py-6 space-y-1">
-          {NAV_STEPS.map(s => <NavLink key={s.to} {...s} />)}
-        </div>
-        <div className="p-3 border-t border-white/[0.05]">
-          <button onClick={signOut}
-            className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-400/70 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 font-medium text-sm">
-            <LogOut size={18} /> Sign Out
-          </button>
-        </div>
-      </div>
-
-      {/* Main */}
-      <div className="flex-1 ml-64 p-6 md:p-10">
+    <div className="p-6 md:p-10">
         {loading ? (
           <div className="max-w-5xl mx-auto space-y-6 animate-pulse">
             <div className="h-8 w-48 rounded bg-white/[0.06]" />
@@ -282,7 +244,6 @@ export default function Score() {
             </div>
           </div>
         )}
-      </div>
     </div>
   )
 }

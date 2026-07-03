@@ -8,6 +8,7 @@ import { ProtectedRoute } from './routes/ProtectedRoute'
 import { SuperAdminRoute } from './routes/SuperAdminRoute'
 import { CollaboratorRoute } from './routes/CollaboratorRoute'
 import { UserRoute } from './routes/UserRoute'
+import DashboardLayout from './components/layout/DashboardLayout'
 
 import RadarAIBubble from './components/ai/RadarAIBubble'
 import RadarCursor from './components/ui/RadarCursor'
@@ -108,12 +109,26 @@ export default function App() {
 
             {/* USER DASHBOARD */}
             <Route element={<UserRoute />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/dashboard/blueprint" element={<Blueprint />} />
-              <Route path="/dashboard/score" element={<Score />} />
-            <Route path="/dashboard/profile" element={<UserProfile />} />
-            <Route path="/dashboard/resume" element={<ResumeBuilder />} />
-          </Route>
+              <Route element={<DashboardLayout />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard/blueprint" element={<Blueprint />} />
+                <Route path="/dashboard/score" element={<Score />} />
+                <Route path="/dashboard/profile" element={<UserProfile />} />
+                <Route path="/dashboard/resume" element={<ResumeBuilder />} />
+                {/* Site pages within dashboard */}
+                <Route path="/dashboard/jobs" element={<Jobs navless />} />
+                <Route path="/dashboard/scholarships" element={<Scholarships navless />} />
+                <Route path="/dashboard/education" element={<Education navless />} />
+                <Route path="/dashboard/products" element={<Products navless />} />
+                <Route path="/dashboard/resources" element={<WeeklyContent navless />} />
+                <Route path="/dashboard/team" element={<Team navless />} />
+                <Route path="/dashboard/about" element={<About navless />} />
+                <Route path="/dashboard/socials" element={<Social navless />} />
+                <Route path="/dashboard/collaborators" element={<Collaborators navless />} />
+                <Route path="/dashboard/structure" element={<Structure navless />} />
+                <Route path="/dashboard/donate" element={<Donate />} />
+              </Route>
+            </Route>
 
             {/* ADMIN — super_admin + admin */}
             <Route element={<ProtectedRoute allowedRoles={["super_admin","admin"]} />}>

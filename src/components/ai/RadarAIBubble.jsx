@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Zap, X, Send, User, Loader2 } from 'lucide-react'
+import { Bot, X, Send, User, Loader2 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
@@ -96,7 +96,7 @@ export default function RadarAIBubble() {
             onClick={() => setIsOpen(true)}
             className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-green to-blue-accent rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center z-50 hover:scale-110 transition-transform"
           >
-            <Zap className="text-[#07070C]" size={28} />
+            <Bot className="text-[#07070C]" size={28} />
           </motion.button>
         )}
       </AnimatePresence>
@@ -115,7 +115,7 @@ export default function RadarAIBubble() {
             <div className="bg-white/[0.05] p-4 flex justify-between items-center border-b border-border">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-green to-blue-accent flex items-center justify-center">
-                  <Zap size={18} className="text-[#07070C]" />
+                  <Bot size={18} className="text-[#07070C]" />
                 </div>
                 <div>
                   <h3 className="font-bold font-sora text-sm">Radar AI</h3>
@@ -136,7 +136,7 @@ export default function RadarAIBubble() {
                   <div className={`w-8 h-8 rounded-full flex shrink-0 items-center justify-center ${
                     msg.role === 'user' ? 'bg-white/[0.1]' : 'bg-green/20'
                   }`}>
-                    {msg.role === 'user' ? <User size={14} className="text-white" /> : <Zap size={14} className="text-green" />}
+                    {msg.role === 'user' ? <User size={14} className="text-white" /> : <Bot size={14} className="text-green" />}
                   </div>
                   <div className={`p-3 rounded-2xl text-sm whitespace-pre-wrap ${
                     msg.role === 'user' 
@@ -150,7 +150,7 @@ export default function RadarAIBubble() {
               {loading && (
                 <div className="flex gap-3 max-w-[85%]">
                   <div className="w-8 h-8 rounded-full bg-green/20 flex shrink-0 items-center justify-center">
-                    <Zap size={14} className="text-green" />
+                    <Bot size={14} className="text-green" />
                   </div>
                   <div className="p-3 rounded-2xl bg-white/[0.05] rounded-tl-none border border-white/[0.05]">
                     <Loader2 size={16} className="animate-spin text-green" />

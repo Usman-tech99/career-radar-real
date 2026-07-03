@@ -12,7 +12,7 @@ const collaborationTypeColors = {
   Friend: 'badge-purple'
 }
 
-export default function Collaborators() {
+export default function Collaborators({ navless } = {}) {
   const [collaborators, setCollaborators] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -37,7 +37,7 @@ export default function Collaborators() {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
-      <Navbar />
+      {!navless && <Navbar />}
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">
         <div className="text-center mb-16">
@@ -149,7 +149,7 @@ export default function Collaborators() {
           </div>
         )}
       </main>
-      <Footer />
+      {!navless && <Footer />}
     </div>
   )
 }

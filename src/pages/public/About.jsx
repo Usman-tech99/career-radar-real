@@ -5,7 +5,7 @@ import Footer from '../../components/layout/Footer'
 import SafeImage from '../../components/ui/SafeImage'
 import { Mail, MessageCircle, Crown, Calendar } from 'lucide-react'
 
-export default function About() {
+export default function About({ navless } = {}) {
   const [data, setData] = useState(null)
   const [founders, setFounders] = useState([])
   const [loading, setLoading] = useState(true)
@@ -27,7 +27,7 @@ export default function About() {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
-      <Navbar />
+      {!navless && <Navbar />}
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">
         {loading ? (
@@ -134,7 +134,7 @@ export default function About() {
           </div>
         )}
       </main>
-      <Footer />
+      {!navless && <Footer />}
     </div>
   )
 }

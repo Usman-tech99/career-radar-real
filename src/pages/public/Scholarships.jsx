@@ -8,7 +8,7 @@ import { formatDate } from '../../lib/helpers'
 
 const coverageOptions = ['All', 'Fully Funded', 'Partial Tuition', 'Monthly Stipend', 'Other']
 
-export default function Scholarships() {
+export default function Scholarships({ navless } = {}) {
   const [scholarships, setScholarships] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -41,7 +41,7 @@ export default function Scholarships() {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
-      <Navbar />
+      {!navless && <Navbar />}
 
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">
         {/* Header */}
@@ -176,7 +176,7 @@ export default function Scholarships() {
         </div>
       )}
 
-      <Footer />
+      {!navless && <Footer />}
     </div>
   )
 }

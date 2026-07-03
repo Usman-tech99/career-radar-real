@@ -30,7 +30,7 @@ function isFounder(role) {
   return founderRoles.some(r => role?.toLowerCase().includes(r.toLowerCase()))
 }
 
-export default function Team() {
+export default function Team({ navless } = {}) {
   const [members, setMembers] = useState([])
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState(null)
@@ -60,7 +60,7 @@ export default function Team() {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
-      <Navbar />
+      {!navless && <Navbar />}
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">
         <div className="text-center mb-16">
@@ -257,7 +257,7 @@ export default function Team() {
         </div>
       )}
 
-      <Footer />
+      {!navless && <Footer />}
     </div>
   )
 }
