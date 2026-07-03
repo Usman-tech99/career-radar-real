@@ -83,7 +83,7 @@ export default function Shop({ navless } = {}) {
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold font-sora mb-4">Our <span className="text-gold">Products</span></h1>
-          <p className="text-muted text-lg max-w-2xl mx-auto">Premium resources to accelerate your career. Free downloads and paid products available.</p>
+          <p className="text-muted text-lg max-w-2xl mx-auto">Curated resources to accelerate your career. Free downloads and paid products available.</p>
         </div>
 
         {/* Filters */}

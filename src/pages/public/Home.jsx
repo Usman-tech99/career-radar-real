@@ -21,8 +21,8 @@ const stats = [
 const features = [
   { icon: Zap, title: 'Radar AI Assistant', desc: 'Chat with our intelligent career coach for instant guidance and resume reviews.', color: 'text-green', beamColor: '#10B981' },
   { icon: Target, title: 'Dynamic Blueprints', desc: 'Generate personalized action plans tailored to your specific goals and skills.', color: 'text-blue-accent', beamColor: '#3B82F6' },
-  { icon: BookOpen, title: 'Premium Education', desc: 'Access curated courses, ebooks, and templates to upskill rapidly.', color: 'text-gold', beamColor: '#F59E0B' },
-  { icon: Users, title: 'Elite Community', desc: 'Connect with mentors, collaborators, and top-tier freelancers.', color: 'text-purple-accent', beamColor: '#8B5CF6' },
+  { icon: BookOpen, title: 'Skill Library', desc: 'Free courses, ebooks, and templates designed to help you upskill and advance.', color: 'text-gold', beamColor: '#F59E0B' },
+  { icon: Users, title: 'Community Network', desc: 'Connect with mentors, collaborators, and fellow professionals worldwide.', color: 'text-purple-accent', beamColor: '#8B5CF6' },
 ]
 
 function FeatureCard({ icon: Icon, title, desc, color, beamColor, index }) {

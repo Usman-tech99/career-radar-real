@@ -30,6 +30,7 @@ function Blip({ blip, index }) {
   )
 }
 
+// Animated radar sweep visual metaphor — represents Career Radar actively scanning global opportunities across jobs, scholarships, freelancing, and learning resources
 export default function RadarScan({ className = '' }) {
   const [blips, setBlips] = useState([])
   const [isScanning, setIsScanning] = useState(true)
@@ -133,8 +134,9 @@ export default function RadarScan({ className = '' }) {
         />
 
         {/* Label */}
-        <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap">
+        <div className="absolute -bottom-14 left-1/2 -translate-x-1/2 whitespace-nowrap flex flex-col items-center gap-1">
           <span className="text-xs font-bold tracking-[0.25em] text-green/60 uppercase">Scanning Opportunities</span>
+          <span className="text-[10px] text-muted/50">AI-powered search across jobs, scholarships &amp; learning</span>
         </div>
       </div>
     </div>

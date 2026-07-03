@@ -19,7 +19,7 @@ function formatAIResponse(text) {
 export default function RadarAIBubble() {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Hi! I am Radar AI, your career assistant. How can I help you today? (Try "Find me a frontend job" or "How do I start freelancing?")' }
+    { role: 'assistant', content: '👋 Welcome to Radar AI!\n\nI\'m your AI Career Assistant.\n\nBefore we begin, please choose your preferred language:\n\n English\n اردو (Urdu)\n\nAfter that, I\'ll help you with:\n🎓 Scholarships\n💼 Jobs & Internships\n🤖 AI Tools\n📄 Resume Reviews\n🔗 LinkedIn Optimization\n💻 Freelancing\n🚀 Career Guidance\n\nType:\nEnglish\nor\nUrdu' }
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
