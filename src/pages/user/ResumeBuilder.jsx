@@ -332,7 +332,7 @@ export default function ResumeBuilder() {
                 {/* Europass-style CV */}
                 <div className="flex flex-col md:flex-row min-h-[842px]">
                   {/* Sidebar — personal info, skills, languages */}
-                  <div className="md:w-[35%] bg-[#1a3a4a] text-white p-6 md:p-8 print:p-6 flex flex-col gap-5">
+                  <div className="md:w-[35%] bg-[#065f46] text-white p-6 md:p-8 print:p-6 flex flex-col gap-5">
                     {/* Name & Title */}
                     <div className="text-center">
                       {personal.avatarUrl ? (
@@ -384,7 +384,7 @@ export default function ResumeBuilder() {
                     {/* Experience */}
                     {experience.filter(e => e.title || e.company).length > 0 && (
                       <div>
-                        <h2 className="text-sm font-bold uppercase tracking-wider text-[#1a3a4a] border-b-2 border-[#1a3a4a] pb-1 mb-3">Work Experience</h2>
+                        <h2 className="text-sm font-bold uppercase tracking-wider text-[#065f46] border-b-2 border-[#065f46] pb-1 mb-3">Work Experience</h2>
                         <div className="space-y-4">
                           {experience.filter(e => e.title || e.company).map((exp, i) => (
                             <div key={i}>
@@ -405,7 +405,7 @@ export default function ResumeBuilder() {
                     {/* Education */}
                     {education.filter(e => e.institution || e.degree).length > 0 && (
                       <div>
-                        <h2 className="text-sm font-bold uppercase tracking-wider text-[#1a3a4a] border-b-2 border-[#1a3a4a] pb-1 mb-3">Education</h2>
+                        <h2 className="text-sm font-bold uppercase tracking-wider text-[#065f46] border-b-2 border-[#065f46] pb-1 mb-3">Education</h2>
                         <div className="space-y-3">
                           {education.filter(e => e.institution || e.degree).map((edu, i) => (
                             <div key={i} className="flex justify-between items-start">
@@ -423,7 +423,7 @@ export default function ResumeBuilder() {
                     {/* Projects */}
                     {projects.filter(p => p.name).length > 0 && (
                       <div>
-                        <h2 className="text-sm font-bold uppercase tracking-wider text-[#1a3a4a] border-b-2 border-[#1a3a4a] pb-1 mb-3">Projects</h2>
+                        <h2 className="text-sm font-bold uppercase tracking-wider text-[#065f46] border-b-2 border-[#065f46] pb-1 mb-3">Projects</h2>
                         <div className="space-y-3">
                           {projects.filter(p => p.name).map((proj, i) => (
                             <div key={i}>
@@ -442,7 +442,7 @@ export default function ResumeBuilder() {
                     {/* Certifications */}
                     {certifications.filter(c => c.name).length > 0 && (
                       <div>
-                        <h2 className="text-sm font-bold uppercase tracking-wider text-[#1a3a4a] border-b-2 border-[#1a3a4a] pb-1 mb-3">Certifications</h2>
+                        <h2 className="text-sm font-bold uppercase tracking-wider text-[#065f46] border-b-2 border-[#065f46] pb-1 mb-3">Certifications</h2>
                         <div className="space-y-2">
                           {certifications.filter(c => c.name).map((cert, i) => (
                             <div key={i} className="flex justify-between items-start">
