@@ -45,26 +45,46 @@ function NavItem({ to, icon: Icon, label }) {
   )
 }
 
-export default function DashboardSidebar() {
+export default function DashboardSidebar({ isOpen, onClose }) {
   const { signOut } = useAuth()
-  const location = useLocation()
-  const inExplore = exploreNav.some(n => n.to === location.pathname)
 
   return (
-    <div className="w-64 h-screen bg-[#0A0A12]/90 backdrop-blur-xl border-r border-white/[0.05] flex flex-col fixed left-0 top-0 pt-20 z-20 print:hidden">
-      <div className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
-        {primaryNav.map(s => <NavItem key={s.to} {...s} />)}
-        <div className="my-3 border-t border-white/[0.05] pt-3">
-          <p className="px-3 text-[10px] font-semibold uppercase tracking-widest text-muted/50 mb-2">Explore Site</p>
-          {exploreNav.map(s => <NavItem key={s.to} {...s} />)}
+    <>
+      {/* Desktop sidebar — always visible */}
+      <div className="hidden lg:flex w-64 h-screen bg-[#0A0A12]/90 backdrop-blur-xl border-r border-white/[0.05] flex-col fixed left-0 top-0 pt-20 z-20 print:hidden">
+        <div className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
+          {primaryNav.map(s => <NavItem key={s.to} {...s} />)}
+          <div className="my-3 border-t border-white/[0.05] pt-3">
+            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest text-muted/50 mb-2">Explore Site</p>
+            {exploreNav.map(s => <NavItem key={s.to} {...s} />)}
+          </div>
+        </div>
+        <div className="p-3 border-t border-white/[0.05] shrink-0">
+          <button type="button" onClick={signOut}
+            className="flex items-center gap-3 px-4 py-2.5 w-full rounded-xl text-red-400/70 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 font-medium text-sm">
+            <LogOut size={16} /> Sign Out
+          </button>
         </div>
       </div>
-      <div className="p-3 border-t border-white/[0.05] shrink-0">
-        <button type="button" onClick={signOut}
-          className="flex items-center gap-3 px-4 py-2.5 w-full rounded-xl text-red-400/70 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 font-medium text-sm">
-          <LogOut size={16} /> Sign Out
-        </button>
-      </div>
-    </div>
+
+      {/* Mobile sidebar — slides in */}
+      {isOpen && (
+        <div className="lg:hidden w-64 h-screen bg-[#0A0A12]/95 backdrop-blur-xl border-r border-white/[0.05] flex flex-col fixed left-0 top-0 pt-20 z-30 print:hidden">
+          <div className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
+            {primaryNav.map(s => <NavItem key={s.to} {...s} />)}
+            <div className="my-3 border-t border-white/[0.05] pt-3">
+              <p className="px-3 text-[10px] font-semibold uppercase tracking-widest text-muted/50 mb-2">Explore Site</p>
+              {exploreNav.map(s => <NavItem key={s.to} {...s} />)}
+            </div>
+          </div>
+          <div className="p-3 border-t border-white/[0.05] shrink-0">
+            <button type="button" onClick={signOut}
+              className="flex items-center gap-3 px-4 py-2.5 w-full rounded-xl text-red-400/70 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 font-medium text-sm">
+              <LogOut size={16} /> Sign Out
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
