@@ -166,8 +166,8 @@
 /* Animations */
 @media print {
   @page { margin: 0; size: A4; }
-  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: white !important; }
-  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; background: white !important; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
   img { max-width: 100%; page-break-inside: avoid; }
   .no-break { page-break-inside: avoid; }
 }
