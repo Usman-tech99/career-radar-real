@@ -165,9 +165,11 @@
 
 /* Animations */
 @media print {
-  @page { margin: 0.5in; size: A4; }
-  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: white; }
+  @page { margin: 0; size: A4; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: white !important; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  img { max-width: 100%; page-break-inside: avoid; }
+  .no-break { page-break-inside: avoid; }
 }
 
 @keyframes aurora {

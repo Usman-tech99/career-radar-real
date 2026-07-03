@@ -73,10 +73,10 @@ export default function ResumeBuilder() {
         supabase.from('resumes').select('data').eq('user_id', user.id).maybeSingle(),
       ])
 
-      // If saved resume exists, load it
+      // If saved resume exists, load it then merge latest avatar
       if (resumeRes?.data?.data) {
         const d = resumeRes.data.data
-        if (d.personal) setPersonal(d.personal)
+        if (d.personal) setPersonal({ ...d.personal, avatarUrl: profileRes?.data?.avatar_url || publicRes?.data?.avatar_url || d.personal.avatarUrl || '' })
         if (d.education?.length) setEducation(d.education)
         if (d.skills?.length) setSkills(d.skills)
         if (d.experience?.length) setExperience(d.experience)
@@ -151,7 +151,9 @@ export default function ResumeBuilder() {
 
   function handlePrint() {
     setActiveTab('preview')
-    setTimeout(() => window.print(), 800)
+    const originalTitle = document.title
+    document.title = ''
+    setTimeout(() => { window.print(); document.title = originalTitle }, 800)
   }
 
   if (loading) {
