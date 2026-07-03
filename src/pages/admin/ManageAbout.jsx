@@ -14,7 +14,8 @@ export default function ManageAbout() {
     contact_email: '',
     contact_whatsapp: '',
     community_link: '',
-    tagline: ''
+    tagline: '',
+    founder_message: ''
   })
 
   useEffect(() => {
@@ -89,6 +90,16 @@ export default function ManageAbout() {
                 onChange={e => setData({...data, tagline: e.target.value})} 
                 className="input-field"
                 placeholder="e.g. Navigating Careers with AI"
+              />
+            </div>
+
+            <div>
+              <label className="label">Founder Message</label>
+              <textarea 
+                value={data.founder_message} 
+                onChange={e => setData({...data, founder_message: e.target.value})} 
+                className="input-field h-32"
+                placeholder="A Message from the Founder..."
               />
             </div>
           </div>

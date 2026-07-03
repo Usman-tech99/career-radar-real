@@ -20,6 +20,7 @@ export default function Navbar() {
     '/products': '/dashboard/products',
     '/team': '/dashboard/team',
     '/about': '/dashboard/about',
+    '/community': '/dashboard/community',
     '/donate': '/donate',
     '/social': '/dashboard/socials',
   }
@@ -33,6 +34,7 @@ export default function Navbar() {
     { name: 'Products', path: user ? dashMap['/products'] : '/products' },
     { name: 'Team', path: user ? dashMap['/team'] : '/team' },
     { name: 'About', path: user ? dashMap['/about'] : '/about' },
+    { name: 'Community', path: user ? dashMap['/community'] : '/community' },
     { name: 'Support Us', path: user ? '/dashboard/donate' : '/donate' },
     { name: 'Socials', path: user ? dashMap['/social'] : '/social' },
   ]

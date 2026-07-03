@@ -51,6 +51,14 @@ export default function About({ navless } = {}) {
               </section>
             )}
 
+            {/* Founder Message */}
+            {data?.founder_message && (
+              <section className="glass-card p-8 md:p-12 border-l-4 border-green">
+                <h2 className="text-2xl font-bold font-sora text-white mb-4">A Message from the Founder</h2>
+                <p className="text-muted leading-relaxed whitespace-pre-line">{data.founder_message}</p>
+              </section>
+            )}
+
             {/* Founders Section */}
             {founders.length > 0 && (
               <section>

@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext'
 import { motion } from 'framer-motion'
 import {
   LayoutDashboard, Target, Activity, FileText, User, LogOut,
-  Briefcase, GraduationCap, BookOpen, ShoppingBag, Users, Info, Share2, HandshakeIcon, Building2, Heart
+  Briefcase, GraduationCap, BookOpen, ShoppingBag, Users, Info, Share2, HandshakeIcon, Building2, Heart, Globe
 } from 'lucide-react'
 
 const primaryNav = [
@@ -22,6 +22,7 @@ const exploreNav = [
   { to: '/dashboard/resources', icon: FileText, label: 'Resources' },
   { to: '/dashboard/team', icon: Users, label: 'Team' },
   { to: '/dashboard/about', icon: Info, label: 'About' },
+  { to: '/dashboard/community', icon: Globe, label: 'Community' },
   { to: '/dashboard/socials', icon: Share2, label: 'Socials' },
   { to: '/dashboard/collaborators', icon: HandshakeIcon, label: 'Collaborators' },
   { to: '/dashboard/structure', icon: Building2, label: 'Structure' },

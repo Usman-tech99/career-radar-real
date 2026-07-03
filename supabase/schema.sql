@@ -229,7 +229,8 @@ CREATE POLICY "struct_admin" ON structure_page FOR UPDATE USING(get_my_role() IN
 CREATE TABLE about_page (id INT PRIMARY KEY DEFAULT 1 CHECK(id=1),
   story_heading TEXT DEFAULT 'Our Story', story_text TEXT,
   founded_date TEXT, contact_email TEXT, contact_whatsapp TEXT,
-  community_link TEXT, tagline TEXT, updated_at TIMESTAMPTZ DEFAULT NOW()
+  community_link TEXT, tagline TEXT, founder_message TEXT,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 INSERT INTO about_page(id) VALUES(1);
 ALTER TABLE about_page ENABLE ROW LEVEL SECURITY;
@@ -349,6 +350,28 @@ CREATE POLICY "content_files_public_read" ON storage.objects FOR SELECT USING (b
 CREATE POLICY "content_files_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'content-files' AND auth.role() = 'authenticated');
 CREATE POLICY "content_files_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'content-files' AND auth.role() = 'authenticated');
 CREATE POLICY "content_files_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'content-files' AND auth.role() = 'authenticated');
+
+-- community_page SINGLETON
+CREATE TABLE community_page (id INT PRIMARY KEY DEFAULT 1 CHECK(id=1),
+  stats JSONB DEFAULT '[]',
+  roadmap_items JSONB DEFAULT '[]',
+  founder_message TEXT DEFAULT '',
+  testimonials_heading TEXT DEFAULT 'Testimonials',
+  testimonials_text TEXT DEFAULT 'Real success stories from our community will be featured here as members achieve scholarships, internships, jobs, and career milestones.',
+  cta_heading TEXT DEFAULT 'Start Your Career Journey Today',
+  cta_text TEXT DEFAULT 'Join thousands of students discovering opportunities, building skills, and preparing for the future with Career Radar.',
+  primary_cta_text TEXT DEFAULT 'Join Community',
+  primary_cta_link TEXT DEFAULT '/social',
+  secondary_cta_text TEXT DEFAULT 'Partner With Us',
+  secondary_cta_link TEXT DEFAULT '/collaborators',
+  explore_links JSONB DEFAULT '[]',
+  community_links JSONB DEFAULT '[]',
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+INSERT INTO community_page(id) VALUES(1);
+ALTER TABLE community_page ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "community_pub" ON community_page FOR SELECT USING(TRUE);
+CREATE POLICY "community_admin" ON community_page FOR UPDATE USING(get_my_role() IN('super_admin','admin'));
 
 -- Storage RLS for scholarship-logos bucket
 CREATE POLICY "sclogos_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'scholarship-logos');

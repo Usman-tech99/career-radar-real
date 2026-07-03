@@ -24,6 +24,7 @@ const Donate = lazy(() => import('./pages/public/Donate'))
 const Structure = lazy(() => import('./pages/public/Structure'))
 const About = lazy(() => import('./pages/public/About'))
 const Social = lazy(() => import('./pages/public/Social'))
+const Community = lazy(() => import('./pages/public/Community'))
 const Collaborators = lazy(() => import('./pages/public/Collaborators'))
 const NotFound = lazy(() => import('./pages/public/NotFound'))
 
@@ -45,6 +46,7 @@ const ManageEducation = lazy(() => import('./pages/admin/ManageEducation'))
 const ManageScholarships = lazy(() => import('./pages/admin/ManageScholarships'))
 const ManageStructure = lazy(() => import('./pages/admin/ManageStructure'))
 const ManageAbout = lazy(() => import('./pages/admin/ManageAbout'))
+const ManageCommunity = lazy(() => import('./pages/admin/ManageCommunity'))
 const ManageSocials = lazy(() => import('./pages/admin/ManageSocials'))
 const ManageCollaborators = lazy(() => import('./pages/admin/ManageCollaborators'))
 const ManageTeam = lazy(() => import('./pages/admin/ManageTeam'))
@@ -98,6 +100,7 @@ export default function App() {
             <Route path="/team" element={<Team />} />
             <Route path="/structure" element={<Structure />} />
             <Route path="/about" element={<About />} />
+            <Route path="/community" element={<Community />} />
             <Route path="/social" element={<Social />} />
             <Route path="/collaborators" element={<Collaborators />} />
             <Route path="/donate" element={<Donate />} />
@@ -123,6 +126,7 @@ export default function App() {
                 <Route path="/dashboard/resources" element={<WeeklyContent navless />} />
                 <Route path="/dashboard/team" element={<Team navless />} />
                 <Route path="/dashboard/about" element={<About navless />} />
+                <Route path="/dashboard/community" element={<Community navless />} />
                 <Route path="/dashboard/socials" element={<Social navless />} />
                 <Route path="/dashboard/collaborators" element={<Collaborators navless />} />
                 <Route path="/dashboard/structure" element={<Structure navless />} />
@@ -139,6 +143,7 @@ export default function App() {
               <Route path="/admin/manage-education" element={<ManageEducation />} />
               <Route path="/admin/manage-scholarships" element={<ManageScholarships />} />
               <Route path="/admin/manage-about" element={<ManageAbout />} />
+              <Route path="/admin/manage-community" element={<ManageCommunity />} />
               <Route path="/admin/manage-socials" element={<ManageSocials />} />
               <Route path="/admin/manage-collaborators" element={<ManageCollaborators />} />
             </Route>

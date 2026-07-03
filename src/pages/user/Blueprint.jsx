@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
-import { CheckCircle, ExternalLink, Zap, Loader2 } from 'lucide-react'
+import { CheckCircle, ExternalLink, Zap, Loader2, Target } from 'lucide-react'
 
 export default function Blueprint() {
   const { user } = useAuth()
