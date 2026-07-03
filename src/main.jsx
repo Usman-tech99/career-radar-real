@@ -7,21 +7,17 @@ import './index.css'
 // 🔒 Safely initialize Sentry at the absolute start of the app lifecycle
 Sentry.init({
   dsn: "https://a2e14a4af4ba7dd3ce33c52e41f7d175@o4511626386800640.ingest.de.sentry.io/4511626397483088",
-  debug: true,            // 👈 Temporarily forces Sentry to log status in your browser console
-  attachStacktrace: true, // 👈 Ensures the error details are sent immediately
+  debug: false,
+  attachStacktrace: true,
   integrations: [
     Sentry.browserTracingIntegration(),
     Sentry.replayIntegration()
   ],
-  // Performance Tracing
-  tracesSampleRate: 1.0, 
+  tracesSampleRate: 0.3,
   tracePropagationTargets: ["localhost", /^https:\/\/career-radar-real\.vercel\.app/],
-  
-  // Visual Session Replays
-  replaysSessionSampleRate: 1.0, 
-  replaysOnErrorSampleRate: 1.0, 
-  
-  enableLogs: true
+  replaysSessionSampleRate: 0.3,
+  replaysOnErrorSampleRate: 0.5,
+  enableLogs: false
 });
 
 // ✅ Keeps your exact project DOM mounting setup intact without breaking
