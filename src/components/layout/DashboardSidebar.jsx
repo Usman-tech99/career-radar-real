@@ -51,7 +51,7 @@ export default function DashboardSidebar() {
   const inExplore = exploreNav.some(n => n.to === location.pathname)
 
   return (
-    <div className="w-64 h-screen bg-[#0A0A12]/90 backdrop-blur-xl border-r border-white/[0.05] flex flex-col fixed left-0 top-0 pt-20 z-20">
+    <div className="w-64 h-screen bg-[#0A0A12]/90 backdrop-blur-xl border-r border-white/[0.05] flex flex-col fixed left-0 top-0 pt-20 z-20 print:hidden">
       <div className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
         {primaryNav.map(s => <NavItem key={s.to} {...s} />)}
         <div className="my-3 border-t border-white/[0.05] pt-3">

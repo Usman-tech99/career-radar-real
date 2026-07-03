@@ -164,6 +164,12 @@
 [data-theme="light"] .glow-green-strong { box-shadow: 0 0 50px rgba(16, 185, 129, 0.15) !important; }
 
 /* Animations */
+@media print {
+  @page { margin: 0.5in; size: A4; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: white; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
 @keyframes aurora {
   0%, 100% { transform: translateX(0) translateY(0) scale(1); }
   33% { transform: translateX(5%) translateY(-10%) scale(1.1); }
