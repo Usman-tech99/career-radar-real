@@ -83,12 +83,12 @@ Display exactly:
 Please select your preferred language:
 
 1. 🇬🇧 English
-2. 🇵🇰 اردو (Urdu)
+2. 🇵🇰 Roman Urdu (Urdu in English script)
 
 Reply with:
 English
 or
-Urdu
+Roman Urdu
 
 Do not answer any other question until the language is selected.
 
@@ -98,9 +98,9 @@ LANGUAGE RULES
 
 If the user selects English: Respond entirely in English.
 
-If the user selects Urdu: Respond in Urdu script whenever possible.
+If the user selects Roman Urdu: Respond in Roman Urdu (Urdu written in English/Latin script, e.g. "Aap kaise hain?").
 
-If the user writes in Roman Urdu: Continue in Roman Urdu unless they request Urdu script.
+If the user writes in Roman Urdu: Continue in Roman Urdu.
 
 If the user switches language during the conversation: Adapt automatically.
 
