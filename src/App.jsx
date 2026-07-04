@@ -10,9 +10,10 @@ import { CollaboratorRoute } from './routes/CollaboratorRoute'
 import { UserRoute } from './routes/UserRoute'
 import DashboardLayout from './components/layout/DashboardLayout'
 
-import RadarAIBubble from './components/ai/RadarAIBubble'
-import RadarCursor from './components/ui/RadarCursor'
-
+// Import RadarAIBubble and RadarCursor lazily as they are heavy
+const RadarAIBubble = lazy(() => import('./components/ai/RadarAIBubble'))
+const RadarCursor = lazy(() => import('./components/ui/RadarCursor'))
+// Keep existing imports...
 const Home = lazy(() => import('./pages/public/Home'))
 const Jobs = lazy(() => import('./pages/public/Jobs'))
 const WeeklyContent = lazy(() => import('./pages/public/WeeklyContent'))
@@ -83,8 +84,12 @@ export default function App() {
     <BrowserRouter>
       <ThemeProvider>
       <AuthProvider>
-        <RadarCursor />
-        <RadarAIBubble />
+        <Suspense fallback={null}>
+          <RadarCursor />
+        </Suspense>
+        <Suspense fallback={null}>
+          <RadarAIBubble />
+        </Suspense>
         <Toaster position="bottom-center" />
         <Suspense fallback={<Loader />}>
           <Routes>
