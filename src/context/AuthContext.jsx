@@ -82,7 +82,7 @@ export function AuthProvider({ children }) {
       const allPermissions = [
         'manage_jobs', 'manage_content', 'manage_products', 'manage_education',
         'manage_scholarships', 'manage_about', 'manage_community', 'manage_socials',
-        'manage_collaborators', 'manage_structure', 'manage_team', 'manage_team_members',
+        'manage_collaborators', 'manage_structure', 'manage_stats', 'manage_team', 'manage_users', 'manage_team_members',
         'manage_payments', 'ai_insights'
       ]
       setPermissions(allPermissions)

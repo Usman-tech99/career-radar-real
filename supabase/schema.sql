@@ -119,9 +119,14 @@ CREATE POLICY "resumes_own" ON resumes FOR ALL USING (auth.uid()=user_id) WITH C
 CREATE TABLE site_stats (id INT PRIMARY KEY DEFAULT 1 CHECK(id=1),
   community_members INTEGER DEFAULT 0, jobs_posted INTEGER DEFAULT 0,
   resources_shared INTEGER DEFAULT 0, total_products INTEGER DEFAULT 0,
+  countries INTEGER DEFAULT 0, whatsapp_groups INTEGER DEFAULT 0,
+  main_channel_followers INTEGER DEFAULT 0, scholarship_channel_followers INTEGER DEFAULT 0,
+  ai_channel_followers INTEGER DEFAULT 0,
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 INSERT INTO site_stats(id) VALUES(1);
+
+-- Migration for existing DBs: ALTER TABLE site_stats ADD COLUMN IF NOT EXISTS countries INTEGER DEFAULT 0, ADD COLUMN IF NOT EXISTS whatsapp_groups INTEGER DEFAULT 0, ADD COLUMN IF NOT EXISTS main_channel_followers INTEGER DEFAULT 0, ADD COLUMN IF NOT EXISTS scholarship_channel_followers INTEGER DEFAULT 0, ADD COLUMN IF NOT EXISTS ai_channel_followers INTEGER DEFAULT 0;
 ALTER TABLE site_stats ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "stats_read" ON site_stats FOR SELECT USING(TRUE);
 CREATE POLICY "stats_update" ON site_stats FOR UPDATE USING(get_my_role()='super_admin');

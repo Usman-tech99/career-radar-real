@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext'
 import { 
   LayoutDashboard, Briefcase, FileText, ShoppingBag, 
   BookOpen, LayoutTemplate, Info, Share2, Users, UserCheck,
-  ShieldAlert, CreditCard, BrainCircuit, UserCircle, GraduationCap, LogOut, Globe
+  ShieldAlert, BarChart3, CreditCard, BrainCircuit, UserCircle, GraduationCap, LogOut, Globe
 } from 'lucide-react'
 
 export default function AdminSidebar() {
@@ -22,7 +22,9 @@ export default function AdminSidebar() {
     { label: 'Manage Community', path: '/admin/manage-community', icon: Globe, perm: 'manage_community' },
     { label: 'Manage Socials', path: '/admin/manage-socials', icon: Share2, perm: 'manage_socials' },
     { label: 'Manage Collabs', path: '/admin/manage-collaborators', icon: Users, perm: 'manage_collaborators' },
+    { label: 'Manage Stats', path: '/admin/manage-stats', icon: BarChart3, perm: 'manage_stats' },
     { label: 'Manage Team', path: '/admin/manage-team', icon: ShieldAlert, perm: 'manage_team' },
+    { label: 'Users List', path: '/admin/users-list', icon: Users, perm: 'manage_users' },
     { label: 'Team Members', path: '/admin/manage-team-members', icon: UserCheck, perm: 'manage_team_members' },
     { label: 'Payments', path: '/admin/manage-payments', icon: CreditCard, perm: 'manage_payments' },
     { label: 'AI Insights', path: '/admin/ai-insights', icon: BrainCircuit, perm: 'ai_insights' },

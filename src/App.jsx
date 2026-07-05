@@ -51,6 +51,8 @@ const ManageCommunity = lazy(() => import('./pages/admin/ManageCommunity'))
 const ManageSocials = lazy(() => import('./pages/admin/ManageSocials'))
 const ManageCollaborators = lazy(() => import('./pages/admin/ManageCollaborators'))
 const ManageTeam = lazy(() => import('./pages/admin/ManageTeam'))
+const ManageStats = lazy(() => import('./pages/admin/ManageStats'))
+const UsersList = lazy(() => import('./pages/admin/UsersList'))
 const ManageTeamMembers = lazy(() => import('./pages/admin/ManageTeamMembers'))
 const ManagePayments = lazy(() => import('./pages/admin/ManagePayments'))
 const AIInsights = lazy(() => import('./pages/admin/AIInsights'))
@@ -156,7 +158,9 @@ export default function App() {
             {/* FOUNDER ONLY */}
             <Route element={<SuperAdminRoute />}>
               <Route path="/admin/manage-structure" element={<ManageStructure />} />
+              <Route path="/admin/manage-stats" element={<ManageStats />} />
               <Route path="/admin/manage-team" element={<ManageTeam />} />
+              <Route path="/admin/users-list" element={<UsersList />} />
               <Route path="/admin/manage-team-members" element={<ManageTeamMembers />} />
               <Route path="/admin/manage-payments" element={<ManagePayments />} />
               <Route path="/admin/ai-insights" element={<AIInsights />} />
