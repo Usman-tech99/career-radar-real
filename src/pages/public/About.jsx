@@ -52,25 +52,29 @@ export default function About({ navless } = {}) {
             )}
 
             {/* Our Mission */}
-            {data?.mission_text && (
+            {(data?.mission_text || true) && (
               <section className="glass-card p-8 md:p-12 border-l-4 border-blue-accent">
                 <div className="flex items-center gap-3 mb-4">
                   <Target size={24} className="text-blue-accent" />
                   <h2 className="text-2xl font-bold font-sora text-white">Our Mission</h2>
                 </div>
-                <p className="text-muted leading-relaxed whitespace-pre-line">{data.mission_text}</p>
+                <p className="text-muted leading-relaxed whitespace-pre-line">{data?.mission_text || 'To bridge the gap between talent and opportunity by providing an AI-powered career ecosystem where every student and early-career professional can discover opportunities, build in-demand skills, connect with a global community, and prepare for the future of work — regardless of their background or location.'}</p>
               </section>
             )}
 
             {/* Core Values */}
-            {data?.core_values?.length > 0 && (
+            {(data?.core_values?.length > 0 || true) && (
               <section>
                 <div className="flex items-center justify-center gap-3 mb-8">
                   <Heart size={24} className="text-green" />
                   <h2 className="text-3xl font-bold font-sora text-white text-center">Core Values</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {data.core_values.map((v, i) => (
+                  {(data?.core_values?.length ? data.core_values : [
+                    { title: 'Accessibility', desc: 'Quality career resources and guidance should be available to everyone, everywhere.' },
+                    { title: 'Community First', desc: 'We believe in the power of peer learning, mentorship, and collective growth.' },
+                    { title: 'Innovation', desc: 'Leveraging AI and modern technology to solve real career challenges.' },
+                  ]).map((v, i) => (
                     <div key={i} className="glass-card p-6 text-center">
                       <div className="w-12 h-12 rounded-full bg-green/10 flex items-center justify-center mx-auto mb-4">
                         <Sparkles size={22} className="text-green" />
@@ -84,24 +88,24 @@ export default function About({ navless } = {}) {
             )}
 
             {/* What We Do */}
-            {data?.what_we_do && (
+            {(data?.what_we_do || true) && (
               <section className="glass-card p-8 md:p-12 border-l-4 border-gold">
                 <div className="flex items-center gap-3 mb-4">
                   <Sparkles size={24} className="text-gold" />
                   <h2 className="text-2xl font-bold font-sora text-white">What We Do</h2>
                 </div>
-                <p className="text-muted leading-relaxed whitespace-pre-line">{data.what_we_do}</p>
+                <p className="text-muted leading-relaxed whitespace-pre-line">{data?.what_we_do || 'Career Radar brings together verified scholarships, internships, jobs, AI-powered career guidance, learning resources, and a global community into one integrated platform. We use AI to personalize recommendations, help build career readiness, and connect students with the right opportunities at the right time.'}</p>
               </section>
             )}
 
             {/* Who Can Join */}
-            {data?.who_can_join && (
+            {(data?.who_can_join || true) && (
               <section className="glass-card p-8 md:p-12 border-l-4 border-green">
                 <div className="flex items-center gap-3 mb-4">
                   <Users size={24} className="text-green" />
                   <h2 className="text-2xl font-bold font-sora text-white">Who Can Join?</h2>
                 </div>
-                <p className="text-muted leading-relaxed whitespace-pre-line">{data.who_can_join}</p>
+                <p className="text-muted leading-relaxed whitespace-pre-line">{data?.who_can_join || 'Career Radar is for students, graduates, and early-career professionals who want to discover opportunities, build skills, and grow their careers. Whether you are exploring career paths, preparing for scholarships, searching for internships or jobs, or looking to connect with like-minded peers — you belong here.'}</p>
               </section>
             )}
 

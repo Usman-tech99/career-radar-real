@@ -72,8 +72,6 @@ export default function Home() {
     { value: siteStats.countries, suffix: '+', label: 'Countries' },
     { value: siteStats.whatsapp_groups, suffix: '', label: 'WhatsApp Groups' },
     { value: siteStats.main_channel_followers, suffix: '+', label: 'Main Career Channel Followers' },
-    { value: siteStats.scholarship_channel_followers, suffix: '+', label: 'Scholarship & Internship Channel Followers' },
-    { value: siteStats.ai_channel_followers, suffix: '+', label: 'AI Learning Channel Followers' },
   ] : []
 
   return (

@@ -9,8 +9,6 @@ const STAT_FIELDS = [
   { key: 'countries', label: 'Countries' },
   { key: 'whatsapp_groups', label: 'WhatsApp Groups' },
   { key: 'main_channel_followers', label: 'Main Career Channel Followers' },
-  { key: 'scholarship_channel_followers', label: 'Scholarship & Internship Channel Followers' },
-  { key: 'ai_channel_followers', label: 'AI Learning Channel Followers' },
 ]
 
 export default function ManageStats() {
