@@ -3,3 +3,11 @@ verify_jwt = true
 
 [functions.generate-career-blueprint]
 verify_jwt = true
+
+[auth]
+enabled = true
+site_url = "https://career-radar-real.vercel.app"
+additional_redirect_urls = ["https://career-radar-real.vercel.app/**"]
+
+[storage]
+databasePoolMode = "transaction"
