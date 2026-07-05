@@ -101,6 +101,7 @@ export default function Register() {
                 type="password" 
                 required 
                 minLength="6"
+                maxLength={16}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 className="input-field pl-10" 

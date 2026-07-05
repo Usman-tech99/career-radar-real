@@ -35,7 +35,7 @@ Deno.serve(async (req: Request) => {
     const { data: roleData } = await sb.from('user_roles').select('role').eq('user_id', user.id).single();
     if (roleData?.role !== 'super_admin') throw new Error("Unauthorized");
 
-    const { email, password, role, fullName } = await req.json();
+    const { email, password, role, fullName, role_label, permissions } = await req.json();
 
     // Create user in auth schema
     const { data: newAuthUser, error: createError } = await sb.auth.admin.createUser({
@@ -50,7 +50,9 @@ Deno.serve(async (req: Request) => {
     // Insert user_roles
     await sb.from('user_roles').insert({
       user_id: newAuthUser.user.id,
-      role: role
+      role: role,
+      role_label: role_label || '',
+      permissions: permissions || []
     });
 
     return new Response(JSON.stringify({ success: true, user: newAuthUser.user }), { headers: { ...cors, "Content-Type": "application/json" } });

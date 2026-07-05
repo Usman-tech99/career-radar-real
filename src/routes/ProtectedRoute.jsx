@@ -1,8 +1,26 @@
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
+const PATH_PERMISSIONS = {
+  '/admin/manage-jobs': 'manage_jobs',
+  '/admin/manage-content': 'manage_content',
+  '/admin/manage-products': 'manage_products',
+  '/admin/manage-education': 'manage_education',
+  '/admin/manage-scholarships': 'manage_scholarships',
+  '/admin/manage-about': 'manage_about',
+  '/admin/manage-community': 'manage_community',
+  '/admin/manage-socials': 'manage_socials',
+  '/admin/manage-collaborators': 'manage_collaborators',
+  '/admin/manage-structure': 'manage_structure',
+  '/admin/manage-team': 'manage_team',
+  '/admin/manage-team-members': 'manage_team_members',
+  '/admin/manage-payments': 'manage_payments',
+  '/admin/ai-insights': 'ai_insights',
+}
+
 export function ProtectedRoute({ allowedRoles }) {
-  const { user, role, loading, roleChecked } = useAuth()
+  const { user, role, permissions, loading, roleChecked } = useAuth()
+  const location = useLocation()
 
   if (loading || !roleChecked) {
     return (
@@ -16,6 +34,13 @@ export function ProtectedRoute({ allowedRoles }) {
 
   if (allowedRoles && !allowedRoles.includes(role)) {
     return <Navigate to="/" replace />
+  }
+
+  if (role !== 'super_admin') {
+    const requiredPerm = PATH_PERMISSIONS[location.pathname]
+    if (requiredPerm && !permissions.includes(requiredPerm)) {
+      return <Navigate to="/admin/dashboard" replace />
+    }
   }
 
   return <Outlet />

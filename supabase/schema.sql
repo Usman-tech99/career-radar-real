@@ -13,6 +13,8 @@ CREATE TABLE user_roles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID UNIQUE NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   role TEXT NOT NULL CHECK (role IN ('super_admin','admin','collaborator')),
+  role_label TEXT DEFAULT '',
+  permissions TEXT[] DEFAULT '{}',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

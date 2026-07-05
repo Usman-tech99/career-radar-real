@@ -7,33 +7,33 @@ import {
 } from 'lucide-react'
 
 export default function AdminSidebar() {
-  const { role, signOut } = useAuth()
+  const { permissions, roleLabel, role, signOut } = useAuth()
   const location = useLocation()
 
   const navItems = [
-    { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard, roles: ['super_admin', 'admin'] },
-    { label: 'Manage Jobs', path: '/admin/manage-jobs', icon: Briefcase, roles: ['super_admin', 'admin'] },
-    { label: 'Manage Content', path: '/admin/manage-content', icon: FileText, roles: ['super_admin', 'admin'] },
-    { label: 'Manage Products', path: '/admin/manage-products', icon: ShoppingBag, roles: ['super_admin', 'admin'] },
-    { label: 'Manage Education', path: '/admin/manage-education', icon: BookOpen, roles: ['super_admin', 'admin'] },
-    { label: 'Manage Scholarships', path: '/admin/manage-scholarships', icon: GraduationCap, roles: ['super_admin', 'admin'] },
-    { label: 'Manage Structure', path: '/admin/manage-structure', icon: LayoutTemplate, roles: ['super_admin'] },
-    { label: 'Manage About', path: '/admin/manage-about', icon: Info, roles: ['super_admin', 'admin'] },
-    { label: 'Manage Community', path: '/admin/manage-community', icon: Globe, roles: ['super_admin', 'admin'] },
-    { label: 'Manage Socials', path: '/admin/manage-socials', icon: Share2, roles: ['super_admin', 'admin'] },
-    { label: 'Manage Collabs', path: '/admin/manage-collaborators', icon: Users, roles: ['super_admin', 'admin'] },
-    
-    // Founder Only
-    { label: 'Manage Team', path: '/admin/manage-team', icon: ShieldAlert, roles: ['super_admin'] },
-    { label: 'Team Members', path: '/admin/manage-team-members', icon: UserCheck, roles: ['super_admin'] },
-    { label: 'Payments', path: '/admin/manage-payments', icon: CreditCard, roles: ['super_admin'] },
-    { label: 'AI Insights', path: '/admin/ai-insights', icon: BrainCircuit, roles: ['super_admin'] },
-
-    // Collaborator Only
-    { label: 'My Profile', path: '/admin/my-profile', icon: UserCircle, roles: ['collaborator'] },
+    { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard, perm: 'super_admin' },
+    { label: 'Manage Jobs', path: '/admin/manage-jobs', icon: Briefcase, perm: 'manage_jobs' },
+    { label: 'Manage Content', path: '/admin/manage-content', icon: FileText, perm: 'manage_content' },
+    { label: 'Manage Products', path: '/admin/manage-products', icon: ShoppingBag, perm: 'manage_products' },
+    { label: 'Manage Education', path: '/admin/manage-education', icon: BookOpen, perm: 'manage_education' },
+    { label: 'Manage Scholarships', path: '/admin/manage-scholarships', icon: GraduationCap, perm: 'manage_scholarships' },
+    { label: 'Manage Structure', path: '/admin/manage-structure', icon: LayoutTemplate, perm: 'manage_structure' },
+    { label: 'Manage About', path: '/admin/manage-about', icon: Info, perm: 'manage_about' },
+    { label: 'Manage Community', path: '/admin/manage-community', icon: Globe, perm: 'manage_community' },
+    { label: 'Manage Socials', path: '/admin/manage-socials', icon: Share2, perm: 'manage_socials' },
+    { label: 'Manage Collabs', path: '/admin/manage-collaborators', icon: Users, perm: 'manage_collaborators' },
+    { label: 'Manage Team', path: '/admin/manage-team', icon: ShieldAlert, perm: 'manage_team' },
+    { label: 'Team Members', path: '/admin/manage-team-members', icon: UserCheck, perm: 'manage_team_members' },
+    { label: 'Payments', path: '/admin/manage-payments', icon: CreditCard, perm: 'manage_payments' },
+    { label: 'AI Insights', path: '/admin/ai-insights', icon: BrainCircuit, perm: 'ai_insights' },
+    { label: 'My Profile', path: '/admin/my-profile', icon: UserCircle, perm: 'collaborator' },
   ]
 
-  const filteredItems = navItems.filter(item => item.roles.includes(role))
+  const filteredItems = navItems.filter(item => {
+    if (item.perm === 'super_admin') return role === 'super_admin'
+    if (item.perm === 'collaborator') return role === 'collaborator' || permissions.length === 0
+    return permissions.includes(item.perm)
+  })
 
   return (
     <div className="w-64 h-screen bg-surface border-r border-border flex flex-col fixed left-0 top-0 pt-20">
