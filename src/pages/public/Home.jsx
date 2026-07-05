@@ -136,7 +136,7 @@ export default function Home() {
         {/* Stats Bar */}
         <BlurFade delay={0.3} offset={12} blur="3px" className="w-full max-w-5xl mx-auto mt-16">
           <div className="glass-card p-6 md:p-8 rounded-2xl">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {statItems.map((s, i) => (
                 <div key={i} className="text-center">
                   <div className="text-3xl md:text-4xl font-black font-mono text-green">
