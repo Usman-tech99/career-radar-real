@@ -6,7 +6,7 @@ import Footer from '../../components/layout/Footer'
 import { BlurFade } from '../../components/magicui/blur-fade'
 import { BorderBeam } from '../../components/magicui/border-beam'
 import { NumberTicker } from '../../components/magicui/number-ticker'
-import { ArrowRight, Search, Bot, BookOpen, Users, TrendingUp, Target, Compass } from 'lucide-react'
+import { ArrowRight, Search, Bot, BookOpen, Users, TrendingUp, Target, Compass, CheckCircle, MessageSquare, Rocket, Sparkles } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 
 const features = [
@@ -23,6 +23,21 @@ const steps = [
   { icon: TrendingUp, title: 'Develop', desc: 'Learn practical skills using curated resources, workshops, AI guidance, and career roadmaps.' },
   { icon: Users, title: 'Connect', desc: 'Join our global community to network with mentors, peers, volunteers, and professionals.' },
   { icon: Target, title: 'Grow', desc: 'Transform opportunities into real career success through consistent learning and action.' },
+]
+
+const roadmapAvailable = [
+  'Verified Opportunities', 'Career Resources', 'Community Support', 'AI Learning',
+]
+
+const roadmapComing = [
+  'AI Career Assistant', 'Career Readiness Score', 'Resume Builder', 'Personal Career Dashboard',
+  'Opportunity Tracker', 'Student Talent Profiles', 'Employer Dashboard', 'Premium Learning Hub',
+  'Mentorship Platform',
+]
+
+const whyJoin = [
+  'Verified Opportunities', 'AI Career Guidance', 'Career Resources', 'Global Community',
+  'Networking', 'Skill Development', 'Scholarships', 'Internships', 'Jobs', 'Freelancing',
 ]
 
 function FeatureCard({ icon: Icon, title, desc, color, beamColor, index }) {
@@ -43,6 +58,23 @@ function FeatureCard({ icon: Icon, title, desc, color, beamColor, index }) {
 }
 
 export default function Home() {
+  const [siteStats, setSiteStats] = useState(null)
+
+  useEffect(() => {
+    supabase.from('site_stats').select('*').single().then(({ data }) => {
+      if (data) setSiteStats(data)
+    })
+  }, [])
+
+  const statItems = siteStats ? [
+    { value: siteStats.community_members, suffix: '+', label: 'Community Members' },
+    { value: siteStats.countries, suffix: '+', label: 'Countries' },
+    { value: siteStats.whatsapp_groups, suffix: '', label: 'WhatsApp Groups' },
+    { value: siteStats.main_channel_followers, suffix: '+', label: 'Main Career Channel Followers' },
+    { value: siteStats.scholarship_channel_followers, suffix: '+', label: 'Scholarship & Internship Channel Followers' },
+    { value: siteStats.ai_channel_followers, suffix: '+', label: 'AI Learning Channel Followers' },
+  ] : []
+
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col relative overflow-hidden">
       <Navbar />
@@ -106,7 +138,7 @@ export default function Home() {
         <BlurFade delay={0.3} offset={12} blur="3px" className="w-full max-w-5xl mx-auto mt-16">
           <div className="glass-card p-6 md:p-8 rounded-2xl">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-              {stats.map((s, i) => (
+              {statItems.map((s, i) => (
                 <div key={i} className="text-center">
                   <div className="text-3xl md:text-4xl font-black font-mono text-green">
                     <NumberTicker value={s.value} delay={0.3 + i * 0.1} />
@@ -158,17 +190,92 @@ export default function Home() {
           </div>
         </BlurFade>
 
-        {/* CTA */}
-        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full mt-24 mb-8">
-          <div className="glass-card p-12 md:p-16 text-center max-w-3xl mx-auto rounded-2xl relative overflow-hidden">
-            <BorderBeam size={200} duration={12} colorFrom="#10B981" colorTo="#60A5FA" borderWidth={1} />
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to Accelerate Your Career?</h2>
-            <p className="text-muted text-base md:text-lg mb-8 max-w-2xl mx-auto">
-              Join thousands of students and early-career professionals building their future with Career Radar.
+        {/* Roadmap */}
+        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-5xl mx-auto mt-24">
+          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">Building the Future of Career Development Today</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+            <div className="glass-card p-8">
+              <h3 className="text-xl font-bold text-green mb-6 flex items-center gap-2">
+                <Rocket size={22} /> Available Now
+              </h3>
+              <ul className="space-y-3">
+                {roadmapAvailable.map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-sm">
+                    <CheckCircle size={18} className="text-green shrink-0" />
+                    <span className="text-white">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="glass-card p-8">
+              <h3 className="text-xl font-bold text-gold mb-6 flex items-center gap-2">
+                <Sparkles size={22} /> Coming Soon
+              </h3>
+              <ul className="space-y-3">
+                {roadmapComing.map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-sm">
+                    <span className="w-[18px] h-[18px] rounded-full border-2 border-gold/50 flex items-center justify-center shrink-0">
+                      <span className="w-[6px] h-[6px] rounded-full bg-gold/50" />
+                    </span>
+                    <span className="text-muted">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </BlurFade>
+
+        {/* Founder Message */}
+        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-4xl mx-auto mt-24">
+          <div className="glass-card p-10 md:p-14 text-center relative overflow-hidden">
+            <BorderBeam size={150} duration={10} colorFrom="#10B981" colorTo="#8B5CF6" borderWidth={1} />
+            <MessageSquare size={32} className="text-green mx-auto mb-6" />
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">A Message from the Founder</h2>
+            <p className="text-muted text-base md:text-lg leading-relaxed max-w-3xl mx-auto">
+              Career Radar was created with one mission: To bridge the gap between talent and opportunity. Every student deserves access to trusted career guidance, global opportunities, practical skills, and a supportive community. We're building more than a platform—we're building an ecosystem where students can grow, collaborate, and prepare for the future of work with confidence.
             </p>
-            <Link to="/register" className="btn-primary text-lg px-8 py-4 inline-flex items-center gap-2">
-              Get Started Free <ArrowRight size={20} />
-            </Link>
+          </div>
+        </BlurFade>
+
+        {/* Why People Join */}
+        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-4xl mx-auto mt-24">
+          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">Why People Join Career Radar</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {whyJoin.map((item, i) => (
+              <div key={i} className="flex items-center gap-3 p-4 glass-card">
+                <CheckCircle size={20} className="text-green shrink-0" />
+                <span className="text-white font-medium">{item}</span>
+              </div>
+            ))}
+          </div>
+        </BlurFade>
+
+        {/* Testimonials */}
+        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-4xl mx-auto mt-24">
+          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-8">What Our Community Says</h2>
+          <div className="glass-card p-10 md:p-14 text-center">
+            <p className="text-muted text-base md:text-lg leading-relaxed max-w-3xl mx-auto italic">
+              "Real success stories from our community will be featured here as members achieve scholarships, internships, jobs, and career milestones."
+            </p>
+          </div>
+        </BlurFade>
+
+        {/* Final CTA */}
+        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full mt-24 mb-8">
+          <div className="glass-card p-12 md:p-16 text-center max-w-4xl mx-auto rounded-2xl relative overflow-hidden">
+            <BorderBeam size={200} duration={12} colorFrom="#10B981" colorTo="#60A5FA" borderWidth={1} />
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Start Your Career Journey Today</h2>
+            <p className="text-muted text-base md:text-lg mb-8 max-w-2xl mx-auto">
+              Join thousands of students discovering opportunities, building skills, and preparing for the future with Career Radar.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link to="/social" className="btn-primary text-lg px-8 py-4 inline-flex items-center gap-2">
+                Join Community <ArrowRight size={20} />
+              </Link>
+              <Link to="/collaborators" className="btn-ghost text-lg px-8 py-4">
+                Partner With Us
+              </Link>
+            </div>
           </div>
         </BlurFade>
       </main>

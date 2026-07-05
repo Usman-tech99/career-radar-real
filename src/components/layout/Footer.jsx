@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { MessageCircle, Youtube, Instagram, Linkedin, Twitter, Send, Users as UsersIcon, Globe } from 'lucide-react'
-
+import { MessageCircle, Youtube, Instagram, Linkedin, Twitter, Send, Users as UsersIcon, Globe, Mail, Handshake } from 'lucide-react'
 
 const platformIcons = {
   whatsapp: MessageCircle,
@@ -19,103 +18,85 @@ const platformIcons = {
 
 export default function Footer() {
   const [socials, setSocials] = useState([])
-  const [about, setAbout] = useState(null)
 
   useEffect(() => {
-    async function fetchFooterData() {
-      const [socRes, abRes] = await Promise.all([
-        supabase.from('socials').select('*').eq('is_active', true).order('sort_order', { ascending: true }),
-        supabase.from('about_page').select('contact_email, tagline, founded_date').eq('id', 1).single()
-      ])
-      
-      if (socRes.data) setSocials(socRes.data)
-      if (abRes.data) setAbout(abRes.data)
-    }
-    fetchFooterData()
+    supabase.from('socials').select('*').eq('is_active', true).order('sort_order', { ascending: true }).then(({ data }) => {
+      if (data) setSocials(data)
+    })
   }, [])
 
   return (
     <footer className="bg-surface border-t border-border mt-20 pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-12">
-          
-          {/* Brand Col */}
-          <div className="col-span-1 md:col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+
+          {/* Brand + Contact */}
+          <div>
             <Link to="/" className="inline-flex items-center gap-2 mb-4">
-              <span className="font-sora font-bold text-2xl tracking-tight text-white drop-shadow-[0_0_4px_rgba(255,255,255,0.2)]">
-                Career <span className="text-[#00FF66] drop-shadow-[0_0_12px_rgba(0,255,102,0.6)]">Radar</span>
+              <span className="font-sora font-bold text-2xl tracking-tight text-white">
+                Career <span className="text-[#00FF66]">Radar</span>
               </span>
             </Link>
-            <p className="text-muted text-sm max-w-sm mb-6">
-              {about?.tagline || "Your AI-powered career GPS. Navigate the future of work with confidence."}
+            <p className="text-muted text-sm leading-relaxed mb-6">
+              Career Radar is an AI-powered global career ecosystem helping students and early-career professionals discover opportunities, develop in-demand skills, build professional networks, and connect with employers—preparing them for the future of work.
             </p>
-            {about?.contact_email && (
-              <p className="text-sm font-medium">
-                <a href={`mailto:${about.contact_email}`} className="text-white hover:text-green transition-colors">
-                  {about.contact_email}
-                </a>
+            <div className="space-y-2 text-sm">
+              <p className="flex items-center gap-2 text-muted">
+                <Mail size={14} className="shrink-0" />
+                <a href="mailto:hello@careerradar.com" className="hover:text-white transition-colors">hello@careerradar.com</a>
               </p>
-            )}
+              <p className="flex items-center gap-2 text-muted">
+                <Handshake size={14} className="shrink-0" />
+                <a href="mailto:partnerships@careerradar.com" className="hover:text-white transition-colors">partnerships@careerradar.com</a>
+              </p>
+              <p className="flex items-center gap-2 text-muted">
+                <Globe size={14} className="shrink-0" />
+                Global Community | Based in Pakistan
+              </p>
+            </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Explore */}
           <div>
             <h4 className="font-bold text-white mb-6">Explore</h4>
             <ul className="space-y-4">
-              <li><Link to="/jobs" className="text-sm text-muted hover:text-white transition-colors">Jobs Board</Link></li>
-              <li><Link to="/weekly-content" className="text-sm text-muted hover:text-white transition-colors">Resources</Link></li>
-              <li><Link to="/education" className="text-sm text-muted hover:text-white transition-colors">Courses</Link></li>
               <li><Link to="/scholarships" className="text-sm text-muted hover:text-white transition-colors">Scholarships</Link></li>
-              <li><Link to="/products" className="text-sm text-muted hover:text-white transition-colors">Products</Link></li>
+              <li><Link to="/jobs" className="text-sm text-muted hover:text-white transition-colors">Internships</Link></li>
+              <li><Link to="/jobs" className="text-sm text-muted hover:text-white transition-colors">Jobs</Link></li>
+              <li><Link to="/education" className="text-sm text-muted hover:text-white transition-colors">AI Resources</Link></li>
+              <li><Link to="/dashboard/blueprint" className="text-sm text-muted hover:text-white transition-colors">Career Roadmaps</Link></li>
+              <li><Link to="/weekly-content" className="text-sm text-muted hover:text-white transition-colors">Blog</Link></li>
             </ul>
           </div>
 
-          {/* Company Links */}
+          {/* Community */}
+          <div>
+            <h4 className="font-bold text-white mb-6">Community</h4>
+            <ul className="space-y-4">
+              <li><Link to="/social" className="text-sm text-muted hover:text-white transition-colors">WhatsApp Community</Link></li>
+              <li><Link to="/community" className="text-sm text-muted hover:text-white transition-colors">Volunteer Program</Link></li>
+              <li><Link to="/community" className="text-sm text-muted hover:text-white transition-colors">Events</Link></li>
+              <li><Link to="/community" className="text-sm text-muted hover:text-white transition-colors">Success Stories</Link></li>
+              <li><Link to="/weekly-content" className="text-sm text-muted hover:text-white transition-colors">Newsletter</Link></li>
+            </ul>
+          </div>
+
+          {/* Company */}
           <div>
             <h4 className="font-bold text-white mb-6">Company</h4>
             <ul className="space-y-4">
-              <li><Link to="/about" className="text-sm text-muted hover:text-white transition-colors">Learn More</Link></li>
-              <li><Link to="/community" className="text-sm text-muted hover:text-white transition-colors">Community</Link></li>
-              <li><Link to="/structure" className="text-sm text-muted hover:text-white transition-colors">Aim & Vision</Link></li>
-              <li><Link to="/team" className="text-sm text-muted hover:text-white transition-colors">The Team</Link></li>
+              <li><Link to="/about" className="text-sm text-muted hover:text-white transition-colors">About Career Radar</Link></li>
+              <li><Link to="/structure" className="text-sm text-muted hover:text-white transition-colors">Mission & Vision</Link></li>
+              <li><Link to="/team" className="text-sm text-muted hover:text-white transition-colors">Our Team</Link></li>
               <li><Link to="/collaborators" className="text-sm text-muted hover:text-white transition-colors">Partners</Link></li>
-              <li><Link to="/donate" className="text-sm text-green hover:text-green/80 transition-colors font-medium">Support Us</Link></li>
+              <li><Link to="/about" className="text-sm text-muted hover:text-white transition-colors">Contact</Link></li>
+              <li><Link to="/about" className="text-sm text-muted hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/about" className="text-sm text-muted hover:text-white transition-colors">Terms of Service</Link></li>
             </ul>
-          </div>
-
-          {/* Socials Column */}
-          <div>
-            <h4 className="font-bold text-white mb-6">Socials</h4>
-            {socials.length === 0 ? (
-              <p className="text-xs text-muted">Follow us on social media.</p>
-            ) : (
-              <ul className="space-y-3">
-                {socials.map(social => {
-                  const Icon = platformIcons[social.platform_type] || Globe
-                  return (
-                    <li key={social.id}>
-                      <a
-                        href={social.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex items-center gap-2 text-sm text-muted hover:text-white transition-colors"
-                      >
-                        <Icon size={16} className="shrink-0" />
-                        <span>{social.platform_name}</span>
-                        {social.members_count && (
-                          <span className="text-[10px] text-green bg-green/10 px-1.5 py-0.5 rounded-full">{social.members_count}</span>
-                        )}
-                      </a>
-                    </li>
-                  )
-                })}
-              </ul>
-            )}
-            <Link to="/social" className="inline-block mt-4 text-xs text-green hover:underline">View all →</Link>
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* Social + Bottom */}
         <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-4 flex-wrap">
             {socials.slice(0, 6).map(social => {
@@ -135,7 +116,7 @@ export default function Footer() {
             })}
           </div>
           <p className="text-xs text-muted">
-            &copy; {new Date().getFullYear()} Career Radar. Founded {about?.founded_date || '2024'}. All rights reserved.
+            &copy; {new Date().getFullYear()} Career Radar. All rights reserved.
           </p>
         </div>
       </div>

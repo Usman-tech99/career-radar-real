@@ -8,7 +8,7 @@ export default function ManageAbout() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [data, setData] = useState({
-    story_heading: 'Our Story',
+    story_heading: 'Learn More',
     story_text: '',
     founded_date: '',
     contact_email: '',
@@ -62,7 +62,7 @@ export default function ManageAbout() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="glass-card space-y-4">
-            <h2 className="text-xl font-bold mb-4">Our Story Section</h2>
+            <h2 className="text-xl font-bold mb-4">Learn More Section</h2>
             
             <div>
               <label className="label">Story Heading</label>

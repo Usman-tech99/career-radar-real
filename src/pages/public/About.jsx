@@ -36,7 +36,7 @@ export default function About({ navless } = {}) {
           <div className="space-y-16">
             {/* Hero Section */}
             <div className="text-center">
-              <h1 className="text-4xl md:text-5xl font-bold font-sora mb-4">{data?.story_heading || 'Our Story'}</h1>
+              <h1 className="text-4xl md:text-5xl font-bold font-sora mb-4">{data?.story_heading || 'Learn More'}</h1>
               {data?.tagline && (
                 <p className="text-xl text-muted max-w-2xl mx-auto">{data.tagline}</p>
               )}
