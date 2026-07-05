@@ -333,11 +333,11 @@ CREATE POLICY "prod_thumbs_auth_insert" ON storage.objects FOR INSERT WITH CHECK
 CREATE POLICY "prod_thumbs_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'product-thumbnails' AND auth.role() = 'authenticated');
 CREATE POLICY "prod_thumbs_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'product-thumbnails' AND auth.role() = 'authenticated');
 
--- Storage RLS for product-files bucket (private — super_admin only for read)
+-- Storage RLS for product-files bucket (private — super_admin only for all ops)
 CREATE POLICY "prod_files_admin_read" ON storage.objects FOR SELECT USING (bucket_id = 'product-files' AND get_my_role() = 'super_admin');
-CREATE POLICY "prod_files_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'product-files' AND auth.role() = 'authenticated');
-CREATE POLICY "prod_files_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'product-files' AND auth.role() = 'authenticated');
-CREATE POLICY "prod_files_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'product-files' AND auth.role() = 'authenticated');
+CREATE POLICY "prod_files_admin_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'product-files' AND get_my_role() = 'super_admin');
+CREATE POLICY "prod_files_admin_update" ON storage.objects FOR UPDATE USING (bucket_id = 'product-files' AND get_my_role() = 'super_admin');
+CREATE POLICY "prod_files_admin_delete" ON storage.objects FOR DELETE USING (bucket_id = 'product-files' AND get_my_role() = 'super_admin');
 
 -- Storage RLS for education-thumbnails bucket
 CREATE POLICY "edu_thumbs_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'education-thumbnails');
