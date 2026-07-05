@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
 import { Link } from 'react-router-dom'
-import { Users, MessageCircle, BookOpen, Briefcase, GraduationCap, Target, ChevronRight } from 'lucide-react'
+import { Users, MessageCircle, BookOpen, Briefcase, GraduationCap, Target, ChevronRight, Calendar, Quote, Heart } from 'lucide-react'
 import { ShimmerButton } from '../../components/magicui/shimmer-button'
 
 const statIcons = {
@@ -44,6 +44,9 @@ export default function Community({ navless } = {}) {
   const roadmap = data?.roadmap_items || []
   const exploreLinks = data?.explore_links || []
   const communityLinks = data?.community_links || []
+  const events = data?.events || []
+  const volunteerProgram = data?.volunteer_program
+  const successStories = data?.success_stories || []
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
@@ -132,11 +135,34 @@ export default function Community({ navless } = {}) {
           </section>
         )}
 
-        {/* Testimonials */}
-        <section className="max-w-4xl mx-auto px-4 pb-20 text-center">
-          <h2 className="text-3xl font-bold font-sora text-white mb-4">{data?.testimonials_heading || 'Testimonials'}</h2>
-          <p className="text-muted max-w-2xl mx-auto leading-relaxed">{data?.testimonials_text}</p>
-        </section>
+        {/* Success Stories */}
+        {successStories.length > 0 && (
+          <section className="max-w-4xl mx-auto px-4 pb-20">
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              <h2 className="text-3xl font-bold font-sora text-white mb-4 text-center">Success Stories</h2>
+              <p className="text-muted text-center max-w-2xl mx-auto mb-10">Real achievements from our community members.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {successStories.map((story, i) => (
+                  <div key={i} className="glass-card p-6">
+                    <Quote size={20} className="text-green/40 mb-3" />
+                    <p className="text-muted text-sm leading-relaxed mb-4">&ldquo;{story.quote}&rdquo;</p>
+                    <div className="flex items-center gap-3">
+                      {story.image_url ? (
+                        <img src={story.image_url} alt={story.name} className="w-10 h-10 rounded-full object-cover" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-green/20 flex items-center justify-center text-green font-bold text-sm">{story.name.charAt(0)}</div>
+                      )}
+                      <div>
+                        <p className="text-white font-semibold text-sm">{story.name}</p>
+                        <p className="text-green text-xs">{story.achievement}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </section>
+        )}
 
         {/* Community Links */}
         {communityLinks.length > 0 && (
@@ -159,7 +185,58 @@ export default function Community({ navless } = {}) {
           </section>
         )}
 
-        {/* CTA */}
+        {/* Events */}
+        {events.length > 0 && (
+          <section className="max-w-4xl mx-auto px-4 pb-20">
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <Calendar size={24} className="text-green" />
+                <h2 className="text-3xl font-bold font-sora text-white">Events</h2>
+              </div>
+              <p className="text-muted text-center max-w-2xl mx-auto mb-10">Workshops, webinars, and meetups for our community.</p>
+              <div className="space-y-4">
+                {events
+                  .filter(e => e.type === 'upcoming')
+                  .concat(events.filter(e => e.type !== 'upcoming'))
+                  .map((event, i) => (
+                    <div key={i} className={`glass-card p-5 flex items-start gap-4 ${event.type === 'upcoming' ? 'border-l-4 border-green' : 'opacity-60'}`}>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="font-semibold text-white">{event.title}</h3>
+                          {event.type === 'upcoming' && <span className="text-[10px] px-2 py-0.5 rounded-full bg-green/20 text-green font-medium">Upcoming</span>}
+                        </div>
+                        {event.date && <p className="text-xs text-muted mt-1">{event.date}</p>}
+                        {event.description && <p className="text-sm text-muted mt-2">{event.description}</p>}
+                      </div>
+                      {event.link && (
+                        <a href={event.link} target="_blank" rel="noreferrer" className="btn-primary text-sm px-4 py-2 shrink-0">
+                          {event.type === 'upcoming' ? 'Register' : 'View'}
+                        </a>
+                      )}
+                    </div>
+                  ))}
+              </div>
+            </motion.div>
+          </section>
+        )}
+
+        {/* Volunteer Program */}
+        {volunteerProgram?.text && (
+          <section className="max-w-4xl mx-auto px-4 pb-20">
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="glass-card p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-4">
+                  <Heart size={22} className="text-green" />
+                  <h2 className="text-2xl font-bold font-sora text-white">{volunteerProgram.heading}</h2>
+                </div>
+                <p className="text-muted leading-relaxed">{volunteerProgram.text}</p>
+              </div>
+              {volunteerProgram.image_url && (
+                <img src={volunteerProgram.image_url} alt="Volunteer" className="w-full md:w-48 h-48 rounded-xl object-cover shrink-0" />
+              )}
+            </motion.div>
+          </section>
+        )}
         <section className="max-w-4xl mx-auto px-4 pb-20 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="glass-card p-10 md:p-14">
             <h2 className="text-3xl md:text-4xl font-bold font-sora text-white mb-4">{data?.cta_heading || 'Start Your Career Journey Today'}</h2>

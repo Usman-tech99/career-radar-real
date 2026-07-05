@@ -371,11 +371,15 @@ CREATE TABLE community_page (id INT PRIMARY KEY DEFAULT 1 CHECK(id=1),
   primary_cta_link TEXT DEFAULT '/social',
   secondary_cta_text TEXT DEFAULT 'Partner With Us',
   secondary_cta_link TEXT DEFAULT '/collaborators',
-  explore_links JSONB DEFAULT '[]',
-  community_links JSONB DEFAULT '[]',
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+   explore_links JSONB DEFAULT '[]',
+   community_links JSONB DEFAULT '[]',
+   events JSONB DEFAULT '[]',
+   volunteer_program JSONB DEFAULT '{"heading":"Volunteer Program","text":"","image_url":""}',
+   success_stories JSONB DEFAULT '[]',
+   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 INSERT INTO community_page(id) VALUES(1);
+-- Migration for existing DBs: ALTER TABLE community_page ADD COLUMN IF NOT EXISTS events JSONB DEFAULT '[]', ADD COLUMN IF NOT EXISTS volunteer_program JSONB DEFAULT '{"heading":"Volunteer Program","text":"","image_url":""}', ADD COLUMN IF NOT EXISTS success_stories JSONB DEFAULT '[]';
 ALTER TABLE community_page ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "community_pub" ON community_page FOR SELECT USING(TRUE);
 CREATE POLICY "community_admin" ON community_page FOR UPDATE USING(get_my_role() IN('super_admin','admin'));

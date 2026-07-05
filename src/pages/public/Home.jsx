@@ -27,11 +27,12 @@ const steps = [
 
 const roadmapAvailable = [
   'Verified Opportunities', 'Career Resources', 'Community Support', 'AI Learning',
+  'AI Career Assistant', 'Career Readiness Score', 'Resume Builder',
+  'Personal Career Dashboard', 'Student Talent Profiles',
 ]
 
 const roadmapComing = [
-  'AI Career Assistant', 'Career Readiness Score', 'Resume Builder', 'Personal Career Dashboard',
-  'Opportunity Tracker', 'Student Talent Profiles', 'Employer Dashboard', 'Premium Learning Hub',
+  'Opportunity Tracker', 'Employer Dashboard', 'Premium Learning Hub',
   'Mentorship Platform',
 ]
 

@@ -18,12 +18,12 @@ const defaultRoadmap = [
   { label: 'Career Resources', status: 'live' },
   { label: 'Community Support', status: 'live' },
   { label: 'AI Learning', status: 'live' },
-  { label: 'AI Career Assistant', status: 'coming' },
-  { label: 'Career Readiness Score', status: 'coming' },
-  { label: 'Resume Builder', status: 'coming' },
-  { label: 'Personal Career Dashboard', status: 'coming' },
+  { label: 'AI Career Assistant', status: 'live' },
+  { label: 'Career Readiness Score', status: 'live' },
+  { label: 'Resume Builder', status: 'live' },
+  { label: 'Personal Career Dashboard', status: 'live' },
+  { label: 'Student Talent Profiles', status: 'live' },
   { label: 'Opportunity Tracker', status: 'coming' },
-  { label: 'Student Talent Profiles', status: 'coming' },
   { label: 'Employer Dashboard', status: 'coming' },
   { label: 'Premium Learning Hub', status: 'coming' },
   { label: 'Mentorship Platform', status: 'coming' },
@@ -49,6 +49,20 @@ const defaultCommunityLinks = [
   { name: 'AI Learning Hub', url: '', members: '400+' },
 ]
 
+const defaultEvents = [
+  { title: '', date: '', description: '', link: '', type: 'upcoming' },
+]
+
+const defaultVolunteerProgram = {
+  heading: 'Volunteer Program',
+  text: '',
+  image_url: '',
+}
+
+const defaultSuccessStories = [
+  { name: '', achievement: '', quote: '', image_url: '' },
+]
+
 export default function ManageCommunity() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -66,6 +80,9 @@ export default function ManageCommunity() {
     secondary_cta_link: '/collaborators',
     explore_links: defaultExploreLinks,
     community_links: defaultCommunityLinks,
+    events: defaultEvents,
+    volunteer_program: defaultVolunteerProgram,
+    success_stories: defaultSuccessStories,
   })
 
   useEffect(() => {
@@ -145,6 +162,40 @@ export default function ManageCommunity() {
   function removeCommunityLink(index) {
     const links = data.community_links.filter((_, i) => i !== index)
     setData({ ...data, community_links: links })
+  }
+
+  function updateEvent(index, field, value) {
+    const events = [...data.events]
+    events[index] = { ...events[index], [field]: value }
+    setData({ ...data, events })
+  }
+
+  function addEvent() {
+    setData({ ...data, events: [...data.events, { title: '', date: '', description: '', link: '', type: 'upcoming' }] })
+  }
+
+  function removeEvent(index) {
+    const events = data.events.filter((_, i) => i !== index)
+    setData({ ...data, events })
+  }
+
+  function updateVolunteer(field, value) {
+    setData({ ...data, volunteer_program: { ...data.volunteer_program, [field]: value } })
+  }
+
+  function updateSuccessStory(index, field, value) {
+    const stories = [...data.success_stories]
+    stories[index] = { ...stories[index], [field]: value }
+    setData({ ...data, success_stories: stories })
+  }
+
+  function addSuccessStory() {
+    setData({ ...data, success_stories: [...data.success_stories, { name: '', achievement: '', quote: '', image_url: '' }] })
+  }
+
+  function removeSuccessStory(index) {
+    const stories = data.success_stories.filter((_, i) => i !== index)
+    setData({ ...data, success_stories: stories })
   }
 
   if (loading) return (
@@ -296,6 +347,88 @@ export default function ManageCommunity() {
                   <input value={link.members} onChange={e => updateCommunityLink(i, 'members', e.target.value)} className="input-field" placeholder="1,200+" />
                 </div>
                 <button onClick={() => removeCommunityLink(i)} className="text-red-400 hover:text-red-300 p-2"><Trash2 size={16} /></button>
+              </div>
+            ))}
+          </div>
+
+          {/* Events */}
+          <div className="glass-card p-6 space-y-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-bold">Events</h2>
+              <button onClick={addEvent} className="btn-ghost text-sm flex items-center gap-1"><Plus size={14} /> Add Event</button>
+            </div>
+            {data.events.map((event, i) => (
+              <div key={i} className="flex items-end gap-3 p-3 bg-white/[0.02] rounded-xl border border-white/[0.05] flex-wrap">
+                <div className="flex-1 min-w-[200px]">
+                  <label className="label">Title</label>
+                  <input value={event.title} onChange={e => updateEvent(i, 'title', e.target.value)} className="input-field" placeholder="e.g. Career Workshop 2026" />
+                </div>
+                <div className="w-36">
+                  <label className="label">Date</label>
+                  <input value={event.date} onChange={e => updateEvent(i, 'date', e.target.value)} className="input-field" placeholder="e.g. Aug 15, 2026" />
+                </div>
+                <div className="w-28">
+                  <label className="label">Type</label>
+                  <select value={event.type} onChange={e => updateEvent(i, 'type', e.target.value)} className="input-field">
+                    <option value="upcoming">Upcoming</option>
+                    <option value="past">Past</option>
+                  </select>
+                </div>
+                <div className="w-full">
+                  <label className="label">Description</label>
+                  <input value={event.description} onChange={e => updateEvent(i, 'description', e.target.value)} className="input-field" placeholder="Short description" />
+                </div>
+                <div className="flex-1">
+                  <label className="label">Link</label>
+                  <input value={event.link} onChange={e => updateEvent(i, 'link', e.target.value)} className="input-field" placeholder="https://..." />
+                </div>
+                <button onClick={() => removeEvent(i)} className="text-red-400 hover:text-red-300 p-2"><Trash2 size={16} /></button>
+              </div>
+            ))}
+          </div>
+
+          {/* Volunteer Program */}
+          <div className="glass-card p-6 space-y-4">
+            <h2 className="text-xl font-bold">Volunteer Program</h2>
+            <div>
+              <label className="label">Heading</label>
+              <input value={data.volunteer_program.heading} onChange={e => updateVolunteer('heading', e.target.value)} className="input-field" />
+            </div>
+            <div>
+              <label className="label">Description</label>
+              <textarea value={data.volunteer_program.text} onChange={e => updateVolunteer('text', e.target.value)} className="input-field h-24" placeholder="Describe the volunteer program..." />
+            </div>
+            <div>
+              <label className="label">Image URL</label>
+              <input value={data.volunteer_program.image_url} onChange={e => updateVolunteer('image_url', e.target.value)} className="input-field" placeholder="https://..." />
+            </div>
+          </div>
+
+          {/* Success Stories */}
+          <div className="glass-card p-6 space-y-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-bold">Success Stories</h2>
+              <button onClick={addSuccessStory} className="btn-ghost text-sm flex items-center gap-1"><Plus size={14} /> Add Story</button>
+            </div>
+            {data.success_stories.map((story, i) => (
+              <div key={i} className="flex items-end gap-3 p-3 bg-white/[0.02] rounded-xl border border-white/[0.05] flex-wrap">
+                <div className="flex-1 min-w-[150px]">
+                  <label className="label">Name</label>
+                  <input value={story.name} onChange={e => updateSuccessStory(i, 'name', e.target.value)} className="input-field" placeholder="e.g. Ahmad R." />
+                </div>
+                <div className="flex-1 min-w-[150px]">
+                  <label className="label">Achievement</label>
+                  <input value={story.achievement} onChange={e => updateSuccessStory(i, 'achievement', e.target.value)} className="input-field" placeholder="e.g. Fulbright Scholar 2026" />
+                </div>
+                <div className="w-full">
+                  <label className="label">Quote</label>
+                  <input value={story.quote} onChange={e => updateSuccessStory(i, 'quote', e.target.value)} className="input-field" placeholder="Their story in their words..." />
+                </div>
+                <div className="flex-1">
+                  <label className="label">Image URL</label>
+                  <input value={story.image_url} onChange={e => updateSuccessStory(i, 'image_url', e.target.value)} className="input-field" placeholder="https://..." />
+                </div>
+                <button onClick={() => removeSuccessStory(i)} className="text-red-400 hover:text-red-300 p-2"><Trash2 size={16} /></button>
               </div>
             ))}
           </div>
