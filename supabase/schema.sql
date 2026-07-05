@@ -237,9 +237,14 @@ CREATE TABLE about_page (id INT PRIMARY KEY DEFAULT 1 CHECK(id=1),
   story_heading TEXT DEFAULT 'Our Story', story_text TEXT,
   founded_date TEXT, contact_email TEXT, contact_whatsapp TEXT,
   community_link TEXT, tagline TEXT, founder_message TEXT,
+  mission_text TEXT DEFAULT '',
+  core_values JSONB DEFAULT '[]',
+  what_we_do TEXT DEFAULT '',
+  who_can_join TEXT DEFAULT '',
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 INSERT INTO about_page(id) VALUES(1);
+-- Migration for existing DBs: ALTER TABLE about_page ADD COLUMN IF NOT EXISTS mission_text TEXT DEFAULT '', ADD COLUMN IF NOT EXISTS core_values JSONB DEFAULT '[]', ADD COLUMN IF NOT EXISTS what_we_do TEXT DEFAULT '', ADD COLUMN IF NOT EXISTS who_can_join TEXT DEFAULT '';
 ALTER TABLE about_page ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "about_pub" ON about_page FOR SELECT USING(TRUE);
 CREATE POLICY "about_admin" ON about_page FOR UPDATE USING(get_my_role() IN('super_admin','admin'));

@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabase'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
 import SafeImage from '../../components/ui/SafeImage'
-import { Mail, MessageCircle, Crown, Calendar } from 'lucide-react'
+import { Mail, MessageCircle, Crown, Calendar, Target, Heart, Sparkles, Users } from 'lucide-react'
 
 export default function About({ navless } = {}) {
   const [data, setData] = useState(null)
@@ -48,6 +48,60 @@ export default function About({ navless } = {}) {
                 <div className="prose prose-invert max-w-none">
                   <p className="text-lg text-white leading-relaxed whitespace-pre-line">{data.story_text}</p>
                 </div>
+              </section>
+            )}
+
+            {/* Our Mission */}
+            {data?.mission_text && (
+              <section className="glass-card p-8 md:p-12 border-l-4 border-blue-accent">
+                <div className="flex items-center gap-3 mb-4">
+                  <Target size={24} className="text-blue-accent" />
+                  <h2 className="text-2xl font-bold font-sora text-white">Our Mission</h2>
+                </div>
+                <p className="text-muted leading-relaxed whitespace-pre-line">{data.mission_text}</p>
+              </section>
+            )}
+
+            {/* Core Values */}
+            {data?.core_values?.length > 0 && (
+              <section>
+                <div className="flex items-center justify-center gap-3 mb-8">
+                  <Heart size={24} className="text-green" />
+                  <h2 className="text-3xl font-bold font-sora text-white text-center">Core Values</h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {data.core_values.map((v, i) => (
+                    <div key={i} className="glass-card p-6 text-center">
+                      <div className="w-12 h-12 rounded-full bg-green/10 flex items-center justify-center mx-auto mb-4">
+                        <Sparkles size={22} className="text-green" />
+                      </div>
+                      <h3 className="text-lg font-bold text-white mb-2">{v.title}</h3>
+                      <p className="text-sm text-muted leading-relaxed">{v.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* What We Do */}
+            {data?.what_we_do && (
+              <section className="glass-card p-8 md:p-12 border-l-4 border-gold">
+                <div className="flex items-center gap-3 mb-4">
+                  <Sparkles size={24} className="text-gold" />
+                  <h2 className="text-2xl font-bold font-sora text-white">What We Do</h2>
+                </div>
+                <p className="text-muted leading-relaxed whitespace-pre-line">{data.what_we_do}</p>
+              </section>
+            )}
+
+            {/* Who Can Join */}
+            {data?.who_can_join && (
+              <section className="glass-card p-8 md:p-12 border-l-4 border-green">
+                <div className="flex items-center gap-3 mb-4">
+                  <Users size={24} className="text-green" />
+                  <h2 className="text-2xl font-bold font-sora text-white">Who Can Join?</h2>
+                </div>
+                <p className="text-muted leading-relaxed whitespace-pre-line">{data.who_can_join}</p>
               </section>
             )}
 
