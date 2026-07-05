@@ -4,21 +4,8 @@ import { motion } from 'framer-motion'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
 import { Link } from 'react-router-dom'
-import { Users, MessageCircle, BookOpen, Briefcase, GraduationCap, Target, ChevronRight, Calendar, Quote, Heart } from 'lucide-react'
+import { Users, MessageCircle, ChevronRight, Calendar, Quote, Heart } from 'lucide-react'
 import { ShimmerButton } from '../../components/magicui/shimmer-button'
-
-const statIcons = {
-  community_members: Users,
-  countries: GlobeIcon,
-  whatsapp_groups: MessageCircle,
-  career_followers: Users,
-  scholarship_followers: GraduationCap,
-  ai_followers: BookOpen,
-}
-
-function GlobeIcon({ size }) {
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-}
 
 export default function Community({ navless } = {}) {
   const [data, setData] = useState(null)
@@ -40,12 +27,14 @@ export default function Community({ navless } = {}) {
     </div>
   )
 
-  const stats = data?.stats || []
-  const roadmap = data?.roadmap_items || []
-  const exploreLinks = data?.explore_links || []
   const communityLinks = data?.community_links || []
-  const events = data?.events || []
-  const volunteerProgram = data?.volunteer_program
+  const events = data?.events?.length ? data.events : [
+    { title: 'Community Orientation', date: 'Monthly', description: 'Welcome session for new members to learn about Career Radar.', type: 'upcoming', link: '/social' },
+    { title: 'Career Workshop', date: 'Bi-weekly', description: 'Interactive sessions on scholarships, internships, and skill building.', type: 'upcoming', link: '/social' },
+  ]
+  const volunteerProgram = data?.volunteer_program?.text
+    ? data.volunteer_program
+    : { heading: 'Volunteer Program', text: 'Join our volunteer team and help fellow students discover opportunities, build skills, and grow their careers. Volunteers gain leadership experience, networking opportunities, and recognition in the community.', image_url: '' }
   const successStories = data?.success_stories || []
 
   return (
@@ -76,95 +65,7 @@ export default function Community({ navless } = {}) {
           </motion.div>
         </section>
 
-        {/* Stats */}
-        <section className="max-w-6xl mx-auto px-4 pb-20">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {stats.map((stat, i) => {
-              const Icon = statIcons[stat.key] || Users
-              return (
-                <motion.div key={stat.key || i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }} className="glass-card p-4 text-center">
-                  <Icon className="text-green mx-auto mb-2" size={24} />
-                  <div className="text-2xl font-black text-white">{stat.value}+</div>
-                  <div className="text-xs text-muted mt-1">{stat.label}</div>
-                </motion.div>
-              )
-            })}
-          </div>
-        </section>
-
-        {/* Roadmap */}
-        <section className="max-w-6xl mx-auto px-4 pb-20">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="glass-card p-8 md:p-12">
-            <h2 className="text-3xl md:text-4xl font-bold font-sora text-white mb-4 text-center">Building the Future of Career Development</h2>
-            <p className="text-muted text-center max-w-2xl mx-auto mb-12">Today we deliver verified opportunities, career resources, community support, and AI learning. Coming soon: even more powerful tools.</p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-lg font-bold text-green mb-4 flex items-center gap-2"><Target size={18} /> Today</h3>
-                <ul className="space-y-3">
-                  {roadmap.filter(r => r.status === 'live').map((item, i) => (
-                    <li key={i} className="flex items-start gap-3 text-muted">
-                      <span className="text-green mt-0.5 shrink-0">&#10003;</span>
-                      <span>{item.label}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-blue-accent mb-4 flex items-center gap-2"><GraduationCap size={18} /> Coming Soon</h3>
-                <ul className="space-y-3">
-                  {roadmap.filter(r => r.status === 'coming').map((item, i) => (
-                    <li key={i} className="flex items-start gap-3 text-muted">
-                      <span className="w-5 h-5 rounded-full border border-blue-accent/40 text-blue-accent flex items-center justify-center text-[10px] shrink-0 mt-0.5">&#8226;</span>
-                      <span>{item.label}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </motion.div>
-        </section>
-
-        {/* Founder Message */}
-        {data?.founder_message && (
-          <section className="max-w-4xl mx-auto px-4 pb-20">
-            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="glass-card p-8 md:p-12 border-l-4 border-green">
-              <h2 className="text-2xl font-bold font-sora text-white mb-6">A Message from the Founder</h2>
-              <p className="text-muted leading-relaxed whitespace-pre-line">{data.founder_message}</p>
-            </motion.div>
-          </section>
-        )}
-
-        {/* Success Stories */}
-        {successStories.length > 0 && (
-          <section className="max-w-4xl mx-auto px-4 pb-20">
-            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <h2 className="text-3xl font-bold font-sora text-white mb-4 text-center">Success Stories</h2>
-              <p className="text-muted text-center max-w-2xl mx-auto mb-10">Real achievements from our community members.</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {successStories.map((story, i) => (
-                  <div key={i} className="glass-card p-6">
-                    <Quote size={20} className="text-green/40 mb-3" />
-                    <p className="text-muted text-sm leading-relaxed mb-4">&ldquo;{story.quote}&rdquo;</p>
-                    <div className="flex items-center gap-3">
-                      {story.image_url ? (
-                        <img src={story.image_url} alt={story.name} className="w-10 h-10 rounded-full object-cover" />
-                      ) : (
-                        <div className="w-10 h-10 rounded-full bg-green/20 flex items-center justify-center text-green font-bold text-sm">{story.name.charAt(0)}</div>
-                      )}
-                      <div>
-                        <p className="text-white font-semibold text-sm">{story.name}</p>
-                        <p className="text-green text-xs">{story.achievement}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </section>
-        )}
-
-        {/* Community Links */}
+        {/* WhatsApp Groups */}
         {communityLinks.length > 0 && (
           <section className="max-w-4xl mx-auto px-4 pb-20">
             <h2 className="text-2xl font-bold font-sora text-white mb-8 text-center">Join Our WhatsApp Communities</h2>
@@ -237,6 +138,37 @@ export default function Community({ navless } = {}) {
             </motion.div>
           </section>
         )}
+
+        {/* Success Stories */}
+        {successStories.length > 0 && (
+          <section className="max-w-4xl mx-auto px-4 pb-20">
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              <h2 className="text-3xl font-bold font-sora text-white mb-4 text-center">Success Stories</h2>
+              <p className="text-muted text-center max-w-2xl mx-auto mb-10">Real achievements from our community members.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {successStories.map((story, i) => (
+                  <div key={i} className="glass-card p-6">
+                    <Quote size={20} className="text-green/40 mb-3" />
+                    <p className="text-muted text-sm leading-relaxed mb-4">&ldquo;{story.quote}&rdquo;</p>
+                    <div className="flex items-center gap-3">
+                      {story.image_url ? (
+                        <img src={story.image_url} alt={story.name} className="w-10 h-10 rounded-full object-cover" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-green/20 flex items-center justify-center text-green font-bold text-sm">{story.name.charAt(0)}</div>
+                      )}
+                      <div>
+                        <p className="text-white font-semibold text-sm">{story.name}</p>
+                        <p className="text-green text-xs">{story.achievement}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </section>
+        )}
+
+        {/* CTA */}
         <section className="max-w-4xl mx-auto px-4 pb-20 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="glass-card p-10 md:p-14">
             <h2 className="text-3xl md:text-4xl font-bold font-sora text-white mb-4">{data?.cta_heading || 'Start Your Career Journey Today'}</h2>
@@ -250,21 +182,6 @@ export default function Community({ navless } = {}) {
               </Link>
             </div>
           </motion.div>
-        </section>
-
-        {/* Explore Footer */}
-        <section className="max-w-6xl mx-auto px-4 pb-20">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {exploreLinks.map((link, i) => {
-              const Icon = link.icon === 'GraduationCap' ? GraduationCap : link.icon === 'Briefcase' ? Briefcase : link.icon === 'BookOpen' ? BookOpen : link.icon === 'Users' ? Users : link.icon === 'MessageCircle' ? MessageCircle : BookOpen
-              return (
-                <Link key={i} to={link.url} className="glass-card p-5 text-center hover:-translate-y-1 transition-transform">
-                  <Icon className="text-green mx-auto mb-2" size={22} />
-                  <h3 className="text-sm font-semibold text-white">{link.label}</h3>
-                </Link>
-              )
-            })}
-          </div>
         </section>
       </main>
 
