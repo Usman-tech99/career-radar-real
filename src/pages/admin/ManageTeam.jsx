@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import AdminSidebar from '../../components/layout/AdminSidebar'
 import toast from 'react-hot-toast'
-import { Plus, Trash2, ShieldAlert, Check } from 'lucide-react'
+import { Plus, Trash2, ShieldAlert, Check, Users, Search } from 'lucide-react'
 
 const ALL_PERMISSIONS = [
   { key: 'manage_jobs', label: 'Manage Jobs' },
@@ -21,6 +21,9 @@ export default function ManageTeam() {
   const { user } = useAuth()
   const [team, setTeam] = useState([])
   const [loading, setLoading] = useState(true)
+  const [allUsers, setAllUsers] = useState([])
+  const [loadingUsers, setLoadingUsers] = useState(true)
+  const [userSearch, setUserSearch] = useState('')
 
   const [isCreating, setIsCreating] = useState(false)
   const [newEmail, setNewEmail] = useState('')
@@ -32,6 +35,7 @@ export default function ManageTeam() {
 
   useEffect(() => {
     fetchTeam()
+    fetchAllUsers()
   }, [])
 
   async function fetchTeam() {
@@ -77,6 +81,50 @@ export default function ManageTeam() {
       setTeam([])
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function fetchAllUsers() {
+    setLoadingUsers(true)
+    try {
+      const { data: profiles, error: profileError } = await supabase
+        .from('profiles')
+        .select('id, full_name, created_at')
+        .order('created_at', { ascending: false })
+        .limit(200)
+
+      if (profileError) {
+        console.error("All Users Fetch Error:", profileError.message)
+        setAllUsers([])
+        setLoadingUsers(false)
+        return
+      }
+
+      const userIds = (profiles || []).map(p => p.id).filter(Boolean)
+
+      let roleMap = {}
+      if (userIds.length > 0) {
+        const { data: roles, error: roleError } = await supabase
+          .from('user_roles')
+          .select('user_id, role, role_label')
+          .in('user_id', userIds)
+
+        if (!roleError && roles) {
+          roleMap = Object.fromEntries(roles.map(r => [r.user_id, r]))
+        }
+      }
+
+      const enriched = (profiles || []).map(p => ({
+        ...p,
+        roleData: roleMap[p.id] || null
+      }))
+
+      setAllUsers(enriched)
+    } catch (err) {
+      console.error("All Users Fetch Error:", err.message)
+      setAllUsers([])
+    } finally {
+      setLoadingUsers(false)
     }
   }
 
@@ -237,7 +285,7 @@ export default function ManageTeam() {
           </div>
 
           <div className="lg:col-span-2">
-            <div className="glass-card">
+            <div className="glass-card mb-6">
               <h2 className="text-xl font-bold mb-6">Current Team Members</h2>
               {loading ? (
                 <div className="skeleton w-full h-32 rounded-xl"></div>
@@ -281,6 +329,71 @@ export default function ManageTeam() {
                   ))}
                 </div>
               )}
+            </div>
+
+            <div className="glass-card">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <Users className="text-muted" size={22} /> All Registered Users
+                </h2>
+                <div className="relative">
+                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+                  <input
+                    value={userSearch}
+                    onChange={e => setUserSearch(e.target.value)}
+                    className="input-field pl-9 py-2 text-sm w-56"
+                    placeholder="Search by name or ID..."
+                  />
+                </div>
+              </div>
+              {loadingUsers ? (
+                <div className="skeleton w-full h-32 rounded-xl"></div>
+              ) : allUsers.length === 0 ? (
+                <p className="text-muted text-sm py-8 text-center">No users found.</p>
+              ) : (
+                <div className="space-y-2 max-h-[500px] overflow-y-auto">
+                  {allUsers
+                    .filter(u =>
+                      !userSearch ||
+                      u.full_name?.toLowerCase().includes(userSearch.toLowerCase()) ||
+                      u.id?.toLowerCase().includes(userSearch.toLowerCase())
+                    )
+                    .map(u => (
+                      <div key={u.id} className="flex justify-between items-center p-3 border border-border rounded-xl bg-white/[0.02]">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 rounded-full bg-green/20 flex items-center justify-center shrink-0">
+                            <span className="text-xs font-bold text-green">
+                              {(u.full_name || '?')[0].toUpperCase()}
+                            </span>
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-medium text-sm truncate">{u.full_name || 'No Name'}</p>
+                            <p className="text-[10px] text-muted font-mono truncate">{u.id}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          {u.roleData ? (
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
+                              u.roleData.role === 'super_admin' ? 'bg-red-500/20 text-red-500' :
+                              u.roleData.role === 'admin' ? 'bg-blue-500/20 text-blue-500' :
+                              'bg-purple-500/20 text-purple-400'
+                            }`}>
+                              {u.roleData.role_label || u.roleData.role}
+                            </span>
+                          ) : (
+                            <span className="text-[10px] text-muted">user</span>
+                          )}
+                          <span className="text-[10px] text-muted">
+                            {new Date(u.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )}
+              <p className="text-xs text-muted mt-4 text-center">
+                Showing {allUsers.length} users — ordered by most recent
+              </p>
             </div>
           </div>
         </div>
