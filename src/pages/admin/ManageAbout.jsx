@@ -69,16 +69,6 @@ export default function ManageAbout() {
             <h2 className="text-xl font-bold mb-4">Learn More Section</h2>
             
             <div>
-              <label className="label">Story Text</label>
-              <textarea 
-                value={data.story_text} 
-                onChange={e => setData({...data, story_text: e.target.value})} 
-                className="input-field h-48"
-                placeholder="Write the founding story here..."
-              />
-            </div>
-            
-            <div>
               <label className="label">Tagline (Short punchy phrase)</label>
               <input 
                 value={data.tagline} 
