@@ -110,12 +110,12 @@ export default function Home() {
       <main className="flex-1 flex flex-col items-center justify-center pt-28 pb-20 px-4 relative z-10">
         {/* Grid Background (inside main so it doesn't reach footer) */}
         <div
-          className="pointer-events-none absolute inset-0"
+          className="pointer-events-none absolute inset-0 opacity-20"
           style={{
             backgroundImage: 'linear-gradient(to right, var(--grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px)',
             backgroundSize: '40px 40px',
-            maskImage: 'radial-gradient(ellipse at center, transparent 20%, black)',
-            WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 20%, black)',
+            maskImage: 'radial-gradient(ellipse 70% 60% at center, transparent 20%, black 80%)',
+            WebkitMaskImage: 'radial-gradient(ellipse 70% 60% at center, transparent 20%, black 80%)',
           }}
         />
         <div className="max-w-5xl mx-auto">
@@ -137,22 +137,22 @@ export default function Home() {
                   Accelerate Your Career.
                 </span>
               </h1>
+
+              <p className="text-lg md:text-xl text-muted max-w-3xl mx-auto mb-10 leading-relaxed">
+                Career Radar is an AI-powered career ecosystem helping students and early-career professionals discover verified scholarships, internships, jobs, AI resources, career guidance, and professional networks—all in one place.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link to="/social" className="btn-primary w-full sm:w-auto text-lg px-8 py-4 flex items-center justify-center gap-2 group">
+                  Join Community <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link to="/jobs" className="btn-ghost w-full sm:w-auto text-lg px-8 py-4 border border-white/10 hover:border-white/20">
+                  Explore Opportunities
+                </Link>
+              </div>
             </div>
           </LampContainer>
-
-            <p className="text-center text-lg md:text-xl text-muted max-w-3xl mx-auto mb-10 leading-relaxed">
-              Career Radar is an AI-powered career ecosystem helping students and early-career professionals discover verified scholarships, internships, jobs, AI resources, career guidance, and professional networks—all in one place.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to="/social" className="btn-primary w-full sm:w-auto text-lg px-8 py-4 flex items-center justify-center gap-2 group">
-                Join Community <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link to="/jobs" className="btn-ghost w-full sm:w-auto text-lg px-8 py-4 border border-white/10 hover:border-white/20">
-                Explore Opportunities
-              </Link>
-            </div>
-          </div>
+        </div>
 
         {/* Stats Bar */}
         {statItems.length > 0 && (
