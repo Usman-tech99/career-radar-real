@@ -9,6 +9,7 @@ import { NumberTicker } from '../../components/magicui/number-ticker'
 import { ArrowRight, Search, Bot, BookOpen, Users, TrendingUp, Target, Compass, CheckCircle, MessageSquare, Rocket, Sparkles, Quote } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { CardContainer, CardBody, CardItem } from '../../components/ui/3d-card'
+import { Globe3D } from '../../components/ui/3d-globe'
 
 const features = [
   { icon: Search, title: 'Verified Opportunities', desc: 'Discover scholarships, internships, jobs, fellowships, competitions, conferences, and remote opportunities from trusted sources.', color: 'text-green', beamColor: '#10B981', wide: false },
@@ -35,6 +36,19 @@ const roadmapAvailable = [
 const roadmapComing = [
   'Opportunity Tracker', 'Employer Dashboard', 'Premium Learning Hub',
   'Mentorship Platform',
+]
+
+const communityMarkers = [
+  { lat: 33.6844, lng: 73.0479, label: 'Islamabad', color: '#10B981' },
+  { lat: 24.8607, lng: 67.0011, label: 'Karachi', color: '#10B981' },
+  { lat: 31.5204, lng: 74.3587, label: 'Lahore', color: '#10B981' },
+  { lat: 25.2048, lng: 55.2708, label: 'Dubai', color: '#60A5FA' },
+  { lat: 51.5074, lng: -0.1278, label: 'London', color: '#60A5FA' },
+  { lat: 40.7128, lng: -74.006, label: 'New York', color: '#60A5FA' },
+  { lat: 43.6532, lng: -79.3832, label: 'Toronto', color: '#60A5FA' },
+  { lat: 3.139, lng: 101.6869, label: 'Kuala Lumpur', color: '#60A5FA' },
+  { lat: 41.0082, lng: 28.9784, label: 'Istanbul', color: '#60A5FA' },
+  { lat: 24.7136, lng: 46.6753, label: 'Riyadh', color: '#60A5FA' },
 ]
 
 const whyJoin = [
@@ -169,6 +183,20 @@ export default function Home() {
             <p className="text-muted text-base md:text-lg leading-relaxed max-w-3xl mx-auto">
               Students don't struggle because opportunities don't exist—they struggle because opportunities are scattered, skills change rapidly, and trusted career guidance is hard to find. Career Radar brings everything together into one AI-powered career ecosystem.
             </p>
+          </div>
+        </BlurFade>
+
+        {/* Global Globe */}
+        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-5xl mx-auto mt-28">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-5xl font-bold font-sora text-white mb-4">Our Global Reach</h2>
+            <p className="text-muted text-base md:text-lg max-w-2xl mx-auto">Connected with students and professionals across Pakistan and around the world.</p>
+          </div>
+          <div className="glass-card p-4 md:p-6 rounded-2xl overflow-hidden">
+            <Globe3D
+              markers={communityMarkers}
+              onMarkerClick={(label) => console.log('Clicked:', label)}
+            />
           </div>
         </BlurFade>
 
