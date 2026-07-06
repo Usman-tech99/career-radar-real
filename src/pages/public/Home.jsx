@@ -107,7 +107,17 @@ export default function Home() {
       />
 
       {/* Hero */}
-      <main className="flex-1 flex flex-col items-center justify-center pb-20 px-4 relative z-10">
+      <main className="flex-1 flex flex-col items-center justify-center pt-28 pb-20 px-4 relative z-10">
+        {/* Grid Background (inside main so it doesn't reach footer) */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage: 'linear-gradient(to right, #262626 1px, transparent 1px), linear-gradient(to bottom, #262626 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+            maskImage: 'radial-gradient(ellipse at center, transparent 20%, black)',
+            WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 20%, black)',
+          }}
+        />
         <LampContainer className="max-w-5xl mx-auto">
           <div className="text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green/30 bg-green/10 text-green font-medium text-sm mb-8">
