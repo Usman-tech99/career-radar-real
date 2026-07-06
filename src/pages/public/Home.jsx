@@ -8,6 +8,7 @@ import { BorderBeam } from '../../components/magicui/border-beam'
 import { NumberTicker } from '../../components/magicui/number-ticker'
 import { ArrowRight, Search, Bot, BookOpen, Users, TrendingUp, Target, Compass, CheckCircle, MessageSquare, Rocket, Sparkles, Quote } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
+import { CardContainer, CardBody, CardItem } from '../../components/ui/3d-card'
 
 const features = [
   { icon: Search, title: 'Verified Opportunities', desc: 'Discover scholarships, internships, jobs, fellowships, competitions, conferences, and remote opportunities from trusted sources.', color: 'text-green', beamColor: '#10B981', wide: false },
@@ -50,16 +51,18 @@ const testimonials = [
 function BentoFeatureCard({ icon: Icon, title, desc, color, beamColor, index, wide }) {
   return (
     <BlurFade delay={index * 0.08} offset={10} blur="4px">
-      <motion.div whileHover={{ y: -4 }} className={`relative group h-full ${wide ? 'md:col-span-2' : ''}`}>
-        <div className="glass-card relative z-10 flex flex-col items-start text-left p-6 md:p-8 h-full overflow-hidden rounded-2xl">
-          <BorderBeam size={120} delay={index * 2} duration={10} colorFrom={beamColor} colorTo={beamColor} borderWidth={1} />
-          <div className={`w-12 h-12 rounded-xl ${color.replace('text', 'bg')}/10 flex items-center justify-center mb-5 border border-white/[0.06] group-hover:scale-110 transition-transform duration-300`}>
-            <Icon size={24} className={color} />
-          </div>
-          <h3 className="text-lg font-bold text-white mb-3">{title}</h3>
-          <p className="text-sm text-muted leading-relaxed">{desc}</p>
-        </div>
-      </motion.div>
+      <div className={`h-full ${wide ? 'md:col-span-2' : ''}`}>
+        <CardContainer className="w-full h-full" containerClassName="w-full h-full">
+          <CardBody className="glass-card relative flex flex-col items-start text-left p-6 md:p-8 h-full overflow-hidden rounded-2xl border border-white/[0.06]">
+            <BorderBeam size={120} delay={index * 2} duration={10} colorFrom={beamColor} colorTo={beamColor} borderWidth={1} />
+            <CardItem translateZ={40} className={`w-12 h-12 rounded-xl ${color.replace('text', 'bg')}/10 flex items-center justify-center mb-5 border border-white/[0.06]`}>
+              <Icon size={24} className={color} />
+            </CardItem>
+            <CardItem translateZ={30} className="text-lg font-bold text-white mb-3">{title}</CardItem>
+            <CardItem translateZ={20} className="text-sm text-muted leading-relaxed">{desc}</CardItem>
+          </CardBody>
+        </CardContainer>
+      </div>
     </BlurFade>
   )
 }
@@ -230,21 +233,25 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="glass-card p-6 flex flex-col">
-                <Quote size={20} className="text-green/40 mb-4" />
-                <p className="text-sm text-muted leading-relaxed mb-6 flex-1">&ldquo;{t.quote}&rdquo;</p>
-                <div className="pt-4 border-t border-white/[0.06]">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-green/20 flex items-center justify-center text-green font-bold text-sm">
-                      {t.name.split(' ').map(n => n[0]).join('')}
+              <CardContainer key={i} className="w-full h-full" containerClassName="w-full h-full">
+                <CardBody className="glass-card p-6 flex flex-col h-full rounded-2xl border border-white/[0.06]">
+                  <CardItem translateZ={30}>
+                    <Quote size={20} className="text-green/40 mb-4" />
+                  </CardItem>
+                  <CardItem translateZ={20} className="text-sm text-muted leading-relaxed mb-6 flex-1">&ldquo;{t.quote}&rdquo;</CardItem>
+                  <CardItem translateZ={10} className="pt-4 border-t border-white/[0.06]">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-green/20 flex items-center justify-center text-green font-bold text-sm">
+                        {t.name.split(' ').map(n => n[0]).join('')}
+                      </div>
+                      <div>
+                        <p className="text-white font-semibold text-sm">{t.name}</p>
+                        <p className="text-green text-xs">{t.achievement}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-white font-semibold text-sm">{t.name}</p>
-                      <p className="text-green text-xs">{t.achievement}</p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+                  </CardItem>
+                </CardBody>
+              </CardContainer>
             ))}
           </div>
         </BlurFade>
