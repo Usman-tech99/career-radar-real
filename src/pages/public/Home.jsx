@@ -6,6 +6,7 @@ import Footer from '../../components/layout/Footer'
 import { BlurFade } from '../../components/magicui/blur-fade'
 import { BorderBeam } from '../../components/magicui/border-beam'
 import { NumberTicker } from '../../components/magicui/number-ticker'
+import { LampContainer } from '../../components/ui/lamp'
 import { ArrowRight, Search, Bot, BookOpen, Users, TrendingUp, Target, Compass, CheckCircle, MessageSquare, Rocket, Sparkles, Quote } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { CardContainer, CardBody, CardItem } from '../../components/ui/3d-card'
@@ -106,43 +107,40 @@ export default function Home() {
       />
 
       {/* Hero */}
-      <main className="flex-1 flex flex-col items-center justify-center pt-36 pb-20 px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="text-center max-w-5xl mx-auto"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green/30 bg-green/10 text-green font-medium text-sm mb-8">
-            <motion.span
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="w-2 h-2 rounded-full bg-green"
-            />
-            AI-Powered Career GPS
+      <main className="flex-1 flex flex-col items-center justify-center pb-20 px-4 relative z-10">
+        <LampContainer className="max-w-5xl mx-auto">
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green/30 bg-green/10 text-green font-medium text-sm mb-8">
+              <motion.span
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="w-2 h-2 rounded-full bg-green"
+              />
+              AI-Powered Career GPS
+            </div>
+
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-sora tracking-tight text-white mb-6 leading-[1.05]">
+              Discover. Build.{' '}
+              <br className="hidden md:block" />
+              <span className="bg-gradient-to-r from-emerald-400 via-green to-blue-500 bg-clip-text text-transparent">
+                Accelerate Your Career.
+              </span>
+            </h1>
+
+            <p className="text-lg md:text-xl text-muted max-w-3xl mx-auto mb-10 leading-relaxed">
+              Career Radar is an AI-powered career ecosystem helping students and early-career professionals discover verified scholarships, internships, jobs, AI resources, career guidance, and professional networks—all in one place.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link to="/social" className="btn-primary w-full sm:w-auto text-lg px-8 py-4 flex items-center justify-center gap-2 group">
+                Join Community <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link to="/jobs" className="btn-ghost w-full sm:w-auto text-lg px-8 py-4 border border-white/10 hover:border-white/20">
+                Explore Opportunities
+              </Link>
+            </div>
           </div>
-
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-sora tracking-tight text-white mb-6 leading-[1.05]">
-            Discover. Build.{' '}
-            <br className="hidden md:block" />
-            <span className="bg-gradient-to-r from-emerald-400 via-green to-blue-500 bg-clip-text text-transparent">
-              Accelerate Your Career.
-            </span>
-          </h1>
-
-          <p className="text-lg md:text-xl text-muted max-w-3xl mx-auto mb-10 leading-relaxed">
-            Career Radar is an AI-powered career ecosystem helping students and early-career professionals discover verified scholarships, internships, jobs, AI resources, career guidance, and professional networks—all in one place.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/social" className="btn-primary w-full sm:w-auto text-lg px-8 py-4 flex items-center justify-center gap-2 group">
-              Join Community <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link to="/jobs" className="btn-ghost w-full sm:w-auto text-lg px-8 py-4 border border-white/10 hover:border-white/20">
-              Explore Opportunities
-            </Link>
-          </div>
-        </motion.div>
+        </LampContainer>
 
         {/* Stats Bar */}
         {statItems.length > 0 && (
