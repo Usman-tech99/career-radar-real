@@ -51,7 +51,7 @@ function Earth() {
   return (
     <mesh ref={meshRef}>
       <sphereGeometry args={[R, 64, 64]} />
-      <MeshPhongMaterial
+      <meshPhongMaterial
         map={tex}
         transparent
         opacity={texLoaded ? 1 : 0.6}

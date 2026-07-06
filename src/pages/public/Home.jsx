@@ -101,6 +101,17 @@ export default function Home() {
     <div className="min-h-screen bg-[#07070C] flex flex-col relative overflow-hidden">
       <Navbar />
 
+      {/* Grid Background */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: 'linear-gradient(to right, #262626 1px, transparent 1px), linear-gradient(to bottom, #262626 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+          maskImage: 'radial-gradient(ellipse at center, transparent 20%, black)',
+          WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 20%, black)',
+        }}
+      />
+
       {/* Aurora Backgrounds */}
       <motion.div
         animate={{ opacity: [0.6, 1, 0.6], scale: [1, 1.05, 1] }}
