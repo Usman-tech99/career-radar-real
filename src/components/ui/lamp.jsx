@@ -49,7 +49,10 @@ export function LampContainer({ children, className = '' }) {
           viewport={{ once: true }}
           transition={{ duration: 1, ease: 'easeInOut' }}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 h-32 rounded-full"
-          style={{ background: '#10B981', filter: 'blur(100px)', opacity: 0.15 }}
+          style={{
+            background: 'radial-gradient(ellipse 60% 60% at center, rgba(16, 185, 129, 0.4) 0%, rgba(16, 185, 129, 0.15) 40%, transparent 75%)',
+            filter: 'blur(80px)',
+          }}
         />
         <motion.div
           initial={{ opacity: 0.5, y: 100 }}
