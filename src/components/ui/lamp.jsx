@@ -16,11 +16,11 @@ export function LampContainer({ children, className = '' }) {
         >
           <div
             className="absolute w-full left-0 h-40 bottom-0 z-20"
-            style={{ background: '#07070C', maskImage: 'linear-gradient(to top, white, transparent)', WebkitMaskImage: 'linear-gradient(to top, white, transparent)' }}
+            style={{ background: 'var(--color-bg-dark)', maskImage: 'linear-gradient(to top, white, transparent)', WebkitMaskImage: 'linear-gradient(to top, white, transparent)' }}
           />
           <div
             className="absolute w-40 h-full left-0 bottom-0 z-20"
-            style={{ background: '#07070C', maskImage: 'linear-gradient(to right, white, transparent)', WebkitMaskImage: 'linear-gradient(to right, white, transparent)' }}
+            style={{ background: 'var(--color-bg-dark)', maskImage: 'linear-gradient(to right, white, transparent)', WebkitMaskImage: 'linear-gradient(to right, white, transparent)' }}
           />
         </motion.div>
         <motion.div
@@ -35,11 +35,11 @@ export function LampContainer({ children, className = '' }) {
         >
           <div
             className="absolute w-40 h-full right-0 bottom-0 z-20"
-            style={{ background: '#07070C', maskImage: 'linear-gradient(to left, white, transparent)', WebkitMaskImage: 'linear-gradient(to left, white, transparent)' }}
+            style={{ background: 'var(--color-bg-dark)', maskImage: 'linear-gradient(to left, white, transparent)', WebkitMaskImage: 'linear-gradient(to left, white, transparent)' }}
           />
           <div
             className="absolute w-full right-0 h-40 bottom-0 z-20"
-            style={{ background: '#07070C', maskImage: 'linear-gradient(to top, white, transparent)', WebkitMaskImage: 'linear-gradient(to top, white, transparent)' }}
+            style={{ background: 'var(--color-bg-dark)', maskImage: 'linear-gradient(to top, white, transparent)', WebkitMaskImage: 'linear-gradient(to top, white, transparent)' }}
           />
         </motion.div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[2px] h-40 bg-gradient-to-b from-green-400 via-green-500 to-transparent" style={{ boxShadow: '0 0 8px rgba(16,185,129,0.4)' }} />
