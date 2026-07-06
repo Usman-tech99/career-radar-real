@@ -55,7 +55,7 @@ function Earth() {
         map={tex}
         transparent
         opacity={texLoaded ? 1 : 0.6}
-        color={texLoaded ? 'white' : '#10B981'}
+        color={texLoaded ? 'white' : '#3B82F6'}
         specular={new THREE.Color('#333')}
         shininess={5}
       />
@@ -73,7 +73,7 @@ function Atmosphere() {
 
   const uniforms = useMemo(() => ({
     uTime: { value: 0 },
-    uColor: { value: new THREE.Color('#10B981') },
+    uColor: { value: new THREE.Color('#60A5FA') },
   }), [])
 
   const vertexShader = `
@@ -93,15 +93,15 @@ function Atmosphere() {
     varying vec3 vPosition;
     void main() {
       vec3 viewDir = normalize(-vPosition);
-      float intensity = pow(1.0 - abs(dot(vNormal, viewDir)), 3.0);
-      intensity *= 0.6 + 0.1 * sin(uTime * 0.5);
-      gl_FragColor = vec4(uColor, intensity * 0.7);
+      float intensity = pow(1.0 - abs(dot(vNormal, viewDir)), 2.5);
+      intensity *= 0.5 + 0.08 * sin(uTime * 0.5);
+      gl_FragColor = vec4(uColor, intensity * 0.45);
     }
   `
 
   return (
     <mesh ref={ref}>
-      <sphereGeometry args={[R * 1.12, 64, 64]} />
+      <sphereGeometry args={[R * 1.08, 64, 64]} />
       <shaderMaterial
         uniforms={uniforms}
         vertexShader={vertexShader}
@@ -140,7 +140,7 @@ function Marker({ lat, lng, label, color = MARKER_COLOR, onClick, onHover }) {
       </sprite>
       {hovered && (
         <Html distanceFactor={6} center>
-          <div className="px-2 py-1 rounded-lg bg-black/80 border border-green/30 text-white text-xs font-medium whitespace-nowrap backdrop-blur-sm">
+          <div className="px-2 py-1 rounded-lg bg-black/80 border border-white/20 text-white text-xs font-medium whitespace-nowrap backdrop-blur-sm">
             {label}
           </div>
         </Html>
