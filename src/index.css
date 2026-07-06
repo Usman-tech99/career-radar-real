@@ -10,6 +10,7 @@
   --color-muted: #94A3B8;
   --color-white: #ffffff;
   --color-bg-dark: #07070C;
+  --grid-line: #262626;
 }
 
 [data-theme="light"] {
@@ -19,6 +20,7 @@
   --color-muted: #64748B;
   --color-white: #0F172A;
   --color-bg-dark: #F8FAFC;
+  --grid-line: #E2E8F0;
 }
 
 @layer base {

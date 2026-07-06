@@ -112,7 +112,7 @@ export default function Home() {
         <div
           className="pointer-events-none absolute inset-0"
           style={{
-            backgroundImage: 'linear-gradient(to right, #262626 1px, transparent 1px), linear-gradient(to bottom, #262626 1px, transparent 1px)',
+            backgroundImage: 'linear-gradient(to right, var(--grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px)',
             backgroundSize: '40px 40px',
             maskImage: 'radial-gradient(ellipse at center, transparent 20%, black)',
             WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 20%, black)',
