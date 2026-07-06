@@ -4,21 +4,23 @@ export function LampContainer({ children, className = '' }) {
   return (
     <div className={`relative ${className}`}>
       <div
-        className="absolute left-1/2 -translate-x-1/2 -top-28 w-[700px] h-[350px] pointer-events-none"
+        className="lamp-glow"
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(20,184,166,0.5) 0%, transparent 70%)',
+          position: 'absolute',
+          top: '-150px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '900px',
+          height: '500px',
+          background: 'radial-gradient(ellipse 50% 50% at center, rgba(16, 185, 129, 0.55) 0%, rgba(16, 185, 129, 0.25) 35%, rgba(16, 185, 129, 0.08) 55%, transparent 75%)',
           filter: 'blur(60px)',
+          pointerEvents: 'none',
+          zIndex: 0,
         }}
       />
-      <motion.div
-        initial={{ opacity: 0.5, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.3, duration: 0.8, ease: 'easeOut' }}
-        className="relative z-10"
-      >
+      <div className="relative z-10">
         {children}
-      </motion.div>
+      </div>
     </div>
   )
 }

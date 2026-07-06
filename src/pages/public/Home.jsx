@@ -86,7 +86,7 @@ export default function Home() {
   ] : []
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-[#07070C] flex flex-col relative overflow-x-hidden">
       <Navbar />
 
       {/* Aurora Backgrounds */}
@@ -118,17 +118,18 @@ export default function Home() {
             WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 20%, black)',
           }}
         />
-        <div className="text-center max-w-5xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green/30 bg-green/10 text-green font-medium text-sm mb-8">
-              <motion.span
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="w-2 h-2 rounded-full bg-green"
-              />
-              AI-Powered Career GPS
-            </div>
+        <div className="max-w-5xl mx-auto">
+          <LampContainer>
+            <div className="text-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green/30 bg-green/10 text-green font-medium text-sm mb-8">
+                <motion.span
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="w-2 h-2 rounded-full bg-green"
+                />
+                AI-Powered Career GPS
+              </div>
 
-            <LampContainer>
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-sora tracking-tight text-white mb-6 leading-[1.05]">
                 Discover. Build.{' '}
                 <br className="hidden md:block" />
@@ -136,9 +137,10 @@ export default function Home() {
                   Accelerate Your Career.
                 </span>
               </h1>
-            </LampContainer>
+            </div>
+          </LampContainer>
 
-            <p className="text-lg md:text-xl text-muted max-w-3xl mx-auto mb-10 leading-relaxed">
+            <p className="text-center text-lg md:text-xl text-muted max-w-3xl mx-auto mb-10 leading-relaxed">
               Career Radar is an AI-powered career ecosystem helping students and early-career professionals discover verified scholarships, internships, jobs, AI resources, career guidance, and professional networks—all in one place.
             </p>
 
