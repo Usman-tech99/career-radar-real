@@ -86,7 +86,7 @@ export default function Home() {
   ] : []
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex flex-col relative">
+    <div className="min-h-screen bg-[#07070C] flex flex-col relative overflow-hidden">
       <Navbar />
 
       {/* Aurora Backgrounds */}
