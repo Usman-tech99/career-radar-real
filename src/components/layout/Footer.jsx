@@ -33,9 +33,14 @@ export default function Footer() {
           {/* Brand + Contact */}
           <div>
             <Link to="/" className="inline-flex items-center gap-2 mb-4">
-              <span className="font-sora font-bold text-2xl tracking-tight text-white">
-                Career <span className="text-[#00FF66]">Radar</span>
-              </span>
+              <div
+                className="px-4 py-1.5 rounded-full border"
+                style={{ backgroundColor: 'var(--color-card)', borderColor: 'var(--color-border)' }}
+              >
+                <span className="font-sora font-bold text-2xl tracking-tight" style={{color: 'var(--color-white)'}}>
+                  Career <span className="text-green">Radar</span>
+                </span>
+              </div>
             </Link>
             <p className="text-muted text-sm leading-relaxed mb-6">
               Career Radar is an AI-powered global career ecosystem helping students and early-career professionals discover opportunities, develop in-demand skills, build professional networks, and connect with employers—preparing them for the future of work.

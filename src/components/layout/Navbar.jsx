@@ -124,9 +124,14 @@ export default function Navbar() {
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <span className="font-sora font-bold text-2xl tracking-tight text-white drop-shadow-[0_0_4px_rgba(255,255,255,0.3)]">
-            Career <span className="text-[#00FF66] drop-shadow-[0_0_12px_rgba(0,255,102,0.6)]">Radar</span>
-          </span>
+          <div
+            className="px-4 py-1.5 rounded-full border"
+            style={{ backgroundColor: 'var(--color-card)', borderColor: 'var(--color-border)' }}
+          >
+            <span className="font-sora font-bold text-2xl tracking-tight" style={{color: 'var(--color-white)'}}>
+              Career <span className="text-green">Radar</span>
+            </span>
+          </div>
         </Link>
 
         {/* Desktop Nav */}

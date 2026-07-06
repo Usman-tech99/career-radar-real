@@ -42,7 +42,6 @@ export function LampContainer({ children, className = '' }) {
             style={{ background: 'var(--color-bg-dark)', maskImage: 'linear-gradient(to top, white, transparent)', WebkitMaskImage: 'linear-gradient(to top, white, transparent)' }}
           />
         </motion.div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[2px] h-40 bg-gradient-to-b from-green-400 via-green-500 to-transparent" style={{ boxShadow: '0 0 8px rgba(16,185,129,0.4)' }} />
         <motion.div
           initial={{ opacity: 0, width: '10rem' }}
           whileInView={{ opacity: 1, width: '20rem' }}

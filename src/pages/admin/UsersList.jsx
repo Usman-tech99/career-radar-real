@@ -219,13 +219,38 @@ export default function UsersList() {
                           </div>
                         </div>
                       ) : (
-                        <div className="text-center py-4">
-                          <p className="text-muted text-sm">No onboarding data — user hasn't completed onboarding yet.</p>
-                          {u.publicUser && (
-                            <div className="mt-2 text-xs text-muted">
-                              {u.publicUser.country && <span>Country: {u.publicUser.country}</span>}
+                        <div className="py-4">
+                          <p className="text-muted text-sm text-center mb-3">No onboarding data — user hasn't completed onboarding yet.</p>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {u.publicUser && (
+                              <div className="space-y-3">
+                                <h4 className="text-xs font-semibold text-muted uppercase tracking-wider flex items-center gap-2">
+                                  <Globe size={14} /> Public Profile
+                                </h4>
+                                <div className="space-y-2 text-sm">
+                                  {u.publicUser.email && (
+                                    <div><span className="text-muted">Email:</span> <span className="text-white">{u.publicUser.email}</span></div>
+                                  )}
+                                  {u.publicUser.country && (
+                                    <div><span className="text-muted">Country:</span> <span className="text-white">{u.publicUser.country}</span></div>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                            <div className="space-y-3">
+                              <h4 className="text-xs font-semibold text-muted uppercase tracking-wider flex items-center gap-2">
+                                <Sparkles size={14} /> Profile
+                              </h4>
+                              <div className="space-y-2 text-sm">
+                                {u.role_title && (
+                                  <div><span className="text-muted">Role Title:</span> <span className="text-white">{u.role_title}</span></div>
+                                )}
+                                {!u.role_title && !u.publicUser?.email && !u.publicUser?.country && (
+                                  <span className="text-muted">No additional info</span>
+                                )}
+                              </div>
                             </div>
-                          )}
+                          </div>
                         </div>
                       )}
                       {u.bio && (

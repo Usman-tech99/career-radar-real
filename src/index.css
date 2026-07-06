@@ -149,8 +149,13 @@
 
 [data-theme="light"] .text-white { color: #0F172A !important; }
 [data-theme="light"] .text-white\/90 { color: rgba(15,23,42,0.9) !important; }
+[data-theme="light"] .text-white\/80 { color: rgba(15,23,42,0.8) !important; }
 [data-theme="light"] .text-white\/70 { color: rgba(15,23,42,0.7) !important; }
+[data-theme="light"] .text-white\/60 { color: rgba(15,23,42,0.6) !important; }
 [data-theme="light"] .text-white\/50 { color: rgba(15,23,42,0.5) !important; }
+[data-theme="light"] .text-white\/40 { color: rgba(15,23,42,0.4) !important; }
+[data-theme="light"] .text-white\/30 { color: rgba(15,23,42,0.3) !important; }
+[data-theme="light"] .text-white\/20 { color: rgba(15,23,42,0.2) !important; }
 [data-theme="light"] .text-white\/10 { color: rgba(15,23,42,0.1) !important; }
 
 [data-theme="light"] [class*="border-white/"] { border-color: #E2E8F0 !important; }
