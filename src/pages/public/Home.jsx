@@ -118,8 +118,7 @@ export default function Home() {
             WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 20%, black)',
           }}
         />
-        <LampContainer className="max-w-5xl mx-auto">
-          <div className="text-center">
+        <div className="text-center max-w-5xl mx-auto">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green/30 bg-green/10 text-green font-medium text-sm mb-8">
               <motion.span
                 animate={{ scale: [1, 1.2, 1] }}
@@ -129,13 +128,15 @@ export default function Home() {
               AI-Powered Career GPS
             </div>
 
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-sora tracking-tight text-white mb-6 leading-[1.05]">
-              Discover. Build.{' '}
-              <br className="hidden md:block" />
-              <span className="bg-gradient-to-r from-emerald-400 via-green to-blue-500 bg-clip-text text-transparent">
-                Accelerate Your Career.
-              </span>
-            </h1>
+            <LampContainer>
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-sora tracking-tight text-white mb-6 leading-[1.05]">
+                Discover. Build.{' '}
+                <br className="hidden md:block" />
+                <span className="bg-gradient-to-r from-emerald-400 via-green to-blue-500 bg-clip-text text-transparent">
+                  Accelerate Your Career.
+                </span>
+              </h1>
+            </LampContainer>
 
             <p className="text-lg md:text-xl text-muted max-w-3xl mx-auto mb-10 leading-relaxed">
               Career Radar is an AI-powered career ecosystem helping students and early-career professionals discover verified scholarships, internships, jobs, AI resources, career guidance, and professional networks—all in one place.
@@ -150,7 +151,6 @@ export default function Home() {
               </Link>
             </div>
           </div>
-        </LampContainer>
 
         {/* Stats Bar */}
         {statItems.length > 0 && (
