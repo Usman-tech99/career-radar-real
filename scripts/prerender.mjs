@@ -127,6 +127,8 @@ async function prerender() {
 
       let html = await page.content()
       html = html.replace(/https?:\/\/localhost:\d+/g, '')
+      // Strip modulepreload links — they reference specific hashes that break on next deploy
+      html = html.replace(/<link rel="modulepreload"[^>]*\/?>/g, '')
 
       const outputPath = route === '/'
         ? path.join(distDir, 'index.html')
