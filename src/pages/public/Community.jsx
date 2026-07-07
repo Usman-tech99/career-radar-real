@@ -6,6 +6,7 @@ import Footer from '../../components/layout/Footer'
 import { Link } from 'react-router-dom'
 import { Users, MessageCircle, ChevronRight, Calendar, Quote, Heart } from 'lucide-react'
 import { ShimmerButton } from '../../components/magicui/shimmer-button'
+import { Helmet } from 'react-helmet-async'
 
 export default function Community({ navless } = {}) {
   const [data, setData] = useState(null)
@@ -39,6 +40,14 @@ export default function Community({ navless } = {}) {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
+      <Helmet>
+        <title>Community — Career Radar</title>
+        <meta name="description" content="Join the Career Radar global community. Connect with mentors, peers, and professionals across multiple countries." />
+        <meta property="og:title" content="Community — Career Radar" />
+        <meta property="og:description" content="Join the Career Radar global community. Connect with mentors, peers, and professionals across multiple countries." />
+        <meta property="og:type" content="website" />
+        <meta name="keywords" content="career community, mentors, networking, career radar community" />
+      </Helmet>
       {!navless && <Navbar />}
 
       <main className="flex-1">

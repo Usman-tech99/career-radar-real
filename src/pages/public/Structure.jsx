@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabase'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
 import { Target, CheckCircle, Award, TrendingUp } from 'lucide-react'
+import { Helmet } from 'react-helmet-async'
 
 export default function Structure({ navless } = {}) {
   const [data, setData] = useState(null)
@@ -25,6 +26,14 @@ export default function Structure({ navless } = {}) {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
+      <Helmet>
+        <title>Structure — Career Radar</title>
+        <meta name="description" content="Learn about Career Radar's organizational structure, mission, vision, and how we operate to serve our community." />
+        <meta property="og:title" content="Structure — Career Radar" />
+        <meta property="og:description" content="Learn about Career Radar's organizational structure, mission, vision, and how we operate to serve our community." />
+        <meta property="og:type" content="website" />
+        <meta name="keywords" content="career radar structure, mission, vision, organization, team" />
+      </Helmet>
       {!navless && <Navbar />}
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">

@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabase'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
 import { Users, ExternalLink, MessageCircle, Youtube, Instagram, Linkedin, Twitter, Send } from 'lucide-react'
+import { Helmet } from 'react-helmet-async'
 
 const platformIcons = {
   whatsapp: MessageCircle,
@@ -55,6 +56,14 @@ export default function Social({ navless } = {}) {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
+      <Helmet>
+        <title>Social — Career Radar</title>
+        <meta name="description" content="Follow Career Radar on social media and join our WhatsApp, Telegram, Discord, and YouTube communities." />
+        <meta property="og:title" content="Social — Career Radar" />
+        <meta property="og:description" content="Follow Career Radar on social media and join our WhatsApp, Telegram, Discord, and YouTube communities." />
+        <meta property="og:type" content="website" />
+        <meta name="keywords" content="career radar social, whatsapp, telegram, discord, youtube community" />
+      </Helmet>
       {!navless && <Navbar />}
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">

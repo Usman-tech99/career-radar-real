@@ -4,6 +4,7 @@ import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
 import SafeImage from '../../components/ui/SafeImage'
 import { Calendar, Tag, ExternalLink, PlayCircle, FileText } from 'lucide-react'
+import { Helmet } from 'react-helmet-async'
 
 export default function WeeklyContent({ navless } = {}) {
   const [content, setContent] = useState([])
@@ -26,6 +27,14 @@ export default function WeeklyContent({ navless } = {}) {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
+      <Helmet>
+        <title>Weekly Content — Career Radar</title>
+        <meta name="description" content="Access weekly career development content, tips, guides, and resources curated by the Career Radar team." />
+        <meta property="og:title" content="Weekly Content — Career Radar" />
+        <meta property="og:description" content="Access weekly career development content, tips, guides, and resources curated by the Career Radar team." />
+        <meta property="og:type" content="website" />
+        <meta name="keywords" content="weekly content, career tips, career guides, resources, learning" />
+      </Helmet>
       {!navless && <Navbar />}
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">

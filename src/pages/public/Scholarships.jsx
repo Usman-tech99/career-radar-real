@@ -5,6 +5,7 @@ import Footer from '../../components/layout/Footer'
 import SafeImage from '../../components/ui/SafeImage'
 import { GraduationCap, Search, MapPin, Calendar, ExternalLink, X } from 'lucide-react'
 import { formatDate } from '../../lib/helpers'
+import { Helmet } from 'react-helmet-async'
 
 const coverageOptions = ['All', 'Fully Funded', 'Partial Tuition', 'Monthly Stipend', 'Other']
 
@@ -41,6 +42,14 @@ export default function Scholarships({ navless } = {}) {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
+      <Helmet>
+        <title>Scholarships — Career Radar</title>
+        <meta name="description" content="Discover international and local scholarships for students. Find fully-funded opportunities, merit-based awards, and financial aid options." />
+        <meta property="og:title" content="Scholarships — Career Radar" />
+        <meta property="og:description" content="Discover international and local scholarships for students. Find fully-funded opportunities, merit-based awards, and financial aid options." />
+        <meta property="og:type" content="website" />
+        <meta name="keywords" content="scholarships, fully funded, financial aid, student funding, study abroad" />
+      </Helmet>
       {!navless && <Navbar />}
 
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">

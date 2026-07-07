@@ -4,6 +4,7 @@ import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
 import { Briefcase, MapPin, Clock, Search, ArrowUpRight } from 'lucide-react'
 import { formatDate } from '../../lib/helpers'
+import { Helmet } from 'react-helmet-async'
 
 export default function Jobs({ navless } = {}) {
   const [jobs, setJobs] = useState([])
@@ -35,6 +36,14 @@ export default function Jobs({ navless } = {}) {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
+      <Helmet>
+        <title>Jobs — Career Radar</title>
+        <meta name="description" content="Browse verified job opportunities for students and early-career professionals. Find internships, entry-level positions, and remote work." />
+        <meta property="og:title" content="Jobs — Career Radar" />
+        <meta property="og:description" content="Browse verified job opportunities for students and early-career professionals. Find internships, entry-level positions, and remote work." />
+        <meta property="og:type" content="website" />
+        <meta name="keywords" content="jobs, internships, entry-level, remote jobs, career opportunities" />
+      </Helmet>
       {!navless && <Navbar />}
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">

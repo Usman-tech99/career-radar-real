@@ -5,6 +5,7 @@ import Footer from '../../components/layout/Footer'
 import SafeImage from '../../components/ui/SafeImage'
 import { MagicCard } from '../../components/ui/magic-card'
 import { Users, Linkedin, Github, Youtube, Twitter, Instagram, Globe, X, ExternalLink, MapPin, GraduationCap, Target, Sparkles, Crown, Star } from 'lucide-react'
+import { Helmet } from 'react-helmet-async'
 
 const platformIcons = {
   linkedin: Linkedin, github: Github, youtube: Youtube,
@@ -60,6 +61,14 @@ export default function Team({ navless } = {}) {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
+      <Helmet>
+        <title>Our Team — Career Radar</title>
+        <meta name="description" content="Meet the passionate team behind Career Radar building the future of career development with AI-powered tools and global opportunities." />
+        <meta property="og:title" content="Our Team — Career Radar" />
+        <meta property="og:description" content="Meet the passionate team behind Career Radar building the future of career development with AI-powered tools and global opportunities." />
+        <meta property="og:type" content="website" />
+        <meta name="keywords" content="career radar team, founders, developers, career development" />
+      </Helmet>
       {!navless && <Navbar />}
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">

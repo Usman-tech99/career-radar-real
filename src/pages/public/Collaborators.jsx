@@ -4,6 +4,7 @@ import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
 import SafeImage from '../../components/ui/SafeImage'
 import { Handshake, ExternalLink, Youtube, MessageCircle, Instagram, Globe } from 'lucide-react'
+import { Helmet } from 'react-helmet-async'
 
 const collaborationTypeColors = {
   Partner: 'badge-blue',
@@ -37,6 +38,14 @@ export default function Collaborators({ navless } = {}) {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
+      <Helmet>
+        <title>Collaborators — Career Radar</title>
+        <meta name="description" content="Meet our collaborators and partners who help us build a better career ecosystem for students worldwide." />
+        <meta property="og:title" content="Collaborators — Career Radar" />
+        <meta property="og:description" content="Meet our collaborators and partners who help us build a better career ecosystem for students worldwide." />
+        <meta property="og:type" content="website" />
+        <meta name="keywords" content="career radar collaborators, partners, sponsors, organizations" />
+      </Helmet>
       {!navless && <Navbar />}
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">

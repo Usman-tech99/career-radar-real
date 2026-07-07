@@ -4,6 +4,7 @@ import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
 import SafeImage from '../../components/ui/SafeImage'
 import { Mail, MessageCircle, Crown, Calendar, Target, Heart, Sparkles, Users } from 'lucide-react'
+import { Helmet } from 'react-helmet-async'
 
 export default function About({ navless } = {}) {
   const [data, setData] = useState(null)
@@ -27,6 +28,14 @@ export default function About({ navless } = {}) {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
+      <Helmet>
+        <title>About Us — Career Radar</title>
+        <meta name="description" content="Learn about Career Radar's mission to empower students and early-career professionals with AI-powered career tools, verified opportunities, and a global community." />
+        <meta property="og:title" content="About Us — Career Radar" />
+        <meta property="og:description" content="Learn about Career Radar's mission to empower students and early-career professionals with AI-powered career tools, verified opportunities, and a global community." />
+        <meta property="og:type" content="website" />
+        <meta name="keywords" content="about career radar, mission, AI career tools, career development" />
+      </Helmet>
       {!navless && <Navbar />}
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">

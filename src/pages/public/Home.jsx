@@ -10,7 +10,7 @@ import { LampContainer } from '../../components/ui/lamp'
 import { ArrowRight, Search, Bot, BookOpen, Users, TrendingUp, Target, Compass, CheckCircle, MessageSquare, Rocket, Sparkles, Quote } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { CardContainer, CardBody, CardItem } from '../../components/ui/3d-card'
-
+import { Helmet } from 'react-helmet-async'
 
 const features = [
   { icon: Search, title: 'Verified Opportunities', desc: 'Discover scholarships, internships, jobs, fellowships, competitions, conferences, and remote opportunities from trusted sources.', color: 'text-green', beamColor: '#10B981', wide: false },
@@ -87,6 +87,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col relative overflow-hidden">
+      <Helmet>
+        <title>Career Radar — AI-Powered Career GPS for Students & Professionals</title>
+        <meta name="description" content="Discover verified scholarships, internships, jobs, and AI-powered career guidance. Join our global community and accelerate your career journey with Career Radar." />
+        <meta property="og:title" content="Career Radar — AI-Powered Career GPS for Students & Professionals" />
+        <meta property="og:description" content="Discover verified scholarships, internships, jobs, and AI-powered career guidance. Join our global community and accelerate your career journey with Career Radar." />
+        <meta property="og:type" content="website" />
+        <meta name="keywords" content="career radar, AI career tools, scholarships, internships, jobs, career guidance" />
+      </Helmet>
       <Navbar />
 
       {/* Aurora Backgrounds */}

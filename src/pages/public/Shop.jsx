@@ -5,6 +5,7 @@ import Footer from '../../components/layout/Footer'
 import SafeImage from '../../components/ui/SafeImage'
 import { ShoppingBag, Download, ExternalLink, MessageCircle, DollarSign, X } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { Helmet } from 'react-helmet-async'
 
 export default function Shop({ navless } = {}) {
   const [products, setProducts] = useState([])
@@ -78,6 +79,14 @@ export default function Shop({ navless } = {}) {
 
   return (
     <div className="min-h-screen bg-[#07070C] flex flex-col">
+      <Helmet>
+        <title>Shop — Career Radar</title>
+        <meta name="description" content="Browse Career Radar merchandise and career development products. Show your support and access premium resources." />
+        <meta property="og:title" content="Shop — Career Radar" />
+        <meta property="og:description" content="Browse Career Radar merchandise and career development products. Show your support and access premium resources." />
+        <meta property="og:type" content="website" />
+        <meta name="keywords" content="career radar shop, merchandise, career products, resources" />
+      </Helmet>
       {!navless && <Navbar />}
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">

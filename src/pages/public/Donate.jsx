@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Heart, Server, Users, BookOpen, Globe, ChevronDown, Copy, MessageCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { Helmet } from 'react-helmet-async'
 
 const AMOUNT_OPTIONS = [
   { value: 1, label: 'Coffee', desc: '$1' },
@@ -46,6 +47,14 @@ export default function Donate() {
 
   return (
     <div className="min-h-screen pt-28 pb-20 px-4">
+      <Helmet>
+        <title>Support Us — Career Radar</title>
+        <meta name="description" content="Support Career Radar's mission to provide free AI-powered career tools and opportunities to students everywhere." />
+        <meta property="og:title" content="Support Us — Career Radar" />
+        <meta property="og:description" content="Support Career Radar's mission to provide free AI-powered career tools and opportunities to students everywhere." />
+        <meta property="og:type" content="website" />
+        <meta name="keywords" content="support career radar, donate, fund education, career tools" />
+      </Helmet>
       <div className="max-w-4xl mx-auto">
         {/* Hero */}
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
