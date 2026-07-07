@@ -173,10 +173,20 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Actions */}
-        <div className="lg:hidden flex items-center gap-2">
+        <div className="lg:hidden flex items-center gap-1.5">
+          {user ? (
+            <Link to={dashPath} className="btn-primary py-1.5 px-3 text-xs flex items-center gap-1.5">
+              <User size={14} /> Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link to="/login" className="text-xs font-medium hover:text-green transition-colors px-2" style={{color: 'var(--color-white)'}}>Login</Link>
+              <Link to="/register" className="btn-primary py-1.5 px-3 text-xs">Join Free</Link>
+            </>
+          )}
           <button onClick={toggleTheme} className="p-2 rounded-xl hover:bg-white/[0.04] transition-colors"
             title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
-            {theme === 'dark' ? <Sun size={20} className="text-muted" /> : <Moon size={20} className="text-muted" />}
+            {theme === 'dark' ? <Sun size={18} className="text-muted" /> : <Moon size={18} className="text-muted" />}
           </button>
           <button className="text-white" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X size={24} /> : <Menu size={24} />}
