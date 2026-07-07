@@ -57,7 +57,6 @@ export function MagicCard({
               transparent 100%
             )
           `,
-          opacity: gradientOpacity,
         }}
       />
       <div className="relative z-30">{children}</div>
