@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
-import AdminSidebar from '../../components/layout/AdminSidebar'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -128,9 +127,7 @@ export default function ManageScholarships() {
   }
 
   return (
-    <div className="flex min-h-screen bg-surface">
-      <AdminSidebar />
-      <div className="flex-1 ml-64 p-8">
+    <div>
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <GraduationCap className="text-green" /> Manage Scholarships
@@ -283,7 +280,6 @@ export default function ManageScholarships() {
             </div>
           </div>
         )}
-      </div>
     </div>
   )
 }

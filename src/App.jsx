@@ -9,6 +9,7 @@ import { SuperAdminRoute } from './routes/SuperAdminRoute'
 import { CollaboratorRoute } from './routes/CollaboratorRoute'
 import { UserRoute } from './routes/UserRoute'
 import DashboardLayout from './components/layout/DashboardLayout'
+import AdminLayout from './components/layout/AdminLayout'
 
 // Import RadarAIBubble and RadarCursor lazily as they are heavy
 const RadarAIBubble = lazy(() => import('./components/ai/RadarAIBubble'))
@@ -141,34 +142,34 @@ export default function App() {
               </Route>
             </Route>
 
-            {/* ADMIN — super_admin + admin */}
-            <Route element={<ProtectedRoute allowedRoles={["super_admin","admin"]} />}>
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              <Route path="/admin/manage-jobs" element={<ManageJobs />} />
-              <Route path="/admin/manage-content" element={<ManageContent />} />
-              <Route path="/admin/manage-products" element={<ManageProducts />} />
-              <Route path="/admin/manage-education" element={<ManageEducation />} />
-              <Route path="/admin/manage-scholarships" element={<ManageScholarships />} />
-              <Route path="/admin/manage-about" element={<ManageAbout />} />
-              <Route path="/admin/manage-community" element={<ManageCommunity />} />
-              <Route path="/admin/manage-socials" element={<ManageSocials />} />
-              <Route path="/admin/manage-collaborators" element={<ManageCollaborators />} />
-            </Route>
+            {/* ADMIN — all admin routes wrapped with AdminLayout for navbar + breadcrumbs */}
+            <Route element={<AdminLayout />}>
+              <Route element={<ProtectedRoute allowedRoles={["super_admin","admin"]} />}>
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/admin/manage-jobs" element={<ManageJobs />} />
+                <Route path="/admin/manage-content" element={<ManageContent />} />
+                <Route path="/admin/manage-products" element={<ManageProducts />} />
+                <Route path="/admin/manage-education" element={<ManageEducation />} />
+                <Route path="/admin/manage-scholarships" element={<ManageScholarships />} />
+                <Route path="/admin/manage-about" element={<ManageAbout />} />
+                <Route path="/admin/manage-community" element={<ManageCommunity />} />
+                <Route path="/admin/manage-socials" element={<ManageSocials />} />
+                <Route path="/admin/manage-collaborators" element={<ManageCollaborators />} />
+              </Route>
 
-            {/* FOUNDER ONLY */}
-            <Route element={<SuperAdminRoute />}>
-              <Route path="/admin/manage-structure" element={<ManageStructure />} />
-              <Route path="/admin/manage-stats" element={<ManageStats />} />
-              <Route path="/admin/manage-team" element={<ManageTeam />} />
-              <Route path="/admin/users-list" element={<UsersList />} />
-              <Route path="/admin/manage-team-members" element={<ManageTeamMembers />} />
-              <Route path="/admin/manage-payments" element={<ManagePayments />} />
-              <Route path="/admin/ai-insights" element={<AIInsights />} />
-            </Route>
+              <Route element={<SuperAdminRoute />}>
+                <Route path="/admin/manage-structure" element={<ManageStructure />} />
+                <Route path="/admin/manage-stats" element={<ManageStats />} />
+                <Route path="/admin/manage-team" element={<ManageTeam />} />
+                <Route path="/admin/users-list" element={<UsersList />} />
+                <Route path="/admin/manage-team-members" element={<ManageTeamMembers />} />
+                <Route path="/admin/manage-payments" element={<ManagePayments />} />
+                <Route path="/admin/ai-insights" element={<AIInsights />} />
+              </Route>
 
-            {/* COLLABORATOR ONLY */}
-            <Route element={<CollaboratorRoute />}>
-              <Route path="/admin/my-profile" element={<MyProfile />} />
+              <Route element={<CollaboratorRoute />}>
+                <Route path="/admin/my-profile" element={<MyProfile />} />
+              </Route>
             </Route>
 
             <Route path="*" element={<NotFound />} />

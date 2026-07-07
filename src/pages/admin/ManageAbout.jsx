@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import AdminSidebar from '../../components/layout/AdminSidebar'
 import toast from 'react-hot-toast'
 import { Save, Plus, Trash2 } from 'lucide-react'
 
@@ -42,27 +41,22 @@ export default function ManageAbout() {
   }
 
   if (loading) return (
-    <div className="flex min-h-screen bg-surface">
-      <AdminSidebar />
-      <div className="flex-1 ml-64 p-8 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-green border-t-transparent rounded-full animate-spin"></div>
-      </div>
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="w-8 h-8 border-2 border-green border-t-transparent rounded-full animate-spin"></div>
     </div>
   )
 
   return (
-    <div className="flex min-h-screen bg-surface">
-      <AdminSidebar />
-      <div className="flex-1 ml-64 p-8">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">Manage About Page</h1>
-            <p className="text-muted text-sm mt-1">Edit the Story, Contact info, and Taglines for the public About page.</p>
-          </div>
-          <button onClick={handleSave} disabled={saving} className="btn-primary flex items-center gap-2">
-            <Save size={20} /> {saving ? 'Saving...' : 'Save Changes'}
-          </button>
+    <div>
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold">Manage About Page</h1>
+          <p className="text-muted text-sm mt-1">Edit the Story, Contact info, and Taglines for the public About page.</p>
         </div>
+        <button onClick={handleSave} disabled={saving} className="btn-primary flex items-center gap-2">
+          <Save size={20} /> {saving ? 'Saving...' : 'Save Changes'}
+        </button>
+      </div>
 
         <div className="space-y-8">
           <div className="glass-card space-y-4">
@@ -193,7 +187,6 @@ export default function ManageAbout() {
             </div>
           </div>
         </div>
-      </div>
     </div>
   )
 }

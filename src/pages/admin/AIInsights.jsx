@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import AdminSidebar from '../../components/layout/AdminSidebar'
 import toast from 'react-hot-toast'
 import { MessageSquare, BrainCircuit, Search } from 'lucide-react'
 import { formatDate } from '../../lib/helpers'
@@ -48,9 +47,7 @@ export default function AIInsights() {
   const contentCount = logs.filter(l => l.mode_detected === 'content_assistant').length
 
   return (
-    <div className="flex min-h-screen bg-surface">
-      <AdminSidebar />
-      <div className="flex-1 ml-64 p-8">
+    <div>
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-3">
@@ -127,7 +124,6 @@ export default function AIInsights() {
             </div>
           </>
         )}
-      </div>
     </div>
   )
 }

@@ -111,6 +111,11 @@
   .input-field::placeholder {
     color: var(--color-muted);
   }
+  .input-field option,
+  .input-field optgroup {
+    color: #0F172A;
+    background: #FFFFFF;
+  }
 
   .label {
     @apply block text-sm font-medium mb-2;

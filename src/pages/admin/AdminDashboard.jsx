@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
-import AdminSidebar from '../../components/layout/AdminSidebar'
 import { Users, Briefcase, Share2, ShoppingBag } from 'lucide-react'
 
 export default function AdminDashboard() {
@@ -17,9 +16,7 @@ export default function AdminDashboard() {
   }, [])
 
   return (
-    <div className="flex min-h-screen bg-surface">
-      <AdminSidebar />
-      <div className="flex-1 ml-64 p-8">
+    <div>
         <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
         
         {loading ? (
@@ -34,7 +31,6 @@ export default function AdminDashboard() {
         ) : (
           <div className="glass-card text-center text-muted">Failed to load stats. Ensure DB is seeded.</div>
         )}
-      </div>
     </div>
   )
 }

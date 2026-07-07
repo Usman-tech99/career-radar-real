@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
-import AdminSidebar from '../../components/layout/AdminSidebar'
 import toast from 'react-hot-toast'
 import { Plus, Trash2, ShieldAlert, Check } from 'lucide-react'
 
@@ -157,9 +156,7 @@ export default function ManageTeam() {
   }
 
   return (
-    <div className="flex min-h-screen bg-surface">
-      <AdminSidebar />
-      <div className="flex-1 ml-64 p-8">
+    <div>
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-3">
@@ -284,7 +281,6 @@ export default function ManageTeam() {
             </div>
           </div>
         </div>
-      </div>
     </div>
   )
 }

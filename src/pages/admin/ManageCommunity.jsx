@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import AdminSidebar from '../../components/layout/AdminSidebar'
 import toast from 'react-hot-toast'
 import { Save, Plus, Trash2 } from 'lucide-react'
 
@@ -122,27 +121,22 @@ export default function ManageCommunity() {
   }
 
   if (loading) return (
-    <div className="flex min-h-screen bg-surface">
-      <AdminSidebar />
-      <div className="flex-1 ml-64 p-8 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-green border-t-transparent rounded-full animate-spin"></div>
-      </div>
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="w-8 h-8 border-2 border-green border-t-transparent rounded-full animate-spin"></div>
     </div>
   )
 
   return (
-    <div className="flex min-h-screen bg-surface">
-      <AdminSidebar />
-      <div className="flex-1 ml-64 p-8 overflow-y-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">Manage Community</h1>
-            <p className="text-muted text-sm mt-1">WhatsApp groups, events, volunteer program, and success stories.</p>
-          </div>
-          <button onClick={handleSave} disabled={saving} className="btn-primary flex items-center gap-2">
-            <Save size={20} /> {saving ? 'Saving...' : 'Save Changes'}
-          </button>
+    <div className="overflow-y-auto">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold">Manage Community</h1>
+          <p className="text-muted text-sm mt-1">WhatsApp groups, events, volunteer program, and success stories.</p>
         </div>
+        <button onClick={handleSave} disabled={saving} className="btn-primary flex items-center gap-2">
+          <Save size={20} /> {saving ? 'Saving...' : 'Save Changes'}
+        </button>
+      </div>
 
         <div className="space-y-8">
           {/* WhatsApp Community Links */}
@@ -283,7 +277,6 @@ export default function ManageCommunity() {
             </div>
           </div>
         </div>
-      </div>
     </div>
   )
 }

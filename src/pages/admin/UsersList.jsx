@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import AdminSidebar from '../../components/layout/AdminSidebar'
 import { Users, Search, ChevronDown, ChevronUp, GraduationCap, Target, Sparkles, Globe, Briefcase, BookOpen } from 'lucide-react'
 
 export default function UsersList() {
@@ -76,9 +75,7 @@ export default function UsersList() {
   )
 
   return (
-    <div className="flex min-h-screen bg-surface">
-      <AdminSidebar />
-      <div className="flex-1 ml-64 p-8">
+    <div>
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-3">
@@ -269,7 +266,6 @@ export default function UsersList() {
             Showing {allUsers.length} users — click to expand details
           </p>
         </div>
-      </div>
     </div>
   )
 }

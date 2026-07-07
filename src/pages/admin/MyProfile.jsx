@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
-import AdminSidebar from '../../components/layout/AdminSidebar'
 import SafeImage from '../../components/ui/SafeImage'
 import toast from 'react-hot-toast'
 import { Save, Upload } from 'lucide-react'
@@ -73,27 +72,22 @@ export default function MyProfile() {
   }
 
   if (loading) return (
-    <div className="flex min-h-screen bg-surface">
-      <AdminSidebar />
-      <div className="flex-1 ml-64 p-8 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-green border-t-transparent rounded-full animate-spin"></div>
-      </div>
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="w-8 h-8 border-2 border-green border-t-transparent rounded-full animate-spin"></div>
     </div>
   )
 
   return (
-    <div className="flex min-h-screen bg-surface">
-      <AdminSidebar />
-      <div className="flex-1 ml-64 p-8">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">My Profile</h1>
-            <p className="text-muted text-sm mt-1">Manage how you appear on the Team & Contributors page.</p>
-          </div>
-          <button onClick={handleSave} disabled={saving} className="btn-primary flex items-center gap-2">
-            <Save size={20} /> {saving ? 'Saving...' : 'Save Profile'}
-          </button>
+    <div>
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold">My Profile</h1>
+          <p className="text-muted text-sm mt-1">Manage how you appear on the Team & Contributors page.</p>
         </div>
+        <button onClick={handleSave} disabled={saving} className="btn-primary flex items-center gap-2">
+          <Save size={20} /> {saving ? 'Saving...' : 'Save Profile'}
+        </button>
+      </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1 glass-card flex flex-col items-center justify-center py-12">
@@ -178,7 +172,6 @@ export default function MyProfile() {
             </div>
           </div>
         </div>
-      </div>
     </div>
   )
 }

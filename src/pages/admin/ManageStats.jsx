@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import AdminSidebar from '../../components/layout/AdminSidebar'
 import toast from 'react-hot-toast'
 import { BarChart3, Save } from 'lucide-react'
 
@@ -47,9 +46,7 @@ export default function ManageStats() {
   }
 
   return (
-    <div className="flex min-h-screen bg-surface">
-      <AdminSidebar />
-      <div className="flex-1 ml-64 p-8">
+    <div>
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-3">
@@ -82,7 +79,6 @@ export default function ManageStats() {
             </div>
           )}
         </div>
-      </div>
     </div>
   )
 }
