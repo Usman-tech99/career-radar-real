@@ -83,8 +83,9 @@ function startServer() {
 async function prerender() {
   const chromePath = findChrome()
   if (!chromePath) {
-    console.error('Chrome not found. Install Chrome or set CHROME_PATH env var.')
-    process.exit(1)
+    console.log('Chrome not found — skipping prerendering.')
+    console.log('To prerender locally, install Chrome or set CHROME_PATH env var.')
+    return []
   }
   console.log(`Using Chrome at: ${chromePath}`)
 
