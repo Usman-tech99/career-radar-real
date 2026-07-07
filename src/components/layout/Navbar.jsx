@@ -123,12 +123,12 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
 
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2 shrink-0">
           <div
-            className="px-4 py-1.5 rounded-full border"
+            className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-full border"
             style={{ backgroundColor: 'var(--color-card)', borderColor: 'var(--color-border)' }}
           >
-            <span className="font-sora font-bold text-2xl tracking-tight" style={{color: 'var(--color-white)'}}>
+            <span className="font-sora font-bold text-xl sm:text-2xl tracking-tight" style={{color: 'var(--color-white)'}}>
               Career <span className="text-green">Radar</span>
             </span>
           </div>
@@ -173,23 +173,23 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Actions */}
-        <div className="lg:hidden flex items-center gap-1.5">
+        <div className="lg:hidden flex items-center gap-1 shrink-0">
           {user ? (
-            <Link to={dashPath} className="btn-primary py-1.5 px-3 text-xs flex items-center gap-1.5">
-              <User size={14} /> Dashboard
+            <Link to={dashPath} className="btn-primary py-1 px-2.5 text-[11px] flex items-center gap-1">
+              <User size={13} /> Dash
             </Link>
           ) : (
             <>
-              <Link to="/login" className="text-xs font-medium hover:text-green transition-colors px-2" style={{color: 'var(--color-white)'}}>Login</Link>
-              <Link to="/register" className="btn-primary py-1.5 px-3 text-xs">Join Free</Link>
+              <Link to="/login" className="text-xs font-medium hover:text-green transition-colors px-1.5" style={{color: 'var(--color-white)'}}>Login</Link>
+              <Link to="/register" className="btn-primary py-1 px-2.5 text-[11px] whitespace-nowrap">Join Free</Link>
             </>
           )}
-          <button onClick={toggleTheme} className="p-2 rounded-xl hover:bg-white/[0.04] transition-colors"
+          <button onClick={toggleTheme} className="p-1.5 rounded-xl hover:bg-white/[0.04] transition-colors"
             title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
-            {theme === 'dark' ? <Sun size={18} className="text-muted" /> : <Moon size={18} className="text-muted" />}
+            {theme === 'dark' ? <Sun size={16} className="text-muted" /> : <Moon size={16} className="text-muted" />}
           </button>
-          <button className="text-white" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          <button className="text-white p-1" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
