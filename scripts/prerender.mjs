@@ -1,9 +1,8 @@
-import { launch } from 'puppeteer-core'
+import { launch } from 'puppeteer'
 import http from 'http'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { spawn } from 'child_process'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.resolve(__dirname, '..')
@@ -20,6 +19,10 @@ const CHROME_PATHS = [
   'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
   'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
   'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+  '/usr/bin/google-chrome',
+  '/usr/bin/chromium-browser',
+  '/usr/bin/chromium',
+  '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
   process.env.CHROME_PATH,
 ].filter(Boolean)
 
@@ -38,16 +41,6 @@ const MIME_TYPES = {
 
 function findChrome() {
   for (const p of CHROME_PATHS) {
-    if (fs.existsSync(p)) return p
-  }
-  // Try common macOS/Linux paths
-  const unixPaths = [
-    '/usr/bin/google-chrome',
-    '/usr/bin/chromium-browser',
-    '/usr/bin/chromium',
-    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-  ]
-  for (const p of unixPaths) {
     if (fs.existsSync(p)) return p
   }
   return null
@@ -73,37 +66,14 @@ function startServer() {
       res.writeHead(200, { 'Content-Type': MIME_TYPES[ext] || 'application/octet-stream' })
       fs.createReadStream(filePath).pipe(res)
     })
-    server.listen(PORT, () => {
-      console.log(`Static server running on http://localhost:${PORT}`)
-      resolve(server)
-    })
+    server.listen(PORT, () => resolve(server))
   })
 }
 
 async function prerender() {
+  // Determine Chrome path: system Chrome first, then puppeteer's bundled Chromium
   const chromePath = findChrome()
-  if (!chromePath) {
-    console.log('Chrome not found — skipping prerendering.')
-    console.log('To prerender locally, install Chrome or set CHROME_PATH env var.')
-    return []
-  }
-  console.log(`Using Chrome at: ${chromePath}`)
-
-  // Ensure dist is built
-  if (!fs.existsSync(path.join(distDir, 'index.html'))) {
-    console.log('Building app...')
-    await new Promise((resolve, reject) => {
-      const child = spawn('npm', ['run', 'build'], { cwd: root, stdio: 'inherit', shell: true })
-      child.on('close', (code) => code === 0 ? resolve() : reject(new Error(`Build failed with exit code ${code}`)))
-    })
-  }
-
-  // Start static server
-  const server = await startServer()
-
-  // Launch browser
-  const browser = await launch({
-    executablePath: chromePath,
+  const launchOptions = {
     headless: 'new',
     args: [
       '--no-sandbox',
@@ -111,46 +81,53 @@ async function prerender() {
       '--disable-dev-shm-usage',
       '--disable-gpu',
     ],
-  })
+  }
+  if (chromePath) {
+    launchOptions.executablePath = chromePath
+    console.log(`Using system Chrome at: ${chromePath}`)
+  } else {
+    console.log('No system Chrome found — using puppeteer bundled Chromium')
+  }
 
+  // Ensure dist is built
+  if (!fs.existsSync(path.join(distDir, 'index.html'))) {
+    console.log('Building app...')
+    const { spawn } = await import('child_process')
+    await new Promise((resolve, reject) => {
+      const child = spawn('npm', ['run', 'build'], { cwd: root, stdio: 'inherit', shell: true })
+      child.on('close', (code) => code === 0 ? resolve() : reject(new Error(`Build failed (code ${code})`)))
+    })
+  }
+
+  const server = await startServer()
+  const browser = await launch(launchOptions)
   const page = await browser.newPage()
   page.setDefaultTimeout(30000)
-
-  // Set reasonable viewport
   await page.setViewport({ width: 1280, height: 800 })
 
   const prerendered = []
 
   for (const route of ROUTES) {
     const url = `http://localhost:${PORT}${route}`
-    console.log(`\nPrerendering: ${route}`)
+    process.stdout.write(`\n  ${route}... `)
 
     try {
       await page.goto(url, { waitUntil: 'networkidle2', timeout: 15000 }).catch(() => {})
-      // Wait for main content to appear (anything meaningful beyond the shell)
       try {
         await page.waitForFunction(
           () => {
             const root = document.getElementById('root')
             if (!root) return false
-            const text = root.innerText || ''
-            // Check that we have more than just a spinner or empty state
-            return text.length > 50 && !text.includes('Just a moment')
+            return (root.innerText || '').length > 50
           },
           { timeout: 10000 }
         )
       } catch {}
-      // Extra settle time for animations
       await new Promise(r => setTimeout(r, 1500))
 
       let html = await page.content()
-
-      // Fix absolute localhost URLs back to relative paths
       html = html.replace(/https?:\/\/localhost:\d+/g, '')
-      // Remove duplicate meta description (the one without data-rh)
-      html = html.replace(/\n\s*<meta name="description" content="[^"]*"\/?>\s*\n/g, '\n')
 
-      // Determine output path
       const outputPath = route === '/'
         ? path.join(distDir, 'index.html')
         : path.join(distDir, route.slice(1), 'index.html')
@@ -158,21 +135,21 @@ async function prerender() {
       fs.mkdirSync(path.dirname(outputPath), { recursive: true })
       fs.writeFileSync(outputPath, html, 'utf-8')
 
-      console.log(`  ✓ Saved to ${path.relative(root, outputPath)} (${(html.length / 1024).toFixed(1)} KB)`)
+      const kb = (html.length / 1024).toFixed(1)
+      process.stdout.write(`✓ ${kb} KB`)
       prerendered.push(route)
     } catch (err) {
-      console.error(`  ✗ Failed: ${err.message}`)
+      process.stdout.write(`✗ ${err.message}`)
     }
   }
 
   await browser.close()
   server.close()
 
-  console.log(`\n✓ Prerendered ${prerendered.length}/${ROUTES.length} routes`)
-  return prerendered
+  console.log(`\n\n✓ Prerendered ${prerendered.length}/${ROUTES.length} routes`)
 }
 
 prerender().catch(err => {
-  console.error('Prerendering failed:', err)
+  console.error('\nPrerendering failed:', err)
   process.exit(1)
 })
