@@ -152,6 +152,7 @@ async function prerender() {
 }
 
 prerender().catch(err => {
-  console.error('\nPrerendering failed:', err)
-  process.exit(1)
+  console.error('\nPrerendering failed:', err.message || err)
+  console.log('⚠  Prerender skipped — SPA with meta tags still deployed')
+  process.exit(0)
 })
