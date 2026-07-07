@@ -42,15 +42,6 @@ export default function About({ navless } = {}) {
               )}
             </div>
 
-            {/* Story Section */}
-            {data?.story_text && (
-              <section className="glass-card p-8 md:p-12">
-                <div className="prose prose-invert max-w-none">
-                  <p className="text-lg text-white leading-relaxed whitespace-pre-line">{data.story_text}</p>
-                </div>
-              </section>
-            )}
-
             {/* Our Mission */}
             {(data?.mission_text || true) && (
               <section className="glass-card p-8 md:p-12 border-l-4 border-blue-accent">
