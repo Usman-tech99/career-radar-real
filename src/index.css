@@ -148,6 +148,7 @@
 [data-theme="light"] [class*="bg-white/"] { background-color: rgba(0,0,0,0.04) !important; }
 
 [data-theme="light"] .bg-\[\#07070C\] { background-color: #FFFFFF !important; }
+[data-theme="light"] .bg-\[\#0a0f0c\] { background-color: #FFFFFF !important; }
 [data-theme="light"] .bg-\[\#07070C\]\/80 { background-color: rgba(255,255,255,0.8) !important; }
 [data-theme="light"] .btn-primary.text-\[\#07070C\] { background-color: #10B981 !important; color: #fff !important; }
 
