@@ -1,4 +1,4 @@
-import { launch } from 'puppeteer'
+import { launch } from 'puppeteer-core'
 import http from 'http'
 import fs from 'fs'
 import path from 'path'
@@ -15,17 +15,6 @@ const ROUTES = [
   '/collaborators', '/donate', '/weekly-content', '/structure',
 ]
 
-const CHROME_PATHS = [
-  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
-  '/usr/bin/google-chrome',
-  '/usr/bin/chromium-browser',
-  '/usr/bin/chromium',
-  '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-  process.env.CHROME_PATH,
-].filter(Boolean)
-
 const MIME_TYPES = {
   '.html': 'text/html',
   '.js': 'application/javascript',
@@ -39,8 +28,18 @@ const MIME_TYPES = {
   '.json': 'application/json',
 }
 
-function findChrome() {
-  for (const p of CHROME_PATHS) {
+function findSystemChrome() {
+  const paths = [
+    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+    'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+    'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+    '/usr/bin/google-chrome',
+    '/usr/bin/chromium-browser',
+    '/usr/bin/chromium',
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    process.env.CHROME_PATH,
+  ].filter(Boolean)
+  for (const p of paths) {
     if (fs.existsSync(p)) return p
   }
   return null
@@ -70,10 +69,42 @@ function startServer() {
   })
 }
 
+async function resolveChrome() {
+  // On Windows, prefer system Chrome
+  if (process.platform === 'win32') {
+    const systemPath = findSystemChrome()
+    if (systemPath) {
+      console.log(`Using system Chrome at: ${systemPath}`)
+      return systemPath
+    }
+  }
+
+  // Try @sparticuz/chromium (works on Vercel/Linux, may also work locally)
+  try {
+    const chromium = await import('@sparticuz/chromium')
+    const execPath = await chromium.default.executablePath()
+    console.log('Using @sparticuz/chromium')
+    return execPath
+  } catch {
+    // Fallback: try system Chrome on non-Windows
+    const systemPath = findSystemChrome()
+    if (systemPath) {
+      console.log(`Using system Chrome at: ${systemPath}`)
+      return systemPath
+    }
+  }
+
+  return null
+}
+
 async function prerender() {
-  // Determine Chrome path: system Chrome first, then puppeteer's bundled Chromium
-  const chromePath = findChrome()
+  const executablePath = await resolveChrome()
+  if (!executablePath) {
+    throw new Error('No Chrome/Chromium executable found. Install Chrome or @sparticuz/chromium.')
+  }
+
   const launchOptions = {
+    executablePath,
     headless: 'new',
     args: [
       '--no-sandbox',
@@ -81,12 +112,6 @@ async function prerender() {
       '--disable-dev-shm-usage',
       '--disable-gpu',
     ],
-  }
-  if (chromePath) {
-    launchOptions.executablePath = chromePath
-    console.log(`Using system Chrome at: ${chromePath}`)
-  } else {
-    console.log('No system Chrome found — using puppeteer bundled Chromium')
   }
 
   // Ensure dist is built
@@ -127,7 +152,6 @@ async function prerender() {
 
       let html = await page.content()
       html = html.replace(/https?:\/\/localhost:\d+/g, '')
-      // Strip modulepreload links — they reference specific hashes that break on next deploy
       html = html.replace(/<link rel="modulepreload"[^>]*\/?>/g, '')
 
       const outputPath = route === '/'
