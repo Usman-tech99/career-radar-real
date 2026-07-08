@@ -330,9 +330,9 @@ export default function ResumeBuilder() {
             <div className="print:block">
               <div className="bg-white text-black rounded-2xl print:rounded-none shadow-2xl overflow-hidden">
                 {/* Europass-style CV */}
-                <div className="flex flex-col md:flex-row min-h-[842px]">
+                <div className="flex flex-col md:flex-row print:flex-row min-h-[842px]">
                   {/* Sidebar — personal info, skills, languages */}
-                  <div className="md:w-[35%] bg-[#059669] print:bg-[#059669] text-white p-6 md:p-8 print:p-6 flex flex-col gap-5">
+                  <div className="md:w-[35%] print:w-[35%] bg-[#059669] print:bg-[#059669] text-white p-6 md:p-8 print:p-6 flex flex-col gap-5">
                     {/* Name & Title */}
                     <div className="text-center">
                       {personal.avatarUrl ? (
@@ -380,7 +380,7 @@ export default function ResumeBuilder() {
                   </div>
 
                   {/* Main Content — experience, education, projects, certifications */}
-                  <div className="md:w-[65%] p-6 md:p-8 print:p-6 space-y-6">
+                  <div className="md:w-[65%] print:w-[65%] p-6 md:p-8 print:p-6 space-y-6">
                     {/* Experience */}
                     {experience.filter(e => e.title || e.company).length > 0 && (
                       <div>
