@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
 import { BlurFade } from '../../components/magicui/blur-fade'
 import { BorderBeam } from '../../components/magicui/border-beam'
-import { FileText, Plus, Trash2, Save, Download, Sparkles, ChevronRight, Briefcase, GraduationCap, Code, Award, Globe, Mail, Phone, MapPin, ExternalLink, GripVertical, X, User, Upload } from 'lucide-react'
+import { FileText, Plus, Trash2, Save, Download, Sparkles, ChevronRight, Briefcase, GraduationCap, Code, Award, Globe, Mail, Phone, MapPin, ExternalLink, GripVertical, X, User, Upload, AlertTriangle } from 'lucide-react'
 
 let pdfjsLib = null
 async function loadPdfJs() {
@@ -68,6 +68,7 @@ export default function ResumeBuilder() {
   const [projects, setProjects] = useState([])
   const [certifications, setCertifications] = useState([])
   const [importing, setImporting] = useState(false)
+  const [importNote, setImportNote] = useState(null)
   const cvInputRef = useRef(null)
 
   async function handleCvImport(file) {
@@ -134,6 +135,7 @@ export default function ResumeBuilder() {
       if (d.projects?.length) setProjects(d.projects.map(p => ({ ...EMPTY_PROJECT, ...p })))
       if (d.certifications?.length) setCertifications(d.certifications.map(c => ({ ...EMPTY_CERTIFICATION, ...c })))
 
+      setImportNote(true)
       toast.success('Resume imported! Review and edit before saving.', { id: loadToast })
     } catch (err) {
       toast.error(err.message || 'Import failed', { id: loadToast })
@@ -293,6 +295,13 @@ export default function ResumeBuilder() {
           {/* Edit View */}
           {activeTab === 'edit' && (
             <div className="space-y-6">
+              {importNote && (
+                <div className="flex items-start gap-2 bg-amber-500/10 border border-amber-500/20 rounded-lg px-4 py-3 text-sm text-amber-300">
+                  <AlertTriangle size={16} className="shrink-0 mt-0.5" />
+                  <span>After importing, please review all fields carefully — AI can make mistakes in extracting information.</span>
+                  <button onClick={() => setImportNote(false)} className="ml-auto shrink-0 text-amber-400/50 hover:text-amber-400">&times;</button>
+                </div>
+              )}
               {/* Personal Info */}
               <SectionCard title="Personal Info" icon={User}>
                 <div className="flex items-center gap-3 mb-4">

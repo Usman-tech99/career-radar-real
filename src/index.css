@@ -189,6 +189,16 @@
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
   img { max-width: 100%; page-break-inside: avoid; }
   .no-break { page-break-inside: avoid; }
+
+  /* Hide layout chrome when printing resume */
+  .admin-topbar, .admin-breadcrumbs { display: none !important; }
+
+  /* Resume preview fills page */
+  .print\:block { display: block !important; }
+  .print\:rounded-none { border-radius: 0 !important; }
+  .print\:flex-row { flex-direction: row !important; }
+  .print\:bg-\[\#059669\] { background-color: #059669 !important; }
+  .print\:p-6 { padding: 1.5rem !important; }
 }
 
 @keyframes aurora {

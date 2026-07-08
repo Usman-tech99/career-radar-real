@@ -72,7 +72,7 @@ export default function AdminLayout() {
   return (
     <div className="min-h-screen bg-surface flex flex-col">
       {/* Top Navbar */}
-      <div className="fixed top-0 left-0 right-0 z-40 h-16 bg-surface border-b border-border flex items-center px-4 sm:px-6 gap-3">
+      <div className="admin-topbar fixed top-0 left-0 right-0 z-40 h-16 bg-surface border-b border-border flex items-center px-4 sm:px-6 gap-3">
         <button className="lg:hidden p-2 rounded-lg hover:bg-white/[0.04] transition-colors" onClick={() => setMobileOpen(true)}>
           <Menu size={20} className="text-muted" />
         </button>
@@ -152,7 +152,7 @@ export default function AdminLayout() {
 
       {/* Breadcrumbs */}
       <div className="pt-20 px-4 sm:px-6 lg:px-8">
-        <nav className="flex items-center gap-2 text-sm text-muted mb-6 overflow-x-auto scrollbar-none">
+        <nav className="admin-breadcrumbs flex items-center gap-2 text-sm text-muted mb-6 overflow-x-auto scrollbar-none">
           <Link to="/" className="hover:text-white transition-colors shrink-0">
             <Home size={14} />
           </Link>
