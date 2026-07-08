@@ -38,7 +38,11 @@ Deno.serve(async (req: Request) => {
     const { data: education, error: eduError } = await sb.from('education_items').select('id,title,type,topics_covered').eq('is_published', true).limit(50);
     if (eduError) throw eduError;
 
-    const systemPrompt = `You are an AI Career Strategist for Pakistani students. Generate a JSON blueprint based on the user's profile.
+    const now = new Date()
+    const currentMonth = now.toLocaleString('en-US', { month: '2-digit' })
+    const currentYear = now.getFullYear()
+
+    const systemPrompt = `You are an AI Career Strategist for Pakistani students. Generate a JSON blueprint based on the user's profile. CURRENT DATE: ${currentMonth}/${currentYear}. ALL deadlines MUST be after this current date — never use past dates.
 
 Profile:
 - Degree: ${onboarding.degree}
