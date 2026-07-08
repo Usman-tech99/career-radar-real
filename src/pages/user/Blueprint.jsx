@@ -208,8 +208,8 @@ export default function Blueprint() {
                               {step.deadline && (
                                 <p className="text-sm text-blue-accent mt-1 break-words">Deadline: {step.deadline}</p>
                               )}
-                              {step.reason && (
-                                <p className="text-sm text-muted mt-1 break-words">{step.reason}</p>
+                              {step.description && (
+                                <p className="text-sm text-muted/80 mt-2 leading-relaxed break-words">{step.description}</p>
                               )}
                             </div>
                             <button onClick={() => navigate(stepRoute)} className="shrink-0 self-center p-2 text-muted/50 hover:text-blue-accent hover:bg-white/[0.05] rounded-lg transition-all" title="Go to section">

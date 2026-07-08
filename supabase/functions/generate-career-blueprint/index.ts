@@ -77,20 +77,21 @@ NOW GENERATE FOR THE ACTUAL PROFILE ABOVE.
 RULES:
 - Never recommend a skill already in their Current Skills list.
 - Every recommended skill needs a "reason" explaining why THIS user needs it for THEIR specific goal — never a generic industry statement.
-- Every action step needs a "reason" tying it to closing a specific gap, and a deadline appropriate to their year/experience (don't give a first-year student a "apply for jobs next month" step).
+- Every action step needs a "description" (2-3 detailed sentences explaining exactly what to do, why it closes the specific gap, and how to do it — not a checklist item) and a deadline appropriate to their year/experience (don't give a first-year student a "apply for jobs next month" step).
 - Only include job/course IDs from the live lists if they genuinely match — it's fine to recommend fewer than the max, or none, rather than forcing weak matches.
 - Ban these generic phrases unless followed by a concrete specific: "network more," "update your resume," "learn in-demand skills," "gain experience."
 - gap_analysis: 2-3 sentences naming the single biggest, most specific gap — not a vague summary.
+- Do NOT include resource_url, URLs, or links anywhere in the output. The LLM cannot generate valid URLs and they will be broken.
 
 Return ONLY valid JSON (no markdown, no code fences) with this exact structure:
 {
   "title": "Your [Specific Role] Career Path",
   "summary": "2-3 sentences max",
   "gap_analysis": "2-3 sentences on the single biggest specific gap",
-  "recommended_skills": [{"skill": "Skill Name", "priority": "High/Medium/Low", "reason": "why THIS user needs THIS skill for THEIR goal", "resource_url": "URL"}],
+  "recommended_skills": [{"skill": "Skill Name", "priority": "High/Medium/Low", "reason": "why THIS user needs THIS skill for THEIR goal"}],
   "recommended_jobs": ["job_id_1", "job_id_2"],
   "recommended_courses": ["edu_id_1", "edu_id_2"],
-  "action_steps": [{"id": "step_1", "title": "Step Title", "deadline": "MM/YYYY", "reason": "why this step closes a specific gap now", "completed": false}],
+  "action_steps": [{"id": "step_1", "title": "Step Title", "deadline": "MM/YYYY", "description": "2-3 detailed sentences explaining exactly what to do, why it closes the specific gap, and how to do it", "completed": false}],
   "milestones": ["Milestone 1", "Milestone 2"]
 }`;
 
