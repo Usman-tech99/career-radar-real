@@ -151,7 +151,7 @@ export default function AdminLayout() {
       </AnimatePresence>
 
       {/* Breadcrumbs */}
-      <div className="pt-20 px-4 sm:px-6 lg:px-8">
+      <div className="pt-20 px-4 sm:px-6 lg:px-8 print:hidden">
         <nav className="admin-breadcrumbs flex items-center gap-2 text-sm text-muted mb-6 overflow-x-auto scrollbar-none">
           <Link to="/" className="hover:text-white transition-colors shrink-0">
             <Home size={14} />

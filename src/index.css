@@ -190,8 +190,13 @@
   img { max-width: 100%; page-break-inside: avoid; }
   .no-break { page-break-inside: avoid; }
 
-  /* Hide layout chrome when printing resume */
+  /* Flatten layout during print — only the resume card should be visible */
+  body, html, #root { background: white !important; }
+  .min-h-screen.bg-surface { background: white !important; min-height: 0 !important; }
   .admin-topbar, .admin-breadcrumbs { display: none !important; }
+  main.flex-1 { padding: 0 !important; background: white !important; }
+  main.flex-1 > div { padding: 0 !important; margin: 0 !important; background: white !important; max-width: none !important; }
+  main.flex-1 .max-w-5xl { max-width: none !important; margin: 0 !important; padding: 0 !important; }
 
   /* Resume preview fills page */
   .print\:block { display: block !important; }
