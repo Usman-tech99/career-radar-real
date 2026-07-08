@@ -6,12 +6,13 @@ import toast from 'react-hot-toast'
 import { BlurFade } from '../../components/magicui/blur-fade'
 import { BorderBeam } from '../../components/magicui/border-beam'
 import { FileText, Plus, Trash2, Save, Download, Sparkles, ChevronRight, Briefcase, GraduationCap, Code, Award, Globe, Mail, Phone, MapPin, ExternalLink, GripVertical, X, User, Upload, AlertTriangle } from 'lucide-react'
+import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 
 let pdfjsLib = null
 async function loadPdfJs() {
   if (pdfjsLib) return pdfjsLib
   pdfjsLib = await import('pdfjs-dist')
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.1.200/pdf.worker.min.mjs`
+  pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl
   return pdfjsLib
 }
 
