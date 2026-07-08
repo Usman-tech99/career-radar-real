@@ -48,11 +48,7 @@ export default function Footer() {
             <div className="space-y-2 text-sm">
               <p className="flex items-center gap-2 text-muted">
                 <Mail size={14} className="shrink-0" />
-                <a href="mailto:hello@careerradar.com" className="hover:text-white transition-colors">hello@careerradar.com</a>
-              </p>
-              <p className="flex items-center gap-2 text-muted">
-                <Handshake size={14} className="shrink-0" />
-                <a href="mailto:partnerships@careerradar.com" className="hover:text-white transition-colors">partnerships@careerradar.com</a>
+                <a href="mailto:careerradar.ai@gmail.com" className="hover:text-white transition-colors">careerradar.ai@gmail.com</a>
               </p>
               <p className="flex items-center gap-2 text-muted">
                 <Globe size={14} className="shrink-0" />

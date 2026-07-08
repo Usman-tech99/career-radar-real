@@ -71,6 +71,7 @@ CREATE TABLE onboarding_data (
 );
 ALTER TABLE onboarding_data ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "onboarding_own" ON onboarding_data FOR ALL USING (auth.uid()=user_id) WITH CHECK (auth.uid()=user_id);
+CREATE POLICY "onboarding_admin" ON onboarding_data FOR SELECT USING (get_my_role()='super_admin');
 
 CREATE TABLE career_blueprints (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
