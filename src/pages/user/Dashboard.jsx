@@ -110,7 +110,7 @@ export default function Dashboard() {
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-between items-center mb-10">
         <div>
           <h1 className="text-3xl md:text-4xl font-bold font-sora">
-            Welcome back<AnimatedGradientText colorFrom="#10B981" colorTo="#3B82F6" className="text-3xl md:text-4xl font-bold">,</AnimatedGradientText>
+            Welcome{user?.user_metadata?.full_name ? ` ${user.user_metadata.full_name.split(' ')[0]}` : ' back'}<AnimatedGradientText colorFrom="#10B981" colorTo="#3B82F6" className="text-3xl md:text-4xl font-bold">,</AnimatedGradientText>
           </h1>
           <p className="text-muted mt-1 flex items-center gap-2">
             <Sparkles size={14} className="text-gold" /> Here's your career snapshot for today.
