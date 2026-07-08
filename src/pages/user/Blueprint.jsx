@@ -28,6 +28,7 @@ export default function Blueprint() {
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
   const [updatingStep, setUpdatingStep] = useState(null)
+  const [matchedJobs, setMatchedJobs] = useState(null)
 
   useEffect(() => {
     if (user) fetchBlueprint()
@@ -47,6 +48,11 @@ export default function Blueprint() {
         toast.error('Failed to load blueprint')
       } else if (data) {
         setBlueprint(data)
+        if (data.recommended_jobs?.length) {
+          supabase.from('jobs').select('id,title,company,location,type,tags,apply_url').in('id', data.recommended_jobs).then(({ data: jobs }) => setMatchedJobs(jobs || []))
+        } else {
+          setMatchedJobs([])
+        }
       } else {
         console.log('Blueprint: no active blueprint found for user', user.id)
       }
@@ -272,8 +278,29 @@ export default function Blueprint() {
 
                 <div className="glass-card border border-gold/20 bg-gold/5">
                   <h2 className="font-bold text-lg mb-4 text-gold">Matched Jobs</h2>
-                  <p className="text-sm text-muted mb-4 break-words">Based on your blueprint, check the live jobs board.</p>
-                  <Link to="/jobs" className="btn-primary w-full text-center py-2">View Matches</Link>
+                  {matchedJobs === null ? (
+                    <p className="text-sm text-muted break-words">Loading matches...</p>
+                  ) : matchedJobs.length === 0 ? (
+                    <p className="text-sm text-muted break-words">No jobs matching your field are available right now. Check back later.</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {matchedJobs.map(job => (
+                        <div key={job.id} className="p-3 bg-white/[0.02] border border-border rounded-lg">
+                          <h3 className="font-bold text-sm text-white break-words">{job.title}</h3>
+                          <p className="text-xs text-muted mt-0.5">{job.company}{job.location ? ` — ${job.location}` : ''}</p>
+                          <div className="flex flex-wrap gap-1.5 mt-2">
+                            {job.type && <span className="text-[10px] bg-green/10 text-green px-1.5 py-0.5 rounded">{job.type}</span>}
+                            {job.tags?.slice(0, 3).map((t, ti) => <span key={ti} className="text-[10px] bg-white/10 text-muted px-1.5 py-0.5 rounded">{t}</span>)}
+                          </div>
+                          {job.apply_url && (
+                            <a href={job.apply_url} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center gap-1 text-xs text-gold hover:text-gold/80 transition-colors">
+                              Apply Now <ExternalLink size={10} />
+                            </a>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <button
