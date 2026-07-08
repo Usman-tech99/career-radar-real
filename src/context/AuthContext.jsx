@@ -77,7 +77,11 @@ export function AuthProvider({ children }) {
     const userRole = roleData?.role || null
     setRole(userRole)
     setRoleLabel(roleData?.role_label || '')
-    const perms = roleData?.permissions || []
+    let perms = roleData?.permissions
+    if (typeof perms === 'string') {
+      try { perms = JSON.parse(perms) } catch { perms = [] }
+    }
+    if (!Array.isArray(perms)) perms = []
     if (userRole === 'super_admin') {
       const allPermissions = [
         'manage_jobs', 'manage_content', 'manage_products', 'manage_education',
@@ -86,6 +90,13 @@ export function AuthProvider({ children }) {
         'manage_payments', 'ai_insights'
       ]
       setPermissions(allPermissions)
+    } else if (userRole === 'admin' && perms.length === 0) {
+      const defaultAdminPermissions = [
+        'manage_jobs', 'manage_content', 'manage_products', 'manage_education',
+        'manage_scholarships', 'manage_about', 'manage_community', 'manage_socials',
+        'manage_collaborators'
+      ]
+      setPermissions(defaultAdminPermissions)
     } else {
       setPermissions(perms)
     }
