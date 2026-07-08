@@ -521,7 +521,7 @@ export default function ResumeBuilder() {
                             <div key={i}>
                               <div className="flex items-center gap-2">
                                 <h3 className="font-bold text-gray-900 text-sm">{proj.name}</h3>
-                                {proj.link && <a href={proj.link} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline"><ExternalLink size={12} /></a>}
+                                {proj.link && <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline"><ExternalLink size={12} /></a>}
                               </div>
                               {proj.technologies && <p className="text-xs text-gray-500">{proj.technologies}</p>}
                               {proj.description && <p className="text-xs text-gray-700 mt-1">{proj.description}</p>}
