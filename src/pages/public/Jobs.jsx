@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
-import { Briefcase, MapPin, Clock, Search, ArrowUpRight } from 'lucide-react'
+import { Briefcase, MapPin, Clock, Search, ArrowUpRight, X, ExternalLink, Calendar, Tag, Building2 } from 'lucide-react'
 import { formatDate } from '../../lib/helpers'
 import { Helmet } from 'react-helmet-async'
 
@@ -11,6 +11,7 @@ export default function Jobs({ navless } = {}) {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [filterType, setFilterType] = useState('All')
+  const [selectedJob, setSelectedJob] = useState(null)
 
   useEffect(() => {
     fetchJobs()
@@ -113,12 +114,10 @@ export default function Jobs({ navless } = {}) {
         ) : (
           <div className="space-y-4">
             {filteredJobs.map(job => (
-              <a 
-                key={job.id} 
-                href={job.apply_url}
-                target="_blank"
-                rel="noreferrer"
-                className={`block p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg group ${
+              <div
+                key={job.id}
+                onClick={() => setSelectedJob(job)}
+                className={`block p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg group cursor-pointer ${
                   job.is_featured ? 'bg-gold/5 border-gold/30 hover:shadow-gold/10' : 'bg-white/[0.02] border-border hover:bg-white/[0.04]'
                 }`}
               >
@@ -149,11 +148,78 @@ export default function Jobs({ navless } = {}) {
                     Deadline: {new Date(job.deadline).toLocaleDateString()}
                   </div>
                 )}
-              </a>
+              </div>
             ))}
           </div>
         )}
       </main>
+
+      {/* Job Detail Modal */}
+      {selectedJob && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setSelectedJob(null)}>
+          <div className="glass-card w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-end mb-2">
+              <button onClick={() => setSelectedJob(null)} className="text-muted hover:text-white p-1"><X size={24} /></button>
+            </div>
+
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-white mb-2">{selectedJob.title}</h2>
+              <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-2 text-sm text-muted">
+                <span className="flex items-center gap-1 font-medium text-white"><Building2 size={14} /> {selectedJob.company}</span>
+                <span className="flex items-center gap-1"><MapPin size={14} /> {selectedJob.location || 'Remote'}</span>
+                <span className="flex items-center gap-1"><Clock size={14} /> {selectedJob.type}</span>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {selectedJob.description ? (
+                <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+                  <p className="text-sm text-white whitespace-pre-wrap leading-relaxed">{selectedJob.description}</p>
+                </div>
+              ) : (
+                <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+                  <p className="text-sm text-muted italic">No description provided.</p>
+                </div>
+              )}
+
+              {selectedJob.tags?.length > 0 && (
+                <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Tag size={16} className="text-blue-400" />
+                    <span className="text-sm font-semibold text-white">Tags</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedJob.tags.map((tag, i) => (
+                      <span key={i} className="text-xs px-3 py-1.5 rounded-full bg-white/[0.05] text-muted border border-white/[0.06]">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {selectedJob.deadline && (
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+                  <Calendar size={18} className="text-red-400" />
+                  <span className="text-sm text-white">Deadline: {new Date(selectedJob.deadline).toLocaleDateString()}</span>
+                </div>
+              )}
+
+              {selectedJob.apply_url ? (
+                <a
+                  href={selectedJob.apply_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-primary w-full flex items-center justify-center gap-2 mt-2"
+                >
+                  <ExternalLink size={18} /> Apply Now
+                </a>
+              ) : (
+                <p className="text-xs text-muted text-center mt-2">No external application link — see description above for details.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {!navless && <Footer />}
     </div>
   )

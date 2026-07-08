@@ -14,11 +14,12 @@ const jobSchema = z.object({
   location: z.string().optional(),
   type: z.enum(['Full-time', 'Part-time', 'Internship', 'Freelance', 'Remote']),
   description: z.string().optional(),
-  apply_url: z.string().url("Must be a valid URL"),
+  apply_url: z.string().url("Must be a valid URL").or(z.literal('')).optional(),
   deadline: z.string().optional(),
-  tags: z.string().optional(), // Will split by comma
+  tags: z.string().optional(),
   is_featured: z.boolean().default(false),
   is_active: z.boolean().default(true),
+  has_link: z.enum(['yes', 'no']).default('yes'),
 })
 
 export default function ManageJobs() {
@@ -28,9 +29,10 @@ export default function ManageJobs() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingId, setEditingId] = useState(null)
 
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm({
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm({
     resolver: zodResolver(jobSchema)
   })
+  const hasLink = watch('has_link', 'yes')
 
   useEffect(() => {
     fetchJobs()
@@ -51,14 +53,15 @@ export default function ManageJobs() {
       setValue('location', job.location || '')
       setValue('type', job.type)
       setValue('description', job.description || '')
-      setValue('apply_url', job.apply_url)
+      setValue('apply_url', job.apply_url || '')
       setValue('deadline', job.deadline || '')
       setValue('tags', job.tags ? job.tags.join(', ') : '')
       setValue('is_featured', job.is_featured)
       setValue('is_active', job.is_active)
+      setValue('has_link', job.apply_url ? 'yes' : 'no')
     } else {
       setEditingId(null)
-      reset()
+      reset({ has_link: 'yes' })
     }
     setIsModalOpen(true)
   }
@@ -186,15 +189,31 @@ export default function ManageJobs() {
                 </div>
 
                 <div>
-                  <label className="label">Apply URL</label>
-                  <input {...register('apply_url')} className="input-field" placeholder="https://" />
-                  {errors.apply_url && <p className="text-red-400 text-sm mt-1">{errors.apply_url.message}</p>}
+                  <label className="label">Job Details Source</label>
+                  <div className="flex gap-4 mt-1">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" value="yes" {...register('has_link')} className="w-4 h-4 accent-green" />
+                      <span className="text-sm">External Link</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" value="no" {...register('has_link')} className="w-4 h-4 accent-green" />
+                      <span className="text-sm">Description Only</span>
+                    </label>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="label">Description</label>
-                  <textarea {...register('description')} className="input-field h-24" placeholder="Job details..." />
-                </div>
+                {hasLink === 'yes' ? (
+                  <div>
+                    <label className="label">Apply URL</label>
+                    <input {...register('apply_url')} className="input-field" placeholder="https://" />
+                    {errors.apply_url && <p className="text-red-400 text-sm mt-1">{errors.apply_url.message}</p>}
+                  </div>
+                ) : (
+                  <div>
+                    <label className="label">Full Description</label>
+                    <textarea {...register('description')} className="input-field h-48" placeholder="Provide complete job details, requirements, and how to apply..." />
+                  </div>
+                )}
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>

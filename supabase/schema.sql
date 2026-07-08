@@ -152,7 +152,7 @@ AS $$ UPDATE site_stats SET resources_shared = resources_shared + 1, updated_at 
 CREATE TABLE jobs (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL, company TEXT NOT NULL, location TEXT,
   type TEXT CHECK(type IN('Full-time','Part-time','Internship','Freelance','Remote')),
-  description TEXT, apply_url TEXT NOT NULL, deadline DATE,
+  description TEXT, apply_url TEXT, deadline DATE,
   tags TEXT[] DEFAULT '{}', slug TEXT UNIQUE,
   is_featured BOOLEAN DEFAULT FALSE, is_active BOOLEAN DEFAULT TRUE,
   posted_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
