@@ -42,15 +42,17 @@ Deno.serve(async (req: Request) => {
     const currentMonth = now.toLocaleString('en-US', { month: '2-digit' })
     const currentYear = now.getFullYear()
 
-    const systemPrompt = `You are an AI Career Strategist for Pakistani students. Generate a JSON blueprint based on the user's profile. CURRENT DATE: ${currentMonth}/${currentYear}. ALL deadlines MUST be after this current date — never use past dates.
+    const systemPrompt = `You are an AI Career Strategist for Pakistani students. You must produce a DEEP, SPECIFIC, non-generic career blueprint — not a template.
 
-Profile:
+CURRENT DATE: ${currentMonth}/${currentYear}. ALL deadlines MUST be after this current date.
+
+USER PROFILE:
 - Degree: ${onboarding.degree}
-- Year: ${onboarding.study_year}
-- Skills: ${onboarding.skills?.join(', ')}
-- Goals: ${onboarding.career_goal}
-- Interests: ${onboarding.interests?.join(', ')}
-- Experience: ${onboarding.experience}
+- Year/Status: ${onboarding.study_year}
+- Current Skills: ${onboarding.skills?.join(', ') || 'None listed'}
+- Career Goal: ${onboarding.career_goal}
+- Interests: ${onboarding.interests?.join(', ') || 'None listed'}
+- Experience Level: ${onboarding.experience}
 
 LIVE JOBS TO MATCH FROM (use exact IDs):
 ${JSON.stringify(jobs)}
@@ -58,14 +60,23 @@ ${JSON.stringify(jobs)}
 LIVE COURSES TO MATCH FROM (use exact IDs):
 ${JSON.stringify(education)}
 
+INSTRUCTIONS — read carefully, this determines output quality:
+1. Do NOT recommend skills the user already has listed. Identify the SPECIFIC gap between their current skills and what their career_goal actually requires — reference their exact degree/experience, not the field in general.
+2. For each recommended skill, you MUST explain WHY it matters for THIS user specifically (their goal + current gap) — not a generic industry statement. Bad: "SQL is important for data roles." Good: "Your marketing degree gives you the communication side of product work, but SQL will let you validate ideas with data directly instead of relying on analysts."
+3. For action_steps, tailor the plan to their actual stage — a first-year student's steps look different from a final-year student's or someone with 1-2 years experience. Each step needs a "reason" tying it to their specific gap.
+4. Only recommend jobs/courses from the live lists that genuinely match their goal + skill level — don't force matches if nothing fits well; it's fine to recommend fewer than the max.
+5. Avoid these generic phrases entirely: "network more," "update your resume," "learn in-demand skills," "gain experience" — unless followed by a concrete, specific instruction (e.g. which platform, which 3 people to reach out to, which specific project to build).
+6. Write a "gap_analysis" — 2-3 sentences identifying the single biggest gap between where they are and their goal.
+
 Return ONLY valid JSON (no markdown, no code fences) with this exact structure:
 {
   "title": "Your [Field] Career Path",
   "summary": "2-3 sentences max",
-  "recommended_skills": [{"skill": "Skill Name", "priority": "High/Medium/Low", "resource_url": "URL"}],
+  "gap_analysis": "2-3 sentences on the biggest specific gap",
+  "recommended_skills": [{"skill": "Skill Name", "priority": "High/Medium/Low", "reason": "why THIS user needs THIS skill", "resource_url": "URL"}],
   "recommended_jobs": ["job_id_1", "job_id_2"],
   "recommended_courses": ["edu_id_1", "edu_id_2"],
-  "action_steps": [{"id": "step_1", "title": "Step Title", "deadline": "MM/YYYY", "completed": false}],
+  "action_steps": [{"id": "step_1", "title": "Step Title", "deadline": "MM/YYYY", "reason": "why this step now, for this user", "completed": false}],
   "milestones": ["Milestone 1", "Milestone 2"]
 }`;
 
@@ -78,7 +89,7 @@ Return ONLY valid JSON (no markdown, no code fences) with this exact structure:
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
         messages: [{ role: "user", content: systemPrompt }],
-        max_tokens: 2048,
+        max_tokens: 3072,
         temperature: 0.7,
         response_format: { type: "json_object" }
       })
@@ -101,6 +112,7 @@ Return ONLY valid JSON (no markdown, no code fences) with this exact structure:
       user_id: user.id,
       title: blueprint.title,
       summary: blueprint.summary,
+      gap_analysis: blueprint.gap_analysis || '',
       recommended_skills: blueprint.recommended_skills,
       recommended_jobs: blueprint.recommended_jobs,
       recommended_courses: blueprint.recommended_courses,
@@ -123,7 +135,7 @@ Return ONLY valid JSON (no markdown, no code fences) with this exact structure:
       if (logErr) console.error('Blueprint log insert failed:', logErr);
     })();
 
-    return new Response(JSON.stringify({ success: true, blueprint: insertedBlueprint }), { headers: { ...cors, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ success: true, blueprint: insertedBlueprint, raw: blueprint }), { headers: { ...cors, "Content-Type": "application/json" } });
 
   } catch (error: any) {
     console.error("Blueprint Error:", error);
