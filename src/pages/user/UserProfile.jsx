@@ -193,12 +193,12 @@ export default function UserProfile() {
               </div>
             </div>
 
-            <div className="glass-card border border-red-500/20 bg-red-500/5">
-              <h2 className="text-xl font-bold text-red-500 mb-2">Account Deletion</h2>
-              <p className="text-sm text-muted mb-4">Permanently remove your account and all associated data. This action cannot be undone.</p>
+            <div className="border-t border-border pt-6 mt-8">
+              <h2 className="text-lg font-semibold text-white mb-1">Delete Account</h2>
+              <p className="text-sm text-muted mb-4">Once deleted, your account and all associated data cannot be recovered.</p>
               <button 
                 onClick={() => toast.error("Please contact support to delete your account.")}
-                className="btn-ghost text-red-500 border border-red-500 hover:bg-red-500 hover:text-white"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-red-400 border border-red-500/30 hover:bg-red-500/10 transition-colors"
               >
                 Delete Account
               </button>
