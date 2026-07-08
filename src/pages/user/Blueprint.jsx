@@ -1,12 +1,29 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
-import { CheckCircle, ExternalLink, Zap, Loader2, Target } from 'lucide-react'
+import { CheckCircle, ExternalLink, ArrowRight, Zap, Loader2, Target } from 'lucide-react'
+
+const STEP_ROUTES = [
+  { keywords: ['resume', 'linkedin', 'cv', 'portfolio'], route: '/dashboard/resume' },
+  { keywords: ['skill', 'learn', 'course', 'training', 'certification', 'study'], route: '/dashboard/blueprint' },
+  { keywords: ['job', 'apply', 'interview', 'opportunity', 'career'], route: '/dashboard/jobs' },
+  { keywords: ['network', 'profile', 'bio', 'connect'], route: '/dashboard/profile' },
+  { keywords: ['score', 'assessment', 'evaluation'], route: '/dashboard/score' },
+]
+
+function getStepRoute(title) {
+  const lower = (title || '').toLowerCase()
+  for (const entry of STEP_ROUTES) {
+    if (entry.keywords.some(kw => lower.includes(kw))) return entry.route
+  }
+  return '/dashboard/blueprint'
+}
 
 export default function Blueprint() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [blueprint, setBlueprint] = useState(null)
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
@@ -159,33 +176,38 @@ export default function Blueprint() {
                     <Target className="text-blue-accent" /> Action Plan
                   </h2>
                   <div className="space-y-4">
-                    {blueprint.action_steps?.map((step, i) => (
-                      <div
-                        key={i}
-                        onClick={() => toggleStep(i, step.completed)}
-                        className={`flex items-start gap-4 p-4 rounded-xl border transition-all cursor-pointer hover:bg-white/[0.04] ${
-                          step.completed ? 'bg-white/[0.02] border-border' : 'bg-white/[0.05] border-white/10'
-                        }`}
-                      >
-                        <div className={`mt-1 shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${
-                          step.completed ? 'bg-green border-green' : 'border-muted'
-                        }`}>
-                          {updatingStep === i ? (
-                            <Loader2 size={14} className="animate-spin text-white" />
-                          ) : step.completed ? (
-                            <CheckCircle size={16} className="text-surface" />
-                          ) : null}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <h3 className={`font-bold text-lg break-words ${step.completed ? 'text-muted line-through' : 'text-white'}`}>
-                            {step.title}
-                          </h3>
-                          {step.deadline && (
-                            <p className="text-sm text-blue-accent mt-1 break-words">Deadline: {step.deadline}</p>
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                      {blueprint.action_steps?.map((step, i) => {
+                        const stepRoute = getStepRoute(step.title)
+                        return (
+                          <div
+                            key={i}
+                            className={`flex items-start gap-4 p-4 rounded-xl border transition-all ${
+                              step.completed ? 'bg-white/[0.02] border-border' : 'bg-white/[0.05] border-white/10'
+                            }`}
+                          >
+                            <div onClick={() => toggleStep(i, step.completed)} className={`mt-1 shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors cursor-pointer hover:opacity-80 ${
+                              step.completed ? 'bg-green border-green' : 'border-muted'
+                            }`}>
+                              {updatingStep === i ? (
+                                <Loader2 size={14} className="animate-spin text-white" />
+                              ) : step.completed ? (
+                                <CheckCircle size={16} className="text-surface" />
+                              ) : null}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <h3 onClick={() => navigate(stepRoute)} className={`font-bold text-lg break-words cursor-pointer hover:text-green transition-colors ${step.completed ? 'text-muted line-through' : 'text-white'}`}>
+                                {step.title}
+                              </h3>
+                              {step.deadline && (
+                                <p className="text-sm text-blue-accent mt-1 break-words">Deadline: {step.deadline}</p>
+                              )}
+                            </div>
+                            <button onClick={() => navigate(stepRoute)} className="shrink-0 self-center p-2 text-muted/50 hover:text-blue-accent hover:bg-white/[0.05] rounded-lg transition-all" title="Go to section">
+                              <ArrowRight size={16} />
+                            </button>
+                          </div>
+                        )
+                      })}
                   </div>
                 </div>
 

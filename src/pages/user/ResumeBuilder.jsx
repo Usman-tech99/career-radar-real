@@ -1,11 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
 import { BlurFade } from '../../components/magicui/blur-fade'
 import { BorderBeam } from '../../components/magicui/border-beam'
-import { FileText, Plus, Trash2, Save, Download, Sparkles, ChevronRight, Briefcase, GraduationCap, Code, Award, Globe, Mail, Phone, MapPin, ExternalLink, GripVertical, X, User, Camera } from 'lucide-react'
+import { FileText, Plus, Trash2, Save, Download, Sparkles, ChevronRight, Briefcase, GraduationCap, Code, Award, Globe, Mail, Phone, MapPin, ExternalLink, GripVertical, X, User, Upload } from 'lucide-react'
+
+let pdfjsLib = null
+async function loadPdfJs() {
+  if (pdfjsLib) return pdfjsLib
+  pdfjsLib = await import('pdfjs-dist')
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.1.200/pdf.worker.min.mjs`
+  return pdfjsLib
+}
 
 const EMPTY_EDUCATION = { institution: '', degree: '', field: '', startYear: '', endYear: '', gpa: '' }
 const EMPTY_EXPERIENCE = { company: '', title: '', location: '', startDate: '', endDate: '', current: false, description: '' }
@@ -59,6 +67,82 @@ export default function ResumeBuilder() {
   const [experience, setExperience] = useState([])
   const [projects, setProjects] = useState([])
   const [certifications, setCertifications] = useState([])
+  const [importing, setImporting] = useState(false)
+  const cvInputRef = useRef(null)
+
+  async function handleCvImport(file) {
+    if (!file) return
+    setImporting(true)
+    const loadToast = toast.loading('Parsing your resume...')
+    try {
+      let text = ''
+      const ext = file.name.split('.').pop().toLowerCase()
+
+      if (ext === 'pdf') {
+        const buf = await file.arrayBuffer()
+        const pdf = await loadPdfJs()
+        const doc = await pdf.getDocument({ data: buf }).promise
+        const pages = []
+        for (let i = 1; i <= doc.numPages; i++) {
+          const page = await doc.getPage(i)
+          const content = await page.getTextContent()
+          pages.push(content.items.map(item => item.str).join(' '))
+        }
+        text = pages.join('\n\n')
+      } else if (ext === 'docx') {
+        const buf = await file.arrayBuffer()
+        const mammoth = await import('mammoth')
+        const result = await mammoth.extractRawText({ arrayBuffer: buf })
+        text = result.value
+      } else if (ext === 'txt') {
+        text = await file.text()
+      } else {
+        throw new Error('Unsupported file type. Please upload a PDF, DOCX, or TXT file.')
+      }
+
+      if (text.trim().length < 20) throw new Error('Could not extract enough text — ensure the file contains readable content.')
+
+      toast.loading('Extracting structured data with AI...', { id: loadToast })
+
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/parse-resume`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+        body: JSON.stringify({ text })
+      })
+      const result = await res.json()
+      if (!res.ok) throw new Error(result.error || 'Failed to parse resume')
+
+      const d = result.data
+
+      if (d.personal) {
+        setPersonal(prev => ({
+          ...prev,
+          fullName: d.personal.fullName || prev.fullName,
+          email: d.personal.email || prev.email,
+          phone: d.personal.phone || prev.phone,
+          location: d.personal.location || prev.location,
+          title: d.personal.title || prev.title,
+          linkedin: d.personal.linkedin || prev.linkedin,
+          portfolio: d.personal.portfolio || prev.portfolio,
+          bio: d.personal.bio || prev.bio,
+        }))
+      }
+      if (d.skills?.length) setSkills(d.skills)
+      if (d.education?.length) setEducation(d.education.map(e => ({ ...EMPTY_EDUCATION, ...e })))
+      if (d.experience?.length) setExperience(d.experience.map(e => ({ ...EMPTY_EXPERIENCE, ...e })))
+      if (d.projects?.length) setProjects(d.projects.map(p => ({ ...EMPTY_PROJECT, ...p })))
+      if (d.certifications?.length) setCertifications(d.certifications.map(c => ({ ...EMPTY_CERTIFICATION, ...c })))
+
+      toast.success('Resume imported! Review and edit before saving.', { id: loadToast })
+    } catch (err) {
+      toast.error(err.message || 'Import failed', { id: loadToast })
+      console.error('CV import error:', err)
+    } finally {
+      setImporting(false)
+      if (cvInputRef.current) cvInputRef.current.value = ''
+    }
+  }
 
   useEffect(() => {
     if (user) fetchExistingData()
@@ -211,6 +295,14 @@ export default function ResumeBuilder() {
             <div className="space-y-6">
               {/* Personal Info */}
               <SectionCard title="Personal Info" icon={User}>
+                <div className="flex items-center gap-3 mb-4">
+                  <input ref={cvInputRef} type="file" accept=".pdf,.docx,.txt" className="hidden" onChange={e => handleCvImport(e.target.files[0])} />
+                  <button type="button" onClick={() => cvInputRef.current?.click()} disabled={importing}
+                    className="btn-ghost border border-border flex items-center gap-2 text-xs px-4 py-2">
+                    <Upload size={14} /> {importing ? 'Importing...' : 'Import from Resume/CV'}
+                  </button>
+                  <p className="text-xs text-muted/60">Supports PDF, DOCX, TXT</p>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input label="Full Name" value={personal.fullName} onChange={v => handlePersonalChange('fullName', v)} placeholder="Muhammad Usman" />
                   <Input label="Professional Title" value={personal.title} onChange={v => handlePersonalChange('title', v)} placeholder="Software Engineer" />

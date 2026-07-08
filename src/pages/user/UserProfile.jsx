@@ -126,7 +126,7 @@ export default function UserProfile() {
                 <h1 className="text-3xl font-bold font-sora mb-2">Profile Settings</h1>
                 <p className="text-muted">Manage your public details.</p>
               </div>
-              <button onClick={handleSave} disabled={saving} className="btn-primary flex items-center gap-2">
+              <button onClick={handleSave} disabled={saving || uploading} className="btn-primary flex items-center gap-2">
                 <Save size={20} /> {saving ? 'Saving...' : 'Save Profile'}
               </button>
             </div>
@@ -135,7 +135,7 @@ export default function UserProfile() {
               <div className="flex flex-col gap-3 items-start">
                 <label className="label text-sm font-medium text-muted">Avatar</label>
                 <div className="w-40 h-40 rounded-full border-4 border-white/[0.05] overflow-hidden relative group">
-                  <SafeImage src={profile.avatar_url} alt={profile.full_name || 'avatar'} className="w-full h-full object-cover rounded-full" crossOrigin="anonymous" />
+                  <SafeImage src={profile.avatar_url} alt={profile.full_name || 'avatar'} className="w-full h-full object-cover rounded-full" />
                   <label className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
                     <Upload size={24} className="text-white" />
                     <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} disabled={uploading} />
@@ -194,8 +194,8 @@ export default function UserProfile() {
             </div>
 
             <div className="glass-card border border-red-500/20 bg-red-500/5">
-              <h2 className="text-xl font-bold text-red-500 mb-2">Danger Zone</h2>
-              <p className="text-sm text-muted mb-4">Once you delete your account, there is no going back. Please be certain.</p>
+              <h2 className="text-xl font-bold text-red-500 mb-2">Account Deletion</h2>
+              <p className="text-sm text-muted mb-4">Permanently remove your account and all associated data. This action cannot be undone.</p>
               <button 
                 onClick={() => toast.error("Please contact support to delete your account.")}
                 className="btn-ghost text-red-500 border border-red-500 hover:bg-red-500 hover:text-white"

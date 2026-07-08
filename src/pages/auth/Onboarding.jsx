@@ -208,12 +208,13 @@ export default function Onboarding() {
                 />
               </div>
               <div>
-                <label className="label">Study Year / Status</label>
+                <label className="label">Study Year / Graduation Status</label>
+                <p className="text-xs text-muted/70 mb-2">What year of study are you in, or when did you graduate?</p>
                 <input
                   value={form.studyYear}
                   onChange={e => updateField('studyYear', e.target.value)}
                   className="input-field"
-                  placeholder="e.g. 3rd Year, Graduated 2023, Not applicable"
+                  placeholder="e.g. 3rd Year, Graduated 2023, Not a student"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">

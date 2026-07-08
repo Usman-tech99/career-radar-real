@@ -10,6 +10,22 @@ import { AnimatedGradientText } from '../../components/magicui/animated-gradient
 import { NumberTicker } from '../../components/magicui/number-ticker'
 import { ArrowRight, Zap, Briefcase, Loader2, Sparkles, ChevronRight, Clock, Activity, Target } from 'lucide-react'
 
+const STEP_ROUTES = [
+  { keywords: ['resume', 'linkedin', 'cv', 'portfolio'], route: '/dashboard/resume' },
+  { keywords: ['skill', 'learn', 'course', 'training', 'certification', 'study'], route: '/dashboard/blueprint' },
+  { keywords: ['job', 'apply', 'interview', 'opportunity', 'career'], route: '/dashboard/jobs' },
+  { keywords: ['network', 'profile', 'bio', 'connect'], route: '/dashboard/profile' },
+  { keywords: ['score', 'assessment', 'evaluation'], route: '/dashboard/score' },
+]
+
+function getStepRoute(title) {
+  const lower = (title || '').toLowerCase()
+  for (const entry of STEP_ROUTES) {
+    if (entry.keywords.some(kw => lower.includes(kw))) return entry.route
+  }
+  return '/dashboard/blueprint'
+}
+
 export default function Dashboard() {
   const { user } = useAuth()
   const navigate = useNavigate()
@@ -43,6 +59,26 @@ export default function Dashboard() {
       console.error('Dashboard: fetchDashboardData exception:', err.message)
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function toggleStep(index, currentStatus) {
+    if (!blueprint) return
+    const newSteps = [...blueprint.action_steps]
+    newSteps[index].completed = !currentStatus
+    try {
+      const { data: bp } = await supabase
+        .from('career_blueprints')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('is_active', true)
+        .maybeSingle()
+      if (!bp) return
+      await supabase.from('career_blueprints').update({ action_steps: newSteps }).eq('id', bp.id)
+      setBlueprint({ ...blueprint, action_steps: newSteps })
+      await supabase.functions.invoke('recalculate-score', { body: {} }).catch(() => {})
+    } catch (err) {
+      console.error('Dashboard: step toggle error:', err.message)
     }
   }
 
@@ -160,20 +196,23 @@ export default function Dashboard() {
                     <p className="text-sm text-muted/80 mb-6 break-words leading-relaxed">{blueprint.summary}</p>
                     <div className="space-y-2">
                       <p className="text-xs font-bold uppercase tracking-wider text-green/80 mb-3">Next Steps</p>
-                      {blueprint.action_steps?.slice(0, 3).map((step, i) => (
-                        <div key={i} className="flex items-start gap-3 p-3.5 bg-white/[0.02] border border-white/[0.06] rounded-xl hover:bg-white/[0.04] hover:border-white/10 transition-all group/step">
-                          <div className={`mt-0.5 shrink-0 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
-                            step.completed ? 'bg-green border-green' : 'border-muted/50 group-hover/step:border-muted'
-                          }`}>
-                            {step.completed && <div className="w-2 h-2 bg-[#07070C] rounded-sm" />}
+                      {blueprint.action_steps?.slice(0, 3).map((step, i) => {
+                        const stepRoute = getStepRoute(step.title)
+                        return (
+                          <div key={i} onClick={() => navigate(stepRoute)} className="flex items-start gap-3 p-3.5 bg-white/[0.02] border border-white/[0.06] rounded-xl hover:bg-white/[0.04] hover:border-white/10 transition-all group/step cursor-pointer">
+                            <div onClick={e => { e.stopPropagation(); toggleStep(i, step.completed) }} className={`mt-0.5 shrink-0 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
+                              step.completed ? 'bg-green border-green' : 'border-muted/50 group-hover/step:border-muted'
+                            }`}>
+                              {step.completed && <div className="w-2 h-2 bg-[#07070C] rounded-sm" />}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className={`text-sm break-words ${step.completed ? 'line-through text-muted/50' : 'text-white/90 font-medium'}`}>{step.title}</p>
+                              {step.deadline && <p className="text-xs text-muted/60 mt-0.5 flex items-center gap-1"><Clock size={10} /> Due: {step.deadline}</p>}
+                            </div>
+                            <ChevronRight size={14} className="text-muted/30 group-hover/step:text-muted/60 transition-colors self-center shrink-0" />
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <p className={`text-sm break-words ${step.completed ? 'line-through text-muted/50' : 'text-white/90 font-medium'}`}>{step.title}</p>
-                            {step.deadline && <p className="text-xs text-muted/60 mt-0.5 flex items-center gap-1"><Clock size={10} /> Due: {step.deadline}</p>}
-                          </div>
-                          <ChevronRight size={14} className="text-muted/30 group-hover/step:text-muted/60 transition-colors self-center shrink-0" />
-                        </div>
-                      ))}
+                        )
+                      })}
                     </div>
                   </>
                 ) : (

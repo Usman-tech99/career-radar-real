@@ -65,9 +65,10 @@
 
 @layer components {
   .glass-card {
-    @apply backdrop-blur-xl rounded-2xl p-6;
+    @apply backdrop-blur-lg rounded-2xl p-6;
     background-color: var(--color-card);
     border-color: var(--color-border);
+    will-change: transform;
   }
 
   .btn-primary {
