@@ -169,6 +169,13 @@ export default function Blueprint() {
               </button>
             </div>
 
+            {blueprint.gap_analysis && (
+              <div className="glass-card border border-blue-accent/20 bg-blue-accent/5">
+                <h2 className="font-bold text-lg mb-2 text-blue-accent">Your Biggest Gap</h2>
+                <p className="text-white/90 break-words">{blueprint.gap_analysis}</p>
+              </div>
+            )}
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 space-y-8">
                 <div className="glass-card">
@@ -200,6 +207,9 @@ export default function Blueprint() {
                               </h3>
                               {step.deadline && (
                                 <p className="text-sm text-blue-accent mt-1 break-words">Deadline: {step.deadline}</p>
+                              )}
+                              {step.reason && (
+                                <p className="text-sm text-muted mt-1 break-words">{step.reason}</p>
                               )}
                             </div>
                             <button onClick={() => navigate(stepRoute)} className="shrink-0 self-center p-2 text-muted/50 hover:text-blue-accent hover:bg-white/[0.05] rounded-lg transition-all" title="Go to section">
@@ -240,6 +250,9 @@ export default function Blueprint() {
                             {skill.priority}
                           </span>
                         </div>
+                        {skill.reason && (
+                          <p className="text-xs text-muted mt-1 mb-2 break-words">{skill.reason}</p>
+                        )}
                         {skill.resource_url && (
                           <a href={skill.resource_url} target="_blank" rel="noreferrer" className="text-xs text-blue-400 hover:underline flex items-center gap-1 mt-2 truncate block">
                             Resource <ExternalLink size={12} />
