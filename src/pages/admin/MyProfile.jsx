@@ -111,7 +111,7 @@ export default function MyProfile() {
                   value={data.full_name} 
                   onChange={e => setData({...data, full_name: e.target.value})} 
                   className="input-field"
-                  placeholder="John Doe"
+                  placeholder="Muhammad Usman"
                 />
               </div>
               <div>

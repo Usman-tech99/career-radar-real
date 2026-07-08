@@ -298,7 +298,7 @@ export default function ManageTeamMembers() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="label">Full Name</label>
-                    <input {...register('name')} className="input-field" placeholder="John Doe" />
+                    <input {...register('name')} className="input-field" placeholder="Muhammad Usman" />
                     {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>}
                   </div>
                   <div>

@@ -212,7 +212,7 @@ export default function ResumeBuilder() {
               {/* Personal Info */}
               <SectionCard title="Personal Info" icon={User}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input label="Full Name" value={personal.fullName} onChange={v => handlePersonalChange('fullName', v)} placeholder="John Doe" />
+                  <Input label="Full Name" value={personal.fullName} onChange={v => handlePersonalChange('fullName', v)} placeholder="Muhammad Usman" />
                   <Input label="Professional Title" value={personal.title} onChange={v => handlePersonalChange('title', v)} placeholder="Software Engineer" />
                   <Input label="Email" value={personal.email} onChange={v => handlePersonalChange('email', v)} placeholder="john@email.com" />
                   <Input label="Phone" value={personal.phone} onChange={v => handlePersonalChange('phone', v)} placeholder="+92 300 1234567" />

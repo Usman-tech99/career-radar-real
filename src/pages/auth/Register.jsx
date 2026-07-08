@@ -73,7 +73,7 @@ export default function Register() {
                 value={fullName}
                 onChange={e => setFullName(e.target.value)}
                 className="input-field pl-10" 
-                placeholder="John Doe" 
+                placeholder="Muhammad Usman" 
               />
             </div>
           </div>
