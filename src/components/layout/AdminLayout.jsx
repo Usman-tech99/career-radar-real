@@ -22,7 +22,7 @@ const ALL_NAV_ITEMS = [
   { label: 'Manage Socials', path: '/admin/manage-socials', icon: Share2, perm: 'manage_socials' },
   { label: 'Manage Collabs', path: '/admin/manage-collaborators', icon: Users, perm: 'manage_collaborators' },
   { label: 'Manage Stats', path: '/admin/manage-stats', icon: BarChart3, perm: 'manage_stats' },
-  { label: 'Manage Team', path: '/admin/manage-team', icon: ShieldAlert, perm: 'manage_team' },
+  { label: 'Manage Admins', path: '/admin/manage-team', icon: ShieldAlert, perm: 'manage_team' },
   { label: 'Users List', path: '/admin/users-list', icon: Users, perm: 'manage_users' },
   { label: 'Team Members', path: '/admin/manage-team-members', icon: UserCheck, perm: 'manage_team_members' },
   { label: 'Payments', path: '/admin/manage-payments', icon: CreditCard, perm: 'manage_payments' },
