@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
-import { Briefcase, MapPin, Clock, Search, ArrowUpRight, X, ExternalLink, Calendar, Tag, Building2 } from 'lucide-react'
+import { Briefcase, MapPin, Clock, Search, ArrowUpRight, X, ExternalLink, Calendar, Tag, Building2, Mail } from 'lucide-react'
 import { formatDate } from '../../lib/helpers'
 import { Helmet } from 'react-helmet-async'
 
@@ -203,6 +203,13 @@ export default function Jobs({ navless } = {}) {
                 </div>
               )}
 
+              {selectedJob.contact && (
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+                  <Mail size={18} className="text-green" />
+                  <span className="text-sm text-white">{selectedJob.contact}</span>
+                </div>
+              )}
+
               {selectedJob.apply_url ? (
                 <a
                   href={selectedJob.apply_url}
@@ -213,7 +220,7 @@ export default function Jobs({ navless } = {}) {
                   <ExternalLink size={18} /> Apply Now
                 </a>
               ) : (
-                <p className="text-xs text-muted text-center mt-2">No external application link — see description above for details.</p>
+                <p className="text-xs text-muted text-center mt-2">No external application link — use contact info above to apply.</p>
               )}
             </div>
           </div>

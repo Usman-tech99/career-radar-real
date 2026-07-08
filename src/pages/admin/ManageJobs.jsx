@@ -15,6 +15,7 @@ const jobSchema = z.object({
   type: z.enum(['Full-time', 'Part-time', 'Internship', 'Freelance', 'Remote']),
   description: z.string().optional(),
   apply_url: z.string().url("Must be a valid URL").or(z.literal('')).optional(),
+  contact: z.string().optional(),
   deadline: z.string().optional(),
   tags: z.string().optional(),
   is_featured: z.boolean().default(false),
@@ -54,6 +55,7 @@ export default function ManageJobs() {
       setValue('type', job.type)
       setValue('description', job.description || '')
       setValue('apply_url', job.apply_url || '')
+      setValue('contact', job.contact || '')
       setValue('deadline', job.deadline || '')
       setValue('tags', job.tags ? job.tags.join(', ') : '')
       setValue('is_featured', job.is_featured)
@@ -211,10 +213,16 @@ export default function ManageJobs() {
                     {errors.apply_url && <p className="text-red-400 text-sm mt-1">{errors.apply_url.message}</p>}
                   </div>
                 ) : (
-                  <div>
-                    <label className="label">Full Description</label>
-                    <textarea {...register('description')} className="input-field h-48" placeholder="Provide complete job details, requirements, and how to apply..." />
-                  </div>
+                  <>
+                    <div>
+                      <label className="label">Full Description</label>
+                      <textarea {...register('description')} className="input-field h-48" placeholder="Provide complete job details, requirements, and how to apply..." />
+                    </div>
+                    <div>
+                      <label className="label">Contact Info <span className="text-muted font-normal">(email, phone, or apply instructions)</span></label>
+                      <input {...register('contact')} className="input-field" placeholder="e.g. hr@company.com or +92 300 1234567" />
+                    </div>
+                  </>
                 )}
 
                 <div className="grid grid-cols-2 gap-4">
