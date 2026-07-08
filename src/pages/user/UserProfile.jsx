@@ -69,6 +69,11 @@ export default function UserProfile() {
 
       const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(filePath)
       setProfile(prev => ({ ...prev, avatar_url: publicUrl }))
+
+      await Promise.all([
+        supabase.from('public_users').update({ avatar_url: publicUrl }).eq('id', user.id),
+        supabase.from('profiles').upsert({ id: user.id, avatar_url: publicUrl }, { onConflict: 'id' })
+      ])
     } catch (err) {
       toast.error(`Upload failed: ${err.message}`)
       setProfile(prev => ({ ...prev, avatar_url: '' }))

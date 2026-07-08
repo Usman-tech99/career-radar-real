@@ -37,7 +37,8 @@ export default function AdminLayout() {
 
   const filteredItems = ALL_NAV_ITEMS.filter(item => {
     if (item.perm === 'super_admin') return role === 'super_admin'
-    if (item.perm === 'collaborator') return role === 'collaborator' || permissions.length === 0
+    if (item.perm === 'collaborator') return role === 'collaborator' || role === 'admin' || role === 'super_admin'
+    if (role === 'super_admin') return true
     return permissions.includes(item.perm)
   })
 

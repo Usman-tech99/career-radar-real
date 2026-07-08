@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ImageOff } from 'lucide-react'
 
 const genericAlts = new Set(['avatar', 'thumbnail', 'logo', 'photo', 'image', 'picture', 'profile', 'preview', 'thumb'])
@@ -18,6 +18,10 @@ function extractInitials(alt) {
 
 export default function SafeImage({ src, alt, className = '', ...imgProps }) {
   const [failed, setFailed] = useState(!src)
+
+  useEffect(() => {
+    setFailed(false)
+  }, [src])
 
   if (!src || failed) {
     const initials = extractInitials(alt)

@@ -13,7 +13,7 @@ export function CollaboratorRoute() {
   }
 
   if (!user) return <Navigate to="/login" replace />
-  if (role !== 'collaborator') return <Navigate to="/" replace />
+  if (role !== 'collaborator' && role !== 'admin' && role !== 'super_admin') return <Navigate to="/" replace />
 
   return <Outlet />
 }
