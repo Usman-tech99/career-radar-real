@@ -67,8 +67,10 @@ export default function ManageJobs() {
   }
 
   async function onSubmit(data) {
+    // Strip has_link from payload — not a DB column, only used for UI toggle
+    const { has_link, ...rest } = data
     const payload = {
-      ...data,
+      ...rest,
       tags: data.tags ? data.tags.split(',').map(t => t.trim()) : [],
       posted_by: user.id
     }
