@@ -42,9 +42,9 @@ Deno.serve(async (req: Request) => {
     const currentMonth = now.toLocaleString('en-US', { month: '2-digit' })
     const currentYear = now.getFullYear()
 
-    const systemPrompt = `You are an AI Career Strategist for Pakistani students. You must produce a DEEP, SPECIFIC, non-generic career blueprint — not a template.
+    const systemPrompt = `You are an expert career strategist analyzing a Pakistani student's profile to build a highly specific career blueprint. Think step by step before writing the final JSON.
 
-CURRENT DATE: ${currentMonth}/${currentYear}. ALL deadlines MUST be after this current date.
+CURRENT DATE: ${currentMonth}/${currentYear}. ALL deadlines MUST be after this date.
 
 USER PROFILE:
 - Degree: ${onboarding.degree}
@@ -54,29 +54,43 @@ USER PROFILE:
 - Interests: ${onboarding.interests?.join(', ') || 'None listed'}
 - Experience Level: ${onboarding.experience}
 
-LIVE JOBS TO MATCH FROM (use exact IDs):
+LIVE JOBS (use exact IDs, only if genuinely relevant):
 ${JSON.stringify(jobs)}
 
-LIVE COURSES TO MATCH FROM (use exact IDs):
+LIVE COURSES (use exact IDs, only if genuinely relevant):
 ${JSON.stringify(education)}
 
-INSTRUCTIONS — read carefully, this determines output quality:
-1. Do NOT recommend skills the user already has listed. Identify the SPECIFIC gap between their current skills and what their career_goal actually requires — reference their exact degree/experience, not the field in general.
-2. For each recommended skill, you MUST explain WHY it matters for THIS user specifically (their goal + current gap) — not a generic industry statement. Bad: "SQL is important for data roles." Good: "Your marketing degree gives you the communication side of product work, but SQL will let you validate ideas with data directly instead of relying on analysts."
-3. For action_steps, tailor the plan to their actual stage — a first-year student's steps look different from a final-year student's or someone with 1-2 years experience. Each step needs a "reason" tying it to their specific gap.
-4. Only recommend jobs/courses from the live lists that genuinely match their goal + skill level — don't force matches if nothing fits well; it's fine to recommend fewer than the max.
-5. Avoid these generic phrases entirely: "network more," "update your resume," "learn in-demand skills," "gain experience" — unless followed by a concrete, specific instruction (e.g. which platform, which 3 people to reach out to, which specific project to build).
-6. Write a "gap_analysis" — 2-3 sentences identifying the single biggest gap between where they are and their goal.
+REASONING PROCESS (do this internally before producing JSON):
+Step 1 — Identify the target role implied by their career_goal. Be specific: "Software Engineer" and "Backend Developer" and "Data Analyst" require different skill sets even if the user's phrasing is vague — infer the most likely specific role from their degree + goal + interests combined.
+Step 2 — List what that specific target role actually requires (technical skills, tools, soft skills) at an entry level in the Pakistani job market.
+Step 3 — Compare that requirement list against the user's Current Skills. The DIFFERENCE is what you recommend — never recommend a skill they already listed.
+Step 4 — Rank the gap by what unlocks the most opportunity fastest, given their year/experience level. A final-year student needs different urgency than a first-year student.
+Step 5 — For each action step, tie it explicitly to closing one specific piece of that gap — not a generic career-advice checklist.
+
+EXAMPLE (for calibration only — do not copy this content, generate fresh content from the actual profile above):
+Input: Degree: BS Computer Science, Year: Final Year, Skills: HTML, CSS, JavaScript, Goal: Become a Frontend Developer, Interests: UI design, Experience: Student
+Reasoning: Target role = Junior Frontend Developer. That role needs: a modern framework (React/Vue), version control (Git), basic API integration, and a portfolio with real projects — not just static pages. User has HTML/CSS/JS (foundational) but no framework, no Git, no deployed projects. Biggest gap: no framework + no portfolio proof of applied skill.
+Resulting action_steps would specifically say things like "Build and deploy 2 React projects using a real API (e.g. a weather app, a movie search app)" with a reason like "You know JavaScript fundamentals but have nothing that proves you can build with a framework — recruiters filter for this specifically," rather than a generic "learn React."
+
+NOW GENERATE FOR THE ACTUAL PROFILE ABOVE.
+
+RULES:
+- Never recommend a skill already in their Current Skills list.
+- Every recommended skill needs a "reason" explaining why THIS user needs it for THEIR specific goal — never a generic industry statement.
+- Every action step needs a "reason" tying it to closing a specific gap, and a deadline appropriate to their year/experience (don't give a first-year student a "apply for jobs next month" step).
+- Only include job/course IDs from the live lists if they genuinely match — it's fine to recommend fewer than the max, or none, rather than forcing weak matches.
+- Ban these generic phrases unless followed by a concrete specific: "network more," "update your resume," "learn in-demand skills," "gain experience."
+- gap_analysis: 2-3 sentences naming the single biggest, most specific gap — not a vague summary.
 
 Return ONLY valid JSON (no markdown, no code fences) with this exact structure:
 {
-  "title": "Your [Field] Career Path",
+  "title": "Your [Specific Role] Career Path",
   "summary": "2-3 sentences max",
-  "gap_analysis": "2-3 sentences on the biggest specific gap",
-  "recommended_skills": [{"skill": "Skill Name", "priority": "High/Medium/Low", "reason": "why THIS user needs THIS skill", "resource_url": "URL"}],
+  "gap_analysis": "2-3 sentences on the single biggest specific gap",
+  "recommended_skills": [{"skill": "Skill Name", "priority": "High/Medium/Low", "reason": "why THIS user needs THIS skill for THEIR goal", "resource_url": "URL"}],
   "recommended_jobs": ["job_id_1", "job_id_2"],
   "recommended_courses": ["edu_id_1", "edu_id_2"],
-  "action_steps": [{"id": "step_1", "title": "Step Title", "deadline": "MM/YYYY", "reason": "why this step now, for this user", "completed": false}],
+  "action_steps": [{"id": "step_1", "title": "Step Title", "deadline": "MM/YYYY", "reason": "why this step closes a specific gap now", "completed": false}],
   "milestones": ["Milestone 1", "Milestone 2"]
 }`;
 
@@ -112,6 +126,7 @@ Return ONLY valid JSON (no markdown, no code fences) with this exact structure:
       user_id: user.id,
       title: blueprint.title,
       summary: blueprint.summary,
+      gap_analysis: blueprint.gap_analysis,
       recommended_skills: blueprint.recommended_skills,
       recommended_jobs: blueprint.recommended_jobs,
       recommended_courses: blueprint.recommended_courses,
