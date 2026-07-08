@@ -253,10 +253,17 @@ export default function Blueprint() {
                         {skill.reason && (
                           <p className="text-xs text-muted mt-1 mb-2 break-words">{skill.reason}</p>
                         )}
-                        {skill.resource_url && (
-                          <a href={skill.resource_url} target="_blank" rel="noreferrer" className="text-xs text-blue-400 hover:underline flex items-center gap-1 mt-2 truncate block">
-                            Resource <ExternalLink size={12} />
-                          </a>
+                        {skill.resources?.length > 0 && (
+                          <div className="mt-2 space-y-1">
+                            <p className="text-[11px] text-muted/60 uppercase tracking-wider">Available Resources</p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {skill.resources.map((r, ri) => (
+                                <Link key={ri} to={r.route} className="text-[11px] bg-blue-accent/10 text-blue-accent px-2 py-0.5 rounded-full border border-blue-accent/20 hover:bg-blue-accent/20 transition-colors">
+                                  {r.title}
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
                         )}
                       </div>
                     ))}

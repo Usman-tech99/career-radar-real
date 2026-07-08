@@ -38,6 +38,12 @@ Deno.serve(async (req: Request) => {
     const { data: education, error: eduError } = await sb.from('education_items').select('id,title,type,topics_covered').eq('is_published', true).limit(50);
     if (eduError) throw eduError;
 
+    const { data: content, error: contentError } = await sb.from('weekly_content').select('id,title,category').eq('is_published', true).limit(50);
+    if (contentError) throw contentError;
+
+    const { data: products, error: productsError } = await sb.from('products').select('id,title,description').eq('is_published', true).limit(50);
+    if (productsError) throw productsError;
+
     const now = new Date()
     const currentMonth = now.toLocaleString('en-US', { month: '2-digit' })
     const currentYear = now.getFullYear()
@@ -120,6 +126,25 @@ Return ONLY valid JSON (no markdown, no code fences) with this exact structure:
     if (!responseText) throw new Error("Groq returned empty response");
 
     const blueprint = JSON.parse(responseText);
+
+    // Match each recommended skill against courses, content, and products
+    const allResources = [
+      ...(education || []).map(e => ({ ...e, _type: 'course', _route: '/dashboard/education' })),
+      ...(content || []).map(c => ({ ...c, _type: 'article', _route: '/dashboard/resources' })),
+      ...(products || []).map(p => ({ ...p, _type: 'product', _route: '/dashboard/products' })),
+    ]
+    if (blueprint.recommended_skills?.length && allResources.length) {
+      blueprint.recommended_skills = blueprint.recommended_skills.map(skill => {
+        const skillLower = (skill.skill || '').toLowerCase()
+        const keywords = skillLower.split(/\s+/).filter(w => w.length > 2)
+        const matches = allResources.filter(r => {
+          const searchText = [r.title, r.description, r.topics_covered?.join(' '), r.category]
+            .filter(Boolean).join(' ').toLowerCase()
+          return keywords.some(kw => searchText.includes(kw))
+        }).slice(0, 3)
+        return { ...skill, resources: matches.length ? matches.map(m => ({ id: m.id, title: m.title, type: m._type, route: m._route })) : [] }
+      })
+    }
 
     await sb.from('career_blueprints').update({ is_active: false }).eq('user_id', user.id);
 
