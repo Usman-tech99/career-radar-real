@@ -112,7 +112,6 @@ Return ONLY valid JSON (no markdown, no code fences) with this exact structure:
       user_id: user.id,
       title: blueprint.title,
       summary: blueprint.summary,
-      gap_analysis: blueprint.gap_analysis || '',
       recommended_skills: blueprint.recommended_skills,
       recommended_jobs: blueprint.recommended_jobs,
       recommended_courses: blueprint.recommended_courses,
