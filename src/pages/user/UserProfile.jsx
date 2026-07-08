@@ -67,10 +67,11 @@ export default function UserProfile() {
       const { error: uploadError } = await supabase.storage.from(bucket).upload(filePath, file, { upsert: true })
       if (uploadError) throw uploadError
 
-      const publicUrl = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${bucket}/${filePath}`
+      const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(filePath)
       setProfile(prev => ({ ...prev, avatar_url: publicUrl }))
     } catch (err) {
       toast.error(`Upload failed: ${err.message}`)
+      setProfile(prev => ({ ...prev, avatar_url: '' }))
     } finally {
       setUploading(false)
       URL.revokeObjectURL(previewUrl)
