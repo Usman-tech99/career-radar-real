@@ -41,7 +41,7 @@ Deno.serve(async (req: Request) => {
     const { data: content, error: contentError } = await sb.from('weekly_content').select('id,title,category').eq('is_published', true).limit(50);
     if (contentError) throw contentError;
 
-    const { data: products, error: productsError } = await sb.from('products').select('id,title,description').eq('is_published', true).limit(50);
+    const { data: products, error: productsError } = await sb.from('products').select('id,title,description').eq('is_active', true).limit(50);
     if (productsError) throw productsError;
 
     const now = new Date()
