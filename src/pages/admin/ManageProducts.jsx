@@ -11,7 +11,7 @@ import { formatDate } from '../../lib/helpers'
 
 const productSchema = z.object({
   title: z.string().min(3, "Title is required"),
-  category: z.enum(['File', 'Course', 'Template', 'eBook', 'Bundle', 'Physical']),
+  category: z.enum(['File', 'Course', 'Template', 'eBook', 'Bundle', 'Physical', 'Subscriptions']),
   description: z.string().optional(),
   price_pkr: z.preprocess((val) => Number(val), z.number().min(0)),
   is_free: z.boolean().default(false),
@@ -213,6 +213,7 @@ export default function ManageProducts() {
                       <option value="eBook">eBook</option>
                       <option value="Bundle">Bundle</option>
                       <option value="Physical">Physical</option>
+                      <option value="Subscriptions">Subscriptions</option>
                     </select>
                   </div>
                 </div>
