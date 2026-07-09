@@ -15,3 +15,5 @@ CREATE POLICY "super_admin_select_error_logs" ON error_logs
 
 CREATE POLICY "insert_error_logs" ON error_logs
   FOR INSERT WITH CHECK (true);
+
+SELECT pg_notify('pgrst', 'reload schema');
