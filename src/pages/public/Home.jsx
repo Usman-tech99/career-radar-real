@@ -7,7 +7,7 @@ import { BlurFade } from '../../components/magicui/blur-fade'
 import { BorderBeam } from '../../components/magicui/border-beam'
 import { NumberTicker } from '../../components/magicui/number-ticker'
 import { LampContainer } from '../../components/ui/lamp'
-import { ArrowRight, Search, Bot, BookOpen, Users, TrendingUp, Target, Compass, CheckCircle, MessageSquare, Rocket, Sparkles, Quote } from 'lucide-react'
+import { ArrowRight, Search, Bot, BookOpen, Users, TrendingUp, Target, Compass, CheckCircle, Rocket, Sparkles, Quote } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { CardContainer, CardBody, CardItem } from '../../components/ui/3d-card'
 import { Helmet } from 'react-helmet-async'
@@ -314,13 +314,12 @@ export default function Home() {
 
         {/* Founder Message */}
         <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-4xl mx-auto mt-28">
-          <div className="glass-card p-10 md:p-14 text-center relative overflow-hidden">
+          <div className="glass-card p-6 md:p-10 text-center relative overflow-hidden">
             <BorderBeam size={150} duration={10} colorFrom="#10B981" colorTo="#8B5CF6" borderWidth={1} />
-            <MessageSquare size={32} className="text-green mx-auto mb-6" />
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">A Message from the Founder</h2>
-            <p className="text-muted text-base md:text-lg leading-relaxed max-w-3xl mx-auto">
-              Career Radar was created with one mission: To bridge the gap between talent and opportunity. Every student deserves access to trusted career guidance, global opportunities, practical skills, and a supportive community. We're building more than a platform—we're building an ecosystem where students can grow, collaborate, and prepare for the future of work with confidence.
-            </p>
+            <div className="relative w-full aspect-video max-w-3xl mx-auto rounded-xl overflow-hidden">
+              <iframe src="https://www.youtube.com/embed/BTWmQzuCjyc" title="Founder Message" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen className="absolute inset-0 w-full h-full" />
+            </div>
           </div>
         </BlurFade>
 
