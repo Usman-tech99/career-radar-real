@@ -118,11 +118,15 @@ export default function Onboarding() {
 
     setSubmitting(true)
     try {
-      const fullName = user.user_metadata?.full_name || ''
-      const email = user.email || ''
+      // Use fresh session data to ensure the auth user exists
+      const { data: { user: freshUser }, error: freshError } = await supabase.auth.getUser()
+      if (freshError || !freshUser) throw new Error('Session expired. Please log in again.')
+      const userId = freshUser.id
+      const fullName = freshUser.user_metadata?.full_name || user.user_metadata?.full_name || ''
+      const email = freshUser.email || user.email || ''
 
       const profileResult = await supabase.from('public_users').upsert({
-        id: user.id,
+        id: userId,
         full_name: fullName,
         email: email,
         country: form.country,
@@ -135,7 +139,7 @@ export default function Onboarding() {
       }
 
       const dataResult = await supabase.from('onboarding_data').upsert({
-        user_id: user.id,
+        user_id: userId,
         degree: form.degree,
         study_year: form.studyYear,
         skills: form.skills,
