@@ -168,17 +168,19 @@ export default function Shop({ navless } = {}) {
                   </p>
                   
                   <div className="flex items-center justify-between mt-auto">
-                    {product.is_free ? (
+                    {product.hide_price ? (
+                      <span className="text-green font-bold text-lg text-sm">Contact on WhatsApp</span>
+                    ) : product.is_free ? (
                       <span className="text-green font-bold text-lg">Free</span>
                     ) : (
                       <span className="text-gold font-bold text-lg">Rs. {product.price_pkr?.toLocaleString()}</span>
                     )}
                     <button 
-                      onClick={() => handlePurchaseClick(product)}
+                      onClick={() => product.hide_price ? window.open('https://wa.me/923707519482', '_blank') : handlePurchaseClick(product)}
                       className="btn-primary py-2 px-4 text-sm flex items-center gap-2"
                     >
-                      {product.is_free ? <Download size={14} /> : <DollarSign size={14} />}
-                      {product.is_free ? 'Download' : 'Purchase'}
+                      {product.hide_price ? <MessageCircle size={14} /> : product.is_free ? <Download size={14} /> : <DollarSign size={14} />}
+                      {product.hide_price ? 'WhatsApp' : product.is_free ? 'Download' : 'Purchase'}
                     </button>
                   </div>
                 </div>
@@ -202,10 +204,21 @@ export default function Shop({ navless } = {}) {
             <div className="space-y-4">
               <div className="p-4 bg-white/[0.02] border border-border rounded-xl">
                 <h3 className="font-bold text-lg mb-1">{selectedProduct.title}</h3>
-                <p className="text-gold font-bold text-2xl">Rs. {selectedProduct.price_pkr?.toLocaleString()}</p>
+                {!selectedProduct.hide_price && (
+                  <p className="text-gold font-bold text-2xl">Rs. {selectedProduct.price_pkr?.toLocaleString()}</p>
+                )}
               </div>
 
-              {selectedProduct.whatsapp_number && (
+              {selectedProduct.hide_price && (
+                <div className="p-4 bg-green/5 border border-green/20 rounded-xl">
+                  <p className="text-sm text-muted mb-2">Contact us on WhatsApp to purchase:</p>
+                  <button onClick={() => window.open('https://wa.me/923707519482', '_blank')} className="btn-primary w-full flex items-center justify-center gap-2 mt-2">
+                    <MessageCircle size={18} /> Contact on WhatsApp
+                  </button>
+                </div>
+              )}
+
+              {!selectedProduct.hide_price && selectedProduct.whatsapp_number && (
                 <div className="p-4 bg-green/5 border border-green/20 rounded-xl">
                   <div className="flex items-center gap-3 mb-2">
                     <MessageCircle className="text-green" size={20} />
@@ -226,26 +239,30 @@ export default function Shop({ navless } = {}) {
                 </div>
               )}
 
-              <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl">
-                <h4 className="font-bold text-amber-400 mb-2">Payment Instructions:</h4>
-                <ol className="text-sm text-muted space-y-2 list-decimal list-inside">
-                  <li>Send payment via WhatsApp or Bank Transfer</li>
-                  <li>Screenshot your payment confirmation</li>
-                  <li>Send screenshot to the WhatsApp number above</li>
-                  <li>You'll receive the download link within 24 hours</li>
-                </ol>
-              </div>
+              {!selectedProduct.hide_price && (
+                <>
+                  <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl">
+                    <h4 className="font-bold text-amber-400 mb-2">Payment Instructions:</h4>
+                    <ol className="text-sm text-muted space-y-2 list-decimal list-inside">
+                      <li>Send payment via WhatsApp or Bank Transfer</li>
+                      <li>Screenshot your payment confirmation</li>
+                      <li>Send screenshot to the WhatsApp number above</li>
+                      <li>You'll receive the download link within 24 hours</li>
+                    </ol>
+                  </div>
 
-              <button 
-                onClick={() => {
-                  if (selectedProduct.whatsapp_number) {
-                    window.open(`https://wa.me/${selectedProduct.whatsapp_number.replace(/[^0-9]/g, '')}`, '_blank')
-                  }
-                }}
-                className="btn-primary w-full flex items-center justify-center gap-2"
-              >
-                <MessageCircle size={18} /> Contact on WhatsApp
-              </button>
+                  <button 
+                    onClick={() => {
+                      if (selectedProduct.whatsapp_number) {
+                        window.open(`https://wa.me/${selectedProduct.whatsapp_number.replace(/[^0-9]/g, '')}`, '_blank')
+                      }
+                    }}
+                    className="btn-primary w-full flex items-center justify-center gap-2"
+                  >
+                    <MessageCircle size={18} /> Contact on WhatsApp
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

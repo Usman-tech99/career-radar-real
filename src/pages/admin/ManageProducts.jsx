@@ -15,6 +15,7 @@ const productSchema = z.object({
   description: z.string().optional(),
   price_pkr: z.preprocess((val) => Number(val), z.number().min(0)),
   is_free: z.boolean().default(false),
+  hide_price: z.boolean().default(false),
   is_active: z.boolean().default(true),
   external_link: z.string().optional(),
   whatsapp_number: z.string().optional(),
@@ -34,7 +35,7 @@ export default function ManageProducts() {
 
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm({
     resolver: zodResolver(productSchema),
-    defaultValues: { price_pkr: 0, is_free: false, is_active: true }
+    defaultValues: { price_pkr: 0, is_free: false, hide_price: false, is_active: true }
   })
 
   const isFree = watch('is_free')
@@ -58,6 +59,7 @@ export default function ManageProducts() {
       setValue('description', item.description || '')
       setValue('price_pkr', item.price_pkr || 0)
       setValue('is_free', item.is_free)
+      setValue('hide_price', item.hide_price)
       setValue('is_active', item.is_active)
       setValue('external_link', item.external_link || '')
       setValue('whatsapp_number', item.whatsapp_number || '')
@@ -234,6 +236,12 @@ export default function ManageProducts() {
                       <input type="number" {...register('price_pkr')} className="input-field py-2" placeholder="0" />
                     </div>
                   )}
+                </div>
+                <div className="flex items-center gap-3">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" {...register('hide_price')} className="w-4 h-4 rounded border-border bg-white/[0.04] accent-green" />
+                    <span className="text-sm text-muted">Hide price & redirect to WhatsApp</span>
+                  </label>
                 </div>
 
                 {!isFree && (
