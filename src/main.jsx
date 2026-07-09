@@ -25,8 +25,10 @@ if (import.meta.env.PROD) {
   });
 }
 
-// Global error handler — logs unhandled errors to DB and shows friendly UI
+// Global error handler — skip logging in development
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 window.addEventListener('error', (e) => {
+  if (isLocalhost) return
   fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/error_logs`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY },
@@ -40,6 +42,7 @@ window.addEventListener('error', (e) => {
   }).catch(() => {})
 })
 window.addEventListener('unhandledrejection', (e) => {
+  if (isLocalhost) return
   fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/error_logs`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY },

@@ -12,6 +12,7 @@ export default class ErrorBoundary extends Component {
   }
 
   async componentDidCatch(error, info) {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return
     try {
       const user = (await supabase.auth.getUser()).data?.user
       await supabase.from('error_logs').insert({
