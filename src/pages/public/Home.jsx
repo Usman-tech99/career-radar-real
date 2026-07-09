@@ -335,9 +335,9 @@ export default function Home() {
               <Link to="/social" className="btn-primary text-lg px-8 py-4 inline-flex items-center gap-2 group">
                 Join Community <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
               </Link>
-              <button onClick={() => window.location.href = 'mailto:contact@career-radar.space'} className="btn-ghost text-lg px-8 py-4 border border-white/10 hover:border-white/20">
+              <a href="https://wa.me/923707519482" target="_blank" rel="noreferrer" className="btn-ghost text-lg px-8 py-4 border border-white/10 hover:border-white/20">
                 Partner With Us
-              </button>
+              </a>
             </div>
           </div>
         </BlurFade>
