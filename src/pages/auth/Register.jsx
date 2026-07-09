@@ -35,14 +35,7 @@ export default function Register() {
       if (data.session) {
         navigate('/onboarding')
       } else {
-        // Auto sign-in to bypass email verification
-        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password })
-        if (signInError) {
-          toast.error('Account created but auto-login failed. Please sign in manually.')
-          navigate('/login')
-        } else {
-          navigate('/onboarding')
-        }
+        toast('Please check your email for a verification link to complete registration.', { icon: '📧' })
       }
     } catch (error) {
       toast.error(error.message)
