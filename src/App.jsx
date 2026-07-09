@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import ErrorBoundary from './components/ErrorBoundary'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 
@@ -60,6 +61,7 @@ const ManageTeamMembers = lazy(() => import('./pages/admin/ManageTeamMembers'))
 const ManagePayments = lazy(() => import('./pages/admin/ManagePayments'))
 const AIInsights = lazy(() => import('./pages/admin/AIInsights'))
 const MyProfile = lazy(() => import('./pages/admin/MyProfile'))
+const ManageErrorLogs = lazy(() => import('./pages/admin/ManageErrorLogs'))
 
 function Loader() {
   return (
@@ -96,6 +98,7 @@ export default function App() {
           <RadarAIBubble />
         </Suspense>
         <Toaster position="bottom-center" />
+        <ErrorBoundary>
         <Suspense fallback={<Loader />}>
           <Routes>
             <Route path="/" element={<HomeRedirect />} />
@@ -169,6 +172,7 @@ export default function App() {
                 <Route path="/admin/manage-team-members" element={<ManageTeamMembers />} />
                 <Route path="/admin/manage-payments" element={<ManagePayments />} />
                 <Route path="/admin/ai-insights" element={<AIInsights />} />
+                <Route path="/admin/error-logs" element={<ManageErrorLogs />} />
               </Route>
 
               <Route element={<CollaboratorRoute />}>
@@ -179,6 +183,7 @@ export default function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
+        </ErrorBoundary>
       </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>

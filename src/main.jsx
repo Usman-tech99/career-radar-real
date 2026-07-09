@@ -25,6 +25,34 @@ if (import.meta.env.PROD) {
   });
 }
 
+// Global error handler — logs unhandled errors to DB and shows friendly UI
+window.addEventListener('error', (e) => {
+  fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/error_logs`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY },
+    body: JSON.stringify({
+      user_id: null,
+      url: window.location.href,
+      message: e.message || 'Unhandled error',
+      stack: e.error?.stack || '',
+      user_agent: navigator.userAgent,
+    })
+  }).catch(() => {})
+})
+window.addEventListener('unhandledrejection', (e) => {
+  fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/error_logs`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY },
+    body: JSON.stringify({
+      user_id: null,
+      url: window.location.href,
+      message: e.reason?.message || 'Unhandled promise rejection',
+      stack: e.reason?.stack || '',
+      user_agent: navigator.userAgent,
+    })
+  }).catch(() => {})
+})
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <HelmetProvider>
