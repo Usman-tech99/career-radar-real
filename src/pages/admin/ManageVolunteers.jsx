@@ -20,11 +20,23 @@ export default function ManageVolunteers() {
 
   async function updateStatus(id, status) {
     const { error } = await supabase.from('volunteers').update({ status }).eq('id', id)
-    if (error) toast.error('Failed to update status')
-    else {
-      toast.success(`Marked as ${status}`)
-      setVolunteers(prev => prev.map(v => v.id === id ? { ...v, status } : v))
-      if (selected?.id === id) setSelected(prev => ({ ...prev, status }))
+    if (error) { toast.error('Failed to update status'); return }
+    toast.success(`Marked as ${status}`)
+    setVolunteers(prev => prev.map(v => v.id === id ? { ...v, status } : v))
+    if (selected?.id === id) setSelected(prev => ({ ...prev, status }))
+
+    if (status === 'approved') {
+      const vol = volunteers.find(v => v.id === id)
+      if (vol) {
+        try {
+          const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-volunteer-email`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY },
+            body: JSON.stringify({ type: 'approved', full_name: vol.full_name, email: vol.email })
+          })
+          if (!res.ok) console.error('Failed to send approval email')
+        } catch (e) { console.error('Approval email error:', e) }
+      }
     }
   }
 
