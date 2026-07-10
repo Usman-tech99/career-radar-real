@@ -159,7 +159,6 @@ export default function VolunteerForm() {
         })
       } catch (_) { /* email notification is optional */ }
       setSubmitted(true)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (err) {
       toast.error(err.message || 'Failed to submit application')
     } finally {
