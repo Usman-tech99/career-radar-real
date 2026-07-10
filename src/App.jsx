@@ -62,6 +62,7 @@ const ManagePayments = lazy(() => import('./pages/admin/ManagePayments'))
 const AIInsights = lazy(() => import('./pages/admin/AIInsights'))
 const MyProfile = lazy(() => import('./pages/admin/MyProfile'))
 const ManageErrorLogs = lazy(() => import('./pages/admin/ManageErrorLogs'))
+const ManageVolunteers = lazy(() => import('./pages/admin/ManageVolunteers'))
 
 function Loader() {
   return (
@@ -173,6 +174,7 @@ export default function App() {
                 <Route path="/admin/manage-payments" element={<ManagePayments />} />
                 <Route path="/admin/ai-insights" element={<AIInsights />} />
                 <Route path="/admin/error-logs" element={<ManageErrorLogs />} />
+                <Route path="/admin/manage-volunteers" element={<ManageVolunteers />} />
               </Route>
 
               <Route element={<CollaboratorRoute />}>
