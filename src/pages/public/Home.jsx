@@ -10,6 +10,7 @@ import { LampContainer } from '../../components/ui/lamp'
 import { ArrowRight, Search, Bot, BookOpen, Users, TrendingUp, Target, Compass, CheckCircle, Rocket, Sparkles, Quote } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { CardContainer, CardBody, CardItem } from '../../components/ui/3d-card'
+import VolunteerForm from '../../components/VolunteerForm'
 import { Helmet } from 'react-helmet-async'
 
 const features = [
@@ -323,24 +324,7 @@ export default function Home() {
           </div>
         </BlurFade>
 
-        {/* Final CTA */}
-        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full mt-28 mb-8">
-          <div className="glass-card p-12 md:p-16 text-center max-w-5xl mx-auto rounded-2xl relative overflow-hidden">
-            <BorderBeam size={200} duration={12} colorFrom="#10B981" colorTo="#60A5FA" borderWidth={1} />
-            <h2 className="text-3xl md:text-5xl font-bold font-sora text-white mb-4">Start Your Career Journey Today</h2>
-            <p className="text-muted text-base md:text-lg mb-8 max-w-2xl mx-auto">
-              Join thousands of students discovering opportunities, building skills, and preparing for the future with Career Radar.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to="/social" className="btn-primary text-lg px-8 py-4 inline-flex items-center gap-2 group">
-                Join Community <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <a href="https://wa.me/923707519482" target="_blank" rel="noreferrer" className="btn-ghost text-lg px-8 py-4 border border-white/10 hover:border-white/20">
-                Partner With Us
-              </a>
-            </div>
-          </div>
-        </BlurFade>
+        <VolunteerForm />
       </main>
 
       <Footer />
