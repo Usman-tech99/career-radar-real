@@ -26,6 +26,50 @@ const WHY_CARDS = [
   { icon: '💼', title: 'Career Growth', desc: 'Develop leadership, communication, project management, and digital skills.' },
 ]
 
+function Input({ label, required, value, onChange, type = 'text', placeholder, textarea, className }) {
+  const id = label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+  return (
+    <div className={className}>
+      <label htmlFor={id} className="label">{label}{required && <span className="text-red-400 ml-1">*</span>}</label>
+      {textarea ? (
+        <textarea id={id} value={value} onChange={e => onChange(e.target.value)} className="input-field h-28" placeholder={placeholder} />
+      ) : (
+        <input id={id} type={type} value={value} onChange={e => onChange(e.target.value)} className="input-field" placeholder={placeholder} />
+      )}
+    </div>
+  )
+}
+
+function RadioGroup({ label, options, value, onChange }) {
+  return (
+    <div>
+      <p className="label mb-2">{label}</p>
+      <div className="flex flex-wrap gap-3">
+        {options.map(opt => (
+          <button key={opt} type="button" onClick={() => onChange(opt)} className={`px-4 py-2 text-sm rounded-lg border transition-colors ${value === opt ? 'bg-green/10 text-green border-green/40' : 'bg-white/[0.02] text-muted border-border hover:border-white/20'}`}>
+            {opt}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function PillGroup({ label, options, selected, onToggle }) {
+  return (
+    <div>
+      <p className="label mb-2">{label}</p>
+      <div className="flex flex-wrap gap-2">
+        {options.map(opt => (
+          <button key={opt} type="button" onClick={() => onToggle(opt)} className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${selected.includes(opt) ? 'bg-green/10 text-green border-green/40' : 'bg-white/[0.02] text-muted border-border hover:border-white/20'}`}>
+            {opt}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function VolunteerForm() {
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -138,50 +182,6 @@ export default function VolunteerForm() {
           <p className="text-muted/60 mt-6 text-sm">We appreciate your willingness to contribute to our mission of helping students build better careers.</p>
         </div>
       </BlurFade>
-    )
-  }
-
-  function Input({ label, required, value, onChange, type = 'text', placeholder, textarea, className }) {
-    const id = label.toLowerCase().replace(/\s+/g, '-')
-    return (
-      <div className={className}>
-        <label htmlFor={id} className="label">{label}{required && <span className="text-red-400 ml-1">*</span>}</label>
-        {textarea ? (
-          <textarea id={id} value={value} onChange={e => onChange(e.target.value)} className="input-field h-28" placeholder={placeholder} />
-        ) : (
-          <input id={id} type={type} value={value} onChange={e => onChange(e.target.value)} className="input-field" placeholder={placeholder} />
-        )}
-      </div>
-    )
-  }
-
-  function RadioGroup({ label, options, value, onChange }) {
-    return (
-      <div>
-        <p className="label mb-2">{label}</p>
-        <div className="flex flex-wrap gap-3">
-          {options.map(opt => (
-            <button key={opt} type="button" onClick={() => onChange(opt)} className={`px-4 py-2 text-sm rounded-lg border transition-colors ${value === opt ? 'bg-green/10 text-green border-green/40' : 'bg-white/[0.02] text-muted border-border hover:border-white/20'}`}>
-              {opt}
-            </button>
-          ))}
-        </div>
-      </div>
-    )
-  }
-
-  function PillGroup({ label, options, selected, onToggle, multi }) {
-    return (
-      <div>
-        <p className="label mb-2">{label}</p>
-        <div className="flex flex-wrap gap-2">
-          {options.map(opt => (
-            <button key={opt} type="button" onClick={() => onToggle(opt)} className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${selected.includes(opt) ? 'bg-green/10 text-green border-green/40' : 'bg-white/[0.02] text-muted border-border hover:border-white/20'}`}>
-              {opt}
-            </button>
-          ))}
-        </div>
-      </div>
     )
   }
 
