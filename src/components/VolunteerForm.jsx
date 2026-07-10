@@ -33,7 +33,7 @@ export default function VolunteerForm() {
     fullName: '', preferredName: '', email: '', phone: '', country: '', city: '',
     university: '', degree: '', currentYear: '', linkedin: '', portfolio: '', cvUrl: '',
     departments: [], reason: '', about: '',
-    skills: [], volunteeredBefore: '', prevOrganizations: '', prevRoles: '', prevDuration: '',
+    skills: [], otherSkills: '', volunteeredBefore: '', prevOrganizations: '', prevRoles: '', prevDuration: '',
     hoursPerWeek: '', preferredTime: '', preferredChannel: '',
     biggestStrength: '', skillToDevelop: '', proudProject: '', heardFrom: '',
     agreementVolunteer: false, agreementHours: false, agreementConduct: false, agreementAccurate: false,
@@ -87,6 +87,7 @@ export default function VolunteerForm() {
         reason: form.reason,
         about: form.about,
         skills: form.skills,
+        other_skills: form.otherSkills,
         volunteered_before: form.volunteeredBefore === 'yes',
         prev_organizations: form.prevOrganizations,
         prev_roles: form.prevRoles,
@@ -302,7 +303,7 @@ export default function VolunteerForm() {
             <div className="space-y-4">
               <h3 className="text-xl font-bold text-green border-b border-green/20 pb-2">Skills</h3>
               <PillGroup label="Select your skills" options={SKILLS} selected={form.skills} onToggle={toggleSkill} />
-              <Input label="Other skills not listed above" value={form.skills.includes('Other') ? '' : ''} onChange={() => {}} placeholder="" />
+              <Input label="Other skills not listed above" value={form.otherSkills} onChange={v => set('otherSkills', v)} placeholder="e.g. SEO, Data Analysis, Copywriting..." />
             </div>
 
             {/* Experience */}

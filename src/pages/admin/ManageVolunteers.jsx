@@ -102,6 +102,7 @@ export default function ManageVolunteers() {
                     <div className="flex flex-wrap gap-1.5 mt-1">{selected.skills.map(s => <span key={s} className="text-xs bg-white/10 text-muted px-2 py-0.5 rounded-full">{s}</span>)}</div>
                   </div>
                 )}
+                {selected.other_skills && <div><span className="text-muted text-sm block mb-1">Other skills</span><p className="text-sm text-white">{selected.other_skills}</p></div>}
 
                 {selected.reason && <div><span className="text-muted text-sm block mb-1">Why join?</span><p className="text-sm text-white whitespace-pre-wrap">{selected.reason}</p></div>}
                 {selected.about && <div><span className="text-muted text-sm block mb-1">About</span><p className="text-sm text-white whitespace-pre-wrap">{selected.about}</p></div>}
