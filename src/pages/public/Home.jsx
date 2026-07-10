@@ -10,7 +10,6 @@ import { LampContainer } from '../../components/ui/lamp'
 import { ArrowRight, Search, Bot, BookOpen, Users, TrendingUp, Target, Compass, CheckCircle, Rocket, Sparkles, Quote } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { CardContainer, CardBody, CardItem } from '../../components/ui/3d-card'
-import VolunteerForm from '../../components/VolunteerForm'
 import { Helmet } from 'react-helmet-async'
 
 const features = [
@@ -324,7 +323,17 @@ export default function Home() {
           </div>
         </BlurFade>
 
-        <VolunteerForm />
+        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-4xl mx-auto mt-28 mb-20">
+          <div className="glass-card p-8 md:p-12 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Want to Make a Difference?</h2>
+            <p className="text-muted text-base md:text-lg max-w-2xl mx-auto mb-8">
+              Join our volunteer team and help students around the world build better careers.
+            </p>
+            <Link to="/volunteer" className="btn-primary text-lg px-8 py-4 inline-flex items-center gap-2 group">
+              Become a Volunteer <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        </BlurFade>
       </main>
 
       <Footer />

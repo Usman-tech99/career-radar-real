@@ -29,6 +29,7 @@ const About = lazy(() => import('./pages/public/About'))
 const Social = lazy(() => import('./pages/public/Social'))
 const Community = lazy(() => import('./pages/public/Community'))
 const Collaborators = lazy(() => import('./pages/public/Collaborators'))
+const Volunteer = lazy(() => import('./pages/public/Volunteer'))
 const NotFound = lazy(() => import('./pages/public/NotFound'))
 
 const Login = lazy(() => import('./pages/auth/Login'))
@@ -117,6 +118,7 @@ export default function App() {
             <Route path="/community" element={<Community />} />
             <Route path="/social" element={<Social />} />
             <Route path="/collaborators" element={<Collaborators />} />
+            <Route path="/volunteer" element={<Volunteer />} />
             <Route path="/donate" element={<Donate />} />
 
             {/* AUTH */}

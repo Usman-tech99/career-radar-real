@@ -75,7 +75,7 @@ export default function Footer() {
             <h4 className="font-bold text-white mb-6">Community</h4>
             <ul className="space-y-4">
               <li><Link to="/social" className="text-sm text-muted hover:text-white transition-colors">WhatsApp Community</Link></li>
-              <li><Link to="/community" className="text-sm text-muted hover:text-white transition-colors">Volunteer Program</Link></li>
+              <li><Link to="/volunteer" className="text-sm text-green font-semibold hover:text-green/80 transition-colors">Volunteer Program</Link></li>
               <li><Link to="/community" className="text-sm text-muted hover:text-white transition-colors">Events</Link></li>
               <li><Link to="/community" className="text-sm text-muted hover:text-white transition-colors">Success Stories</Link></li>
               <li><Link to="/weekly-content" className="text-sm text-muted hover:text-white transition-colors">Newsletter</Link></li>
