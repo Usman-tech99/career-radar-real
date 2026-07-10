@@ -104,6 +104,15 @@ export default function VolunteerForm() {
         agreement_accurate: form.agreementAccurate,
       })
       if (error) throw error
+      // Send email notification
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-volunteer-email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+          body: JSON.stringify({ full_name: form.fullName, email: form.email, phone: form.phone, country: form.country, departments: form.departments })
+        })
+      } catch (_) { /* email notification is optional */ }
       setSubmitted(true)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (err) {
