@@ -35,7 +35,7 @@ Deno.serve(async (req: Request) => {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'Career Radar <onboarding@resend.dev>',
+        from: 'Career Radar <notifications@career-radar.space>',
         to: NOTIFY_EMAIL,
         subject: `New Volunteer Application — ${full_name}`,
         html,
