@@ -65,10 +65,16 @@ export default function Shop({ navless } = {}) {
     return product.category === filterCategory
   })
 
-  const handlePurchaseClick = (product) => {
+  const handlePurchaseClick = async (product) => {
     if (product.is_free) {
       if (product.file_url) {
-        window.open(product.file_url, '_blank')
+        try {
+          const { data, error } = await supabase.storage.from('product-files').createSignedUrl(product.file_url, 604800)
+          if (error) throw error
+          window.open(data.signedUrl, '_blank')
+        } catch {
+          toast.error('Failed to generate download link')
+        }
       } else if (product.external_link) {
         window.open(product.external_link, '_blank')
       }
