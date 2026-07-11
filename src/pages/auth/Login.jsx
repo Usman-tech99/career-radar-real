@@ -3,21 +3,26 @@ import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { ArrowRight, Mail, Lock } from 'lucide-react'
+import { Turnstile } from '@marsidev/react-turnstile'
+import { TURNSTILE_SITE_KEY } from '../../lib/turnstile'
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState('')
   const navigate = useNavigate()
 
   async function handleLogin(e) {
     e.preventDefault()
+    if (!captchaToken) return toast.error('Please wait for verification')
     setLoading(true)
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
+        options: { captchaToken },
       })
 
       if (error) throw error
@@ -80,6 +85,14 @@ export default function Login() {
                 placeholder="••••••••" 
               />
             </div>
+          </div>
+
+          <div className="flex justify-center">
+            <Turnstile
+              siteKey={TURNSTILE_SITE_KEY}
+              onSuccess={setCaptchaToken}
+              options={{ theme: 'dark' }}
+            />
           </div>
 
           <button 

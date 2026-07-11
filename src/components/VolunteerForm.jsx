@@ -4,7 +4,8 @@ import toast from 'react-hot-toast'
 import { BlurFade } from './magicui/blur-fade'
 import { BorderBeam } from './magicui/border-beam'
 import { CheckCircle, ArrowRight, Loader2 } from 'lucide-react'
-
+import { Turnstile } from '@marsidev/react-turnstile'
+import { TURNSTILE_SITE_KEY } from '../lib/turnstile'
 
 const DEPARTMENTS = [
   'Community Management', 'Content Writing', 'Opportunity Research', 'Graphic Design',
@@ -74,6 +75,7 @@ function PillGroup({ label, options, selected, onToggle }) {
 export default function VolunteerForm() {
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState('')
   const [form, setForm] = useState({
     fullName: '', preferredName: '', email: '', phone: '', country: '', city: '',
     university: '', degree: '', currentYear: '', linkedin: '', portfolio: '', cvUrl: '',
@@ -152,10 +154,11 @@ export default function VolunteerForm() {
       if (error) throw error
       // Send email notification
       try {
+        if (!captchaToken) throw new Error('Captcha not verified')
         await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-volunteer-email`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY },
-          body: JSON.stringify({ full_name: form.fullName, email: form.email, phone: form.phone, country: form.country, departments: form.departments })
+          body: JSON.stringify({ captchaToken, full_name: form.fullName, email: form.email, phone: form.phone, country: form.country, departments: form.departments })
         })
       } catch (_) { /* email notification is optional */ }
       setSubmitted(true)
@@ -361,6 +364,13 @@ export default function VolunteerForm() {
                   {submitting ? <Loader2 size={20} className="animate-spin" /> : <ArrowRight size={20} />}
                 {submitting ? 'Submitting...' : 'Apply as a Volunteer'}
               </button>
+              <div className="flex justify-center mt-4">
+                <Turnstile
+                  siteKey={TURNSTILE_SITE_KEY}
+                  onSuccess={setCaptchaToken}
+                  options={{ theme: 'dark' }}
+                />
+              </div>
             </div>
           </form>
         </div>
