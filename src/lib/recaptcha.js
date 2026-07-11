@@ -1,4 +1,4 @@
-const SITE_KEY = '6LcOjf0qAAAAANblB_R4x6NncK2qCENFiEJKhRRS'
+const SITE_KEY = '6LfDLE4tAAAAAHY8u8w0EASUZOo4LHNIdym3OsPA'
 
 export async function getRecaptchaToken(action = 'submit') {
   return new Promise((resolve) => {
