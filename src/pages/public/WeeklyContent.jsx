@@ -95,7 +95,7 @@ export default function WeeklyContent({ navless } = {}) {
                   
                   <div className="flex justify-between items-end mt-auto gap-2">
                     {item.file_url ? (
-                      <a href={item.file_url} target="_blank" rel="noreferrer" className="btn-ghost text-sm py-2 px-4 flex-1 text-center">
+                      <a href={`/api/download?url=${encodeURIComponent(item.file_url)}&filename=${encodeURIComponent(item.title || 'download')}`} target="_blank" rel="noreferrer" className="btn-ghost text-sm py-2 px-4 flex-1 text-center">
                         Download
                       </a>
                     ) : item.external_link ? (
