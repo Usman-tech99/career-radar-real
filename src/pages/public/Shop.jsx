@@ -72,8 +72,8 @@ export default function Shop({ navless } = {}) {
           const { data, error } = await supabase.storage.from('product-files').createSignedUrl(product.file_url, 604800)
           if (error) throw error
           window.open(data.signedUrl, '_blank')
-        } catch {
-          toast.error('Failed to generate download link')
+        } catch (e) {
+          toast.error('Download failed: ' + (e.message || 'unknown error'))
         }
       } else if (product.external_link) {
         window.open(product.external_link, '_blank')
