@@ -78,7 +78,7 @@ export default function Login() {
               <input 
                 type="password" 
                 required 
-                minLength={8}
+
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 className="input-field pl-10" 
