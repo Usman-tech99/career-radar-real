@@ -1,0 +1,16 @@
+name: Data Retention Cleanup
+
+on:
+  schedule:
+    - cron: '0 3 1 * *'  # 3 AM on the 1st of every month
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger retention cleanup
+        run: |
+          curl -s -X POST "${{ secrets.SUPABASE_FUNCTIONS_URL }}/retention-cleanup" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Content-Type: application/json"

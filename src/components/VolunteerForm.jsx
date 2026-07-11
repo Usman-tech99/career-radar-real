@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import toast from 'react-hot-toast'
 import { BlurFade } from './magicui/blur-fade'
 import { BorderBeam } from './magicui/border-beam'
 import { CheckCircle, ArrowRight, Loader2 } from 'lucide-react'
+import { getRecaptchaToken, loadRecaptchaScript } from '../lib/recaptcha'
 
 const DEPARTMENTS = [
   'Community Management', 'Content Writing', 'Opportunity Research', 'Graphic Design',
@@ -73,6 +74,8 @@ function PillGroup({ label, options, selected, onToggle }) {
 export default function VolunteerForm() {
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+
+  useEffect(() => { loadRecaptchaScript() }, [])
   const [form, setForm] = useState({
     fullName: '', preferredName: '', email: '', phone: '', country: '', city: '',
     university: '', degree: '', currentYear: '', linkedin: '', portfolio: '', cvUrl: '',
@@ -151,11 +154,12 @@ export default function VolunteerForm() {
       if (error) throw error
       // Send email notification
       try {
+        const captchaToken = await getRecaptchaToken('volunteer_form')
         const { data: { session } } = await supabase.auth.getSession()
         await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-volunteer-email`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY },
-          body: JSON.stringify({ full_name: form.fullName, email: form.email, phone: form.phone, country: form.country, departments: form.departments })
+          body: JSON.stringify({ captchaToken, full_name: form.fullName, email: form.email, phone: form.phone, country: form.country, departments: form.departments })
         })
       } catch (_) { /* email notification is optional */ }
       setSubmitted(true)

@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { ArrowRight, Mail, Lock, User } from 'lucide-react'
+import { getRecaptchaToken, loadRecaptchaScript } from '../../lib/recaptcha'
 
 export default function Register() {
   const [fullName, setFullName] = useState('')
@@ -11,18 +12,20 @@ export default function Register() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
+  useEffect(() => { loadRecaptchaScript() }, [])
+
   async function handleRegister(e) {
     e.preventDefault()
     setLoading(true)
 
     try {
+      const captchaToken = await getRecaptchaToken('register')
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: {
-            full_name: fullName,
-          }
+          data: { full_name: fullName },
+          captchaToken,
         }
       })
 
