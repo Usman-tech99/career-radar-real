@@ -68,8 +68,7 @@ export default function Shop({ navless } = {}) {
   const handlePurchaseClick = async (product) => {
     if (product.is_free) {
       if (product.file_url) {
-        const downloadUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/download-product?id=${product.id}`
-        window.open(downloadUrl, '_blank')
+        window.open(`/api/download?file=${encodeURIComponent(product.file_url)}`, '_blank')
       } else if (product.external_link) {
         window.open(product.external_link, '_blank')
       }
