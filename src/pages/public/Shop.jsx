@@ -68,13 +68,8 @@ export default function Shop({ navless } = {}) {
   const handlePurchaseClick = async (product) => {
     if (product.is_free) {
       if (product.file_url) {
-        try {
-          const { data, error } = await supabase.storage.from('product-files').createSignedUrl(product.file_url, 604800)
-          if (error) throw error
-          window.open(data.signedUrl, '_blank')
-        } catch (e) {
-          toast.error('Download failed: ' + (e.message || 'unknown error'))
-        }
+        const downloadUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/download-product?id=${product.id}`
+        window.open(downloadUrl, '_blank')
       } else if (product.external_link) {
         window.open(product.external_link, '_blank')
       }
