@@ -7,6 +7,9 @@ verify_jwt = true
 [functions.send-volunteer-email]
 verify_jwt = false
 
+[functions.download-product]
+verify_jwt = false
+
 [auth]
 enabled = true
 site_url = "https://www.career-radar.space"
