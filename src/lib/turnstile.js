@@ -1,1 +1,0 @@
-export const TURNSTILE_SITE_KEY = '0x4AAAAAADz3rrTa85eKdrUO'

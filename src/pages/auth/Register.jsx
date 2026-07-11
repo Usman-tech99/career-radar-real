@@ -3,20 +3,15 @@ import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { ArrowRight, Mail, Lock, User } from 'lucide-react'
-import { Turnstile } from '@marsidev/react-turnstile'
-import { TURNSTILE_SITE_KEY } from '../../lib/turnstile'
-
 export default function Register() {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
-  const [captchaToken, setCaptchaToken] = useState('')
   const navigate = useNavigate()
 
   async function handleRegister(e) {
     e.preventDefault()
-    if (!captchaToken) return toast.error('Please wait for verification')
     setLoading(true)
 
     try {
@@ -25,7 +20,6 @@ export default function Register() {
         password,
         options: {
           data: { full_name: fullName },
-          captchaToken,
         }
       })
 
@@ -109,14 +103,6 @@ export default function Register() {
                 placeholder="••••••••" 
               />
             </div>
-          </div>
-
-          <div className="flex justify-center">
-            <Turnstile
-              siteKey={TURNSTILE_SITE_KEY}
-              onSuccess={setCaptchaToken}
-              options={{ theme: 'dark' }}
-            />
           </div>
 
           <button 
