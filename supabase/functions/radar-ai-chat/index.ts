@@ -221,27 +221,58 @@ LIVE DATA:\n\n${liveData}`
       }))
     ];
 
-    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${Deno.env.get("GROQ_API_KEY")}`
-      },
-      body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
-        messages: groqMessages,
-        max_tokens: 1024,
-        temperature: 0.7
-      })
-    });
+    const DEEPSEEK_API_KEY = Deno.env.get("DEEPSEEK_API_KEY") || "";
+    const GROQ_API_KEY = Deno.env.get("GROQ_API_KEY") || "";
 
-    const groqData = await res.json();
-
-    if (!res.ok) {
-      throw new Error(groqData.error?.message || `Groq API error: ${res.status}`);
+    async function tryGroq(): Promise<string> {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${GROQ_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          messages: groqMessages,
+          max_tokens: 1024,
+          temperature: 0.7
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error?.message || `Groq API error: ${res.status}`);
+      return data.choices?.[0]?.message?.content || "No response generated.";
     }
 
-    const aiText = groqData.choices?.[0]?.message?.content || "No response generated.";
+    async function tryDeepSeek(): Promise<string> {
+      const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${DEEPSEEK_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "deepseek-chat",
+          messages: groqMessages,
+          max_tokens: 1024,
+          temperature: 0.7
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error?.message || `DeepSeek API error: ${res.status}`);
+      return data.choices?.[0]?.message?.content || "No response generated.";
+    }
+
+    let aiText: string;
+    try {
+      aiText = await tryGroq();
+    } catch (groqErr) {
+      console.error("Groq failed, falling back to DeepSeek:", groqErr);
+      if (DEEPSEEK_API_KEY) {
+        aiText = await tryDeepSeek();
+      } else {
+        throw groqErr;
+      }
+    }
 
     // Log to ai_chat_logs using verified caller ID
     const userMessage = [...messages].reverse().find(m => m.role === "user")?.content || "";
