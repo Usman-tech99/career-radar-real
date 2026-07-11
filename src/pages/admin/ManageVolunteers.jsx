@@ -93,7 +93,7 @@ export default function ManageVolunteers() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                   <div><span className="text-muted">Country:</span> <span className="text-white">{selected.country}</span></div>
                   {selected.city && <div><span className="text-muted">City:</span> <span className="text-white">{selected.city}</span></div>}
                   {selected.university && <div><span className="text-muted">University:</span> <span className="text-white">{selected.university}</span></div>}
@@ -119,7 +119,7 @@ export default function ManageVolunteers() {
                 {selected.reason && <div><span className="text-muted text-sm block mb-1">Why join?</span><p className="text-sm text-white whitespace-pre-wrap">{selected.reason}</p></div>}
                 {selected.about && <div><span className="text-muted text-sm block mb-1">About</span><p className="text-sm text-white whitespace-pre-wrap">{selected.about}</p></div>}
 
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                   {selected.hours_per_week && <div><span className="text-muted">Hours/week:</span> <span className="text-white">{selected.hours_per_week}</span></div>}
                   {selected.preferred_time && <div><span className="text-muted">Preferred time:</span> <span className="text-white">{selected.preferred_time}</span></div>}
                   {selected.preferred_channel && <div><span className="text-muted">Channel:</span> <span className="text-white">{selected.preferred_channel}</span></div>}

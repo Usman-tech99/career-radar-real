@@ -184,7 +184,7 @@ export default function ManageCollaborators() {
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="label">Name / Brand</label>
                     <input {...register('name')} className="input-field" placeholder="e.g. AWS" />
@@ -206,7 +206,7 @@ export default function ManageCollaborators() {
                   <textarea {...register('description')} className="input-field h-20" />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 border border-border p-4 rounded-xl">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border border-border p-4 rounded-xl">
                   <div>
                     <label className="label">Upload Logo</label>
                     <div className="flex items-center gap-4">
@@ -223,7 +223,7 @@ export default function ManageCollaborators() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="label">Website URL</label>
                     <input {...register('website_url')} className="input-field" placeholder="https://" />

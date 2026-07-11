@@ -102,16 +102,16 @@ export default function ManageAbout() {
               <button onClick={() => setData({ ...data, core_values: [...data.core_values, { title: '', desc: '' }] })} className="btn-ghost text-sm flex items-center gap-1"><Plus size={14} /> Add Value</button>
             </div>
             {data.core_values.map((v, i) => (
-              <div key={i} className="flex items-end gap-3 p-3 bg-white/[0.02] rounded-xl border border-white/[0.05]">
-                <div className="flex-1">
+              <div key={i} className="flex flex-col sm:flex-row items-stretch sm:items-end gap-3 p-3 bg-white/[0.02] rounded-xl border border-white/[0.05]">
+                <div className="flex-1 min-w-0">
                   <label className="label">Title</label>
                   <input value={v.title} onChange={e => { const cv = [...data.core_values]; cv[i] = { ...cv[i], title: e.target.value }; setData({ ...data, core_values: cv }) }} className="input-field" placeholder="e.g. Integrity" />
                 </div>
-                <div className="flex-[2]">
+                <div className="flex-[2] min-w-0">
                   <label className="label">Description</label>
                   <input value={v.desc} onChange={e => { const cv = [...data.core_values]; cv[i] = { ...cv[i], desc: e.target.value }; setData({ ...data, core_values: cv }) }} className="input-field" placeholder="What this value means..." />
                 </div>
-                <button onClick={() => setData({ ...data, core_values: data.core_values.filter((_, j) => j !== i) })} className="text-red-400 hover:text-red-300 p-2"><Trash2 size={16} /></button>
+                <button onClick={() => setData({ ...data, core_values: data.core_values.filter((_, j) => j !== i) })} className="text-red-400 hover:text-red-300 p-2 self-end"><Trash2 size={16} /></button>
               </div>
             ))}
           </div>

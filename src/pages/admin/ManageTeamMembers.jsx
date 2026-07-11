@@ -295,7 +295,7 @@ export default function ManageTeamMembers() {
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="label">Full Name</label>
                     <input {...register('name')} className="input-field" placeholder="Muhammad Usman" />
@@ -345,7 +345,7 @@ export default function ManageTeamMembers() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="label">Age</label>
                     <input type="number" {...register('age')} className="input-field" placeholder="25" />
@@ -377,11 +377,11 @@ export default function ManageTeamMembers() {
                     <button type="button" onClick={addSocialRow} className="text-xs text-green hover:underline">+ Add platform</button>
                   </div>
                   {socialLinks.map((link, i) => (
-                    <div key={i} className="flex gap-2 mb-2">
+                    <div key={i} className="flex flex-col sm:flex-row gap-2 mb-2">
                       <select
                         value={link.platform}
                         onChange={e => updateSocial(i, 'platform', e.target.value)}
-                        className="input-field w-2/5"
+                        className="input-field sm:w-2/5"
                       >
                         <option value="">Select...</option>
                         {platforms.map(p => <option key={p} value={p}>{p}</option>)}

@@ -170,7 +170,7 @@ export default function ManageSocials() {
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="label">Platform Name</label>
                     <input {...register('platform_name')} className="input-field" placeholder="e.g. Official WhatsApp" />
@@ -193,7 +193,7 @@ export default function ManageSocials() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="label">URL Link</label>
                     <input {...register('url')} className="input-field" placeholder="https://" />
@@ -210,7 +210,7 @@ export default function ManageSocials() {
                   <textarea {...register('description')} className="input-field h-20" placeholder="Join our community..." />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="label">Members Count Text (Optional)</label>
                     <input {...register('members_count')} className="input-field" placeholder="e.g. 10k+" />

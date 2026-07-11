@@ -200,7 +200,7 @@ export default function ManageProducts() {
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="label">Title</label>
                     <input {...register('title')} className="input-field" placeholder="e.g. React Mastery Course" />
@@ -225,7 +225,7 @@ export default function ManageProducts() {
                   <textarea {...register('description')} className="input-field h-24" />
                 </div>
 
-                <div className="flex gap-6 p-4 border border-border rounded-xl bg-white/[0.02]">
+                <div className="flex flex-wrap gap-6 p-4 border border-border rounded-xl bg-white/[0.02]">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" {...register('is_free')} className="w-4 h-4 accent-green rounded" />
                     <span className="text-sm font-bold text-green">This product is FREE</span>
@@ -245,7 +245,7 @@ export default function ManageProducts() {
                 </div>
 
                 {!isFree && (
-                  <div className="grid grid-cols-2 gap-4 p-4 border border-border rounded-xl">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-border rounded-xl">
                     <div>
                       <label className="label text-xs text-amber-400">WhatsApp for Payment Proof</label>
                       <input {...register('whatsapp_number')} className="input-field py-2" placeholder="+923..." />
@@ -257,7 +257,7 @@ export default function ManageProducts() {
                   </div>
                 )}
 
-                <div className="grid grid-cols-3 gap-4 border border-border p-4 rounded-xl">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border border-border p-4 rounded-xl">
                   <div>
                     <label className="label text-xs">Thumbnail</label>
                     <label className="btn-ghost text-xs cursor-pointer flex justify-center py-2">

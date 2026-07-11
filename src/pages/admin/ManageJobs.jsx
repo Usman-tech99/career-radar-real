@@ -162,7 +162,7 @@ export default function ManageJobs() {
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="label">Job Title</label>
                     <input {...register('title')} className="input-field" placeholder="e.g. Frontend Developer" />
@@ -175,7 +175,7 @@ export default function ManageJobs() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="label">Type</label>
                     <select {...register('type')} className="input-field">
@@ -225,7 +225,7 @@ export default function ManageJobs() {
                   </>
                 )}
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="label">Deadline (Optional)</label>
                     <input type="date" {...register('deadline')} className="input-field" />

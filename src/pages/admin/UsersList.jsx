@@ -88,7 +88,7 @@ export default function UsersList() {
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="input-field pl-9 py-2 text-sm w-64"
+              className="input-field pl-9 py-2 text-sm w-full max-w-xs"
               placeholder="Search by name, ID, degree, goal..."
             />
           </div>

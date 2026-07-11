@@ -192,7 +192,7 @@ export default function ManageScholarships() {
                 <button onClick={() => setIsModalOpen(false)} className="text-muted hover:text-white"><X size={24} /></button>
               </div>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="label">Title</label>
                     <input {...register('title')} className="input-field" placeholder="e.g. Chevening Scholarship 2026" />
@@ -205,7 +205,7 @@ export default function ManageScholarships() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="label">Coverage</label>
                     <select {...register('coverage')} className="input-field">
@@ -223,7 +223,7 @@ export default function ManageScholarships() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="label">Deadline</label>
                     <input type="date" {...register('deadline')} className="input-field" />

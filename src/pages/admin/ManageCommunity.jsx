@@ -146,20 +146,20 @@ export default function ManageCommunity() {
               <button onClick={addCommunityLink} className="btn-ghost text-sm flex items-center gap-1"><Plus size={14} /> Add Group</button>
             </div>
             {data.community_links.map((link, i) => (
-              <div key={i} className="flex items-end gap-3 p-3 bg-white/[0.02] rounded-xl border border-white/[0.05]">
-                <div className="flex-1">
+              <div key={i} className="flex flex-col sm:flex-row items-stretch sm:items-end gap-3 p-3 bg-white/[0.02] rounded-xl border border-white/[0.05]">
+                <div className="flex-1 min-w-0">
                   <label className="label">Group Name</label>
                   <input value={link.name} onChange={e => updateCommunityLink(i, 'name', e.target.value)} className="input-field" placeholder="e.g. Main Career Channel" />
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <label className="label">Invite URL</label>
                   <input value={link.url} onChange={e => updateCommunityLink(i, 'url', e.target.value)} className="input-field" placeholder="https://chat.whatsapp.com/..." />
                 </div>
-                <div className="w-28">
+                <div className="sm:w-28">
                   <label className="label">Members</label>
                   <input value={link.members} onChange={e => updateCommunityLink(i, 'members', e.target.value)} className="input-field" placeholder="1,200+" />
                 </div>
-                <button onClick={() => removeCommunityLink(i)} className="text-red-400 hover:text-red-300 p-2"><Trash2 size={16} /></button>
+                <button onClick={() => removeCommunityLink(i)} className="text-red-400 hover:text-red-300 p-2 self-end"><Trash2 size={16} /></button>
               </div>
             ))}
           </div>
@@ -176,11 +176,11 @@ export default function ManageCommunity() {
                   <label className="label">Title</label>
                   <input value={event.title} onChange={e => updateEvent(i, 'title', e.target.value)} className="input-field" placeholder="e.g. Career Workshop 2026" />
                 </div>
-                <div className="w-36">
+                <div className="sm:w-36">
                   <label className="label">Date</label>
                   <input value={event.date} onChange={e => updateEvent(i, 'date', e.target.value)} className="input-field" placeholder="e.g. Aug 15, 2026" />
                 </div>
-                <div className="w-28">
+                <div className="sm:w-28">
                   <label className="label">Type</label>
                   <select value={event.type} onChange={e => updateEvent(i, 'type', e.target.value)} className="input-field">
                     <option value="upcoming">Upcoming</option>
@@ -249,7 +249,7 @@ export default function ManageCommunity() {
           {/* CTA */}
           <div className="glass-card p-6 space-y-4">
             <h2 className="text-xl font-bold">Call to Action</h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="label">Heading</label>
                 <input value={data.cta_heading} onChange={e => setData({ ...data, cta_heading: e.target.value })} className="input-field" />

@@ -82,8 +82,8 @@ export default function AIInsights() {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="p-4 text-[#94A3B8] font-medium w-48">Date / Time</th>
-                    <th className="p-4 text-[#94A3B8] font-medium w-32">Mode</th>
+                    <th className="p-4 text-[#94A3B8] font-medium min-w-[120px]">Date / Time</th>
+                    <th className="p-4 text-[#94A3B8] font-medium min-w-[80px]">Mode</th>
                     <th className="p-4 text-[#94A3B8] font-medium w-1/3">User Message</th>
                     <th className="p-4 text-[#94A3B8] font-medium w-1/3">AI Response Snapshot</th>
                   </tr>

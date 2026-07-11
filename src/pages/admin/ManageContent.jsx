@@ -177,7 +177,7 @@ export default function ManageContent() {
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="label">Title</label>
                     <input {...register('title')} className="input-field" placeholder="e.g. Master Resume Guide" />
@@ -201,7 +201,7 @@ export default function ManageContent() {
                   <textarea {...register('description')} className="input-field h-24" />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 border border-border p-4 rounded-xl">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border border-border p-4 rounded-xl">
                   <div>
                     <label className="label">Upload Thumbnail (Image)</label>
                     <div className="flex items-center gap-4">
@@ -224,7 +224,7 @@ export default function ManageContent() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="label">External Link (Optional)</label>
                     <input {...register('external_link')} className="input-field" placeholder="https://" />

@@ -53,20 +53,22 @@ export default function AdminLayout() {
     path: '/' + pathParts.slice(0, i + 1).join('/'),
   }))
 
-  function NavLink({ item, onClick }) {
+  function NavLink({ item, onClick, mobile }) {
     const active = location.pathname === item.path
     return (
       <Link
         to={item.path}
         onClick={onClick}
-        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+          mobile ? 'whitespace-normal' : 'whitespace-nowrap'
+        } ${
           active
             ? 'bg-green/10 text-green'
             : 'text-muted hover:text-white hover:bg-white/[0.04]'
         }`}
       >
         <item.icon size={16} />
-        <span className="hidden lg:inline">{item.label}</span>
+        <span className={mobile ? 'inline' : 'hidden lg:inline'}>{item.label}</span>
       </Link>
     )
   }
@@ -134,7 +136,7 @@ export default function AdminLayout() {
               </div>
               <div className="p-4 space-y-1">
                 {filteredItems.map(item => (
-                  <NavLink key={item.path} item={item} onClick={() => setMobileOpen(false)} />
+                  <NavLink key={item.path} item={item} onClick={() => setMobileOpen(false)} mobile />
                 ))}
               </div>
               <div className="p-4 border-t border-border mt-4">
