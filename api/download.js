@@ -24,7 +24,7 @@ export default async function handler(req, res) {
   const safeName = filename.split('/').pop() || 'download'
 
   res.setHeader('Content-Type', 'application/pdf')
-  res.setHeader('Content-Disposition', `attachment; filename="${safeName}"`)
+  res.setHeader('Content-Disposition', `inline; filename="${safeName}"`)
   res.setHeader('Cache-Control', 'no-cache')
   res.status(200).send(buffer)
 }
