@@ -264,13 +264,13 @@ LIVE DATA:\n\n${liveData}`
 
     let aiText: string;
     try {
-      aiText = await tryGroq();
-    } catch (groqErr) {
-      console.error("Groq failed, falling back to DeepSeek:", groqErr);
-      if (DEEPSEEK_API_KEY) {
-        aiText = await tryDeepSeek();
+      aiText = await tryDeepSeek();
+    } catch (deepseekErr) {
+      console.error("DeepSeek failed, falling back to Groq:", deepseekErr);
+      if (GROQ_API_KEY) {
+        aiText = await tryGroq();
       } else {
-        throw groqErr;
+        throw deepseekErr;
       }
     }
 
