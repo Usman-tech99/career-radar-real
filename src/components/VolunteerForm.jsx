@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { supabase } from '../lib/supabase'
 import toast from 'react-hot-toast'
 import { BlurFade } from './magicui/blur-fade'
 import { BorderBeam } from './magicui/border-beam'
 import { CheckCircle, ArrowRight, Loader2 } from 'lucide-react'
-import { getRecaptchaToken, loadRecaptchaScript } from '../lib/recaptcha'
+import { Turnstile } from '@marsidev/react-turnstile'
+import { TURNSTILE_SITE_KEY } from '../lib/turnstile'
 
 const DEPARTMENTS = [
   'Community Management', 'Content Writing', 'Opportunity Research', 'Graphic Design',
@@ -74,8 +75,7 @@ function PillGroup({ label, options, selected, onToggle }) {
 export default function VolunteerForm() {
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-
-  useEffect(() => { loadRecaptchaScript() }, [])
+  const [captchaToken, setCaptchaToken] = useState('')
   const [form, setForm] = useState({
     fullName: '', preferredName: '', email: '', phone: '', country: '', city: '',
     university: '', degree: '', currentYear: '', linkedin: '', portfolio: '', cvUrl: '',
@@ -154,8 +154,7 @@ export default function VolunteerForm() {
       if (error) throw error
       // Send email notification
       try {
-        const captchaToken = await getRecaptchaToken('volunteer_form')
-        const { data: { session } } = await supabase.auth.getSession()
+        if (!captchaToken) throw new Error('Captcha not verified')
         await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-volunteer-email`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY },
@@ -362,9 +361,16 @@ export default function VolunteerForm() {
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">Ready to Make an Impact?</h3>
               <p className="text-muted mb-6">Join hundreds of volunteers and contributors who are helping build the next generation of global talent.</p>
               <button type="submit" disabled={submitting} className="btn-primary text-lg px-10 py-4 inline-flex items-center gap-2">
-                {submitting ? <Loader2 size={20} className="animate-spin" /> : <ArrowRight size={20} />}
+                  {submitting ? <Loader2 size={20} className="animate-spin" /> : <ArrowRight size={20} />}
                 {submitting ? 'Submitting...' : 'Apply as a Volunteer'}
               </button>
+              <div className="flex justify-center mt-4">
+                <Turnstile
+                  siteKey={TURNSTILE_SITE_KEY}
+                  onSuccess={setCaptchaToken}
+                  options={{ theme: 'dark' }}
+                />
+              </div>
             </div>
           </form>
         </div>

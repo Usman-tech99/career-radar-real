@@ -6,7 +6,7 @@ declare const Deno: {
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') || '';
 const NOTIFY_EMAIL = Deno.env.get('NOTIFY_EMAIL') || 'contact@career-radar.space';
-const RECAPTCHA_SECRET = Deno.env.get('RECAPTCHA_SECRET_KEY') || '';
+const TURNSTILE_SECRET = Deno.env.get('TURNSTILE_SECRET_KEY') || '';
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -41,14 +41,14 @@ Deno.serve(async (req: Request) => {
     const { type, captchaToken, full_name, email, phone, country, departments } = await req.json();
 
     // Verify captcha on new submissions (not approval emails from admin)
-    if (type !== 'approved' && captchaToken && RECAPTCHA_SECRET) {
-      const verifyRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+    if (type !== 'approved' && captchaToken && TURNSTILE_SECRET) {
+      const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `secret=${RECAPTCHA_SECRET}&response=${captchaToken}`,
+        body: `secret=${TURNSTILE_SECRET}&response=${captchaToken}`,
       })
       const verifyData = await verifyRes.json()
-      if (!verifyData.success || verifyData.score < 0.5) {
+      if (!verifyData.success) {
         return new Response(JSON.stringify({ error: 'Captcha verification failed' }), { status: 403, headers: { ...cors, "Content-Type": "application/json" } })
       }
     }
