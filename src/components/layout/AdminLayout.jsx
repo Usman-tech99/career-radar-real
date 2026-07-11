@@ -1,7 +1,6 @@
 import { Link, useLocation, Outlet } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard, Briefcase, FileText, ShoppingBag,
   BookOpen, LayoutTemplate, Info, Share2, Users, UserCheck,
@@ -58,8 +57,8 @@ export default function AdminLayout() {
     return (
       <Link
         to={item.path}
-        onClick={onClick}
-        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+        onClick={() => { if (onClick) onClick() }}
+        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
           mobile ? 'whitespace-normal' : 'whitespace-nowrap'
         } ${
           active
@@ -77,7 +76,7 @@ export default function AdminLayout() {
     <div className="min-h-screen bg-surface flex flex-col">
       {/* Top Navbar */}
       <div className="admin-topbar fixed top-0 left-0 right-0 z-40 h-16 bg-surface border-b border-border flex items-center px-4 sm:px-6 gap-3">
-        <button className="lg:hidden p-2 rounded-lg hover:bg-white/[0.04] transition-colors" onClick={() => setMobileOpen(true)}>
+        <button type="button" className="lg:hidden p-2 rounded-lg hover:bg-white/[0.04] transition-colors" onClick={() => setMobileOpen(true)}>
           <Menu size={20} className="text-muted" />
         </button>
 
@@ -109,50 +108,41 @@ export default function AdminLayout() {
       </div>
 
       {/* Mobile drawer */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-              onClick={() => setMobileOpen(false)}
-            />
-            <motion.div
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 left-0 bottom-0 z-50 w-72 bg-surface border-r border-border overflow-y-auto"
-            >
-              <div className="flex items-center justify-between p-4 border-b border-border">
-                <span className="font-sora font-bold text-lg">
-                  <span className="text-green">CR</span> Admin
-                </span>
-                <button onClick={() => setMobileOpen(false)} className="p-1 rounded-lg hover:bg-white/[0.04]">
-                  <X size={20} className="text-muted" />
-                </button>
-              </div>
-              <div className="p-4 space-y-1">
-                {filteredItems.map(item => (
-                  <NavLink key={item.path} item={item} onClick={() => setMobileOpen(false)} mobile />
-                ))}
-              </div>
-              <div className="p-4 border-t border-border mt-4">
-                <button
-                  type="button"
-                  onClick={() => { signOut(); setMobileOpen(false) }}
-                  className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-400 hover:bg-red-500/10 transition-colors font-medium"
-                >
-                  <LogOut size={20} />
-                  Sign Out
-                </button>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      {mobileOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+            onClick={() => setMobileOpen(false)}
+          />
+          <div
+            className="fixed top-0 left-0 bottom-0 z-50 w-72 bg-surface border-r border-border overflow-y-auto lg:hidden"
+          >
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <span className="font-sora font-bold text-lg">
+                <span className="text-green">CR</span> Admin
+              </span>
+              <button type="button" onClick={() => setMobileOpen(false)} className="p-1 rounded-lg hover:bg-white/[0.04] cursor-pointer">
+                <X size={20} className="text-muted pointer-events-none" />
+              </button>
+            </div>
+            <div className="p-4 space-y-1">
+              {filteredItems.map(item => (
+                <NavLink key={item.path} item={item} onClick={() => setMobileOpen(false)} mobile />
+              ))}
+            </div>
+            <div className="p-4 border-t border-border mt-4">
+              <button
+                type="button"
+                onClick={() => { signOut(); setMobileOpen(false) }}
+                className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-400 hover:bg-red-500/10 transition-colors font-medium"
+              >
+                <LogOut size={20} />
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Breadcrumbs */}
       <div className="pt-20 px-4 sm:px-6 lg:px-8 print:hidden">
