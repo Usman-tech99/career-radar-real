@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
-import { Save, Eye, X } from 'lucide-react'
+import { Save, Eye, X, Upload } from 'lucide-react'
+
+const STORAGE_BUCKET = 'content-files'
 
 export default function ManagePopup() {
   const [settings, setSettings] = useState(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [preview, setPreview] = useState(false)
+  const [uploading, setUploading] = useState(false)
 
   useEffect(() => { fetchPopup() }, [])
 
@@ -20,6 +23,27 @@ export default function ManagePopup() {
 
   function update(field, value) {
     setSettings(prev => ({ ...prev, [field]: value }))
+  }
+
+  async function handleImageUpload(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) { toast.error('Please select an image'); return }
+    if (file.size > 5 * 1024 * 1024) { toast.error('Image must be under 5MB'); return }
+    setUploading(true)
+    try {
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'png'
+      const filename = `popup-${Date.now()}.${ext}`
+      const { error: uploadError } = await supabase.storage.from(STORAGE_BUCKET).upload(filename, file, { upsert: true })
+      if (uploadError) throw uploadError
+      const { data: urlData } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filename)
+      update('image_url', urlData?.publicUrl || '')
+      toast.success('Image uploaded')
+    } catch (err) {
+      toast.error(err.message || 'Upload failed')
+    } finally {
+      setUploading(false)
+    }
   }
 
   async function handleSave() {
@@ -74,11 +98,23 @@ export default function ManagePopup() {
 
       <div className="glass-card p-8 max-w-2xl space-y-6">
         <div>
-          <label className="label">Image URL (optional)</label>
-          <input value={settings.image_url} onChange={e => update('image_url', e.target.value)} className="input-field" placeholder="https://example.com/popup-image.jpg" />
-          {settings.image_url && (
-            <img src={settings.image_url} alt="preview" className="mt-2 w-full max-h-48 object-cover rounded-xl" onError={e => e.target.style.display = 'none'} />
-          )}
+          <label className="label">Popup Image</label>
+          <div className="flex items-center gap-3">
+            {settings.image_url ? (
+              <div className="relative group w-full">
+                <img src={settings.image_url} alt="preview" loading="lazy" className="w-full max-h-48 object-cover rounded-xl border border-border" />
+                <button onClick={() => update('image_url', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"><X size={16} /></button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-green/50 transition-colors" onClick={() => document.getElementById('popup-image-upload').click()}>
+                <div className="text-center text-muted">
+                  <Upload size={24} className="mx-auto mb-1" />
+                  <span className="text-sm">{uploading ? 'Uploading...' : 'Click to upload image'}</span>
+                </div>
+              </div>
+            )}
+            <input id="popup-image-upload" type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploading} />
+          </div>
         </div>
 
         <div>
@@ -109,9 +145,9 @@ export default function ManagePopup() {
 
       {preview && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setPreview(false)}>
-          <div className="glass-card w-full max-w-md relative" onClick={e => e.stopPropagation()}>
+          <div className="glass-card w-full max-w-md relative overflow-hidden rounded-2xl border border-green/50" style={{ boxShadow: '0 0 25px rgba(16,185,129,0.25)' }} onClick={e => e.stopPropagation()}>
             <button onClick={() => setPreview(false)} className="absolute top-4 right-4 text-muted hover:text-white z-10"><X size={24} /></button>
-            {settings.image_url && <img src={settings.image_url} alt="" className="w-full h-48 object-cover rounded-t-xl" />}
+            {settings.image_url && <img src={settings.image_url} alt="" className="w-full h-48 object-cover" />}
             <div className="p-6">
               <p className="text-white text-lg leading-relaxed">{settings.message}</p>
               {settings.link_url && (
