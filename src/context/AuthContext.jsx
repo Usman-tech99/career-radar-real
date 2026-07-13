@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
@@ -11,6 +11,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
   const [roleChecked, setRoleChecked] = useState(false)
   const [onboardingComplete, setOnboardingComplete] = useState(false)
+  const initialLoadDone = useRef(false)
 
   async function fetchRoleWithRetry(userId, retries = 3) {
     for (let attempt = 0; attempt < retries; attempt++) {
@@ -72,7 +73,7 @@ export function AuthProvider({ children }) {
       return
     }
     setUser(sessionUser)
-    setRoleChecked(false)
+    if (initialLoadDone.current) setRoleChecked(false)
     const roleData = await fetchRoleWithRetry(sessionUser.id)
     const userRole = roleData?.role || null
     setRole(userRole)
@@ -122,6 +123,7 @@ export function AuthProvider({ children }) {
         console.error('Auth init error')
         if (mounted) setRoleChecked(true)
       } finally {
+        if (mounted) initialLoadDone.current = true
         if (mounted) setLoading(false)
       }
     }
