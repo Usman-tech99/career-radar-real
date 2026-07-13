@@ -1,16 +1,23 @@
 import { useState, useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { X } from 'lucide-react'
 
 const STORAGE_KEY = 'cr_popup_dismissed'
 
 export default function PopupModal() {
+  const location = useLocation()
   const [popup, setPopup] = useState(null)
   const [visible, setVisible] = useState(false)
   const pageReady = useRef(false)
   const exitRef = useRef(null)
+  const isHome = location.pathname === '/'
 
   useEffect(() => {
+    if (!isHome) {
+      setVisible(false)
+      return
+    }
     const pageLoadTimer = setTimeout(() => { pageReady.current = true }, 2000)
     fetchPopup()
     return () => {
@@ -19,7 +26,7 @@ export default function PopupModal() {
         document.removeEventListener('mouseleave', exitRef.current)
       }
     }
-  }, [])
+  }, [isHome])
 
   function handleExitIntent(e) {
     if (!pageReady.current || e.clientY > 0 || sessionStorage.getItem(STORAGE_KEY)) return
@@ -51,7 +58,7 @@ export default function PopupModal() {
     setVisible(false)
   }
 
-  if (!visible || !popup) return null
+  if (!isHome || !visible || !popup) return null
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
