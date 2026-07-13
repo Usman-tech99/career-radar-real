@@ -22,33 +22,36 @@ const defaultContent = {
 export default function AnnouncementPopup({ content: propContent, show: propShow, onClose: propOnClose }) {
   const location = useLocation()
   const isHome = location.pathname === '/'
+  const dismissedRef = useRef(sessionStorage.getItem(STORAGE_KEY) === 'true')
+  const fetchedRef = useRef(false)
 
-  // Controlled mode (admin preview) vs self-contained mode (live site)
   const isControlled = propShow !== undefined
   const [fetchedData, setFetchedData] = useState(null)
   const [selfVisible, setSelfVisible] = useState(false)
-  const pageReady = useRef(false)
 
   useEffect(() => {
-    if (isControlled) return
-    if (!isHome) { setSelfVisible(false); return }
-    pageReady.current = false
-    const timer = setTimeout(() => { pageReady.current = true }, 2000)
+    if (isControlled || fetchedRef.current || dismissedRef.current) return
+    fetchedRef.current = true
     fetchAnnouncement()
-    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    if (isControlled || !selfVisible) return
+    if (!isHome) setSelfVisible(false)
   }, [isHome])
 
   async function fetchAnnouncement() {
     const { data } = await supabase.from('announcements').select('*').eq('is_active', true).order('id', { ascending: false }).limit(1).single()
     if (!data) return
     setFetchedData(data)
-    if (data.show_on_entry && !sessionStorage.getItem(STORAGE_KEY)) {
+    if (data.show_on_entry && !dismissedRef.current) {
       setTimeout(() => setSelfVisible(true), 800)
     }
   }
 
   function selfDismiss() {
     sessionStorage.setItem(STORAGE_KEY, 'true')
+    dismissedRef.current = true
     setSelfVisible(false)
   }
 
@@ -99,18 +102,15 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
   const warning = parseWarningText(c.cardWarningText)
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-start justify-center z-[9999] p-4 overflow-y-auto" onClick={onClose}>
-      <div
-        className="relative w-full max-w-[900px] bg-white rounded-2xl shadow-2xl my-8 overflow-hidden"
-        onClick={e => e.stopPropagation()}
-      >
+    <div className="fixed inset-0 bg-black/70 flex items-start justify-center z-[9999] p-4 overflow-y-auto">
+      <div className="relative w-full max-w-[900px] bg-white rounded-2xl shadow-2xl my-8 overflow-hidden">
         {/* HEADER */}
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
             <Megaphone size={20} className="text-blue-500" />
             <span className="font-bold text-gray-900 text-lg">Latest News</span>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100" aria-label="Close">
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-100" aria-label="Close">
             <X size={22} />
           </button>
         </div>
@@ -138,28 +138,16 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
                 )}
                 {c.cardBannerText && (
                   <div className="bg-[#1e2746] text-white text-[11px] leading-tight px-3 py-2 rounded">
-                    {banner.before &&
-                      <span>{banner.before} </span>
-                    }
-                    {banner.highlight &&
-                      <span className="text-yellow-300 font-bold">{banner.highlight}</span>
-                    }
-                    {banner.after &&
-                      <span> {banner.after}</span>
-                    }
+                    {banner.before && <span>{banner.before} </span>}
+                    {banner.highlight && <span className="text-yellow-300 font-bold">{banner.highlight}</span>}
+                    {banner.after && <span> {banner.after}</span>}
                   </div>
                 )}
                 {c.cardWarningText && (
                   <p className="text-xs leading-relaxed text-gray-500">
-                    {warning.before &&
-                      <span>You will </span>
-                    }
-                    {warning.boldPart &&
-                      <span className="text-red-500 font-bold">{warning.boldPart}</span>
-                    }
-                    {warning.after &&
-                      <span>{warning.after}</span>
-                    }
+                    {warning.before && <span>You will </span>}
+                    {warning.boldPart && <span className="text-red-500 font-bold">{warning.boldPart}</span>}
+                    {warning.after && <span>{warning.after}</span>}
                   </p>
                 )}
               </div>
@@ -203,7 +191,7 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
           <div className="flex items-center gap-2">
             <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Close</button>
             {c.linkUrl && (
-              <a href={c.linkUrl} target="_blank" rel="noreferrer" onClick={onClose} className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">View Full Article</a>
+              <a href={c.linkUrl} target="_blank" rel="noreferrer" className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">View Full Article</a>
             )}
           </div>
         </div>
