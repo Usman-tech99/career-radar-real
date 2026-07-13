@@ -15,7 +15,7 @@ export default function ManagePopup() {
   useEffect(() => { fetchPopup() }, [])
 
   async function fetchPopup() {
-    const { data, error } = await supabase.from('popup_settings').select('*').order('id', { ascending: false }).limit(1).single()
+    const { data, error } = await supabase.from('popup_settings').select('*').eq('is_active', true).order('id', { ascending: false }).limit(1).single()
     if (error && error.code !== 'PGRST116') toast.error('Failed to load popup settings')
     setSettings(data || { image_url: '', message: '', link_url: '', is_active: true, show_on_entry: true, show_on_exit: true })
     setLoading(false)
