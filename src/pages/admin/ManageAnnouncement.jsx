@@ -7,16 +7,17 @@ import AnnouncementPopup from '../../components/AnnouncementPopup'
 const STORAGE_BUCKET = 'content-files'
 
 const defaultContent = {
-  headline: '',
-  subheading: '',
-  bodyText: '',
+  headline: 'New Career Resources & Updates',
+  subheading: 'Stay ahead with the latest tools, workshops, and opportunities curated for your career growth.',
+  bodyText: 'Explore our recently added career planning resources, scholarship opportunities, and skill-building workshops designed to help you achieve your professional goals.\n\nVisit the resources section to learn more.',
   imageUrl: '',
-  linkUrl: '',
+  linkUrl: 'https://career-radar.space',
   publishedDate: '',
-  cardHeadline: '',
-  cardParagraph: '',
-  cardBannerText: '',
-  cardWarningText: '',
+  cardHeadline: 'Ready to Level Up?',
+  badgeText: 'NEW!',
+  cardParagraph: 'Discover personalized career insights and actionable steps tailored just for you.',
+  cardBannerText: 'Your [highlighted yellow]career journey[/highlighted yellow] starts here.',
+  cardWarningText: 'Don\'t [red bold]miss out[/red bold] on opportunities designed for your growth.',
   bgImageUrl: '',
 }
 
@@ -122,7 +123,7 @@ export default function ManageAnnouncement() {
         {/* Images */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="label">Logo / University Image</label>
+            <label className="label">Logo Image</label>
             {c.imageUrl ? (
               <div className="relative group">
                 <img src={c.imageUrl} alt="" className="w-full h-24 object-contain rounded-xl border border-border bg-black/10" />
@@ -153,15 +154,15 @@ export default function ManageAnnouncement() {
         {/* Right column */}
         <div>
           <label className="label">Headline</label>
-          <input value={c.headline} onChange={e => updateContent('headline', e.target.value)} className="input-field" placeholder="Selected the Wrong Program Preference?" />
+          <input value={c.headline} onChange={e => updateContent('headline', e.target.value)} className="input-field" placeholder="New Career Resources & Updates" />
         </div>
         <div>
           <label className="label">Subheading</label>
-          <input value={c.subheading} onChange={e => updateContent('subheading', e.target.value)} className="input-field" placeholder="Update It Before the Final Deadline!" />
+          <input value={c.subheading} onChange={e => updateContent('subheading', e.target.value)} className="input-field" placeholder="Stay ahead with the latest tools, workshops, and opportunities..." />
         </div>
         <div>
           <label className="label">Body Text</label>
-          <textarea value={c.bodyText} onChange={e => updateContent('bodyText', e.target.value)} className="input-field h-28" placeholder="Full announcement details..." />
+          <textarea value={c.bodyText} onChange={e => updateContent('bodyText', e.target.value)} className="input-field h-28" placeholder="Explore our recently added career planning resources, scholarship opportunities, and skill-building workshops..." />
         </div>
 
         <hr className="border-border" />
@@ -170,28 +171,34 @@ export default function ManageAnnouncement() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="label">Card Headline</label>
-            <input value={c.cardHeadline} onChange={e => updateContent('cardHeadline', e.target.value)} className="input-field" placeholder="SELECTED WRONG PREFERENCE?" />
+            <input value={c.cardHeadline} onChange={e => updateContent('cardHeadline', e.target.value)} className="input-field" placeholder="Ready to Level Up?" />
           </div>
+          <div>
+            <label className="label">Badge Text</label>
+            <input value={c.badgeText || ''} onChange={e => updateContent('badgeText', e.target.value)} className="input-field" placeholder="NEW!" />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="label">Published Date</label>
             <input value={c.publishedDate} onChange={e => updateContent('publishedDate', e.target.value)} className="input-field" placeholder="July 13, 2026" />
           </div>
+          <div>
+            <label className="label">Link URL</label>
+            <input value={c.linkUrl} onChange={e => updateContent('linkUrl', e.target.value)} className="input-field" placeholder="https://career-radar.space" />
+          </div>
         </div>
         <div>
           <label className="label">Card Paragraph</label>
-          <textarea value={c.cardParagraph} onChange={e => updateContent('cardParagraph', e.target.value)} className="input-field h-20" placeholder="Small description inside the card..." />
+          <textarea value={c.cardParagraph} onChange={e => updateContent('cardParagraph', e.target.value)} className="input-field h-20" placeholder="Discover personalized career insights and actionable steps tailored just for you." />
         </div>
         <div>
           <label className="label">Card Banner Text <span className="text-muted text-xs">(use <span className="text-yellow-400">[highlighted yellow]...[/highlighted yellow]</span> for yellow highlight)</span></label>
-          <input value={c.cardBannerText} onChange={e => updateContent('cardBannerText', e.target.value)} className="input-field" placeholder="This is your [highlighted yellow]last opportunity[/highlighted yellow] to change." />
+          <input value={c.cardBannerText} onChange={e => updateContent('cardBannerText', e.target.value)} className="input-field" placeholder="Your [highlighted yellow]career journey[/highlighted yellow] starts here." />
         </div>
         <div>
           <label className="label">Card Warning Text <span className="text-muted text-xs">(use <span className="text-red-400">[red bold]...[/red bold]</span> for red bold)</span></label>
-          <input value={c.cardWarningText} onChange={e => updateContent('cardWarningText', e.target.value)} className="input-field" placeholder="You will [red bold]no longer have the option[/red bold] to update." />
-        </div>
-        <div>
-          <label className="label">Link URL</label>
-          <input value={c.linkUrl} onChange={e => updateContent('linkUrl', e.target.value)} className="input-field" placeholder="https://admission.uet.edu.pk" />
+          <input value={c.cardWarningText} onChange={e => updateContent('cardWarningText', e.target.value)} className="input-field" placeholder="Don't [red bold]miss out[/red bold] on opportunities designed for your growth." />
         </div>
 
         <hr className="border-border" />

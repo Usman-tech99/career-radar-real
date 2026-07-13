@@ -6,16 +6,18 @@ import { X, Megaphone, Calendar, ExternalLink } from 'lucide-react'
 const STORAGE_KEY = 'cr_announcement_dismissed'
 
 const defaultContent = {
-  headline: '',
-  subheading: '',
-  bodyText: '',
+  headline: 'New Career Resources & Updates',
+  subheading: 'Stay ahead with the latest tools, workshops, and opportunities curated for your career growth.',
+  bodyText: 'Explore our recently added career planning resources, scholarship opportunities, and skill-building workshops designed to help you achieve your professional goals.\n\nVisit the resources section to learn more.',
   imageUrl: '',
-  linkUrl: '',
-  publishedDate: '',
-  cardHeadline: '',
-  cardParagraph: '',
-  cardBannerText: '',
-  cardWarningText: '',
+  linkUrl: 'https://career-radar.space',
+  publishedDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+  cardHeadline: 'Ready to Level Up?',
+  badgeText: 'NEW!',
+  badgeText: 'NEW!',
+  cardParagraph: 'Discover personalized career insights and actionable steps tailored just for you.',
+  cardBannerText: 'Your [highlighted yellow]career journey[/highlighted yellow] starts here.',
+  cardWarningText: 'Don\'t [red bold]miss out[/red bold] on opportunities designed for your growth.',
   bgImageUrl: '',
 }
 
@@ -68,13 +70,6 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
 
   if (!show) return null
 
-  function splitHeadline(text) {
-    if (!text) return { first: '', rest: '' }
-    const match = text.match(/^(SELECTED)\s+(.*)/i)
-    if (match) return { first: match[1], rest: match[2] }
-    return { first: '', rest: text }
-  }
-
   function parseBannerText(text) {
     if (!text) return { before: '', highlight: '', after: '' }
     const re = /\[highlighted\s+yellow\](.*?)\[\/highlighted\]/i
@@ -97,7 +92,6 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
     return { before: text, boldPart: '', after: '' }
   }
 
-  const cardHl = splitHeadline(c.cardHeadline)
   const banner = parseBannerText(c.cardBannerText)
   const warning = parseWarningText(c.cardWarningText)
 
@@ -128,11 +122,12 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
                 <img src={c.imageUrl} alt="logo" className="h-8 w-auto object-contain self-start" />
               )}
               <div className="relative z-[1] flex flex-col gap-2 flex-1">
-                <h3 className="text-lg font-extrabold leading-tight">
-                  {cardHl.first && <span className="text-[#1e2746]">{cardHl.first} </span>}
-                  {cardHl.rest && <span className="text-red-500">{cardHl.rest}</span>}
-                </h3>
-                <span className="self-start bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full">DON'T WORRY!</span>
+                {c.cardHeadline && (
+                  <h3 className="text-lg font-extrabold leading-tight text-gray-900">{c.cardHeadline}</h3>
+                )}
+                {c.badgeText && (
+                  <span className="self-start bg-green text-white text-xs font-semibold px-3 py-1 rounded-full">{c.badgeText}</span>
+                )}
                 {c.cardParagraph && (
                   <p className="text-gray-500 text-xs leading-relaxed">{c.cardParagraph}</p>
                 )}
@@ -145,9 +140,9 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
                 )}
                 {c.cardWarningText && (
                   <p className="text-xs leading-relaxed text-gray-500">
-                    {warning.before && <span>You will </span>}
+                    {warning.before && <span>{warning.before} </span>}
                     {warning.boldPart && <span className="text-red-500 font-bold">{warning.boldPart}</span>}
-                    {warning.after && <span>{warning.after}</span>}
+                    {warning.after && <span> {warning.after}</span>}
                   </p>
                 )}
               </div>
