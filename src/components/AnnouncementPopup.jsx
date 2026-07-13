@@ -11,9 +11,9 @@ const defaultContent = {
   bodyText: 'Explore our recently added career planning resources, scholarship opportunities, and skill-building workshops designed to help you achieve your professional goals.\n\nVisit the resources section to learn more.',
   imageUrl: '',
   linkUrl: 'https://career-radar.space',
+  buttonText: 'Learn More',
   publishedDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
   cardHeadline: 'Ready to Level Up?',
-  badgeText: 'NEW!',
   badgeText: 'NEW!',
   cardParagraph: 'Discover personalized career insights and actionable steps tailored just for you.',
   cardBannerText: 'Your [highlighted yellow]career journey[/highlighted yellow] starts here.',
@@ -149,7 +149,7 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
               {c.linkUrl && (
                 <a href={c.linkUrl} target="_blank" rel="noreferrer" className="relative z-[1] self-start flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors">
                   <ExternalLink size={14} />
-                  {c.linkUrl.replace(/^https?:\/\//, '')}
+                  {c.buttonText || 'Learn More'}
                 </a>
               )}
             </div>
@@ -186,7 +186,7 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
           <div className="flex items-center gap-2">
             <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Close</button>
             {c.linkUrl && (
-              <a href={c.linkUrl} target="_blank" rel="noreferrer" className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">View Full Article</a>
+              <a href={c.linkUrl} target="_blank" rel="noreferrer" className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">{c.buttonText || 'Learn More'}</a>
             )}
           </div>
         </div>

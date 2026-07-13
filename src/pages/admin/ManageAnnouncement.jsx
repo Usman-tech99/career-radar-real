@@ -12,6 +12,7 @@ const defaultContent = {
   bodyText: 'Explore our recently added career planning resources, scholarship opportunities, and skill-building workshops designed to help you achieve your professional goals.\n\nVisit the resources section to learn more.',
   imageUrl: '',
   linkUrl: 'https://career-radar.space',
+  buttonText: 'Learn More',
   publishedDate: '',
   cardHeadline: 'Ready to Level Up?',
   badgeText: 'NEW!',
@@ -186,6 +187,10 @@ export default function ManageAnnouncement() {
           <div>
             <label className="label">Link URL</label>
             <input value={c.linkUrl} onChange={e => updateContent('linkUrl', e.target.value)} className="input-field" placeholder="https://career-radar.space" />
+          </div>
+          <div>
+            <label className="label">Button Text</label>
+            <input value={c.buttonText || ''} onChange={e => updateContent('buttonText', e.target.value)} className="input-field" placeholder="Learn More" />
           </div>
         </div>
         <div>
