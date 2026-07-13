@@ -53,7 +53,7 @@ export default function PopupModal() {
       >
         <div className="absolute inset-0 rounded-[inherit] pointer-events-none border-2 border-green/30" />
         <button onClick={dismiss} className="absolute top-4 right-4 text-muted hover:text-white z-10 bg-black/40 rounded-full p-1.5 transition-colors hover:bg-black/60"><X size={18} /></button>
-        {popup.image_url && <img src={popup.image_url} alt="" loading="lazy" className="w-full h-48 object-cover" />}
+        {popup.image_url && <img src={popup.image_url} alt="" loading="lazy" className="w-full max-h-80 object-contain bg-black/30" />}
         <div className="p-6">
           <p className="text-white text-lg leading-relaxed">{popup.message}</p>
           {popup.link_url && (

@@ -102,7 +102,7 @@ export default function ManagePopup() {
           <div className="flex items-center gap-3">
             {settings.image_url ? (
               <div className="relative group w-full">
-                <img src={settings.image_url} alt="preview" loading="lazy" className="w-full max-h-48 object-cover rounded-xl border border-border" />
+                <img src={settings.image_url} alt="preview" loading="lazy" className="w-full max-h-96 object-contain rounded-xl border border-border bg-black/20" />
                 <button onClick={() => update('image_url', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"><X size={16} /></button>
               </div>
             ) : (
@@ -147,7 +147,7 @@ export default function ManagePopup() {
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setPreview(false)}>
           <div className="glass-card w-full max-w-md relative overflow-hidden rounded-2xl border border-green/50" style={{ boxShadow: '0 0 25px rgba(16,185,129,0.25)' }} onClick={e => e.stopPropagation()}>
             <button onClick={() => setPreview(false)} className="absolute top-4 right-4 text-muted hover:text-white z-10"><X size={24} /></button>
-            {settings.image_url && <img src={settings.image_url} alt="" className="w-full h-48 object-cover" />}
+            {settings.image_url && <img src={settings.image_url} alt="" className="w-full max-h-80 object-contain bg-black/30" />}
             <div className="p-6">
               <p className="text-white text-lg leading-relaxed">{settings.message}</p>
               {settings.link_url && (
