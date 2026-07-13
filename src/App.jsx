@@ -15,6 +15,7 @@ import AdminLayout from './components/layout/AdminLayout'
 // Import RadarAIBubble and RadarCursor lazily as they are heavy
 const RadarAIBubble = lazy(() => import('./components/ai/RadarAIBubble'))
 const RadarCursor = lazy(() => import('./components/ui/RadarCursor'))
+const PopupModal = lazy(() => import('./components/PopupModal'))
 // Keep existing imports...
 const Home = lazy(() => import('./pages/public/Home'))
 const Jobs = lazy(() => import('./pages/public/Jobs'))
@@ -64,6 +65,7 @@ const AIInsights = lazy(() => import('./pages/admin/AIInsights'))
 const MyProfile = lazy(() => import('./pages/admin/MyProfile'))
 const ManageErrorLogs = lazy(() => import('./pages/admin/ManageErrorLogs'))
 const ManageVolunteers = lazy(() => import('./pages/admin/ManageVolunteers'))
+const ManagePopup = lazy(() => import('./pages/admin/ManagePopup'))
 
 function Loader() {
   return (
@@ -98,6 +100,9 @@ export default function App() {
         </Suspense>
         <Suspense fallback={null}>
           <RadarAIBubble />
+        </Suspense>
+        <Suspense fallback={null}>
+          <PopupModal />
         </Suspense>
         <Toaster position="bottom-center" />
         <ErrorBoundary>
@@ -177,6 +182,7 @@ export default function App() {
                 <Route path="/admin/ai-insights" element={<AIInsights />} />
                 <Route path="/admin/error-logs" element={<ManageErrorLogs />} />
                 <Route path="/admin/manage-volunteers" element={<ManageVolunteers />} />
+                <Route path="/admin/manage-popup" element={<ManagePopup />} />
               </Route>
 
               <Route element={<CollaboratorRoute />}>
