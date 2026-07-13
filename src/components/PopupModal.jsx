@@ -7,16 +7,25 @@ const STORAGE_KEY = 'cr_popup_dismissed'
 export default function PopupModal() {
   const [popup, setPopup] = useState(null)
   const [visible, setVisible] = useState(false)
-  const exitAdded = useRef(false)
+  const pageReady = useRef(false)
+  const exitRef = useRef(null)
 
   useEffect(() => {
+    const pageLoadTimer = setTimeout(() => { pageReady.current = true }, 2000)
     fetchPopup()
     return () => {
-      if (exitAdded.current) {
-        document.removeEventListener('mouseleave', handleExitIntent)
+      clearTimeout(pageLoadTimer)
+      if (exitRef.current) {
+        document.removeEventListener('mouseleave', exitRef.current)
       }
     }
   }, [])
+
+  function handleExitIntent(e) {
+    if (!pageReady.current || e.clientY > 0 || sessionStorage.getItem(STORAGE_KEY)) return
+    sessionStorage.setItem(STORAGE_KEY, 'true')
+    setVisible(true)
+  }
 
   async function fetchPopup() {
     const { data } = await supabase.from('popup_settings').select('*').eq('is_active', true).order('id', { ascending: false }).limit(1).single()
@@ -32,15 +41,9 @@ export default function PopupModal() {
       setTimeout(() => setVisible(true), 800)
     }
     if (data.show_on_exit) {
-      exitAdded.current = true
-      document.addEventListener('mouseleave', handleExitIntent)
+      exitRef.current = handleExitIntent
+      document.addEventListener('mouseleave', exitRef.current)
     }
-  }
-
-  function handleExitIntent(e) {
-    if (e.clientY > 0 || sessionStorage.getItem(STORAGE_KEY)) return
-    sessionStorage.setItem(STORAGE_KEY, 'true')
-    setVisible(true)
   }
 
   function dismiss() {
