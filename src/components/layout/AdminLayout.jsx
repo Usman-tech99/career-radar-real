@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Briefcase, FileText, ShoppingBag,
   BookOpen, LayoutTemplate, Info, Share2, Users, UserCheck,
   ShieldAlert, BarChart3, CreditCard, BrainCircuit, UserCircle,
-  GraduationCap, LogOut, Menu, X, ChevronRight, Home, Globe, AlertTriangle
+  GraduationCap, LogOut, Menu, X, ChevronRight, Home, Globe, AlertTriangle, Megaphone
 } from 'lucide-react'
 
 const ALL_NAV_ITEMS = [
@@ -27,6 +27,7 @@ const ALL_NAV_ITEMS = [
   { label: 'Payments', path: '/admin/manage-payments', icon: CreditCard, perm: 'manage_payments' },
   { label: 'AI Insights', path: '/admin/ai-insights', icon: BrainCircuit, perm: 'ai_insights' },
   { label: 'Manage Popup', path: '/admin/manage-popup', icon: LayoutTemplate, perm: 'super_admin' },
+  { label: 'Announcement', path: '/admin/manage-announcement', icon: Megaphone, perm: 'super_admin' },
   { label: 'Error Logs', path: '/admin/error-logs', icon: AlertTriangle, perm: 'super_admin' },
   { label: 'Volunteers', path: '/admin/manage-volunteers', icon: Users, perm: 'super_admin' },
   { label: 'My Profile', path: '/admin/my-profile', icon: UserCircle, perm: 'collaborator' },
