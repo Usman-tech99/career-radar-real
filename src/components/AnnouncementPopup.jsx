@@ -101,7 +101,7 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
         {/* HEADER */}
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
-            <Megaphone size={20} className="text-blue-500" />
+            <Megaphone size={20} className="text-green" />
             <span className="font-bold text-gray-900 text-lg">Latest News</span>
           </div>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-100" aria-label="Close">
@@ -147,7 +147,7 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
                 )}
               </div>
               {c.linkUrl && (
-                <a href={c.linkUrl} target="_blank" rel="noreferrer" className="relative z-[1] self-start flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors">
+                <a href={c.linkUrl} target="_blank" rel="noreferrer" className="relative z-[1] self-start flex items-center gap-1.5 bg-green hover:bg-emerald-500 text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors">
                   <ExternalLink size={14} />
                   {c.buttonText || 'Learn More'}
                 </a>
@@ -169,7 +169,7 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
                   <p key={i}>{para}</p>
                 ))}
                 {c.linkUrl && (
-                  <p className="text-blue-600 break-all">{c.linkUrl}</p>
+                  <p className="text-green break-all">{c.linkUrl}</p>
                 )}
               </div>
             )}
@@ -186,7 +186,7 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
           <div className="flex items-center gap-2">
             <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Close</button>
             {c.linkUrl && (
-              <a href={c.linkUrl} target="_blank" rel="noreferrer" className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">{c.buttonText || 'Learn More'}</a>
+              <a href={c.linkUrl} target="_blank" rel="noreferrer" className="px-4 py-2 text-sm font-medium text-white bg-green rounded-lg hover:bg-emerald-500 transition-colors">{c.buttonText || 'Learn More'}</a>
             )}
           </div>
         </div>
