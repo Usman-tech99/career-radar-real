@@ -138,7 +138,7 @@ export default function Home() {
                 Ai Powered GPS
               </div>
 
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-sora tracking-tight mb-2 leading-[1.05]">
+              <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold font-sora tracking-tight mb-2 leading-[1.05]">
                 <span className="text-[#1A2D4A]">Career</span>{' '}
                 <span className="bg-gradient-to-r from-gold via-gold to-amber-400 bg-clip-text text-transparent">
                   Radar
@@ -152,11 +152,11 @@ export default function Home() {
                 Career Radar is an AI-powered career ecosystem helping students and early-career professionals discover verified scholarships, internships, jobs, AI resources, career guidance, and professional networks&mdash;all in one place.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link to="/social" className="btn-primary w-full sm:w-auto text-lg px-8 py-4 flex items-center justify-center gap-2 group">
-                  Join Community <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+                <Link to="/social" className="btn-primary w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 flex items-center justify-center gap-2 group">
+                  Join Community <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <Link to="/jobs" className="btn-ghost w-full sm:w-auto text-lg px-8 py-4 border border-white/10 hover:border-white/20">
+                <Link to="/jobs" className="btn-ghost w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 border border-white/10 hover:border-white/20">
                   Explore Opportunities
                 </Link>
               </div>
@@ -184,7 +184,7 @@ export default function Home() {
         )}
 
         {/* Why Career Radar */}
-        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-4xl mx-auto mt-28">
+        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-4xl mx-auto mt-16 md:mt-28">
           <div className="text-center">
             <h2 className="text-3xl md:text-5xl font-bold font-sora text-white mb-6">Why Career Radar?</h2>
             <p className="text-muted text-base md:text-lg leading-relaxed max-w-3xl mx-auto">
@@ -206,7 +206,7 @@ export default function Home() {
         </div>
 
         {/* How It Works */}
-        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-5xl mx-auto mt-28">
+        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-5xl mx-auto mt-16 md:mt-28">
           <div className="text-center mb-14">
             <h2 className="text-3xl md:text-5xl font-bold font-sora text-white mb-4">How Career Radar Works</h2>
             <p className="text-muted text-base md:text-lg max-w-2xl mx-auto">Four simple steps to transform your career journey.</p>
@@ -230,7 +230,7 @@ export default function Home() {
         </BlurFade>
 
         {/* Why People Join */}
-        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-4xl mx-auto mt-28">
+        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-4xl mx-auto mt-16 md:mt-28">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-5xl font-bold font-sora text-white mb-4">Why People Join Career Radar</h2>
             <p className="text-muted text-base md:text-lg max-w-2xl mx-auto">Everything you need to accelerate your career, all in one place.</p>
@@ -246,7 +246,7 @@ export default function Home() {
         </BlurFade>
 
         {/* Testimonials */}
-        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-5xl mx-auto mt-28">
+        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-5xl mx-auto mt-16 md:mt-28">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-5xl font-bold font-sora text-white mb-4">What Our Community Says</h2>
             <p className="text-muted text-base md:text-lg max-w-2xl mx-auto">Real stories from real members achieving real results.</p>
@@ -277,7 +277,7 @@ export default function Home() {
         </BlurFade>
 
         {/* Roadmap */}
-        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-5xl mx-auto mt-28">
+        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-5xl mx-auto mt-16 md:mt-28">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-5xl font-bold font-sora text-white mb-4">Building the Future of Career Development</h2>
             <p className="text-muted text-base md:text-lg max-w-2xl mx-auto">Today we deliver verified opportunities, career resources, community support, and AI learning. Coming soon: even more powerful tools.</p>
@@ -315,7 +315,7 @@ export default function Home() {
         </BlurFade>
 
         {/* Founder Message */}
-        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-4xl mx-auto mt-28">
+        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-4xl mx-auto mt-16 md:mt-28">
           <div className="glass-card p-6 md:p-10 text-center relative overflow-hidden">
             <BorderBeam size={150} duration={10} colorFrom="#F5A623" colorTo="#8B5CF6" borderWidth={1} />
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">A Message from the Founder</h2>
@@ -325,14 +325,14 @@ export default function Home() {
           </div>
         </BlurFade>
 
-        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-4xl mx-auto mt-28 mb-20">
+        <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-4xl mx-auto mt-16 md:mt-28 mb-20">
           <div className="glass-card p-8 md:p-12 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Want to Make a Difference?</h2>
             <p className="text-muted text-base md:text-lg max-w-2xl mx-auto mb-8">
               Join our volunteer team and help students around the world build better careers.
             </p>
-            <Link to="/volunteer" className="btn-primary text-lg px-8 py-4 inline-flex items-center gap-2 group">
-              Become a Volunteer <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            <Link to="/volunteer" className="btn-primary w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 inline-flex items-center justify-center gap-2 group">
+              Become a Volunteer <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
         </BlurFade>
