@@ -162,19 +162,19 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Actions */}
-        <div className="lg:hidden flex items-center gap-2 shrink-0">
+        <div className="lg:hidden flex items-center gap-1.5 shrink-0">
           {user ? (
-            <Link to={dashPath} className="btn-primary py-2 px-3 text-sm flex items-center gap-1">
-              <User size={15} /> Dash
+            <Link to={dashPath} className="btn-primary py-1.5 px-2 text-xs flex items-center gap-1">
+              <User size={13} /> Dash
             </Link>
           ) : (
             <>
-              <Link to="/login" className="text-sm font-medium hover:text-gold transition-colors px-2 text-slate-100">Login</Link>
-              <Link to="/register" className="btn-primary py-2 px-3 text-sm whitespace-nowrap">Join Free</Link>
+              <Link to="/login" className="text-xs font-medium hover:text-gold transition-colors px-1.5 text-slate-100">Login</Link>
+              <Link to="/register" className="btn-primary py-1.5 px-2 text-xs whitespace-nowrap">Join Free</Link>
             </>
           )}
-          <button className="text-slate-100 p-2" onClick={() => setIsOpen(!isOpen)} aria-label={isOpen ? "Close menu" : "Open menu"}>
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          <button className="text-slate-100 p-1.5" onClick={() => setIsOpen(!isOpen)} aria-label={isOpen ? "Close menu" : "Open menu"}>
+            {isOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
