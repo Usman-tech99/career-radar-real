@@ -17,6 +17,7 @@ const RadarAIBubble = lazy(() => import('./components/ai/RadarAIBubble'))
 const RadarCursor = lazy(() => import('./components/ui/RadarCursor'))
 const PopupModal = lazy(() => import('./components/PopupModal'))
 const AnnouncementPopup = lazy(() => import('./components/AnnouncementPopup'))
+const CookieConsentBanner = lazy(() => import('./components/CookieConsentBanner'))
 // Keep existing imports...
 const Home = lazy(() => import('./pages/public/Home'))
 const Jobs = lazy(() => import('./pages/public/Jobs'))
@@ -108,6 +109,9 @@ export default function App() {
         </Suspense>
         <Suspense fallback={null}>
           <AnnouncementPopup />
+        </Suspense>
+        <Suspense fallback={null}>
+          <CookieConsentBanner />
         </Suspense>
         <Toaster position="bottom-center" />
         <ErrorBoundary>
