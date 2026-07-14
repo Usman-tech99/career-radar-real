@@ -43,7 +43,7 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
   }, [isHome])
 
   async function fetchAnnouncement() {
-    const { data } = await supabase.from('announcements').select('*').eq('is_active', true).order('id', { ascending: false }).limit(1).single()
+    const { data } = await supabase.from('announcements').select('*').eq('is_active', true).order('id', { ascending: false }).limit(1).maybeSingle()
     if (!data) return
     setFetchedData(data)
     if (data.show_on_entry && !dismissedRef.current) {

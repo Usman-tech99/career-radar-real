@@ -35,7 +35,7 @@ export default function PopupModal() {
   }
 
   async function fetchPopup() {
-    const { data } = await supabase.from('popup_settings').select('*').eq('is_active', true).order('id', { ascending: false }).limit(1).single()
+    const { data } = await supabase.from('popup_settings').select('*').eq('is_active', true).order('id', { ascending: false }).limit(1).maybeSingle()
     if (!data) return
     if (data.image_url) {
       const cacheBuster = `t=${new Date(data.updated_at || data.created_at).getTime()}`
