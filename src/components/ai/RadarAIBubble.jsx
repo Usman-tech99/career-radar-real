@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Bot, X, Send, User, Loader2 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
@@ -17,6 +18,8 @@ function formatAIResponse(text) {
 }
 
 export default function RadarAIBubble() {
+  const { pathname } = useLocation()
+  const isResumePage = pathname === '/dashboard/resume'
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState([
     { role: 'assistant', content: '👋 Welcome to Radar AI!\n\nI\'m your AI Career Assistant.\n\nBefore we begin, please choose your preferred language:\n\n English\n اردو (Urdu)\n\nAfter that, I\'ll help you with:\n🎓 Scholarships\n💼 Jobs & Internships\n🤖 AI Tools\n📄 Resume Reviews\n🔗 LinkedIn Optimization\n💻 Freelancing\n🚀 Career Guidance\n\nType:\nEnglish\nor\nUrdu' }
@@ -86,7 +89,9 @@ export default function RadarAIBubble() {
 
   return (
     <>
-      {/* Floating Button */}
+      {isResumePage ? null : (
+      <>
+        {/* Floating Button */}
       <AnimatePresence>
         {!isOpen && (
           <motion.button
@@ -181,6 +186,8 @@ export default function RadarAIBubble() {
           </motion.div>
         )}
       </AnimatePresence>
+      </>
+      )}
     </>
   )
 }
