@@ -106,12 +106,12 @@ export default function Home() {
       <motion.div
         animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 1.08, 1] }}
         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-        className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-blue-accent/10 blur-[150px] rounded-full pointer-events-none"
+        className="absolute top-1/4 right-0 w-[250px] sm:w-[500px] h-[250px] sm:h-[500px] bg-blue-accent/10 blur-[100px] sm:blur-[150px] rounded-full pointer-events-none"
       />
       <motion.div
         animate={{ opacity: [0.3, 0.7, 0.3], scale: [1, 1.06, 1] }}
         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-        className="absolute bottom-0 left-[-10%] w-[500px] h-[500px] bg-purple-accent/10 blur-[150px] rounded-full pointer-events-none"
+        className="absolute bottom-0 left-[-10%] w-[200px] sm:w-[500px] h-[200px] sm:h-[500px] bg-purple-accent/10 blur-[80px] sm:blur-[150px] rounded-full pointer-events-none"
       />
 
       {/* Hero */}
