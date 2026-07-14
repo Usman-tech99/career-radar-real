@@ -64,8 +64,8 @@ export default function AdminLayout() {
           mobile ? 'whitespace-normal' : 'whitespace-nowrap'
         } ${
           active
-            ? 'bg-green/10 text-green'
-            : 'text-muted hover:text-white hover:bg-white/[0.04]'
+            ? 'bg-gold/10 text-gold'
+            : 'text-slate-100 hover:text-white hover:bg-white/10'
         }`}
       >
         <item.icon size={16} />
@@ -77,15 +77,15 @@ export default function AdminLayout() {
   return (
     <div className="min-h-screen bg-surface flex flex-col">
       {/* Top Navbar */}
-      <div className="admin-topbar fixed top-0 left-0 right-0 z-40 h-16 bg-surface border-b border-border flex items-center px-4 sm:px-6 gap-3">
-        <button type="button" className="lg:hidden p-2 rounded-lg hover:bg-white/[0.04] transition-colors" onClick={() => setMobileOpen(true)}>
-          <Menu size={20} className="text-muted" />
+      <div className="admin-topbar fixed top-0 left-0 right-0 z-40 h-16 bg-navy border-b border-navy/80 flex items-center px-4 sm:px-6 gap-3">
+        <button type="button" className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition-colors" onClick={() => setMobileOpen(true)}>
+          <Menu size={20} className="text-slate-100" />
         </button>
 
         <Link to="/" className="flex items-center gap-2 shrink-0">
           <span className="font-sora font-bold text-lg tracking-tight">
-            <span className="text-green">CR</span>{' '}
-            <span className="hidden sm:inline text-muted font-normal text-sm">Admin</span>
+            <span className="text-gold">CR</span>{' '}
+            <span className="hidden sm:inline text-slate-100 font-normal text-sm">Admin</span>
           </span>
         </Link>
 
@@ -97,7 +97,7 @@ export default function AdminLayout() {
         </div>
 
         <div className="ml-auto flex items-center gap-3 shrink-0">
-          <span className="text-xs text-muted hidden sm:inline">{roleLabel}</span>
+          <span className="text-xs text-slate-100 hidden sm:inline">{roleLabel}</span>
           <button
             type="button"
             onClick={signOut}
@@ -121,7 +121,7 @@ export default function AdminLayout() {
           >
             <div className="flex items-center justify-between p-4 border-b border-border">
               <span className="font-sora font-bold text-lg">
-                <span className="text-green">CR</span> Admin
+                <span className="text-gold">CR</span> Admin
               </span>
               <button type="button" onClick={() => setMobileOpen(false)} className="p-1 rounded-lg hover:bg-white/[0.04] cursor-pointer">
                 <X size={20} className="text-muted pointer-events-none" />

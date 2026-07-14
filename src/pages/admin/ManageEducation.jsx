@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import { useForm } from 'react-hook-form'
@@ -162,7 +162,7 @@ export default function ManageEducation() {
                     <span className="badge-blue">{item.type}</span>
                     <span className="badge-purple">{item.level}</span>
                   </div>
-                  <span className={`text-xs font-bold ${item.is_free ? 'text-green' : 'text-amber-400'}`}>
+                  <span className={`text-xs font-bold ${item.is_free ? 'text-gold' : 'text-amber-400'}`}>
                     {item.is_free ? 'FREE' : 'PAID (Products)'}
                   </span>
                 </div>
@@ -170,7 +170,7 @@ export default function ManageEducation() {
                 {item.products && <p className="text-xs text-amber-400 mb-2">Linked to: {item.products.title}</p>}
                 
                 <div className="flex justify-between items-center border-t border-border mt-auto pt-4">
-                  <span className={`text-xs ${item.is_published ? 'text-green' : 'text-red-400'}`}>
+                  <span className={`text-xs ${item.is_published ? 'text-gold' : 'text-red-400'}`}>
                     {item.is_published ? 'Published' : 'Draft'}
                   </span>
                   <div className="flex gap-2">
@@ -237,7 +237,7 @@ export default function ManageEducation() {
                         <input type="file" accept="image/*" className="hidden" onChange={handleThumbnailUpload} disabled={uploading} />
                       </label>
                     </div>
-                    {thumbnailUrl && <p className="text-green text-xs mt-2 truncate">Uploaded: {thumbnailUrl.substring(0, 30)}...</p>}
+                    {thumbnailUrl && <p className="text-gold text-xs mt-2 truncate">Uploaded: {thumbnailUrl.substring(0, 30)}...</p>}
                   </div>
                   <div>
                     <label className="label">Sort Order (Lowest first)</label>
@@ -247,14 +247,14 @@ export default function ManageEducation() {
 
                 <div className="flex flex-col gap-4 p-4 border border-border rounded-xl bg-white/[0.02]">
                   <label className="flex items-center gap-2 cursor-pointer border-b border-border pb-4">
-                    <input type="checkbox" {...register('is_free')} className="w-5 h-5 accent-green rounded" />
+                    <input type="checkbox" {...register('is_free')} className="w-5 h-5 accent-gold rounded" />
                     <span className="font-bold text-lg">This education resource is FREE</span>
                   </label>
                   
                   {isFree ? (
                     <div>
-                      <label className="label text-green">Free Access URL (e.g. YouTube playlist link)</label>
-                      <input {...register('free_access_url')} className="input-field border-green/30" placeholder="https://youtube.com/..." />
+                      <label className="label text-gold">Free Access URL (e.g. YouTube playlist link)</label>
+                      <input {...register('free_access_url')} className="input-field border-gold/30" placeholder="https://youtube.com/..." />
                     </div>
                   ) : (
                     <div>
@@ -282,7 +282,7 @@ export default function ManageEducation() {
 
                 <div className="flex gap-6 mt-4">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" {...register('is_published')} className="w-4 h-4 accent-green rounded" />
+                    <input type="checkbox" {...register('is_published')} className="w-4 h-4 accent-gold rounded" />
                     <span className="text-sm">Published</span>
                   </label>
                 </div>

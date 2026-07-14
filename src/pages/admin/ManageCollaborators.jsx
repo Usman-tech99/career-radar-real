@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import { useForm } from 'react-hook-form'
@@ -158,7 +158,7 @@ export default function ManageCollaborators() {
                 <p className="text-sm text-muted mb-4 flex-1 line-clamp-2">{item.description}</p>
                 
                 <div className="flex justify-between items-center border-t border-border mt-auto pt-4">
-                  <span className={`text-xs ${item.is_active ? 'text-green' : 'text-red-400'}`}>
+                  <span className={`text-xs ${item.is_active ? 'text-gold' : 'text-red-400'}`}>
                     {item.is_active ? 'Active' : 'Hidden'}
                   </span>
                   <div className="flex gap-2">
@@ -215,7 +215,7 @@ export default function ManageCollaborators() {
                         <input type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} disabled={uploading} />
                       </label>
                     </div>
-                    {logoUrl && <p className="text-green text-xs mt-2 truncate">Uploaded: {logoUrl.substring(0,30)}...</p>}
+                    {logoUrl && <p className="text-gold text-xs mt-2 truncate">Uploaded: {logoUrl.substring(0,30)}...</p>}
                   </div>
                   <div>
                     <label className="label">Sort Order</label>
@@ -244,11 +244,11 @@ export default function ManageCollaborators() {
 
                 <div className="flex gap-6 mt-4 p-4 border border-border rounded-xl">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" {...register('is_featured')} className="w-4 h-4 accent-green rounded" />
+                    <input type="checkbox" {...register('is_featured')} className="w-4 h-4 accent-gold rounded" />
                     <span className="text-sm font-bold text-gold">Featured (Gold Border)</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" {...register('is_active')} className="w-4 h-4 accent-green rounded" />
+                    <input type="checkbox" {...register('is_active')} className="w-4 h-4 accent-gold rounded" />
                     <span className="text-sm">Active</span>
                   </label>
                 </div>

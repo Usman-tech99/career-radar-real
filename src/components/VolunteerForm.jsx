@@ -48,7 +48,7 @@ function RadioGroup({ label, options, value, onChange }) {
       <p className="label mb-2">{label}</p>
       <div className="flex flex-wrap gap-3">
         {options.map(opt => (
-          <button key={opt} type="button" onClick={() => onChange(opt)} className={`px-4 py-2 text-sm rounded-lg border transition-colors ${value === opt ? 'bg-green/10 text-green border-green/40' : 'bg-white/[0.02] text-muted border-border hover:border-white/20'}`}>
+          <button key={opt} type="button" onClick={() => onChange(opt)} className={`px-4 py-2 text-sm rounded-lg border transition-colors ${value === opt ? 'bg-gold/10 text-gold border-gold/40' : 'bg-white/[0.02] text-muted border-border hover:border-white/20'}`}>
             {opt}
           </button>
         ))}
@@ -63,7 +63,7 @@ function PillGroup({ label, options, selected, onToggle }) {
       <p className="label mb-2">{label}</p>
       <div className="flex flex-wrap gap-2">
         {options.map(opt => (
-          <button key={opt} type="button" onClick={() => onToggle(opt)} className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${selected.includes(opt) ? 'bg-green/10 text-green border-green/40' : 'bg-white/[0.02] text-muted border-border hover:border-white/20'}`}>
+          <button key={opt} type="button" onClick={() => onToggle(opt)} className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${selected.includes(opt) ? 'bg-gold/10 text-gold border-gold/40' : 'bg-white/[0.02] text-muted border-border hover:border-white/20'}`}>
             {opt}
           </button>
         ))}
@@ -173,8 +173,8 @@ export default function VolunteerForm() {
     return (
       <BlurFade delay={0.2} offset={15} blur="5px" className="w-full max-w-2xl mx-auto mt-28 mb-8">
         <div className="glass-card p-12 md:p-16 text-center">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green/10 flex items-center justify-center">
-            <CheckCircle size={32} className="text-green" />
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gold/10 flex items-center justify-center">
+            <CheckCircle size={32} className="text-gold" />
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Application Submitted!</h2>
           <p className="text-muted text-lg mb-4">Thank you for applying to Career Radar.</p>
@@ -194,16 +194,16 @@ export default function VolunteerForm() {
       {/* Hero */}
       <BlurFade delay={0.1} offset={15} blur="5px">
         <div className="glass-card p-10 md:p-16 text-center relative overflow-hidden">
-          <BorderBeam size={200} duration={12} colorFrom="#10B981" colorTo="#60A5FA" borderWidth={1} />
+          <BorderBeam size={200} duration={12} colorFrom="#F5A623" colorTo="#60A5FA" borderWidth={1} />
           <h1 className="text-4xl md:text-5xl font-bold font-sora text-white mb-4">Become a Career Radar Volunteer</h1>
-          <h2 className="text-2xl md:text-3xl font-bold text-green mb-4">Help Shape the Future of Students Worldwide.</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-gold mb-4">Help Shape the Future of Students Worldwide.</h2>
           <p className="text-muted text-base md:text-lg leading-relaxed max-w-3xl mx-auto">
             Career Radar is building an AI-powered global career ecosystem that helps students discover opportunities, develop skills, and build successful careers.
           </p>
           <p className="text-muted text-base md:text-lg leading-relaxed max-w-3xl mx-auto mt-4">
             As a volunteer, you'll work with passionate students and professionals, gain real-world experience, build your portfolio, expand your network, and make a meaningful impact.
           </p>
-          <p className="text-green font-bold text-xl mt-6">No salary. Real experience. Real leadership. Real impact.</p>
+          <p className="text-gold font-bold text-xl mt-6">No salary. Real experience. Real leadership. Real impact.</p>
           <p className="text-muted mt-2">Apply if you're ready to learn, contribute, and grow with us.</p>
         </div>
       </BlurFade>
@@ -241,7 +241,7 @@ export default function VolunteerForm() {
         <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-8">Available Volunteer Departments</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {DEPARTMENTS.map(dept => (
-            <div key={dept} className={`glass-card p-5 text-center border transition-colors ${form.departments.includes(dept) ? 'border-green/40 bg-green/5' : ''}`}>
+            <div key={dept} className={`glass-card p-5 text-center border transition-colors ${form.departments.includes(dept) ? 'border-gold/40 bg-gold/5' : ''}`}>
               <h3 className="font-bold text-white text-base">{dept}</h3>
             </div>
           ))}
@@ -262,7 +262,7 @@ export default function VolunteerForm() {
               'Respect community values',
               'Be proactive and willing to learn',
             ].map(item => (
-              <li key={item} className="flex items-center gap-2 text-muted"><CheckCircle size={14} className="text-green shrink-0" />{item}</li>
+              <li key={item} className="flex items-center gap-2 text-muted"><CheckCircle size={14} className="text-gold shrink-0" />{item}</li>
             ))}
           </ul>
         </div>
@@ -276,7 +276,7 @@ export default function VolunteerForm() {
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Personal Information */}
             <div className="space-y-4">
-              <h3 className="text-xl font-bold text-green border-b border-green/20 pb-2">Personal Information</h3>
+              <h3 className="text-xl font-bold text-gold border-b border-gold/20 pb-2">Personal Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input label="Full Name" required value={form.fullName} onChange={v => set('fullName', v)} placeholder="Muhammad Usman" />
                 <Input label="Preferred Name" value={form.preferredName} onChange={v => set('preferredName', v)} placeholder="Usman" />
@@ -295,7 +295,7 @@ export default function VolunteerForm() {
 
             {/* Volunteer Information */}
             <div className="space-y-4">
-              <h3 className="text-xl font-bold text-green border-b border-green/20 pb-2">Volunteer Information</h3>
+              <h3 className="text-xl font-bold text-gold border-b border-gold/20 pb-2">Volunteer Information</h3>
               <PillGroup label="Which department would you like to join? *" options={DEPARTMENTS} selected={form.departments} onToggle={toggleDept} />
               <Input label="Why do you want to join Career Radar?" textarea value={form.reason} onChange={v => set('reason', v)} placeholder="Tell us what drives you..." />
               <Input label="Tell us about yourself in 100–200 words" textarea value={form.about} onChange={v => set('about', v)} placeholder="Your background, interests, and what you bring..." />
@@ -303,14 +303,14 @@ export default function VolunteerForm() {
 
             {/* Skills */}
             <div className="space-y-4">
-              <h3 className="text-xl font-bold text-green border-b border-green/20 pb-2">Skills</h3>
+              <h3 className="text-xl font-bold text-gold border-b border-gold/20 pb-2">Skills</h3>
               <PillGroup label="Select your skills" options={SKILLS} selected={form.skills} onToggle={toggleSkill} />
               <Input label="Other skills not listed above" value={form.otherSkills} onChange={v => set('otherSkills', v)} placeholder="e.g. SEO, Data Analysis, Copywriting..." />
             </div>
 
             {/* Experience */}
             <div className="space-y-4">
-              <h3 className="text-xl font-bold text-green border-b border-green/20 pb-2">Experience</h3>
+              <h3 className="text-xl font-bold text-gold border-b border-gold/20 pb-2">Experience</h3>
               <RadioGroup label="Have you volunteered before?" options={['Yes', 'No']} value={form.volunteeredBefore} onChange={v => set('volunteeredBefore', v)} />
               {form.volunteeredBefore === 'Yes' && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -323,7 +323,7 @@ export default function VolunteerForm() {
 
             {/* Availability & Communication */}
             <div className="space-y-4">
-              <h3 className="text-xl font-bold text-green border-b border-green/20 pb-2">Availability</h3>
+              <h3 className="text-xl font-bold text-gold border-b border-gold/20 pb-2">Availability</h3>
               <RadioGroup label="Hours available each week" options={['2–4', '4–6', '6–8', '8+']} value={form.hoursPerWeek} onChange={v => set('hoursPerWeek', v)} />
               <RadioGroup label="Preferred working time" options={['Morning', 'Afternoon', 'Evening', 'Flexible']} value={form.preferredTime} onChange={v => set('preferredTime', v)} />
               <RadioGroup label="Preferred communication channel" options={['WhatsApp', 'Discord', 'Slack', 'Email']} value={form.preferredChannel} onChange={v => set('preferredChannel', v)} />
@@ -331,7 +331,7 @@ export default function VolunteerForm() {
 
             {/* Short Questions */}
             <div className="space-y-4">
-              <h3 className="text-xl font-bold text-green border-b border-green/20 pb-2">Short Questions</h3>
+              <h3 className="text-xl font-bold text-gold border-b border-gold/20 pb-2">Short Questions</h3>
               <Input label="What is your biggest strength?" textarea value={form.biggestStrength} onChange={v => set('biggestStrength', v)} />
               <Input label="What skill do you want to develop by volunteering?" textarea value={form.skillToDevelop} onChange={v => set('skillToDevelop', v)} />
               <Input label="Describe one project you're proud of" textarea value={form.proudProject} onChange={v => set('proudProject', v)} />
@@ -340,7 +340,7 @@ export default function VolunteerForm() {
 
             {/* Agreement */}
             <div className="space-y-4">
-              <h3 className="text-xl font-bold text-green border-b border-green/20 pb-2">Agreement</h3>
+              <h3 className="text-xl font-bold text-gold border-b border-gold/20 pb-2">Agreement</h3>
               <div className="space-y-3">
                 {[
                   { key: 'agreementVolunteer', label: 'I understand this is currently a volunteer position.' },
@@ -349,7 +349,7 @@ export default function VolunteerForm() {
                   { key: 'agreementAccurate', label: 'The information provided is accurate.' },
                 ].map(item => (
                   <label key={item.key} className="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" checked={form[item.key]} onChange={e => set(item.key, e.target.checked)} className="w-4 h-4 rounded border-border bg-white/[0.04] accent-green" />
+                    <input type="checkbox" checked={form[item.key]} onChange={e => set(item.key, e.target.checked)} className="w-4 h-4 rounded border-border bg-white/[0.04] accent-gold" />
                     <span className="text-sm text-muted">{item.label}</span>
                   </label>
                 ))}
@@ -368,7 +368,7 @@ export default function VolunteerForm() {
                 <Turnstile
                   siteKey={TURNSTILE_SITE_KEY}
                   onSuccess={setCaptchaToken}
-                  options={{ theme: 'dark' }}
+                  options={{ theme: 'light' }}
                 />
               </div>
             </div>

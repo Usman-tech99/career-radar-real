@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { BarChart3, Save } from 'lucide-react'
@@ -50,7 +50,7 @@ export default function ManageStats() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-3">
-              <BarChart3 className="text-green" /> Manage Stats
+              <BarChart3 className="text-gold" /> Manage Stats
             </h1>
             <p className="text-muted text-sm mt-1">Update homepage statistics shown to all visitors.</p>
           </div>

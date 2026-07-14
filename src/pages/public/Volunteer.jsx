@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet-async'
 
 export default function Volunteer() {
   return (
-    <div className="min-h-screen bg-[#07070C] flex flex-col">
+    <div className="min-h-screen bg-surface flex flex-col">
       <Helmet>
         <title>Become a Volunteer — Career Radar</title>
         <meta name="description" content="Join Career Radar as a volunteer and help students build better careers." />

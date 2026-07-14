@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
@@ -41,11 +41,11 @@ export default function Scholarships({ navless } = {}) {
   })
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex flex-col">
+    <div className="min-h-screen bg-surface flex flex-col">
       <Helmet>
-        <title>Scholarships — Career Radar</title>
+        <title>Scholarships &mdash; Career Radar</title>
         <meta name="description" content="Discover international and local scholarships for students. Find fully-funded opportunities, merit-based awards, and financial aid options." />
-        <meta property="og:title" content="Scholarships — Career Radar" />
+        <meta property="og:title" content="Scholarships &mdash; Career Radar" />
         <meta property="og:description" content="Discover international and local scholarships for students. Find fully-funded opportunities, merit-based awards, and financial aid options." />
         <meta property="og:type" content="website" />
         <meta name="keywords" content="scholarships, fully funded, financial aid, student funding, study abroad" />
@@ -55,7 +55,7 @@ export default function Scholarships({ navless } = {}) {
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green/10 border border-green/20 text-green text-xs font-bold uppercase tracking-wider mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold/10 border border-gold/20 text-gold text-xs font-bold uppercase tracking-wider mb-4">
             <GraduationCap size={14} /> Scholarships
           </div>
           <h1 className="text-4xl md:text-5xl font-bold font-sora mb-4">
@@ -107,7 +107,7 @@ export default function Scholarships({ navless } = {}) {
                 <div className="relative h-44 bg-surface flex items-center justify-center p-6">
                   <SafeImage src={s.image_url} alt={s.title} className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500" />
                   <span className={`absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded ${
-                    s.coverage === 'Fully Funded' ? 'bg-green/20 text-green' :
+                    s.coverage === 'Fully Funded' ? 'bg-gold/20 text-gold' :
                     s.coverage === 'Partial Tuition' ? 'bg-gold/20 text-gold' :
                     s.coverage === 'Monthly Stipend' ? 'bg-blue-500/20 text-blue-400' :
                     'bg-white/10 text-white'
@@ -144,7 +144,7 @@ export default function Scholarships({ navless } = {}) {
 
             <div className="flex flex-wrap gap-3 mb-6">
               <span className={`text-xs font-bold px-3 py-1 rounded ${
-                selected.coverage === 'Fully Funded' ? 'bg-green/20 text-green' :
+                selected.coverage === 'Fully Funded' ? 'bg-gold/20 text-gold' :
                 selected.coverage === 'Partial Tuition' ? 'bg-gold/20 text-gold' :
                 selected.coverage === 'Monthly Stipend' ? 'bg-blue-500/20 text-blue-400' :
                 'bg-white/10 text-white'

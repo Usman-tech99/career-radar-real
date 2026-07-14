@@ -63,11 +63,11 @@ export default function PopupModal() {
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
       <div
-        className="glass-card w-full max-w-md relative overflow-hidden rounded-2xl border border-green/50 animate-fadeIn"
-        style={{ boxShadow: '0 0 25px rgba(16,185,129,0.25), 0 0 60px rgba(16,185,129,0.1)' }}
+        className="glass-card w-full max-w-md relative overflow-hidden rounded-2xl border border-gold/50 animate-fadeIn"
+        style={{ boxShadow: '0 0 25px rgba(245,166,35,0.25), 0 0 60px rgba(245,166,35,0.1)' }}
       >
-        <div className="absolute inset-0 rounded-[inherit] pointer-events-none border-2 border-green/30" />
-        <button onClick={dismiss} className="absolute top-3 right-3 text-muted hover:text-white z-20 bg-black/50 rounded-full p-2 transition-colors hover:bg-black/70 active:scale-95" aria-label="Close popup"><X size={20} /></button>
+        <div className="absolute inset-0 rounded-[inherit] pointer-events-none border-2 border-gold/30" />
+        <button onClick={dismiss} className="absolute top-3 right-3 text-muted hover:text-[#ffffff] z-20 bg-black/50 rounded-full p-2 transition-colors hover:bg-black/70 active:scale-95" aria-label="Close popup"><X size={20} /></button>
         {popup.image_url && <img src={popup._imgUrl || popup.image_url} alt="" className="w-full max-h-80 object-contain bg-black/30" />}
         <div className="p-6">
           <p className="text-white text-lg leading-relaxed">{popup.message}</p>

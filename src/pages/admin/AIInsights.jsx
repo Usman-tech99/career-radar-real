@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { MessageSquare, BrainCircuit, Search } from 'lucide-react'
@@ -64,7 +64,7 @@ export default function AIInsights() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
               <StatCard title="Total Queries" value={totalQueries} />
               <StatCard title="Career Coaching" value={coachCount} color="text-blue-400" />
-              <StatCard title="Job Matching" value={matcherCount} color="text-green" />
+              <StatCard title="Job Matching" value={matcherCount} color="text-gold" />
               <StatCard title="Content Search" value={contentCount} color="text-gold" />
             </div>
 
@@ -97,7 +97,7 @@ export default function AIInsights() {
                       <td className="p-4">
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
                           log.mode_detected === 'career_coach' ? 'bg-blue-500/20 text-blue-400' :
-                          log.mode_detected === 'job_matcher' ? 'bg-green/20 text-green' :
+                          log.mode_detected === 'job_matcher' ? 'bg-gold/20 text-gold' :
                           log.mode_detected === 'content_assistant' ? 'bg-gold/20 text-gold' :
                           'bg-white/10 text-white'
                         }`}>

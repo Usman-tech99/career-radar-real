@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -118,7 +118,7 @@ export default function ManageSocials() {
             {socials.map(item => (
               <div key={item.id} className="glass-card flex flex-col relative overflow-hidden">
                 {item.is_primary && (
-                  <div className="absolute top-0 right-0 bg-green text-surface text-[10px] font-bold px-3 py-1 rounded-bl-lg">
+                  <div className="absolute top-0 right-0 bg-gold text-surface text-[10px] font-bold px-3 py-1 rounded-bl-lg">
                     PRIMARY
                   </div>
                 )}
@@ -144,7 +144,7 @@ export default function ManageSocials() {
                 <p className="text-sm text-muted mb-4 flex-1 line-clamp-2">{item.description}</p>
                 
                 <div className="flex justify-between items-center border-t border-border mt-auto pt-4">
-                  <span className={`text-xs ${item.is_active ? 'text-green' : 'text-red-400'}`}>
+                  <span className={`text-xs ${item.is_active ? 'text-gold' : 'text-red-400'}`}>
                     {item.is_active ? 'Active' : 'Hidden'}
                   </span>
                   <div className="flex gap-2">
@@ -223,11 +223,11 @@ export default function ManageSocials() {
 
                 <div className="flex gap-6 mt-4 p-4 border border-border rounded-xl">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" {...register('is_primary')} className="w-4 h-4 accent-green rounded" />
-                    <span className="text-sm font-bold text-green">Primary Action</span>
+                    <input type="checkbox" {...register('is_primary')} className="w-4 h-4 accent-gold rounded" />
+                    <span className="text-sm font-bold text-gold">Primary Action</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" {...register('is_active')} className="w-4 h-4 accent-green rounded" />
+                    <input type="checkbox" {...register('is_active')} className="w-4 h-4 accent-gold rounded" />
                     <span className="text-sm">Active</span>
                   </label>
                 </div>

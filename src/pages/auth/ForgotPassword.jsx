@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
@@ -28,21 +28,21 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-surface flex items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-accent/20 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-green/20 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-gold/20 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="w-full max-w-md glass-card relative z-10 p-8">
         <div className="text-center mb-8">
           <Link to="/" className="inline-block mb-4">
             <h1 className="text-2xl font-bold font-sora tracking-tight text-white">
-              Career <span className="text-green">Radar</span>
+              Career <span className="text-gold">Radar</span>
             </h1>
           </Link>
           {sent ? (
             <>
-              <div className="w-16 h-16 rounded-full bg-green/20 flex items-center justify-center mx-auto mb-4">
-                <Send size={32} className="text-green" />
+              <div className="w-16 h-16 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-4">
+                <Send size={32} className="text-gold" />
               </div>
               <h2 className="text-2xl font-bold text-white mb-2">Check your email</h2>
               <p className="text-muted text-sm">
@@ -86,7 +86,7 @@ export default function ForgotPassword() {
         )}
 
         <p className="text-center text-sm text-muted mt-8">
-          <Link to="/login" className="text-green hover:underline font-medium inline-flex items-center gap-1">
+          <Link to="/login" className="text-gold hover:underline font-medium inline-flex items-center gap-1">
             <ArrowLeft size={14} /> Back to sign in
           </Link>
         </p>

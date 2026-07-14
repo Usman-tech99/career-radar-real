@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import { useForm } from 'react-hook-form'
@@ -130,7 +130,7 @@ export default function ManageScholarships() {
     <div>
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <GraduationCap className="text-green" /> Manage Scholarships
+            <GraduationCap className="text-gold" /> Manage Scholarships
           </h1>
           <button onClick={() => openModal()} className="btn-primary flex items-center gap-2">
             <Plus size={20} /> Add Scholarship
@@ -165,14 +165,14 @@ export default function ManageScholarships() {
                     <td className="p-4">{item.provider}</td>
                     <td className="p-4">
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                        item.coverage === 'Fully Funded' ? 'bg-green/20 text-green' :
+                        item.coverage === 'Fully Funded' ? 'bg-gold/20 text-gold' :
                         item.coverage === 'Partial Tuition' ? 'bg-gold/20 text-gold' :
                         item.coverage === 'Monthly Stipend' ? 'bg-blue-500/20 text-blue-400' :
                         'bg-white/10 text-white'
                       }`}>{item.coverage}</span>
                     </td>
                     <td className="p-4 text-sm text-muted">{item.country}</td>
-                    <td className="p-4 text-sm text-muted">{item.deadline ? formatDate(item.deadline) : '—'}</td>
+                    <td className="p-4 text-sm text-muted">{item.deadline ? formatDate(item.deadline) : '&mdash;'}</td>
                     <td className="p-4 text-right">
                       <button onClick={() => openModal(item)} className="p-2 text-blue-accent hover:bg-blue-500/10 rounded-lg"><Edit2 size={16} /></button>
                       <button onClick={() => deleteScholarship(item.id)} className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg"><Trash2 size={16} /></button>
@@ -273,7 +273,7 @@ export default function ManageScholarships() {
                 <div className="pt-4 flex justify-end gap-4 border-t border-border mt-6">
                   <button type="button" onClick={() => setIsModalOpen(false)} className="btn-ghost">Cancel</button>
                   <button type="submit" className="btn-primary flex items-center gap-2" disabled={uploading}>
-                    {uploading ? <><span className="animate-spin">⟳</span> Uploading...</> : editingId ? 'Update' : 'Add Scholarship'}
+                    {uploading ? <><span className="animate-spin">âŸ³</span> Uploading...</> : editingId ? 'Update' : 'Add Scholarship'}
                   </button>
                 </div>
               </form>

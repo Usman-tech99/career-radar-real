@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
@@ -110,7 +110,7 @@ export default function Dashboard() {
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-between items-center mb-10">
         <div>
           <h1 className="text-3xl md:text-4xl font-bold font-sora">
-            Welcome{user?.user_metadata?.full_name ? ` ${user.user_metadata.full_name.split(' ')[0]}` : ' back'}<AnimatedGradientText colorFrom="#10B981" colorTo="#3B82F6" className="text-3xl md:text-4xl font-bold">,</AnimatedGradientText>
+            Welcome{user?.user_metadata?.full_name ? ` ${user.user_metadata.full_name.split(' ')[0]}` : ' back'}<AnimatedGradientText colorFrom="#F5A623" colorTo="#3B82F6" className="text-3xl md:text-4xl font-bold">,</AnimatedGradientText>
           </h1>
           <p className="text-muted mt-1 flex items-center gap-2">
             <Sparkles size={14} className="text-gold" /> Here's your career snapshot for today.
@@ -149,15 +149,15 @@ export default function Dashboard() {
 
           {/* Score Card */}
           <BlurFade delay={0} offset={10} blur="3px" className="lg:col-span-1 relative group">
-            <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-br from-green/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-br from-gold/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
             <div className="glass-card relative h-full flex flex-col justify-between p-6 rounded-2xl overflow-hidden">
-              <div className="absolute top-0 right-0 w-40 h-40 bg-green/10 blur-[70px] rounded-full pointer-events-none" />
+              <div className="absolute top-0 right-0 w-40 h-40 bg-gold/10 blur-[70px] rounded-full pointer-events-none" />
               <div>
                 <div className="flex items-center gap-2 text-muted mb-4">
                   <Activity size={16} /> <span className="text-xs font-bold uppercase tracking-wider">Career Score</span>
                 </div>
                 <div className="flex items-end gap-2">
-                  <span className="text-6xl font-black font-mono text-transparent bg-clip-text bg-gradient-to-r from-green to-emerald-300">
+                  <span className="text-6xl font-black font-mono text-transparent bg-clip-text bg-gradient-to-r from-gold to-amber-300">
                     <NumberTicker value={score?.total_score || 0} />
                   </span>
                   <span className="text-lg text-muted font-mono mb-2">/100</span>
@@ -175,7 +175,7 @@ export default function Dashboard() {
                   </div>
                 )}
               </div>
-              <Link to="/dashboard/score" className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-green/70 hover:text-green transition-colors group/link">
+              <Link to="/dashboard/score" className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-gold/70 hover:text-gold transition-colors group/link">
                 View Breakdown <ChevronRight size={14} className="group-hover/link:translate-x-0.5 transition-transform" />
               </Link>
             </div>
@@ -183,7 +183,7 @@ export default function Dashboard() {
 
           {/* Blueprint Card */}
           <BlurFade delay={0.1} offset={10} blur="3px" className="lg:col-span-2 relative group">
-            <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-br from-blue-accent/20 via-green/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-br from-blue-accent/20 via-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
             <div className="glass-card relative h-full flex flex-col justify-between p-6 rounded-2xl overflow-hidden">
               <div className="absolute top-0 right-0 w-40 h-40 bg-blue-accent/10 blur-[70px] rounded-full pointer-events-none" />
               <div>
@@ -195,15 +195,15 @@ export default function Dashboard() {
                     <h3 className="text-2xl md:text-3xl font-bold font-sora text-white mb-2 break-words">{blueprint.title}</h3>
                     <p className="text-sm text-muted/80 mb-6 break-words leading-relaxed">{blueprint.summary}</p>
                     <div className="space-y-2">
-                      <p className="text-xs font-bold uppercase tracking-wider text-green/80 mb-3">Next Steps</p>
+                      <p className="text-xs font-bold uppercase tracking-wider text-gold/80 mb-3">Next Steps</p>
                       {blueprint.action_steps?.slice(0, 3).map((step, i) => {
                         const stepRoute = getStepRoute(step.title)
                         return (
                           <div key={i} onClick={() => navigate(stepRoute)} className="flex items-start gap-3 p-3.5 bg-white/[0.02] border border-white/[0.06] rounded-xl hover:bg-white/[0.04] hover:border-white/10 transition-all group/step cursor-pointer">
                             <div onClick={e => { e.stopPropagation(); toggleStep(i, step.completed) }} className={`mt-0.5 shrink-0 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
-                              step.completed ? 'bg-green border-green' : 'border-muted/50 group-hover/step:border-muted'
+                              step.completed ? 'bg-gold border-gold' : 'border-muted/50 group-hover/step:border-muted'
                             }`}>
-                              {step.completed && <div className="w-2 h-2 bg-[#07070C] rounded-sm" />}
+                              {step.completed && <div className="w-2 h-2 bg-[#070F1A] rounded-sm" />}
                             </div>
                             <div className="min-w-0 flex-1">
                               <p className={`text-sm break-words ${step.completed ? 'line-through text-muted/50' : 'text-white/90 font-medium'}`}>{step.title}</p>

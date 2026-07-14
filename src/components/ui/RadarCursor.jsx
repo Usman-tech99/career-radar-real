@@ -33,7 +33,7 @@ export default function RadarCursor() {
         position: fixed;
         width: 6px; height: 6px;
         border-radius: 50%;
-        background: rgba(16, 185, 129, 0.5);
+        background: rgba(245, 166, 35, 0.5);
         left: ${posRef.current.x}px;
         top: ${posRef.current.y}px;
         pointer-events: none;
@@ -75,8 +75,8 @@ export default function RadarCursor() {
           width: 32,
           height: 32,
           borderRadius: '50%',
-          border: '1.5px solid rgba(16, 185, 129, 0.35)',
-          boxShadow: '0 0 12px rgba(16, 185, 129, 0.15), inset 0 0 12px rgba(16, 185, 129, 0.05)',
+          border: '1.5px solid rgba(245, 166, 35, 0.35)',
+          boxShadow: '0 0 12px rgba(245, 166, 35, 0.15), inset 0 0 12px rgba(245, 166, 35, 0.05)',
           pointerEvents: 'none',
           zIndex: 9999,
           transform: 'translate(-50%, -50%)',
@@ -90,8 +90,8 @@ export default function RadarCursor() {
           width: 4,
           height: 4,
           borderRadius: '50%',
-          background: 'rgba(16, 185, 129, 0.6)',
-          boxShadow: '0 0 6px rgba(16, 185, 129, 0.4)',
+          background: 'rgba(245, 166, 35, 0.6)',
+          boxShadow: '0 0 6px rgba(245, 166, 35, 0.4)',
           pointerEvents: 'none',
           zIndex: 9999,
           transform: 'translate(-50%, -50%)',

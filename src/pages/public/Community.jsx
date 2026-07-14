@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { motion } from 'framer-motion'
 import Navbar from '../../components/layout/Navbar'
@@ -23,8 +23,8 @@ export default function Community({ navless } = {}) {
   }
 
   if (loading) return (
-    <div className="min-h-screen bg-[#07070C] flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-green border-t-transparent rounded-full animate-spin" />
+    <div className="min-h-screen bg-surface flex items-center justify-center">
+      <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
@@ -39,11 +39,11 @@ export default function Community({ navless } = {}) {
   const successStories = data?.success_stories || []
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex flex-col">
+    <div className="min-h-screen bg-surface flex flex-col">
       <Helmet>
-        <title>Community — Career Radar</title>
+        <title>Community &mdash; Career Radar</title>
         <meta name="description" content="Join the Career Radar global community. Connect with mentors, peers, and professionals across multiple countries." />
-        <meta property="og:title" content="Community — Career Radar" />
+        <meta property="og:title" content="Community &mdash; Career Radar" />
         <meta property="og:description" content="Join the Career Radar global community. Connect with mentors, peers, and professionals across multiple countries." />
         <meta property="og:type" content="website" />
         <meta name="keywords" content="career community, mentors, networking, career radar community" />
@@ -54,17 +54,17 @@ export default function Community({ navless } = {}) {
         {/* Hero */}
         <section className="pt-36 pb-20 px-4 text-center relative overflow-hidden">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto relative z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green/10 border border-green/20 text-green text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold/10 border border-gold/20 text-gold text-sm font-medium mb-6">
               <Users size={14} /> 1,350+ Community Members
             </div>
             <h1 className="text-5xl md:text-6xl font-bold font-sora text-white mb-6 leading-tight">
-              Your Career <span className="text-green">Community</span> Awaits
+              Your Career <span className="text-gold">Community</span> Awaits
             </h1>
             <p className="text-lg md:text-xl text-muted max-w-2xl mx-auto mb-10">
               Join thousands of students and professionals discovering opportunities, building skills, and growing together across 12+ countries.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <ShimmerButton as={Link} to={data?.primary_cta_link || '/social'} shimmerColor="#10B981" background="#10B981" borderRadius="14px" className="text-lg px-8 py-4 font-semibold w-full sm:w-auto">
+              <ShimmerButton as={Link} to={data?.primary_cta_link || '/social'} shimmerColor="#F5A623" background="#F5A623" borderRadius="14px" className="text-lg px-8 py-4 font-semibold w-full sm:w-auto">
                 {data?.primary_cta_text || 'Join Community'} <ChevronRight size={20} />
               </ShimmerButton>
               <Link to={data?.secondary_cta_link || '/collaborators'} className="btn-ghost w-full sm:w-auto text-lg px-8 py-4 border border-white/10 hover:border-white/20">
@@ -81,8 +81,8 @@ export default function Community({ navless } = {}) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {communityLinks.map((link, i) => (
                 <a key={i} href={link.url} target="_blank" rel="noreferrer" className="glass-card p-5 flex items-center gap-4 hover:-translate-y-1 transition-transform">
-                  <div className="w-12 h-12 rounded-full bg-green/20 flex items-center justify-center shrink-0">
-                    <MessageCircle size={24} className="text-green" />
+                  <div className="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center shrink-0">
+                    <MessageCircle size={24} className="text-gold" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-white">{link.name}</h3>
@@ -100,7 +100,7 @@ export default function Community({ navless } = {}) {
           <section className="max-w-4xl mx-auto px-4 pb-20">
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               <div className="flex items-center justify-center gap-3 mb-2">
-                <Calendar size={24} className="text-green" />
+                <Calendar size={24} className="text-gold" />
                 <h2 className="text-3xl font-bold font-sora text-white">Events</h2>
               </div>
               <p className="text-muted text-center max-w-2xl mx-auto mb-10">Workshops, webinars, and meetups for our community.</p>
@@ -109,11 +109,11 @@ export default function Community({ navless } = {}) {
                   .filter(e => e.type === 'upcoming')
                   .concat(events.filter(e => e.type !== 'upcoming'))
                   .map((event, i) => (
-                    <div key={i} className={`glass-card p-5 flex items-start gap-4 ${event.type === 'upcoming' ? 'border-l-4 border-green' : 'opacity-60'}`}>
+                    <div key={i} className={`glass-card p-5 flex items-start gap-4 ${event.type === 'upcoming' ? 'border-l-4 border-gold' : 'opacity-60'}`}>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
                           <h3 className="font-semibold text-white">{event.title}</h3>
-                          {event.type === 'upcoming' && <span className="text-[10px] px-2 py-0.5 rounded-full bg-green/20 text-green font-medium">Upcoming</span>}
+                          {event.type === 'upcoming' && <span className="text-[10px] px-2 py-0.5 rounded-full bg-gold/20 text-gold font-medium">Upcoming</span>}
                         </div>
                         {event.date && <p className="text-xs text-muted mt-1">{event.date}</p>}
                         {event.description && <p className="text-sm text-muted mt-2">{event.description}</p>}
@@ -136,7 +136,7 @@ export default function Community({ navless } = {}) {
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="glass-card p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-4">
-                  <Heart size={22} className="text-green" />
+                  <Heart size={22} className="text-gold" />
                   <h2 className="text-2xl font-bold font-sora text-white">{volunteerProgram.heading}</h2>
                 </div>
                 <p className="text-muted leading-relaxed">{volunteerProgram.text}</p>
@@ -157,17 +157,17 @@ export default function Community({ navless } = {}) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {successStories.map((story, i) => (
                   <div key={i} className="glass-card p-6">
-                    <Quote size={20} className="text-green/40 mb-3" />
+                    <Quote size={20} className="text-gold/40 mb-3" />
                     <p className="text-muted text-sm leading-relaxed mb-4">&ldquo;{story.quote}&rdquo;</p>
                     <div className="flex items-center gap-3">
                       {story.image_url ? (
                         <img src={story.image_url} alt={story.name} className="w-10 h-10 rounded-full object-cover" />
                       ) : (
-                        <div className="w-10 h-10 rounded-full bg-green/20 flex items-center justify-center text-green font-bold text-sm">{story.name.charAt(0)}</div>
+                        <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold text-sm">{story.name.charAt(0)}</div>
                       )}
                       <div>
                         <p className="text-white font-semibold text-sm">{story.name}</p>
-                        <p className="text-green text-xs">{story.achievement}</p>
+                        <p className="text-gold text-xs">{story.achievement}</p>
                       </div>
                     </div>
                   </div>
@@ -183,7 +183,7 @@ export default function Community({ navless } = {}) {
             <h2 className="text-3xl md:text-4xl font-bold font-sora text-white mb-4">{data?.cta_heading || 'Start Your Career Journey Today'}</h2>
             <p className="text-muted max-w-2xl mx-auto mb-8">{data?.cta_text}</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <ShimmerButton as={Link} to={data?.primary_cta_link || '/social'} shimmerColor="#10B981" background="#10B981" borderRadius="14px" className="text-lg px-8 py-4 font-semibold w-full sm:w-auto">
+              <ShimmerButton as={Link} to={data?.primary_cta_link || '/social'} shimmerColor="#F5A623" background="#F5A623" borderRadius="14px" className="text-lg px-8 py-4 font-semibold w-full sm:w-auto">
                 {data?.primary_cta_text || 'Join Community'} <ChevronRight size={20} />
               </ShimmerButton>
               <Link to={data?.secondary_cta_link || '/collaborators'} className="btn-ghost w-full sm:w-auto text-lg px-8 py-4 border border-white/10 hover:border-white/20">

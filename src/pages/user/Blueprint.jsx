@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
@@ -161,7 +161,7 @@ export default function Blueprint() {
           <div className="space-y-8 max-w-5xl">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0 flex-1">
-                <h1 className="text-4xl font-bold font-sora text-green mb-3 tracking-tight break-words">{blueprint.title}</h1>
+                <h1 className="text-4xl font-bold font-sora text-gold mb-3 tracking-tight break-words">{blueprint.title}</h1>
                 <p className="text-lg text-muted break-words">{blueprint.summary}</p>
               </div>
               <button
@@ -199,7 +199,7 @@ export default function Blueprint() {
                             }`}
                           >
                             <div onClick={() => toggleStep(i, step.completed)} className={`mt-1 shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors cursor-pointer hover:opacity-80 ${
-                              step.completed ? 'bg-green border-green' : 'border-muted'
+                              step.completed ? 'bg-gold border-gold' : 'border-muted'
                             }`}>
                               {updatingStep === i ? (
                                 <Loader2 size={14} className="animate-spin text-white" />
@@ -208,7 +208,7 @@ export default function Blueprint() {
                               ) : null}
                             </div>
                             <div className="min-w-0 flex-1">
-                              <h3 onClick={() => navigate(stepRoute)} className={`font-bold text-lg break-words cursor-pointer hover:text-green transition-colors ${step.completed ? 'text-muted line-through' : 'text-white'}`}>
+                              <h3 onClick={() => navigate(stepRoute)} className={`font-bold text-lg break-words cursor-pointer hover:text-gold transition-colors ${step.completed ? 'text-muted line-through' : 'text-white'}`}>
                                 {step.title}
                               </h3>
                               {step.deadline && (
@@ -232,7 +232,7 @@ export default function Blueprint() {
                   <div className="relative pl-6 space-y-6 before:absolute before:inset-y-0 before:left-[11px] before:w-[2px] before:bg-border">
                     {blueprint.milestones?.map((m, i) => (
                       <div key={i} className="relative">
-                        <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-surface border-2 border-green"></div>
+                        <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-surface border-2 border-gold"></div>
                         <p className="text-white font-medium break-words">{m}</p>
                       </div>
                     ))}
@@ -251,7 +251,7 @@ export default function Blueprint() {
                           <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded shrink-0 ${
                             skill.priority === 'High' ? 'bg-red-500/20 text-red-400' :
                             skill.priority === 'Medium' ? 'bg-amber-500/20 text-amber-400' :
-                            'bg-green/20 text-green'
+                            'bg-gold/20 text-gold'
                           }`}>
                             {skill.priority}
                           </span>
@@ -287,9 +287,9 @@ export default function Blueprint() {
                       {matchedJobs.map(job => (
                         <div key={job.id} className="p-3 bg-white/[0.02] border border-border rounded-lg">
                           <h3 className="font-bold text-sm text-white break-words">{job.title}</h3>
-                          <p className="text-xs text-muted mt-0.5">{job.company}{job.location ? ` — ${job.location}` : ''}</p>
+                          <p className="text-xs text-muted mt-0.5">{job.company}{job.location ? ` &mdash; ${job.location}` : ''}</p>
                           <div className="flex flex-wrap gap-1.5 mt-2">
-                            {job.type && <span className="text-[10px] bg-green/10 text-green px-1.5 py-0.5 rounded">{job.type}</span>}
+                            {job.type && <span className="text-[10px] bg-gold/10 text-gold px-1.5 py-0.5 rounded">{job.type}</span>}
                             {job.tags?.slice(0, 3).map((t, ti) => <span key={ti} className="text-[10px] bg-white/10 text-muted px-1.5 py-0.5 rounded">{t}</span>)}
                           </div>
                           {job.apply_url && (

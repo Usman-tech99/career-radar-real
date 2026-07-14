@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { AlertTriangle, RefreshCw, Trash2 } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -43,7 +43,7 @@ export default function ManageErrorLogs() {
 
       {loading ? (
         <div className="flex justify-center py-20">
-          <div className="w-8 h-8 border-2 border-green border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin" />
         </div>
       ) : logs.length === 0 ? (
         <div className="glass-card text-center py-20 text-muted">

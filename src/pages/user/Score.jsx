@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
@@ -89,7 +89,7 @@ export default function Score() {
   }
 
   const getScoreColor = (s) => {
-    if (s >= 80) return 'from-green to-emerald-300'
+    if (s >= 80) return 'from-gold to-amber-300'
     if (s >= 60) return 'from-blue-accent to-blue-300'
     if (s >= 40) return 'from-gold to-amber-300'
     return 'from-red-500 to-rose-300'
@@ -132,7 +132,7 @@ export default function Score() {
             <BlurFade offset={8} blur="3px">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-8 border-b border-white/[0.05]">
                 <div>
-                  <h1 className="text-3xl md:text-4xl font-bold font-sora mb-1">Career <span className="text-green">Score</span></h1>
+                  <h1 className="text-3xl md:text-4xl font-bold font-sora mb-1">Career <span className="text-gold">Score</span></h1>
                   <p className="text-muted text-sm">Your employability index based on skills, profile, and activity.</p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -142,8 +142,8 @@ export default function Score() {
                     {calculating ? 'Recalculating...' : 'Recalculate'}
                   </button>
                   <div className="glass-card flex items-center gap-4 px-6 py-4 rounded-2xl relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-green/15 blur-[50px] rounded-full pointer-events-none" />
-                    <Activity size={28} className="text-green relative z-10" />
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-gold/15 blur-[50px] rounded-full pointer-events-none" />
+                    <Activity size={28} className="text-gold relative z-10" />
                     <div className="relative z-10">
                       <div className="text-4xl md:text-5xl font-black font-mono leading-none">
                         <span className={`text-transparent bg-clip-text bg-gradient-to-r ${getScoreColor(score.total_score)}`}>
@@ -161,13 +161,13 @@ export default function Score() {
               {/* Score Breakdown */}
               <BlurFade delay={0.1} offset={10} blur="3px">
                 <div className="glass-card p-6 rounded-2xl relative">
-                  <BorderBeam size={60} duration={10} colorFrom="#10B981" colorTo="#3B82F6" borderWidth={1} />
+                  <BorderBeam size={60} duration={10} colorFrom="#F5A623" colorTo="#3B82F6" borderWidth={1} />
                   <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
                     <TrendingUp className="text-blue-accent" size={18} /> Score Breakdown
                   </h2>
                   <ScoreBar label="Skills Assessment" value={score.skills_score} max={25} color="bg-purple-accent" icon={Sparkles} />
                   <ScoreBar label="Profile Completeness" value={score.profile_score} max={20} color="bg-blue-accent" icon={User} />
-                  <ScoreBar label="Blueprint Activity" value={score.activity_score} max={20} color="bg-green" icon={Target} />
+                  <ScoreBar label="Blueprint Activity" value={score.activity_score} max={20} color="bg-gold" icon={Target} />
                   <ScoreBar label="Education & Courses" value={score.education_score} max={20} color="bg-gold" icon={FileText} />
                   <ScoreBar label="Experience Level" value={score.experience_score} max={15} color="bg-indigo-400" icon={TrendingUp} />
                 </div>
@@ -193,7 +193,7 @@ export default function Score() {
                         ))}
                       </ul>
                     ) : (
-                      <div className="flex items-center gap-3 text-green">
+                      <div className="flex items-center gap-3 text-gold">
                         <Sparkles size={18} />
                         <p className="font-medium">Your profile is highly optimized!</p>
                       </div>
@@ -223,10 +223,10 @@ export default function Score() {
                                 initial={{ height: 0 }}
                                 animate={{ height: `${pct}%` }}
                                 transition={{ duration: 0.6, delay: i * 0.05 }}
-                                className={`w-full rounded-t-sm transition-all duration-300 group-hover:opacity-80 ${h.score >= 70 ? 'bg-green/50' : h.score >= 40 ? 'bg-gold/50' : 'bg-red-500/50'}`}
+                                className={`w-full rounded-t-sm transition-all duration-300 group-hover:opacity-80 ${h.score >= 70 ? 'bg-gold/50' : h.score >= 40 ? 'bg-gold/50' : 'bg-red-500/50'}`}
                               >
                                 <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-surface border border-white/[0.1] px-2 py-0.5 text-[10px] text-muted rounded opacity-0 group-hover:opacity-100 whitespace-nowrap transition-opacity">
-                                  {h.score} — {new Date(h.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                  {h.score} &mdash; {new Date(h.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                                 </div>
                               </motion.div>
                             </div>

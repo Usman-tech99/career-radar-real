@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
@@ -36,11 +36,11 @@ export default function Jobs({ navless } = {}) {
   })
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex flex-col">
+    <div className="min-h-screen bg-surface flex flex-col">
       <Helmet>
-        <title>Jobs — Career Radar</title>
+        <title>Jobs &mdash; Career Radar</title>
         <meta name="description" content="Browse verified job opportunities for students and early-career professionals. Find internships, entry-level positions, and remote work." />
-        <meta property="og:title" content="Jobs — Career Radar" />
+        <meta property="og:title" content="Jobs &mdash; Career Radar" />
         <meta property="og:description" content="Browse verified job opportunities for students and early-career professionals. Find internships, entry-level positions, and remote work." />
         <meta property="og:type" content="website" />
         <meta name="keywords" content="jobs, internships, entry-level, remote jobs, career opportunities" />
@@ -49,7 +49,7 @@ export default function Jobs({ navless } = {}) {
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold font-sora mb-4">Remote & Local <span className="text-green">Opportunities</span></h1>
+          <h1 className="text-4xl md:text-5xl font-bold font-sora mb-4">Remote & Local <span className="text-gold">Opportunities</span></h1>
           <p className="text-muted text-lg max-w-2xl mx-auto">Curated jobs for developers, designers, and marketers. Hand-picked for the Career Radar community.</p>
         </div>
 
@@ -61,7 +61,7 @@ export default function Jobs({ navless } = {}) {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search by role or company..."
-              className="w-full bg-white/[0.02] border border-border rounded-full pl-12 pr-4 py-3 focus:outline-none focus:border-green text-white"
+              className="w-full bg-white/[0.02] border border-border rounded-full pl-12 pr-4 py-3 focus:outline-none focus:border-gold text-white"
             />
           </div>
           <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 hide-scrollbar">
@@ -70,7 +70,7 @@ export default function Jobs({ navless } = {}) {
                 key={type}
                 onClick={() => setFilterType(type)}
                 className={`px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-colors ${
-                  filterType === type ? 'bg-green text-[#07070C]' : 'bg-white/[0.05] text-muted hover:text-white'
+                  filterType === type ? 'bg-gold text-[#07070C]' : 'bg-white/[0.05] text-muted hover:text-white'
                 }`}
               >
                 {type}
@@ -124,7 +124,7 @@ export default function Jobs({ navless } = {}) {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                   <div>
                     {job.is_featured && <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-gold text-[#07070C] mb-2 uppercase tracking-wider">Featured</span>}
-                    <h3 className="text-xl font-bold text-white group-hover:text-green transition-colors">{job.title}</h3>
+                    <h3 className="text-xl font-bold text-white group-hover:text-gold transition-colors">{job.title}</h3>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 text-sm text-muted">
                       <span className="font-medium text-white">{job.company}</span>
                       <span className="flex items-center gap-1"><MapPin size={14} /> {job.location || 'Remote'}</span>
@@ -138,7 +138,7 @@ export default function Jobs({ navless } = {}) {
                         <span key={i} className="text-xs bg-white/[0.05] border border-white/[0.1] px-2 py-1 rounded-md text-muted">{tag}</span>
                       ))}
                     </div>
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/[0.05] group-hover:bg-green group-hover:text-[#07070C] transition-colors shrink-0">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/[0.05] group-hover:bg-gold group-hover:text-[#07070C] transition-colors shrink-0">
                       <ArrowUpRight size={20} />
                     </div>
                   </div>
@@ -205,7 +205,7 @@ export default function Jobs({ navless } = {}) {
 
               {selectedJob.contact && (
                 <div className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-                  <Mail size={18} className="text-green" />
+                  <Mail size={18} className="text-gold" />
                   <span className="text-sm text-white">{selectedJob.contact}</span>
                 </div>
               )}
@@ -220,7 +220,7 @@ export default function Jobs({ navless } = {}) {
                   <ExternalLink size={18} /> Apply Now
                 </a>
               ) : (
-                <p className="text-xs text-muted text-center mt-2">No external application link — use contact info above to apply.</p>
+                <p className="text-xs text-muted text-center mt-2">No external application link &mdash; use contact info above to apply.</p>
               )}
             </div>
           </div>

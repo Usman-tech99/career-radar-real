@@ -15,7 +15,7 @@ export default function DashboardLayout() {
   }, [location.pathname])
 
   return (
-    <div className="flex min-h-screen bg-[#07070C]">
+    <div className="flex min-h-screen bg-surface">
       <DashboardSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Mobile hamburger (hidden on resume page) */}

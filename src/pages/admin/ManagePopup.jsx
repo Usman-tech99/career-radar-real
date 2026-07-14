@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { Save, Eye, X, Upload } from 'lucide-react'
@@ -103,10 +103,10 @@ export default function ManagePopup() {
             {settings.image_url ? (
               <div className="relative group w-full">
                 <img src={settings.image_url} alt="preview" loading="lazy" className="w-full max-h-96 object-contain rounded-xl border border-border bg-black/20" />
-                <button onClick={() => update('image_url', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"><X size={16} /></button>
+                <button onClick={() => update('image_url', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-[#ffffff] rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"><X size={16} /></button>
               </div>
             ) : (
-              <div className="flex items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-green/50 transition-colors" onClick={() => document.getElementById('popup-image-upload').click()}>
+              <div className="flex items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-gold/50 transition-colors" onClick={() => document.getElementById('popup-image-upload').click()}>
                 <div className="text-center text-muted">
                   <Upload size={24} className="mx-auto mb-1" />
                   <span className="text-sm">{uploading ? 'Uploading...' : 'Click to upload image'}</span>
@@ -129,15 +129,15 @@ export default function ManagePopup() {
 
         <div className="flex flex-wrap gap-6 p-4 border border-border rounded-xl">
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={settings.is_active} onChange={e => update('is_active', e.target.checked)} className="w-4 h-4 accent-green rounded" />
-            <span className="text-sm font-bold text-green">Active</span>
+            <input type="checkbox" checked={settings.is_active} onChange={e => update('is_active', e.target.checked)} className="w-4 h-4 accent-gold rounded" />
+            <span className="text-sm font-bold text-gold">Active</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={settings.show_on_entry} onChange={e => update('show_on_entry', e.target.checked)} className="w-4 h-4 accent-green rounded" />
+            <input type="checkbox" checked={settings.show_on_entry} onChange={e => update('show_on_entry', e.target.checked)} className="w-4 h-4 accent-gold rounded" />
             <span className="text-sm">Show on Entry</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={settings.show_on_exit} onChange={e => update('show_on_exit', e.target.checked)} className="w-4 h-4 accent-green rounded" />
+            <input type="checkbox" checked={settings.show_on_exit} onChange={e => update('show_on_exit', e.target.checked)} className="w-4 h-4 accent-gold rounded" />
             <span className="text-sm">Show on Exit Intent</span>
           </label>
         </div>
@@ -145,7 +145,7 @@ export default function ManagePopup() {
 
       {preview && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setPreview(false)}>
-          <div className="glass-card w-full max-w-md relative overflow-hidden rounded-2xl border border-green/50" style={{ boxShadow: '0 0 25px rgba(16,185,129,0.25)' }} onClick={e => e.stopPropagation()}>
+          <div className="glass-card w-full max-w-md relative overflow-hidden rounded-2xl border border-gold/50" style={{ boxShadow: '0 0 25px rgba(245,166,35,0.25)' }} onClick={e => e.stopPropagation()}>
             <button onClick={() => setPreview(false)} className="absolute top-4 right-4 text-muted hover:text-white z-10"><X size={24} /></button>
             {settings.image_url && <img src={settings.image_url} alt="" className="w-full max-h-80 object-contain bg-black/30" />}
             <div className="p-6">

@@ -1,24 +1,12 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext } from 'react'
 
 const ThemeContext = createContext(null)
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => {
-    const saved = localStorage.getItem('career-radar-theme')
-    return saved || 'dark'
-  })
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-    localStorage.setItem('career-radar-theme', theme)
-  }, [theme])
-
-  function toggleTheme() {
-    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'))
-  }
+  document.documentElement.setAttribute('data-theme', 'light')
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme: 'light', toggleTheme: () => {} }}>
       {children}
     </ThemeContext.Provider>
   )

@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import { useTheme } from '../../context/ThemeContext'
-import { Menu, X, User, Sun, Moon, ChevronDown } from 'lucide-react'
+import { Menu, X, User, ChevronDown } from 'lucide-react'
+import logo from '../../assets/logo.jpeg'
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -21,7 +21,7 @@ function NavDropdown({ label, items }) {
     <div ref={ref} className="relative" onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 text-sm font-medium transition-colors hover:text-green text-muted whitespace-nowrap"
+        className="flex items-center gap-1 text-sm font-medium transition-colors hover:text-gold text-slate-100 whitespace-nowrap"
       >
         {label} <ChevronDown size={14} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
@@ -110,8 +110,6 @@ export default function Navbar() {
     { name: 'Radar AI', path: '/' },
   ]
 
-  const { theme, toggleTheme } = useTheme()
-
   let dashPath = '/dashboard'
   if (role === 'super_admin' || role === 'admin') dashPath = '/admin/dashboard'
   else if (role === 'collaborator') dashPath = '/admin/my-profile'
@@ -119,18 +117,13 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path
 
   return (
-    <nav className="fixed top-0 w-full z-40 bg-[#07070C]/80 backdrop-blur-md border-b border-white/[0.05]">
+    <nav className="fixed top-0 left-0 right-0 z-40 bg-navy border-b border-navy/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <div
-            className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-full border"
-            style={{ backgroundColor: 'var(--color-card)', borderColor: 'var(--color-border)' }}
-          >
-            <span className="font-sora font-bold text-xl sm:text-2xl tracking-tight" style={{color: 'var(--color-white)'}}>
-              Career <span className="text-green">Radar</span>
-            </span>
+          <div className="w-14 h-14 rounded-full border-2 border-gold overflow-hidden bg-white flex items-center justify-center">
+            <img src={logo} alt="Career Radar" className="w-full h-full object-cover" />
           </div>
         </Link>
 
@@ -144,8 +137,8 @@ export default function Navbar() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`px-3 py-2 text-sm font-medium transition-colors hover:text-green whitespace-nowrap ${
-                  isActive(item.path) ? 'text-green' : 'text-muted'
+                className={`px-3 py-2 text-sm font-medium transition-colors hover:text-gold whitespace-nowrap ${
+                  isActive(item.path) ? 'text-gold' : 'text-slate-100'
                 }`}
               >
                 {item.name}
@@ -156,17 +149,13 @@ export default function Navbar() {
 
         {/* Actions */}
         <div className="hidden lg:flex items-center gap-3">
-          <button onClick={toggleTheme} className="p-2 rounded-xl hover:bg-white/[0.04] transition-colors"
-            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
-            {theme === 'dark' ? <Sun size={18} className="text-muted" /> : <Moon size={18} className="text-muted" />}
-          </button>
           {user ? (
             <Link to={dashPath} className="btn-primary py-2 px-4 text-sm flex items-center gap-2">
               <User size={16} /> Dashboard
             </Link>
           ) : (
             <>
-              <Link to="/login" className="text-sm font-medium hover:text-green transition-colors px-2" style={{color: 'var(--color-white)'}}>Login</Link>
+              <Link to="/login" className="text-sm font-medium hover:text-gold transition-colors px-2 text-slate-100">Login</Link>
               <Link to="/register" className="btn-primary py-2 px-4 text-sm">Join Free</Link>
             </>
           )}
@@ -180,15 +169,11 @@ export default function Navbar() {
             </Link>
           ) : (
             <>
-              <Link to="/login" className="text-xs font-medium hover:text-green transition-colors px-1.5" style={{color: 'var(--color-white)'}}>Login</Link>
+              <Link to="/login" className="text-xs font-medium hover:text-gold transition-colors px-1.5 text-slate-100">Login</Link>
               <Link to="/register" className="btn-primary py-1 px-2.5 text-[11px] whitespace-nowrap">Join Free</Link>
             </>
           )}
-          <button onClick={toggleTheme} className="p-1.5 rounded-xl hover:bg-white/[0.04] transition-colors"
-            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
-            {theme === 'dark' ? <Sun size={16} className="text-muted" /> : <Moon size={16} className="text-muted" />}
-          </button>
-          <button className="text-white p-1" onClick={() => setIsOpen(!isOpen)}>
+          <button className="text-slate-100 p-1" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
@@ -214,7 +199,7 @@ export default function Navbar() {
                           key={child.path}
                           to={child.path}
                           onClick={() => setIsOpen(false)}
-                          className={`block px-4 py-2 text-lg font-medium ${isActive(child.path) ? 'text-green' : 'text-white'}`}
+                          className={`block px-4 py-2 text-lg font-medium ${isActive(child.path) ? 'text-gold' : 'text-white'}`}
                         >
                           {child.name}
                         </Link>
@@ -227,19 +212,12 @@ export default function Navbar() {
                     key={item.path}
                     to={item.path}
                     onClick={() => setIsOpen(false)}
-                    className={`text-lg font-medium ${isActive(item.path) ? 'text-green' : 'text-white'}`}
+                    className={`text-lg font-medium ${isActive(item.path) ? 'text-gold' : 'text-white'}`}
                   >
                     {item.name}
                   </Link>
                 )
               })}
-              <hr className="border-border my-4" />
-              <button onClick={() => { toggleTheme(); setIsOpen(false) }}
-                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-border text-sm font-medium transition-colors"
-                style={{color: 'var(--color-muted)'}}>
-                {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-                {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-              </button>
               {user ? (
                 <Link to={dashPath} onClick={() => setIsOpen(false)} className="btn-primary w-full text-center py-3">
                   Dashboard

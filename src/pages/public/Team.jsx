@@ -19,7 +19,7 @@ const platformColors = {
   youtube: 'text-red-500 hover:text-red-400',
   twitter: 'text-sky-400 hover:text-sky-300',
   instagram: 'text-pink-400 hover:text-pink-300',
-  website: 'text-green hover:text-green/80',
+  website: 'text-gold hover:text-gold/80',
   facebook: 'text-blue-500 hover:text-blue-400',
   discord: 'text-indigo-400 hover:text-indigo-300',
   other: 'text-muted hover:text-white',
@@ -60,7 +60,7 @@ export default function Team({ navless } = {}) {
   const rest = members.filter(m => !isFounder(m.role))
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex flex-col">
+    <div className="min-h-screen bg-surface flex flex-col">
       <Helmet>
         <title>Our Team — Career Radar</title>
         <meta name="description" content="Meet the passionate team behind Career Radar building the future of career development with AI-powered tools and global opportunities." />
@@ -73,7 +73,7 @@ export default function Team({ navless } = {}) {
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold font-sora mb-4">Our <span className="text-green">Team</span></h1>
+          <h1 className="text-4xl md:text-5xl font-bold font-sora mb-4">Our <span className="text-gold">Team</span></h1>
           <p className="text-muted text-lg max-w-2xl mx-auto">Meet the passionate people building Career Radar.</p>
         </div>
 
@@ -100,8 +100,8 @@ export default function Team({ navless } = {}) {
                   {founders.map(member => (
                     <MagicCard
                       key={member.id}
-                      gradientColor="rgba(16,185,129,0.15)"
-                      gradientFrom="rgba(16,185,129,0.4)"
+                      gradientColor="rgba(245,166,35,0.15)"
+                      gradientFrom="rgba(245,166,35,0.4)"
                       gradientTo="rgba(245,158,11,0.2)"
                       gradientSize={300}
                     >
@@ -154,7 +154,7 @@ export default function Team({ navless } = {}) {
                 )}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {rest.map(member => (
-                    <MagicCard key={member.id} gradientSize={200} gradientColor="rgba(16,185,129,0.08)">
+                    <MagicCard key={member.id} gradientSize={200} gradientColor="rgba(245,166,35,0.08)">
                       <button
                         onClick={() => setSelected(member)}
                         className="w-full flex flex-col items-center text-center p-8 cursor-pointer"
@@ -163,7 +163,7 @@ export default function Team({ navless } = {}) {
                           <SafeImage src={member.image_url} alt={member.name} className="w-32 h-32 rounded-full object-cover border-4 border-white/[0.05]" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-1">{member.name}</h3>
-                        <p className="text-green font-medium mb-4">{member.role}</p>
+                        <p className="text-gold font-medium mb-4">{member.role}</p>
                         {member.skills?.length > 0 && (
                           <div className="flex flex-wrap justify-center gap-2 mb-4">
                             {member.skills.slice(0, 4).map((skill, i) => (
@@ -208,7 +208,7 @@ export default function Team({ navless } = {}) {
                 <SafeImage src={selected.image_url} alt={selected.name} className={`w-28 h-28 rounded-full object-cover border-4 ${isFounder(selected.role) ? 'border-gold/30' : 'border-white/[0.05]'}`} />
               </div>
               <h2 className="text-2xl font-bold text-white">{selected.name}</h2>
-              <p className={`font-medium flex items-center gap-1.5 ${isFounder(selected.role) ? 'text-gold' : 'text-green'}`}>
+              <p className={`font-medium flex items-center gap-1.5 ${isFounder(selected.role) ? 'text-gold' : 'text-gold'}`}>
                 {isFounder(selected.role) && <Crown size={14} />} {selected.role}
               </p>
             </div>
@@ -227,7 +227,7 @@ export default function Team({ navless } = {}) {
               )}
               {selected.goal && (
                 <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-                  <Target size={18} className="text-green mt-0.5" />
+                  <Target size={18} className="text-gold mt-0.5" />
                   <span className="text-sm text-muted">{selected.goal}</span>
                 </div>
               )}

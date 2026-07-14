@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
@@ -45,19 +45,19 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-surface flex items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-accent/20 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-green/20 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-gold/20 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="w-full max-w-md glass-card relative z-10 p-8">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold font-sora tracking-tight text-white mb-4">
-            Career <span className="text-green">Radar</span>
+            Career <span className="text-gold">Radar</span>
           </h1>
           {done ? (
             <>
-              <div className="w-16 h-16 rounded-full bg-green/20 flex items-center justify-center mx-auto mb-4">
-                <CheckCircle size={32} className="text-green" />
+              <div className="w-16 h-16 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle size={32} className="text-gold" />
               </div>
               <h2 className="text-2xl font-bold text-white mb-2">Password updated!</h2>
               <p className="text-muted text-sm">Redirecting to sign in...</p>
@@ -83,7 +83,7 @@ export default function ResetPassword() {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   className="input-field pl-10"
-                  placeholder="••••••••"
+                  placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
                 />
               </div>
             </div>
@@ -99,7 +99,7 @@ export default function ResetPassword() {
                   value={confirm}
                   onChange={e => setConfirm(e.target.value)}
                   className="input-field pl-10"
-                  placeholder="••••••••"
+                  placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
                 />
               </div>
             </div>

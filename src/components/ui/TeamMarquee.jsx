@@ -92,7 +92,7 @@ export default function TeamMarquee({ className = '' }) {
               </div>
               <h4 className="text-sm font-bold text-white truncate w-full">{member.name}</h4>
               <p className={`text-[11px] font-medium mt-0.5 flex items-center gap-1 ${
-                isFounder(member.role) ? 'text-gold' : 'text-green'
+                isFounder(member.role) ? 'text-gold' : 'text-white'
               }`}>
                 {isFounder(member.role) && <Crown size={10} />}
                 {member.role}

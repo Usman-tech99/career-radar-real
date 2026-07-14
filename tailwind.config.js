@@ -4,20 +4,24 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Sora", "sans-serif"],
+        sans: ["Inter", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
       colors: {
         surface: "var(--color-surface)",
         card: "var(--color-card)",
         border: "var(--color-border)",
-        green: {
-          DEFAULT: "#10B981",
-          hover: "#059669",
+        navy: {
+          DEFAULT: "#0F1B33",
+          light: "#1A2D4A",
+          dark: "#070F1A",
         },
-        gold: "#F59E0B",
-        blue: {
-          accent: "#3B82F6",
+        gold: {
+          DEFAULT: "#F5A623",
+          hover: "#D4950A",
+        },
+        amber: {
+          accent: "#F59E0B",
         },
         purple: {
           accent: "#8B5CF6",
@@ -65,9 +69,9 @@ export default {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "hero-glow":
-          "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(16,185,129,0.15) 0%, transparent 60%)",
+          "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(245,166,35,0.12) 0%, transparent 60%)",
       },
     },
   },
   plugins: [],
-};
+}

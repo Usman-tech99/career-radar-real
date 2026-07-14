@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { Users, RefreshCw, ExternalLink, CheckCircle, XCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -54,7 +54,7 @@ export default function ManageVolunteers() {
 
       {loading ? (
         <div className="flex justify-center py-20">
-          <div className="w-8 h-8 border-2 border-green border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin" />
         </div>
       ) : volunteers.length === 0 ? (
         <div className="glass-card text-center py-20 text-muted">
@@ -65,14 +65,14 @@ export default function ManageVolunteers() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1 space-y-3 max-h-[80vh] overflow-y-auto pr-2">
             {volunteers.map(v => (
-              <div key={v.id} onClick={() => setSelected(v)} className={`glass-card p-4 cursor-pointer border transition-colors ${selected?.id === v.id ? 'border-green/40' : 'hover:border-white/20'}`}>
+              <div key={v.id} onClick={() => setSelected(v)} className={`glass-card p-4 cursor-pointer border transition-colors ${selected?.id === v.id ? 'border-gold/40' : 'hover:border-white/20'}`}>
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="font-bold text-white text-sm">{v.full_name}</p>
                     <p className="text-xs text-muted">{v.email}</p>
                     <p className="text-xs text-muted/60 mt-1">{v.departments?.slice(0, 2).join(', ')}{v.departments?.length > 2 ? '...' : ''}</p>
                   </div>
-                  <span className={`text-[10px] uppercase px-2 py-0.5 rounded-full font-bold ${v.status === 'approved' ? 'bg-green/10 text-green' : v.status === 'rejected' ? 'bg-red-500/10 text-red-400' : 'bg-amber-500/10 text-amber-400'}`}>{v.status}</span>
+                  <span className={`text-[10px] uppercase px-2 py-0.5 rounded-full font-bold ${v.status === 'approved' ? 'bg-gold/10 text-gold' : v.status === 'rejected' ? 'bg-red-500/10 text-red-400' : 'bg-amber-500/10 text-amber-400'}`}>{v.status}</span>
                 </div>
                 <p className="text-[10px] text-muted/60 mt-2">{new Date(v.created_at).toLocaleDateString()}</p>
               </div>
@@ -85,10 +85,10 @@ export default function ManageVolunteers() {
                 <div className="flex justify-between items-start">
                   <div>
                     <h2 className="text-2xl font-bold text-white">{selected.full_name}</h2>
-                    <p className="text-muted">{selected.email} · {selected.phone}</p>
+                    <p className="text-muted">{selected.email} Â· {selected.phone}</p>
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={() => updateStatus(selected.id, 'approved')} className="btn-ghost border border-green/20 text-green text-xs px-3 py-1 flex items-center gap-1"><CheckCircle size={12} />Approve</button>
+                    <button onClick={() => updateStatus(selected.id, 'approved')} className="btn-ghost border border-gold/20 text-gold text-xs px-3 py-1 flex items-center gap-1"><CheckCircle size={12} />Approve</button>
                     <button onClick={() => updateStatus(selected.id, 'rejected')} className="btn-ghost border border-red-500/20 text-red-400 text-xs px-3 py-1 flex items-center gap-1"><XCircle size={12} />Reject</button>
                   </div>
                 </div>
@@ -105,7 +105,7 @@ export default function ManageVolunteers() {
 
                 {selected.departments?.length > 0 && (
                   <div><span className="text-muted text-sm">Departments:</span>
-                    <div className="flex flex-wrap gap-1.5 mt-1">{selected.departments.map(d => <span key={d} className="text-xs bg-green/10 text-green px-2 py-0.5 rounded-full">{d}</span>)}</div>
+                    <div className="flex flex-wrap gap-1.5 mt-1">{selected.departments.map(d => <span key={d} className="text-xs bg-gold/10 text-gold px-2 py-0.5 rounded-full">{d}</span>)}</div>
                   </div>
                 )}
 
@@ -123,7 +123,7 @@ export default function ManageVolunteers() {
                   {selected.hours_per_week && <div><span className="text-muted">Hours/week:</span> <span className="text-white">{selected.hours_per_week}</span></div>}
                   {selected.preferred_time && <div><span className="text-muted">Preferred time:</span> <span className="text-white">{selected.preferred_time}</span></div>}
                   {selected.preferred_channel && <div><span className="text-muted">Channel:</span> <span className="text-white">{selected.preferred_channel}</span></div>}
-                  {selected.volunteered_before && <div className="col-span-2"><span className="text-muted">Previous experience:</span> <span className="text-white">{selected.prev_organizations} · {selected.prev_roles} · {selected.prev_duration}</span></div>}
+                  {selected.volunteered_before && <div className="col-span-2"><span className="text-muted">Previous experience:</span> <span className="text-white">{selected.prev_organizations} Â· {selected.prev_roles} Â· {selected.prev_duration}</span></div>}
                 </div>
 
                 {selected.biggest_strength && <div><span className="text-muted text-sm block mb-1">Biggest strength</span><p className="text-sm text-white">{selected.biggest_strength}</p></div>}

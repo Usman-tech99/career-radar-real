@@ -1,18 +1,18 @@
-import { Link } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Radar, Home, ArrowLeft } from 'lucide-react'
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
+    <div className="min-h-screen bg-surface flex items-center justify-center px-4">
       <div className="text-center max-w-md">
         {/* scanning graphic */}
         <div className="relative mx-auto w-40 h-40 mb-8">
-          <div className="absolute inset-0 rounded-full border border-green/20 animate-ping opacity-30" />
-          <div className="absolute inset-4 rounded-full border border-green/30 animate-pulse" />
-          <div className="absolute inset-8 rounded-full border border-green/40" />
+          <div className="absolute inset-0 rounded-full border border-gold/20 animate-ping opacity-30" />
+          <div className="absolute inset-4 rounded-full border border-gold/30 animate-pulse" />
+          <div className="absolute inset-8 rounded-full border border-gold/40" />
           <div className="absolute inset-0 flex items-center justify-center">
-            <Radar size={48} className="text-green" />
+            <Radar size={48} className="text-gold" />
           </div>
           {/* sweep line */}
           <motion.div
@@ -20,7 +20,7 @@ export default function NotFound() {
             initial={false}
           >
             <motion.div
-              className="w-[2px] h-1/2 bg-gradient-to-t from-transparent via-green to-transparent absolute left-1/2 bottom-1/2 origin-bottom"
+              className="w-[2px] h-1/2 bg-gradient-to-t from-transparent via-gold to-transparent absolute left-1/2 bottom-1/2 origin-bottom"
               animate={{ rotate: [0, 360] }}
               transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
             />

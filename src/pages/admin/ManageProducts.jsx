@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import { useForm } from 'react-hook-form'
@@ -167,14 +167,14 @@ export default function ManageProducts() {
                 <SafeImage src={item.thumbnail_url} alt={item.title || 'thumbnail'} className="w-full h-40 object-cover rounded-xl mb-4 border border-border" />
                 <div className="flex justify-between items-start mb-2">
                   <span className="badge-gold">{item.category}</span>
-                  <span className={`text-xs font-bold ${item.is_free ? 'text-green' : 'text-amber-400'}`}>
+                  <span className={`text-xs font-bold ${item.is_free ? 'text-gold' : 'text-amber-400'}`}>
                     {item.is_free ? 'FREE' : `PKR ${item.price_pkr}`}
                   </span>
                 </div>
                 <h3 className="font-bold text-lg mb-1">{item.title}</h3>
                 
                 <div className="flex justify-between items-center border-t border-border mt-4 pt-4">
-                  <span className={`text-xs ${item.is_active ? 'text-green' : 'text-red-400'}`}>
+                  <span className={`text-xs ${item.is_active ? 'text-gold' : 'text-red-400'}`}>
                     {item.is_active ? 'Active' : 'Hidden'}
                   </span>
                   <div className="flex gap-2">
@@ -227,8 +227,8 @@ export default function ManageProducts() {
 
                 <div className="flex flex-wrap gap-6 p-4 border border-border rounded-xl bg-white/[0.02]">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" {...register('is_free')} className="w-4 h-4 accent-green rounded" />
-                    <span className="text-sm font-bold text-green">This product is FREE</span>
+                    <input type="checkbox" {...register('is_free')} className="w-4 h-4 accent-gold rounded" />
+                    <span className="text-sm font-bold text-gold">This product is FREE</span>
                   </label>
                   {!isFree && (
                     <div className="flex-1">
@@ -239,7 +239,7 @@ export default function ManageProducts() {
                 </div>
                 <div className="flex items-center gap-3">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" {...register('hide_price')} className="w-4 h-4 rounded border-border bg-white/[0.04] accent-green" />
+                    <input type="checkbox" {...register('hide_price')} className="w-4 h-4 rounded border-border bg-white/[0.04] accent-gold" />
                     <span className="text-sm text-muted">Hide price & redirect to WhatsApp</span>
                   </label>
                 </div>
@@ -291,7 +291,7 @@ export default function ManageProducts() {
 
                 <div className="flex gap-6 mt-4">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" {...register('is_active')} className="w-4 h-4 accent-green rounded" />
+                    <input type="checkbox" {...register('is_active')} className="w-4 h-4 accent-gold rounded" />
                     <span className="text-sm">Active (Visible)</span>
                   </label>
                 </div>

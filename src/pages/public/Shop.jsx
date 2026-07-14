@@ -78,7 +78,7 @@ export default function Shop({ navless } = {}) {
   }
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex flex-col">
+    <div className="min-h-screen bg-surface flex flex-col">
       <Helmet>
         <title>Shop — Career Radar</title>
         <meta name="description" content="Browse Career Radar merchandise and career development products. Show your support and access premium resources." />
@@ -146,7 +146,7 @@ export default function Shop({ navless } = {}) {
                 <div className="w-full h-48 relative overflow-hidden bg-black/50">
                   <SafeImage src={product.thumbnail_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   {product.is_free && (
-                    <span className="absolute top-3 right-3 bg-green text-[#07070C] text-xs font-bold px-3 py-1 rounded-full">
+                    <span className="absolute top-3 right-3 bg-gold text-[#07070C] text-xs font-bold px-3 py-1 rounded-full">
                       FREE
                     </span>
                   )}
@@ -169,9 +169,9 @@ export default function Shop({ navless } = {}) {
                   
                   <div className="flex items-center justify-between mt-auto">
                     {product.hide_price ? (
-                      <span className="text-green font-bold text-lg text-sm">Contact on WhatsApp</span>
+                      <span className="text-gold font-bold text-lg text-sm">Contact on WhatsApp</span>
                     ) : product.is_free ? (
-                      <span className="text-green font-bold text-lg">Free</span>
+                      <span className="text-gold font-bold text-lg">Free</span>
                     ) : (
                       <span className="text-gold font-bold text-lg">Rs. {product.price_pkr?.toLocaleString()}</span>
                     )}
@@ -210,7 +210,7 @@ export default function Shop({ navless } = {}) {
               </div>
 
               {selectedProduct.hide_price && (
-                <div className="p-4 bg-green/5 border border-green/20 rounded-xl">
+                <div className="p-4 bg-gold/5 border border-gold/20 rounded-xl">
                   <p className="text-sm text-muted mb-2">Contact us on WhatsApp to purchase:</p>
                   <button onClick={() => window.open('https://wa.me/923707519482', '_blank')} className="btn-primary w-full flex items-center justify-center gap-2 mt-2">
                     <MessageCircle size={18} /> Contact on WhatsApp
@@ -219,13 +219,13 @@ export default function Shop({ navless } = {}) {
               )}
 
               {!selectedProduct.hide_price && selectedProduct.whatsapp_number && (
-                <div className="p-4 bg-green/5 border border-green/20 rounded-xl">
+                <div className="p-4 bg-gold/5 border border-gold/20 rounded-xl">
                   <div className="flex items-center gap-3 mb-2">
-                    <MessageCircle className="text-green" size={20} />
+                    <MessageCircle className="text-gold" size={20} />
                     <span className="font-bold">WhatsApp Payment</span>
                   </div>
                   <p className="text-sm text-muted mb-2">Send payment screenshot to:</p>
-                  <p className="text-green font-bold text-lg">{selectedProduct.whatsapp_number}</p>
+                  <p className="text-gold font-bold text-lg">{selectedProduct.whatsapp_number}</p>
                 </div>
               )}
 

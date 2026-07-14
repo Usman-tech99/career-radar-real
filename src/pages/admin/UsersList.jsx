@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { Users, Search, ChevronDown, ChevronUp, GraduationCap, Target, Sparkles, Globe, Briefcase, BookOpen } from 'lucide-react'
 
@@ -108,8 +108,8 @@ export default function UsersList() {
                     className="flex items-center justify-between p-4 border border-border rounded-xl bg-white/[0.02] hover:bg-white/[0.04] cursor-pointer transition-colors"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 rounded-full bg-green/20 flex items-center justify-center shrink-0">
-                        <span className="text-sm font-bold text-green">
+                      <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center shrink-0">
+                        <span className="text-sm font-bold text-gold">
                           {(u.full_name || '?')[0].toUpperCase()}
                         </span>
                       </div>
@@ -117,13 +117,13 @@ export default function UsersList() {
                         <div className="flex items-center gap-2">
                           <p className="font-medium truncate">{u.full_name || 'No Name'}</p>
                           {u.onboarding && (
-                            <span className="text-[10px] bg-green/20 text-green px-1.5 py-0.5 rounded">onboarded</span>
+                            <span className="text-[10px] bg-gold/20 text-gold px-1.5 py-0.5 rounded">onboarded</span>
                           )}
                         </div>
                         <div className="flex items-center gap-2 text-xs text-muted">
                           <span className="font-mono truncate max-w-[160px]">{u.id}</span>
-                          {u.onboarding?.degree && <span>· {u.onboarding.degree}</span>}
-                          {u.onboarding?.career_goal && <span>· {u.onboarding.career_goal}</span>}
+                          {u.onboarding?.degree && <span>Â· {u.onboarding.degree}</span>}
+                          {u.onboarding?.career_goal && <span>Â· {u.onboarding.career_goal}</span>}
                         </div>
                       </div>
                     </div>
@@ -177,7 +177,7 @@ export default function UsersList() {
                                   <span className="text-muted shrink-0">Interests:</span>
                                   <div className="flex flex-wrap gap-1">
                                     {u.onboarding.interests.map((i, idx) => (
-                                      <span key={idx} className="text-[10px] bg-green/10 text-green px-1.5 py-0.5 rounded">{i}</span>
+                                      <span key={idx} className="text-[10px] bg-gold/10 text-gold px-1.5 py-0.5 rounded">{i}</span>
                                     ))}
                                   </div>
                                 </div>
@@ -217,7 +217,7 @@ export default function UsersList() {
                         </div>
                       ) : (
                         <div className="py-4">
-                          <p className="text-muted text-sm text-center mb-3">No onboarding data — user hasn't completed onboarding yet.</p>
+                          <p className="text-muted text-sm text-center mb-3">No onboarding data &mdash; user hasn't completed onboarding yet.</p>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {u.publicUser && (
                               <div className="space-y-3">
@@ -263,7 +263,7 @@ export default function UsersList() {
             </div>
           )}
           <p className="text-xs text-muted mt-4 text-center">
-            Showing {allUsers.length} users — click to expand details
+            Showing {allUsers.length} users &mdash; click to expand details
           </p>
         </div>
     </div>

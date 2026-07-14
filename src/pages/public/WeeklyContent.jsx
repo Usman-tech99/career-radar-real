@@ -26,7 +26,7 @@ export default function WeeklyContent({ navless } = {}) {
   }
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex flex-col">
+    <div className="min-h-screen bg-surface flex flex-col">
       <Helmet>
         <title>Weekly Content — Career Radar</title>
         <meta name="description" content="Access weekly career development content, tips, guides, and resources curated by the Career Radar team." />

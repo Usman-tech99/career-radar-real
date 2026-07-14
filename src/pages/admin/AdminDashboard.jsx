@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { Users, Briefcase, Share2, ShoppingBag } from 'lucide-react'
 
@@ -24,7 +24,7 @@ export default function AdminDashboard() {
         ) : stats ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <StatCard title="Community Members" value={stats.community_members} icon={Users} color="text-blue-accent" />
-            <StatCard title="Jobs Posted" value={stats.jobs_posted} icon={Briefcase} color="text-green" />
+            <StatCard title="Jobs Posted" value={stats.jobs_posted} icon={Briefcase} color="text-gold" />
             <StatCard title="Resources Shared" value={stats.resources_shared} icon={Share2} color="text-purple-accent" />
             <StatCard title="Total Products" value={stats.total_products} icon={ShoppingBag} color="text-gold" />
           </div>

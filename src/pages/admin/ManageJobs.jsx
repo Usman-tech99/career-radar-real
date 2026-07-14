@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import { useForm } from 'react-hook-form'
@@ -69,7 +69,7 @@ export default function ManageJobs() {
   }
 
   async function onSubmit(data) {
-    // Strip has_link from payload — not a DB column, only used for UI toggle
+    // Strip has_link from payload &mdash; not a DB column, only used for UI toggle
     const { has_link, ...rest } = data
     const payload = {
       ...rest,
@@ -139,7 +139,7 @@ export default function ManageJobs() {
                     <td className="p-4">{job.company}</td>
                     <td className="p-4"><span className="badge-blue">{job.type}</span></td>
                     <td className="p-4">
-                      {job.is_active ? <span className="text-green text-sm">Active</span> : <span className="text-red-400 text-sm">Inactive</span>}
+                      {job.is_active ? <span className="text-gold text-sm">Active</span> : <span className="text-red-400 text-sm">Inactive</span>}
                     </td>
                     <td className="p-4 text-sm text-muted">{formatDate(job.created_at)}</td>
                     <td className="p-4 text-right">
@@ -196,11 +196,11 @@ export default function ManageJobs() {
                   <label className="label">Job Details Source</label>
                   <div className="flex gap-4 mt-1">
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" value="yes" {...register('has_link')} className="w-4 h-4 accent-green" />
+                      <input type="radio" value="yes" {...register('has_link')} className="w-4 h-4 accent-gold" />
                       <span className="text-sm">External Link</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" value="no" {...register('has_link')} className="w-4 h-4 accent-green" />
+                      <input type="radio" value="no" {...register('has_link')} className="w-4 h-4 accent-gold" />
                       <span className="text-sm">Description Only</span>
                     </label>
                   </div>
@@ -238,11 +238,11 @@ export default function ManageJobs() {
 
                 <div className="flex gap-6 mt-4">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" {...register('is_featured')} className="w-4 h-4 accent-green rounded" />
+                    <input type="checkbox" {...register('is_featured')} className="w-4 h-4 accent-gold rounded" />
                     <span className="text-sm">Featured Job (Gold Border)</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" {...register('is_active')} className="w-4 h-4 accent-green rounded" />
+                    <input type="checkbox" {...register('is_active')} className="w-4 h-4 accent-gold rounded" />
                     <span className="text-sm">Active (Visible)</span>
                   </label>
                 </div>

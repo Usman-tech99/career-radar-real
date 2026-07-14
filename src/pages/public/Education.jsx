@@ -44,7 +44,7 @@ export default function Education({ navless } = {}) {
   }
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex flex-col">
+    <div className="min-h-screen bg-surface flex flex-col">
       <Helmet>
         <title>Education — Career Radar</title>
         <meta name="description" content="Explore curated education resources, tech courses, and learning materials to build in-demand skills for your career." />
@@ -57,7 +57,7 @@ export default function Education({ navless } = {}) {
       
       <main className="flex-1 pt-32 pb-20 px-4 max-w-7xl w-full mx-auto">
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold font-sora mb-4">Education <span className="text-green">Hub</span></h1>
+          <h1 className="text-4xl md:text-5xl font-bold font-sora mb-4">Education <span className="text-gold">Hub</span></h1>
           <p className="text-muted text-lg max-w-2xl mx-auto">Curated courses, books, and guides to accelerate your career growth.</p>
         </div>
 
@@ -69,7 +69,7 @@ export default function Education({ navless } = {}) {
                 key={type}
                 onClick={() => setFilterType(type)}
                 className={`px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-colors ${
-                  filterType === type ? 'bg-green text-[#07070C]' : 'bg-white/[0.05] text-muted hover:text-white'
+                  filterType === type ? 'bg-gold text-[#07070C]' : 'bg-white/[0.05] text-muted hover:text-white'
                 }`}
               >
                 {type}
@@ -141,7 +141,7 @@ export default function Education({ navless } = {}) {
                     </span>
                   </div>
                   
-                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-green transition-colors line-clamp-2">
+                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-gold transition-colors line-clamp-2">
                     {item.title}
                   </h3>
                   
@@ -170,7 +170,7 @@ export default function Education({ navless } = {}) {
                           Access Now <ExternalLink size={14} />
                         </a>
                       ) : (
-                        <span className="text-green text-sm font-medium">Free Content</span>
+                        <span className="text-gold text-sm font-medium">Free Content</span>
                       )
                     ) : (
                       <Link to="/products" className="btn-ghost w-full text-center py-2">

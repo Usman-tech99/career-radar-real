@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Navbar from '../../components/layout/Navbar'
@@ -13,11 +13,11 @@ import { CardContainer, CardBody, CardItem } from '../../components/ui/3d-card'
 import { Helmet } from 'react-helmet-async'
 
 const features = [
-  { icon: Search, title: 'Verified Opportunities', desc: 'Discover scholarships, internships, jobs, fellowships, competitions, conferences, and remote opportunities from trusted sources.', color: 'text-green', beamColor: '#10B981', wide: false },
+  { icon: Search, title: 'Verified Opportunities', desc: 'Discover scholarships, internships, jobs, fellowships, competitions, conferences, and remote opportunities from trusted sources.', color: 'text-gold', beamColor: '#F5A623', wide: false },
   { icon: Bot, title: 'AI Career Guidance', desc: 'Get personalized career roadmaps, AI-powered recommendations, resume feedback, and practical career advice.', color: 'text-blue-accent', beamColor: '#3B82F6', wide: true },
   { icon: BookOpen, title: 'Career Resources', desc: 'Access resume templates, interview guides, AI tools, freelancing resources, productivity systems, and learning materials.', color: 'text-gold', beamColor: '#F59E0B', wide: false },
   { icon: Users, title: 'Global Community', desc: 'Join a growing network of students, graduates, freelancers, mentors, and professionals across multiple countries.', color: 'text-purple-accent', beamColor: '#8B5CF6', wide: false },
-  { icon: TrendingUp, title: 'Skill Development', desc: 'Build practical AI, freelancing, communication, leadership, and career skills employers actually value.', color: 'text-green', beamColor: '#10B981', wide: false },
+  { icon: TrendingUp, title: 'Skill Development', desc: 'Build practical AI, freelancing, communication, leadership, and career skills employers actually value.', color: 'text-gold', beamColor: '#F5A623', wide: false },
   { icon: Target, title: 'Career Growth', desc: 'Prepare for scholarships, internships, higher education, and future careers with structured guidance and continuous learning.', color: 'text-blue-accent', beamColor: '#3B82F6', wide: true },
 ]
 
@@ -86,11 +86,11 @@ export default function Home() {
   ] : []
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-surface flex flex-col relative">
       <Helmet>
-        <title>Career Radar — AI-Powered Career GPS for Students & Professionals</title>
+        <title>Career Radar &mdash; AI-Powered Career GPS for Students & Professionals</title>
         <meta name="description" content="Discover verified scholarships, internships, jobs, and AI-powered career guidance. Join our global community and accelerate your career journey with Career Radar." />
-        <meta property="og:title" content="Career Radar — AI-Powered Career GPS for Students & Professionals" />
+        <meta property="og:title" content="Career Radar &mdash; AI-Powered Career GPS for Students & Professionals" />
         <meta property="og:description" content="Discover verified scholarships, internships, jobs, and AI-powered career guidance. Join our global community and accelerate your career journey with Career Radar." />
         <meta property="og:type" content="website" />
         <meta name="keywords" content="career radar, AI career tools, scholarships, internships, jobs, career guidance" />
@@ -101,7 +101,7 @@ export default function Home() {
       <motion.div
         animate={{ opacity: [0.6, 1, 0.6], scale: [1, 1.05, 1] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[500px] bg-gradient-to-b from-green/20 to-transparent blur-[150px] pointer-events-none"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[500px] bg-gradient-to-b from-gold/20 to-transparent blur-[150px] pointer-events-none"
       />
       <motion.div
         animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 1.08, 1] }}
@@ -129,25 +129,27 @@ export default function Home() {
         <div className="max-w-5xl mx-auto">
           <LampContainer>
             <div className="text-center">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green/30 bg-green/10 text-green font-medium text-sm mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gold/30 bg-gold/10 text-gold font-medium text-sm mb-8">
                 <motion.span
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
-                  className="w-2 h-2 rounded-full bg-green"
+                  className="w-2 h-2 rounded-full bg-gold"
                 />
-                AI-Powered Career GPS
+                Ai Powered GPS
               </div>
 
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-sora tracking-tight text-white mb-6 leading-[1.05]">
-                Discover. Build.{' '}
-                <br className="hidden md:block" />
-                <span className="bg-gradient-to-r from-emerald-400 via-green to-blue-500 bg-clip-text text-transparent">
-                  Accelerate Your Career.
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-sora tracking-tight mb-2 leading-[1.05]">
+                <span className="text-[#1A2D4A]">Career</span>{' '}
+                <span className="bg-gradient-to-r from-gold via-gold to-amber-400 bg-clip-text text-transparent">
+                  Radar
                 </span>
               </h1>
+              <p className="text-lg md:text-xl font-medium text-navy mb-6">
+                Find.Prepare.Succeed
+              </p>
 
               <p className="text-lg md:text-xl text-muted max-w-3xl mx-auto mb-10 leading-relaxed">
-                Career Radar is an AI-powered career ecosystem helping students and early-career professionals discover verified scholarships, internships, jobs, AI resources, career guidance, and professional networks—all in one place.
+                Career Radar is an AI-powered career ecosystem helping students and early-career professionals discover verified scholarships, internships, jobs, AI resources, career guidance, and professional networks&mdash;all in one place.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -169,7 +171,7 @@ export default function Home() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                 {statItems.map((s, i) => (
                   <div key={i} className="text-center">
-                    <div className="text-3xl md:text-5xl font-black font-mono text-green">
+                    <div className="text-3xl md:text-5xl font-black font-mono text-gold">
                       <NumberTicker value={s.value} delay={0.3 + i * 0.15} />
                       <span>{s.suffix}</span>
                     </div>
@@ -186,7 +188,7 @@ export default function Home() {
           <div className="text-center">
             <h2 className="text-3xl md:text-5xl font-bold font-sora text-white mb-6">Why Career Radar?</h2>
             <p className="text-muted text-base md:text-lg leading-relaxed max-w-3xl mx-auto">
-              Students don't struggle because opportunities don't exist—they struggle because opportunities are scattered, skills change rapidly, and trusted career guidance is hard to find. Career Radar brings everything together into one AI-powered career ecosystem.
+              Students don't struggle because opportunities don't exist&mdash;they struggle because opportunities are scattered, skills change rapidly, and trusted career guidance is hard to find. Career Radar brings everything together into one AI-powered career ecosystem.
             </p>
           </div>
         </BlurFade>
@@ -194,7 +196,7 @@ export default function Home() {
         <div className="max-w-7xl w-full mx-auto mt-24">
           <div className="text-center mb-14">
             <h2 className="text-3xl md:text-5xl font-bold font-sora text-white mb-4">Everything You Need to Succeed</h2>
-            <p className="text-muted text-base md:text-lg max-w-2xl mx-auto">From discovery to growth — all in one platform designed for your career journey.</p>
+            <p className="text-muted text-base md:text-lg max-w-2xl mx-auto">From discovery to growth &mdash; all in one platform designed for your career journey.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {features.map((f, i) => (
@@ -213,10 +215,10 @@ export default function Home() {
             {steps.map((step, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="text-center">
                 <div className="relative inline-flex mb-5">
-                  <div className="w-16 h-16 rounded-2xl bg-green/10 border border-green/20 flex items-center justify-center">
-                    <step.icon size={28} className="text-green" />
+                  <div className="w-16 h-16 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-center">
+                    <step.icon size={28} className="text-gold" />
                   </div>
-                  <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-green text-white text-xs font-bold flex items-center justify-center">
+                  <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-gold text-white text-xs font-bold flex items-center justify-center">
                     {i + 1}
                   </div>
                 </div>
@@ -236,7 +238,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {whyJoin.map((item, i) => (
               <motion.div key={i} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }} className="flex items-center gap-3 p-4 glass-card">
-                <CheckCircle size={20} className="text-green shrink-0" />
+                <CheckCircle size={20} className="text-gold shrink-0" />
                 <span className="text-white font-medium">{item}</span>
               </motion.div>
             ))}
@@ -254,17 +256,17 @@ export default function Home() {
               <CardContainer key={i} className="w-full h-full" containerClassName="w-full h-full">
                 <CardBody className="glass-card p-6 flex flex-col h-full rounded-2xl border border-white/[0.06]">
                   <CardItem translateZ={30}>
-                    <Quote size={20} className="text-green/40 mb-4" />
+                    <Quote size={20} className="text-gold/40 mb-4" />
                   </CardItem>
                   <CardItem translateZ={20} className="text-sm text-muted leading-relaxed mb-6 flex-1">&ldquo;{t.quote}&rdquo;</CardItem>
                   <CardItem translateZ={10} className="pt-4 border-t border-white/[0.06]">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-green/20 flex items-center justify-center text-green font-bold text-sm">
+                      <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold text-sm">
                         {t.name.split(' ').map(n => n[0]).join('')}
                       </div>
                       <div>
                         <p className="text-white font-semibold text-sm">{t.name}</p>
-                        <p className="text-green text-xs">{t.achievement}</p>
+                        <p className="text-gold text-xs">{t.achievement}</p>
                       </div>
                     </div>
                   </CardItem>
@@ -282,13 +284,13 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="glass-card p-8">
-              <h3 className="text-xl font-bold text-green mb-6 flex items-center gap-2">
+              <h3 className="text-xl font-bold text-gold mb-6 flex items-center gap-2">
                 <Rocket size={22} /> Available Now
               </h3>
               <ul className="space-y-3">
                 {roadmapAvailable.map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-sm">
-                    <CheckCircle size={18} className="text-green shrink-0" />
+                    <CheckCircle size={18} className="text-gold shrink-0" />
                     <span className="text-white">{item}</span>
                   </li>
                 ))}
@@ -315,7 +317,7 @@ export default function Home() {
         {/* Founder Message */}
         <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-4xl mx-auto mt-28">
           <div className="glass-card p-6 md:p-10 text-center relative overflow-hidden">
-            <BorderBeam size={150} duration={10} colorFrom="#10B981" colorTo="#8B5CF6" borderWidth={1} />
+            <BorderBeam size={150} duration={10} colorFrom="#F5A623" colorTo="#8B5CF6" borderWidth={1} />
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">A Message from the Founder</h2>
             <div className="relative w-full aspect-video max-w-3xl mx-auto rounded-xl overflow-hidden">
               <iframe src="https://www.youtube-nocookie.com/embed/BTWmQzuCjyc" title="Founder Message" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen className="absolute inset-0 w-full h-full" />

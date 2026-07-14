@@ -27,7 +27,7 @@ export default function SafeImage({ src, alt, className = '', ...imgProps }) {
     const initials = extractInitials(alt)
     return (
       <div
-        className={`${className} bg-gradient-to-br from-green/20 to-blue-accent/20 flex items-center justify-center overflow-hidden`}
+        className={`${className} bg-gradient-to-br from-gold/20 to-blue-accent/20 flex items-center justify-center overflow-hidden`}
         title={alt}
       >
         {initials ? (

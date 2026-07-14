@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { Save, Plus, Trash2 } from 'lucide-react'
@@ -53,7 +53,7 @@ export default function ManageStructure() {
 
   if (loading) return (
     <div className="flex items-center justify-center min-h-[60vh]">
-      <div className="w-8 h-8 border-2 border-green border-t-transparent rounded-full animate-spin"></div>
+      <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin"></div>
     </div>
   )
 
@@ -93,7 +93,7 @@ export default function ManageStructure() {
             </div>
 
             <div className="glass-card">
-              <h2 className="text-xl font-bold mb-4 text-green">Vision</h2>
+              <h2 className="text-xl font-bold mb-4 text-gold">Vision</h2>
               <textarea 
                 className="input-field h-32" 
                 value={data.vision} 
@@ -140,7 +140,7 @@ function DynamicListSection({ title, items, onAdd, onChange, onRemove }) {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">{title}</h2>
         <button onClick={onAdd} className="p-1.5 bg-white/[0.05] hover:bg-white/[0.1] rounded-lg transition-colors">
-          <Plus size={16} className="text-green" />
+          <Plus size={16} className="text-gold" />
         </button>
       </div>
       

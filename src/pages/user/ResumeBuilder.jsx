@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+﻿import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
@@ -27,10 +27,10 @@ function Input({ label, value, onChange, placeholder, type = 'text', className =
       <label className="text-xs font-medium text-muted mb-1.5 block">{label}</label>
       {type === 'textarea' ? (
         <textarea value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
-          className="w-full bg-white/[0.04] border border-border rounded-xl px-4 py-3 text-white text-sm placeholder:text-muted/50 focus:outline-none focus:border-green/50 transition-colors resize-none h-24" />
+          className="w-full bg-white/[0.04] border border-border rounded-xl px-4 py-3 text-white text-sm placeholder:text-muted/50 focus:outline-none focus:border-gold/50 transition-colors resize-none h-24" />
       ) : (
         <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
-          className="w-full bg-white/[0.04] border border-border rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-muted/50 focus:outline-none focus:border-green/50 transition-colors" />
+          className="w-full bg-white/[0.04] border border-border rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-muted/50 focus:outline-none focus:border-gold/50 transition-colors" />
       )}
     </div>
   )
@@ -40,11 +40,11 @@ function SectionCard({ title, icon: Icon, children, onAdd, addLabel }) {
   return (
     <BlurFade delay={0.1} offset={8} blur="3px">
       <div className="glass-card p-6 rounded-2xl relative">
-        <BorderBeam size={50} duration={10} colorFrom="#10B981" colorTo="#3B82F6" borderWidth={1} />
+        <BorderBeam size={50} duration={10} colorFrom="#F5A623" colorTo="#3B82F6" borderWidth={1} />
         <div className="flex items-center justify-between mb-5">
-          <h3 className="font-bold text-white flex items-center gap-2"><Icon size={18} className="text-green" /> {title}</h3>
+          <h3 className="font-bold text-white flex items-center gap-2"><Icon size={18} className="text-gold" /> {title}</h3>
           {onAdd && (
-            <button onClick={onAdd} className="text-xs flex items-center gap-1 text-green hover:text-green/80 transition-colors font-medium">
+            <button onClick={onAdd} className="text-xs flex items-center gap-1 text-gold hover:text-gold/80 transition-colors font-medium">
               <Plus size={14} /> {addLabel || 'Add'}
             </button>
           )}
@@ -102,7 +102,7 @@ export default function ResumeBuilder() {
         throw new Error('Unsupported file type. Please upload a PDF, DOCX, or TXT file.')
       }
 
-      if (text.trim().length < 20) throw new Error('Could not extract enough text — ensure the file contains readable content.')
+      if (text.trim().length < 20) throw new Error('Could not extract enough text &mdash; ensure the file contains readable content.')
 
       toast.loading('Extracting structured data with AI...', { id: loadToast })
 
@@ -245,7 +245,7 @@ export default function ResumeBuilder() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen bg-[#07070C]">
+      <div className="flex min-h-screen bg-surface">
         <div className="w-64 h-screen bg-[#0A0A12]/90 backdrop-blur-xl border-r border-white/[0.05] fixed left-0 top-0 pt-20 z-20" />
         <div className="flex-1 ml-64 p-6 md:p-10">
           <div className="max-w-4xl mx-auto space-y-6 animate-pulse">
@@ -265,7 +265,7 @@ export default function ResumeBuilder() {
           <BlurFade offset={8} blur="3px" className="flex items-center justify-between mb-8 print:hidden">
             <div>
               <h1 className="text-3xl font-bold font-sora flex items-center gap-3">
-                <FileText className="text-green" /> Resume Builder
+                <FileText className="text-gold" /> Resume Builder
               </h1>
               <p className="text-muted text-sm mt-1">Build a professional resume from your profile data.</p>
             </div>
@@ -286,7 +286,7 @@ export default function ResumeBuilder() {
             {['edit', 'preview'].map(tab => (
               <button key={tab} onClick={() => setActiveTab(tab)}
                 className={`px-5 py-2 rounded-lg text-sm font-medium transition-all capitalize ${
-                  activeTab === tab ? 'bg-green text-[#07070C]' : 'text-muted hover:text-white'
+                  activeTab === tab ? 'bg-gold text-[#07070C]' : 'text-muted hover:text-white'
                 }`}>
                 {tab === 'edit' ? <><FileText size={14} className="inline mr-1.5" />Edit</> : <><Sparkles size={14} className="inline mr-1.5" />Preview</>}
               </button>
@@ -299,7 +299,7 @@ export default function ResumeBuilder() {
               {importNote && (
                 <div className="flex items-start gap-2 bg-amber-500/10 border border-amber-500/20 rounded-lg px-4 py-3 text-sm text-amber-300">
                   <AlertTriangle size={16} className="shrink-0 mt-0.5" />
-                  <span>After importing, please review all fields carefully — AI can make mistakes in extracting information.</span>
+                  <span>After importing, please review all fields carefully &mdash; AI can make mistakes in extracting information.</span>
                   <button onClick={() => setImportNote(false)} className="ml-auto shrink-0 text-amber-400/50 hover:text-amber-400">&times;</button>
                 </div>
               )}
@@ -350,7 +350,7 @@ export default function ResumeBuilder() {
               <SectionCard title="Skills" icon={Code}>
                 <div className="flex flex-wrap gap-2 mb-4">
                   {skills.map((s, i) => (
-                    <span key={i} className="inline-flex items-center gap-1.5 bg-green/10 text-green text-xs font-medium px-3 py-1.5 rounded-full border border-green/20">
+                    <span key={i} className="inline-flex items-center gap-1.5 bg-gold/10 text-gold text-xs font-medium px-3 py-1.5 rounded-full border border-gold/20">
                       {s}
                       <button onClick={() => removeSkill(s)} className="hover:text-red-400 transition-colors"><X size={12} /></button>
                     </span>
@@ -360,7 +360,7 @@ export default function ResumeBuilder() {
                   <input value={newSkill} onChange={e => setNewSkill(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSkill())}
                     placeholder="Type a skill and press Enter..."
-                    className="flex-1 bg-white/[0.04] border border-border rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-muted/50 focus:outline-none focus:border-green/50 transition-colors" />
+                    className="flex-1 bg-white/[0.04] border border-border rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-muted/50 focus:outline-none focus:border-gold/50 transition-colors" />
                   <button onClick={addSkill} className="btn-ghost border border-border px-4 py-2 rounded-xl text-sm"><Plus size={16} /></button>
                 </div>
               </SectionCard>
@@ -383,7 +383,7 @@ export default function ResumeBuilder() {
                     </div>
                     <label className="flex items-center gap-2 mt-3 cursor-pointer group">
                       <input type="checkbox" checked={exp.current} onChange={e => updateExperience(i, 'current', e.target.checked)}
-                        className="w-4 h-4 rounded border-muted bg-white/[0.04] accent-green" />
+                        className="w-4 h-4 rounded border-muted bg-white/[0.04] accent-gold" />
                       <span className="text-xs text-muted group-hover:text-white transition-colors">I currently work here</span>
                     </label>
                     <Input label="Description" value={exp.description} onChange={v => updateExperience(i, 'description', v)} placeholder="Describe your responsibilities and achievements..." type="textarea" className="mt-3" />
@@ -430,11 +430,11 @@ export default function ResumeBuilder() {
           {/* Preview View */}
           {activeTab === 'preview' && (
             <div className="print:block">
-              <div className="bg-white text-black rounded-2xl print:rounded-none shadow-2xl overflow-hidden">
+              <div className="bg-white text-navy rounded-2xl print:rounded-none shadow-2xl overflow-hidden">
                 {/* Europass-style CV */}
                 <div className="flex flex-col md:flex-row print:flex-row min-h-[842px]">
-                  {/* Sidebar — personal info, skills, languages */}
-                  <div className="md:w-[35%] print:w-[35%] bg-[#059669] print:bg-[#059669] text-white p-6 md:p-8 print:p-6 flex flex-col gap-5">
+                  {/* Sidebar &mdash; personal info, skills, languages */}
+                  <div className="md:w-[35%] print:w-[35%] bg-[#D4950A] print:bg-[#D4950A] text-white p-6 md:p-8 print:p-6 flex flex-col gap-5">
                     {/* Name & Title */}
                     <div className="text-center">
                       {personal.avatarUrl ? (
@@ -481,12 +481,12 @@ export default function ResumeBuilder() {
                     )}
                   </div>
 
-                  {/* Main Content — experience, education, projects, certifications */}
+                  {/* Main Content &mdash; experience, education, projects, certifications */}
                   <div className="md:w-[65%] print:w-[65%] p-6 md:p-8 print:p-6 space-y-6">
                     {/* Experience */}
                     {experience.filter(e => e.title || e.company).length > 0 && (
                       <div>
-                        <h2 className="text-sm font-bold uppercase tracking-wider text-[#059669] border-b-2 border-[#059669] pb-1 mb-3">Work Experience</h2>
+                        <h2 className="text-sm font-bold uppercase tracking-wider text-[#D4950A] border-b-2 border-[#D4950A] pb-1 mb-3">Work Experience</h2>
                         <div className="space-y-4">
                           {experience.filter(e => e.title || e.company).map((exp, i) => (
                             <div key={i}>
@@ -495,7 +495,7 @@ export default function ResumeBuilder() {
                                   <h3 className="font-bold text-gray-900 text-sm">{exp.title}</h3>
                                   <p className="text-xs text-gray-600">{exp.company}{exp.location ? ` | ${exp.location}` : ''}</p>
                                 </div>
-                                <p className="text-xs text-gray-500 shrink-0 ml-4">{exp.startDate} — {exp.current ? 'Present' : exp.endDate}</p>
+                                <p className="text-xs text-gray-500 shrink-0 ml-4">{exp.startDate} &mdash; {exp.current ? 'Present' : exp.endDate}</p>
                               </div>
                               {exp.description && <p className="text-xs text-gray-700 mt-1 leading-relaxed">{exp.description}</p>}
                             </div>
@@ -507,15 +507,15 @@ export default function ResumeBuilder() {
                     {/* Education */}
                     {education.filter(e => e.institution || e.degree).length > 0 && (
                       <div>
-                        <h2 className="text-sm font-bold uppercase tracking-wider text-[#059669] border-b-2 border-[#059669] pb-1 mb-3">Education</h2>
+                        <h2 className="text-sm font-bold uppercase tracking-wider text-[#D4950A] border-b-2 border-[#D4950A] pb-1 mb-3">Education</h2>
                         <div className="space-y-3">
                           {education.filter(e => e.institution || e.degree).map((edu, i) => (
                             <div key={i} className="flex justify-between items-start">
                               <div>
                                 <h3 className="font-bold text-gray-900 text-sm">{edu.degree}{edu.field ? ` in ${edu.field}` : ''}</h3>
-                                <p className="text-xs text-gray-600">{edu.institution}{edu.gpa ? ` — GPA: ${edu.gpa}` : ''}</p>
+                                <p className="text-xs text-gray-600">{edu.institution}{edu.gpa ? ` &mdash; GPA: ${edu.gpa}` : ''}</p>
                               </div>
-                              <p className="text-xs text-gray-500 shrink-0 ml-4">{edu.startYear} — {edu.endYear || 'Present'}</p>
+                              <p className="text-xs text-gray-500 shrink-0 ml-4">{edu.startYear} &mdash; {edu.endYear || 'Present'}</p>
                             </div>
                           ))}
                         </div>
@@ -525,7 +525,7 @@ export default function ResumeBuilder() {
                     {/* Projects */}
                     {projects.filter(p => p.name).length > 0 && (
                       <div>
-                        <h2 className="text-sm font-bold uppercase tracking-wider text-[#059669] border-b-2 border-[#059669] pb-1 mb-3">Projects</h2>
+                        <h2 className="text-sm font-bold uppercase tracking-wider text-[#D4950A] border-b-2 border-[#D4950A] pb-1 mb-3">Projects</h2>
                         <div className="space-y-3">
                           {projects.filter(p => p.name).map((proj, i) => (
                             <div key={i}>
@@ -544,7 +544,7 @@ export default function ResumeBuilder() {
                     {/* Certifications */}
                     {certifications.filter(c => c.name).length > 0 && (
                       <div>
-                        <h2 className="text-sm font-bold uppercase tracking-wider text-[#059669] border-b-2 border-[#059669] pb-1 mb-3">Certifications</h2>
+                        <h2 className="text-sm font-bold uppercase tracking-wider text-[#D4950A] border-b-2 border-[#D4950A] pb-1 mb-3">Certifications</h2>
                         <div className="space-y-2">
                           {certifications.filter(c => c.name).map((cert, i) => (
                             <div key={i} className="flex justify-between items-start">

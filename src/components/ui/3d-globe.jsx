@@ -5,7 +5,7 @@ import * as THREE from 'three'
 
 const earthMapUrl = 'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg'
 const R = 2
-const MARKER_COLOR = '#10B981'
+const MARKER_COLOR = '#F5A623'
 
 function latLngToPosition(lat, lng, radius) {
   const phi = (90 - lat) * (Math.PI / 180)
@@ -140,7 +140,7 @@ function Marker({ lat, lng, label, color = MARKER_COLOR, onClick, onHover }) {
       </sprite>
       {hovered && (
         <Html distanceFactor={6} center>
-          <div className="px-2 py-1 rounded-lg bg-black/80 border border-white/20 text-white text-xs font-medium whitespace-nowrap backdrop-blur-sm">
+          <div className="px-2 py-1 rounded-lg bg-black/80 border border-white/20 text-[#ffffff] text-xs font-medium whitespace-nowrap backdrop-blur-sm">
             {label}
           </div>
         </Html>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import { useForm } from 'react-hook-form'
@@ -145,7 +145,7 @@ export default function ManageContent() {
                 <SafeImage src={item.thumbnail_url} alt={item.title || 'thumbnail'} className="w-full h-40 object-cover rounded-xl mb-4" />
                 <div className="flex justify-between items-start mb-2">
                   <span className="badge-purple">{item.category}</span>
-                  <span className={`text-xs ${item.is_published ? 'text-green' : 'text-red-400'}`}>
+                  <span className={`text-xs ${item.is_published ? 'text-gold' : 'text-red-400'}`}>
                     {item.is_published ? 'Published' : 'Draft'}
                   </span>
                 </div>
@@ -210,7 +210,7 @@ export default function ManageContent() {
                         <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, 'thumbnail')} disabled={uploading} />
                       </label>
                     </div>
-                    {thumbnailUrl && <p className="text-green text-xs mt-2 truncate">Uploaded: {thumbnailUrl}</p>}
+                    {thumbnailUrl && <p className="text-gold text-xs mt-2 truncate">Uploaded: {thumbnailUrl}</p>}
                   </div>
                   <div>
                     <label className="label">Upload Content (PDF/ZIP)</label>
@@ -220,7 +220,7 @@ export default function ManageContent() {
                         <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'file')} disabled={uploading} />
                       </label>
                     </div>
-                    {fileUrl && <p className="text-green text-xs mt-2 truncate">Uploaded: {fileUrl}</p>}
+                    {fileUrl && <p className="text-gold text-xs mt-2 truncate">Uploaded: {fileUrl}</p>}
                   </div>
                 </div>
 
@@ -237,7 +237,7 @@ export default function ManageContent() {
 
                 <div className="flex gap-6 mt-4">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" {...register('is_published')} className="w-4 h-4 accent-green rounded" />
+                    <input type="checkbox" {...register('is_published')} className="w-4 h-4 accent-gold rounded" />
                     <span className="text-sm">Published (Visible)</span>
                   </label>
                 </div>

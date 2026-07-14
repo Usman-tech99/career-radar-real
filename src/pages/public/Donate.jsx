@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Heart, Server, Users, BookOpen, Globe, ChevronDown, Copy, MessageCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -12,17 +12,17 @@ const AMOUNT_OPTIONS = [
 ]
 
 const METHODS = [
-  { id: 'easypaisa', label: 'Easypaisa', icon: '📱', desc: 'Pakistani mobile money' },
-  { id: 'nayapay', label: 'Nayapay', icon: '💳', desc: 'Pakistani payment platform' },
-  { id: 'raast', label: 'Raast', icon: '🏦', desc: 'Pakistani real-time payment' },
-  { id: 'binance', label: 'Binance', icon: '🪙', desc: 'Cryptocurrency payments', comingSoon: true },
+  { id: 'easypaisa', label: 'Easypaisa', icon: 'ðŸ“±', desc: 'Pakistani mobile money' },
+  { id: 'nayapay', label: 'Nayapay', icon: 'ðŸ’³', desc: 'Pakistani payment platform' },
+  { id: 'raast', label: 'Raast', icon: 'ðŸ¦', desc: 'Pakistani real-time payment' },
+  { id: 'binance', label: 'Binance', icon: 'ðŸª™', desc: 'Cryptocurrency payments', comingSoon: true },
 ]
 
 const FAQS = [
   { q: 'Is my donation secure?', a: 'Yes, all donations are processed securely through trusted payment providers. We never store sensitive payment information.' },
   { q: 'How do I confirm my donation?', a: 'After sending the payment to the account details provided, click "Continue on WhatsApp" with your name and amount. We\'ll verify and update you within 24 hours.' },
   { q: 'Will my donation be public?', a: 'By default, your name appears on our donor list. You can choose to donate anonymously by mentioning it on WhatsApp.' },
-  { q: 'What if I send the wrong amount?', a: 'No worries — just mention the correct amount on WhatsApp and we\'ll adjust our records.' },
+  { q: 'What if I send the wrong amount?', a: 'No worries &mdash; just mention the correct amount on WhatsApp and we\'ll adjust our records.' },
 ]
 
 const WHATSAPP_NUMBER = '923275878584'
@@ -36,7 +36,7 @@ export default function Donate() {
   function handleSubmit(e) {
     e.preventDefault()
     if (!name.trim()) return toast.error('Please enter your name')
-    const text = encodeURIComponent(`My name is ${name.trim()} and i want to support Career Radar with $${amount}`)
+    const text = encodeURIComponent(`My name is ${name.trim()} and I want to support Career Radar with $${amount}`)
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, '_blank')
   }
 
@@ -46,11 +46,11 @@ export default function Donate() {
   }
 
   return (
-    <div className="min-h-screen pt-28 pb-20 px-4">
+    <div className="min-h-screen bg-surface pt-28 pb-20 px-4">
       <Helmet>
-        <title>Support Us — Career Radar</title>
+        <title>Support Us &mdash; Career Radar</title>
         <meta name="description" content="Support Career Radar's mission to provide free AI-powered career tools and opportunities to students everywhere." />
-        <meta property="og:title" content="Support Us — Career Radar" />
+        <meta property="og:title" content="Support Us &mdash; Career Radar" />
         <meta property="og:description" content="Support Career Radar's mission to provide free AI-powered career tools and opportunities to students everywhere." />
         <meta property="og:type" content="website" />
         <meta name="keywords" content="support career radar, donate, fund education, career tools" />
@@ -58,7 +58,7 @@ export default function Donate() {
       <div className="max-w-4xl mx-auto">
         {/* Hero */}
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green/10 border border-green/20 text-green text-sm font-medium mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold/10 border border-gold/20 text-gold text-sm font-medium mb-4">
             <Heart size={14} /> Support Our Mission
           </div>
           <h1 className="text-4xl md:text-5xl font-bold font-sora text-white mb-4">Help Us Grow</h1>
@@ -76,7 +76,7 @@ export default function Donate() {
             { icon: Globe, label: 'Global Reach', desc: 'Expand to help more students' },
           ].map((item, i) => (
             <div key={i} className="glass-card p-5 text-center">
-              <item.icon size={28} className="text-green mx-auto mb-3" />
+              <item.icon size={28} className="text-gold mx-auto mb-3" />
               <h3 className="text-white font-semibold text-sm mb-1">{item.label}</h3>
               <p className="text-muted text-xs">{item.desc}</p>
             </div>
@@ -96,7 +96,7 @@ export default function Donate() {
                 {AMOUNT_OPTIONS.map((a) => (
                   <button key={a.value} onClick={() => setAmount(a.value)}
                     className={`p-3 rounded-xl border text-center transition-all ${
-                      amount === a.value ? 'border-green bg-green/10 text-green' : 'border-border text-muted hover:border-white/20'
+                      amount === a.value ? 'border-gold bg-gold/10 text-gold' : 'border-border text-muted hover:border-white/20'
                     }`}
                   >
                     <div className="text-lg font-bold">{a.desc}</div>
@@ -114,7 +114,7 @@ export default function Donate() {
                   <button key={m.id} onClick={() => !m.comingSoon && setMethod(m.id)}
                     className={`p-4 rounded-xl border text-left transition-all relative ${
                       m.comingSoon ? 'opacity-40 cursor-not-allowed' :
-                      method === m.id ? 'border-green bg-green/10' : 'border-border hover:border-white/20'
+                      method === m.id ? 'border-gold bg-gold/10' : 'border-border hover:border-white/20'
                     }`}
                   >
                     <span className="text-xl mb-1 block">{m.icon}</span>
@@ -129,11 +129,11 @@ export default function Donate() {
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               <input type="text" placeholder="Enter your name" value={name} onChange={e => setName(e.target.value)}
-                className="w-full bg-white/[0.04] border border-border rounded-xl px-4 py-3 text-white text-sm placeholder:text-muted focus:outline-none focus:border-green/50 transition-colors" />
+                className="w-full bg-white/[0.04] border border-border rounded-xl px-4 py-3 text-white text-sm placeholder:text-muted focus:outline-none focus:border-gold/50 transition-colors" />
 
               <button type="submit" className="btn-primary w-full py-3 text-base flex items-center justify-center gap-2">
                 <MessageCircle size={18} />
-                Continue on WhatsApp — ${amount}
+                Continue on WhatsApp &mdash; ${amount}
               </button>
             </form>
           </motion.div>
@@ -146,7 +146,7 @@ export default function Donate() {
               <div className="space-y-4">
                 <div className="bg-white/[0.04] border border-border rounded-xl p-4">
                   <div className="text-xs text-muted uppercase tracking-wider mb-1">Account Details</div>
-                  <div className="text-2xl font-bold text-green tracking-wider mb-2">03275878584</div>
+                  <div className="text-2xl font-bold text-gold tracking-wider mb-2">03275878584</div>
                   <button onClick={copyAccount} className="btn-ghost text-xs flex items-center gap-1.5 py-1.5 px-3 rounded-lg border border-border">
                     <Copy size={12} /> Copy Number
                   </button>
@@ -156,16 +156,16 @@ export default function Donate() {
                     Send your donation to the account above, then click <strong className="text-white">Continue on WhatsApp</strong> to confirm. We'll verify and update you within 24 hours.
                   </p>
                 </div>
-                <div className="bg-green/5 border border-green/20 rounded-xl p-4">
+                <div className="bg-gold/5 border border-gold/20 rounded-xl p-4">
                   <div className="text-xs text-muted uppercase tracking-wider mb-2">Donation Amount</div>
-                  <div className="text-lg font-bold text-green">${amount}</div>
+                  <div className="text-lg font-bold text-gold">${amount}</div>
                 </div>
               </div>
             )}
 
             {method === 'nayapay' && (
               <div className="space-y-4">
-                <p className="text-sm text-muted leading-relaxed">Coming soon — we're integrating Nayapay checkout.</p>
+                <p className="text-sm text-muted leading-relaxed">Coming soon &mdash; we're integrating Nayapay checkout.</p>
                 <div className="bg-white/[0.04] rounded-xl p-4 border border-border">
                   <p className="text-xs text-muted">Until then, please use Easypaisa to donate.</p>
                 </div>
@@ -206,12 +206,12 @@ export default function Donate() {
 
         {/* Closing */}
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center glass-card p-10">
-          <Heart size={36} className="text-green mx-auto mb-4" />
+          <Heart size={36} className="text-gold mx-auto mb-4" />
           <h2 className="text-2xl font-bold font-sora text-white mb-3">Every Donation Counts</h2>
           <p className="text-muted max-w-lg mx-auto leading-relaxed mb-6">
             Whether it's $1 or $100, your support helps us continue our mission to empower students and professionals worldwide.
           </p>
-          <p className="text-green font-semibold">Thank you for believing in Career Radar!</p>
+          <p className="text-gold font-semibold">Thank you for believing in Career Radar!</p>
         </motion.div>
       </div>
     </div>

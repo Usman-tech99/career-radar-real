@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
@@ -213,8 +213,8 @@ export default function ManageTeam() {
                               onClick={() => togglePermission(p.key)}
                               className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
                                 newPermissions.includes(p.key)
-                                  ? 'bg-green border-green'
-                                  : 'border-border hover:border-green'
+                                  ? 'bg-gold border-gold'
+                                  : 'border-border hover:border-gold'
                               }`}
                             >
                               {newPermissions.includes(p.key) && <Check size={14} className="text-white" />}

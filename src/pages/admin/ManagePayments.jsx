@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { CheckCircle, XCircle, FileLock2, Trash2 } from 'lucide-react'
@@ -103,7 +103,7 @@ export default function ManagePayments() {
                       <div className="text-sm text-blue-400">{order.buyer_whatsapp}</div>
                     </td>
                     <td className="p-4">
-                      <div className="font-bold text-green">PKR {order.amount_pkr}</div>
+                      <div className="font-bold text-gold">PKR {order.amount_pkr}</div>
                       <div className="text-xs text-muted">{order.payment_method}</div>
                     </td>
                     <td className="p-4">
@@ -113,14 +113,14 @@ export default function ManagePayments() {
                         className={`text-sm px-3 py-1 border-none bg-white/[0.05] rounded-full outline-none font-bold ${
                           order.status === 'pending' ? 'text-amber-400' :
                           order.status === 'confirmed' ? 'text-blue-400' :
-                          order.status === 'delivered' ? 'text-green' :
+                          order.status === 'delivered' ? 'text-gold' :
                           'text-red-400'
                         }`}
                       >
-                        <option value="pending" className="text-black">Pending</option>
-                        <option value="confirmed" className="text-black">Confirmed</option>
-                        <option value="delivered" className="text-black">Delivered</option>
-                        <option value="rejected" className="text-black">Rejected</option>
+                        <option value="pending" className="text-navy">Pending</option>
+                        <option value="confirmed" className="text-navy">Confirmed</option>
+                        <option value="delivered" className="text-navy">Delivered</option>
+                        <option value="rejected" className="text-navy">Rejected</option>
                       </select>
                     </td>
                     <td className="p-4 text-right space-y-2">

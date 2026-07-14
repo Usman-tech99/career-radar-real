@@ -33,7 +33,7 @@ export function getScoreColor(score) {
   if (score <= 30) return '#EF4444'   // red
   if (score <= 60) return '#F97316'   // orange
   if (score <= 80) return '#3B82F6'   // blue
-  return '#10B981'                     // green
+  return '#F5A623'                     // gold
 }
 
 export function getScoreLabel(score) {
@@ -45,7 +45,7 @@ export function getScoreLabel(score) {
 
 export function getJobTypeBadgeClass(type) {
   const map = {
-    'Full-time': 'badge-green',
+    'Full-time': 'badge-gold',
     'Part-time': 'badge-blue',
     'Internship': 'badge-purple',
     'Freelance': 'badge-gold',

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
@@ -38,7 +38,7 @@ export default function Register() {
       if (data.session) {
         navigate('/onboarding')
       } else {
-        toast('Please check your email for a verification link to complete registration.', { icon: '📧' })
+        toast('Please check your email for a verification link to complete registration.', { icon: 'ðŸ“§' })
       }
     } catch (error) {
       toast.error(error.message)
@@ -48,7 +48,7 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-surface flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-accent/20 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-accent/20 blur-[120px] rounded-full pointer-events-none" />
@@ -57,7 +57,7 @@ export default function Register() {
         <div className="text-center mb-8">
           <Link to="/" className="inline-block mb-4">
             <h1 className="text-2xl font-bold font-sora tracking-tight text-white">
-              Career <span className="text-green">Radar</span>
+              Career <span className="text-gold">Radar</span>
             </h1>
           </Link>
           <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
@@ -106,7 +106,7 @@ export default function Register() {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 className="input-field pl-10" 
-                placeholder="••••••••" 
+                placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" 
               />
             </div>
           </div>
@@ -115,7 +115,7 @@ export default function Register() {
             <Turnstile
               siteKey={TURNSTILE_SITE_KEY}
               onSuccess={setCaptchaToken}
-              options={{ theme: 'dark' }}
+              options={{ theme: 'light' }}
             />
           </div>
 
@@ -144,7 +144,7 @@ export default function Register() {
 
         <p className="text-center text-sm text-muted mt-8">
           Already have an account?{' '}
-          <Link to="/login" className="text-green hover:underline font-medium">
+          <Link to="/login" className="text-gold hover:underline font-medium">
             Sign In
           </Link>
         </p>

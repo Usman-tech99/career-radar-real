@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+﻿import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
@@ -11,11 +11,11 @@ function TagInput({ label, required, tags, field, inputField, placeholder, icon:
   return (
     <div>
       <label className="label flex items-center gap-2">
-        <Icon size={16} className="text-green" /> {label}{required && <span className="text-red-400">*</span>}
+        <Icon size={16} className="text-gold" /> {label}{required && <span className="text-red-400">*</span>}
       </label>
       <div className="flex flex-wrap gap-2 mb-2">
         {tags.map(tag => (
-          <span key={tag} className="flex items-center gap-1 text-sm bg-green/10 text-green px-2 py-1 rounded border border-green/20">
+          <span key={tag} className="flex items-center gap-1 text-sm bg-gold/10 text-gold px-2 py-1 rounded border border-gold/20">
             {tag}
             <button type="button" onClick={() => removeTag(field, tag)} className="hover:text-red-400 transition-colors">
               <X size={14} />
@@ -171,14 +171,14 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-surface flex items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-accent/20 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-green/20 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-gold/20 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="w-full max-w-2xl relative z-10">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold font-sora tracking-tight text-white mb-2">
-            Welcome to <span className="text-green">Career Radar</span>
+            Welcome to <span className="text-gold">Career Radar</span>
           </h1>
           <p className="text-muted">Let's set up your profile to unlock personalized career insights</p>
         </div>
@@ -187,11 +187,11 @@ export default function Onboarding() {
           {[1, 2, 3].map(s => (
             <div key={s} className="flex items-center gap-2">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
-                s <= step ? 'bg-green text-black' : 'bg-white/10 text-muted'
+                s <= step ? 'bg-gold text-navy' : 'bg-white/10 text-muted'
               }`}>
                 {s}
               </div>
-              {s < 3 && <div className={`w-16 h-0.5 transition-all ${s < step ? 'bg-green' : 'bg-white/10'}`} />}
+              {s < 3 && <div className={`w-16 h-0.5 transition-all ${s < step ? 'bg-gold' : 'bg-white/10'}`} />}
             </div>
           ))}
         </div>
@@ -200,7 +200,7 @@ export default function Onboarding() {
           {step === 1 && (
             <div className="space-y-5">
               <h2 className="text-xl font-bold flex items-center gap-2">
-                <GraduationCap size={20} className="text-green" /> Academic Background
+                <GraduationCap size={20} className="text-gold" /> Academic Background
               </h2>
               <div>
                 <label className="label">Degree / Field of Study <span className="text-red-400">*</span></label>
@@ -247,7 +247,7 @@ export default function Onboarding() {
           {step === 2 && (
             <div className="space-y-6">
               <h2 className="text-xl font-bold flex items-center gap-2">
-                <Wrench size={20} className="text-green" /> Skills & Interests
+                <Wrench size={20} className="text-gold" /> Skills & Interests
               </h2>
               <TagInput
                 label="Skills"
@@ -283,7 +283,7 @@ export default function Onboarding() {
           {step === 3 && (
             <div className="space-y-5">
               <h2 className="text-xl font-bold flex items-center gap-2">
-                <Target size={20} className="text-green" /> Career Goals
+                <Target size={20} className="text-gold" /> Career Goals
               </h2>
               <div>
                 <label className="label">Career Goal <span className="text-red-400">*</span></label>
@@ -304,7 +304,7 @@ export default function Onboarding() {
                       onClick={() => updateField('experience', level)}
                       className={`p-3 rounded-xl border text-sm font-medium text-left transition-all ${
                         form.experience === level
-                          ? 'bg-green/10 border-green text-green'
+                          ? 'bg-gold/10 border-gold text-gold'
                           : 'bg-white/[0.02] border-border text-muted hover:border-white/20 hover:text-white'
                       }`}
                     >

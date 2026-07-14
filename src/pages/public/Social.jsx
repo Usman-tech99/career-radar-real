@@ -19,7 +19,7 @@ const platformIcons = {
 }
 
 const platformColors = {
-  whatsapp: 'bg-green-500/20 text-green border-green/30',
+  whatsapp: 'bg-green-500/20 text-gold border-gold/30',
   youtube: 'bg-red-500/20 text-red-400 border-red-500/30',
   instagram: 'bg-pink-500/20 text-pink-400 border-pink-500/30',
   telegram: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
@@ -55,7 +55,7 @@ export default function Social({ navless } = {}) {
   const otherSocials = socials.filter(s => !s.is_primary)
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex flex-col">
+    <div className="min-h-screen bg-surface flex flex-col">
       <Helmet>
         <title>Social — Career Radar</title>
         <meta name="description" content="Follow Career Radar on social media and join our WhatsApp, Telegram, Discord, and YouTube communities." />
@@ -108,7 +108,7 @@ export default function Social({ navless } = {}) {
                       <p className="text-muted text-lg mb-4">{primarySocial.description}</p>
                     )}
                     {primarySocial.members_count && (
-                      <div className="flex items-center gap-2 text-green">
+                      <div className="flex items-center gap-2 text-gold">
                         <Users size={18} />
                         <span className="font-medium">{primarySocial.members_count} members</span>
                       </div>

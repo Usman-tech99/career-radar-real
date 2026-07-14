@@ -6,7 +6,7 @@ export function CollaboratorRoute() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#07070C] flex items-center justify-center">
+      <div className="min-h-screen bg-[#070F1A] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-[#8B5CF6] border-t-transparent rounded-full animate-spin" />
       </div>
     )

@@ -37,7 +37,7 @@ export default function Collaborators({ navless } = {}) {
   const otherCollaborators = collaborators.filter(c => !c.is_featured)
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex flex-col">
+    <div className="min-h-screen bg-surface flex flex-col">
       <Helmet>
         <title>Collaborators — Career Radar</title>
         <meta name="description" content="Meet our collaborators and partners who help us build a better career ecosystem for students worldwide." />
@@ -95,7 +95,7 @@ export default function Collaborators({ navless } = {}) {
                       </a>
                     )}
                     {featuredCollaborator.whatsapp_url && (
-                      <a href={`https://wa.me/${featuredCollaborator.whatsapp_url.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="flex items-center justify-center w-12 h-12 rounded-full bg-white/[0.05] hover:bg-green hover:text-[#07070C] transition-colors">
+                      <a href={`https://wa.me/${featuredCollaborator.whatsapp_url.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="flex items-center justify-center w-12 h-12 rounded-full bg-white/[0.05] hover:bg-gold hover:text-[#07070C] transition-colors">
                         <MessageCircle size={20} />
                       </a>
                     )}
@@ -141,7 +141,7 @@ export default function Collaborators({ navless } = {}) {
                         </a>
                       )}
                       {collab.whatsapp_url && (
-                        <a href={`https://wa.me/${collab.whatsapp_url.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="flex items-center justify-center w-10 h-10 rounded-full bg-white/[0.05] hover:bg-green hover:text-[#07070C] transition-colors">
+                        <a href={`https://wa.me/${collab.whatsapp_url.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="flex items-center justify-center w-10 h-10 rounded-full bg-white/[0.05] hover:bg-gold hover:text-[#07070C] transition-colors">
                           <MessageCircle size={18} />
                         </a>
                       )}

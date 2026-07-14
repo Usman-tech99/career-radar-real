@@ -4,7 +4,7 @@ import { OrthographicCamera } from '@react-three/drei'
 import { useSpring, animated } from '@react-spring/three'
 import * as THREE from 'three'
 
-const COLORS = ['#10B981', '#3B82F6', '#F59E0B', '#8B5CF6', '#EC4899']
+const COLORS = ['#F5A623', '#3B82F6', '#F59E0B', '#8B5CF6', '#EC4899']
 const COUNT = 5
 
 function randomEdgePosition() {
@@ -75,15 +75,15 @@ function FusionIcon({ show, trigger }) {
     <animated.group scale={fadeSpring.scale} opacity={fadeSpring.opacity}>
       <animated.mesh scale={pulse.scale}>
         <sphereGeometry args={[0.32, 16, 16]} />
-        <meshStandardMaterial color="#10B981" emissive="#10B981" emissiveIntensity={1.2} />
+        <meshStandardMaterial color="#F5A623" emissive="#F5A623" emissiveIntensity={1.2} />
       </animated.mesh>
       <mesh>
         <ringGeometry args={[0.36, 0.42, 32]} />
-        <meshBasicMaterial color="#10B981" transparent opacity={0.5} side={THREE.DoubleSide} />
+        <meshBasicMaterial color="#F5A623" transparent opacity={0.5} side={THREE.DoubleSide} />
       </mesh>
       <mesh>
         <ringGeometry args={[0.46, 0.5, 32]} />
-        <meshBasicMaterial color="#10B981" transparent opacity={0.25} side={THREE.DoubleSide} />
+        <meshBasicMaterial color="#F5A623" transparent opacity={0.25} side={THREE.DoubleSide} />
       </mesh>
     </animated.group>
   )
@@ -102,7 +102,7 @@ function Scene({ trigger, onComplete }) {
   return (
     <>
       <ambientLight intensity={0.4} />
-      <pointLight position={[2, 2, 3]} intensity={1.5} color="#10B981" />
+      <pointLight position={[2, 2, 3]} intensity={1.5} color="#F5A623" />
       <pointLight position={[-2, -1, 2]} intensity={0.6} color="#8B5CF6" />
 
       {/* Orbiting glow dots */}
@@ -134,7 +134,7 @@ function OrbitDot({ index, total }) {
   return (
     <mesh ref={ref}>
       <circleGeometry args={[0.015, 8]} />
-      <meshBasicMaterial color="#10B981" transparent opacity={0.6} />
+      <meshBasicMaterial color="#F5A623" transparent opacity={0.6} />
     </mesh>
   )
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { Save, Eye, X, Upload } from 'lucide-react'
@@ -128,10 +128,10 @@ export default function ManageAnnouncement() {
             {c.imageUrl ? (
               <div className="relative group">
                 <img src={c.imageUrl} alt="" className="w-full h-24 object-contain rounded-xl border border-border bg-black/10" />
-                <button onClick={() => updateContent('imageUrl', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 opacity-0 group-hover:opacity-100"><X size={14} /></button>
+                <button onClick={() => updateContent('imageUrl', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-[#ffffff] rounded-full p-1 opacity-0 group-hover:opacity-100"><X size={14} /></button>
               </div>
             ) : (
-              <div className="flex items-center justify-center w-full h-24 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-green/50" onClick={() => { setUploadTarget('logo'); document.getElementById('ann-upload').click() }}>
+              <div className="flex items-center justify-center w-full h-24 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-gold/50" onClick={() => { setUploadTarget('logo'); document.getElementById('ann-upload').click() }}>
                 <span className="text-xs text-muted">{uploading && uploadTarget === 'logo' ? 'Uploading...' : 'Upload logo'}</span>
               </div>
             )}
@@ -141,10 +141,10 @@ export default function ManageAnnouncement() {
             {c.bgImageUrl ? (
               <div className="relative group">
                 <img src={c.bgImageUrl} alt="" className="w-full h-24 object-cover rounded-xl border border-border" />
-                <button onClick={() => updateContent('bgImageUrl', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 opacity-0 group-hover:opacity-100"><X size={14} /></button>
+                <button onClick={() => updateContent('bgImageUrl', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-[#ffffff] rounded-full p-1 opacity-0 group-hover:opacity-100"><X size={14} /></button>
               </div>
             ) : (
-              <div className="flex items-center justify-center w-full h-24 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-green/50" onClick={() => { setUploadTarget('bg'); document.getElementById('ann-upload').click() }}>
+              <div className="flex items-center justify-center w-full h-24 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-gold/50" onClick={() => { setUploadTarget('bg'); document.getElementById('ann-upload').click() }}>
                 <span className="text-xs text-muted">{uploading && uploadTarget === 'bg' ? 'Uploading...' : 'Upload background'}</span>
               </div>
             )}
@@ -210,15 +210,15 @@ export default function ManageAnnouncement() {
 
         <div className="flex flex-wrap gap-6 p-4 border border-border rounded-xl">
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={settings.is_active} onChange={e => update('is_active', e.target.checked)} className="w-4 h-4 accent-green rounded" />
-            <span className="text-sm font-bold text-green">Active</span>
+            <input type="checkbox" checked={settings.is_active} onChange={e => update('is_active', e.target.checked)} className="w-4 h-4 accent-gold rounded" />
+            <span className="text-sm font-bold text-gold">Active</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={settings.show_on_entry} onChange={e => update('show_on_entry', e.target.checked)} className="w-4 h-4 accent-green rounded" />
+            <input type="checkbox" checked={settings.show_on_entry} onChange={e => update('show_on_entry', e.target.checked)} className="w-4 h-4 accent-gold rounded" />
             <span className="text-sm">Show on Entry</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={settings.show_on_exit} onChange={e => update('show_on_exit', e.target.checked)} className="w-4 h-4 accent-green rounded" />
+            <input type="checkbox" checked={settings.show_on_exit} onChange={e => update('show_on_exit', e.target.checked)} className="w-4 h-4 accent-gold rounded" />
             <span className="text-sm">Show on Exit Intent</span>
           </label>
         </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import SafeImage from '../../components/ui/SafeImage'
@@ -73,7 +73,7 @@ export default function MyProfile() {
 
   if (loading) return (
     <div className="flex items-center justify-center min-h-[60vh]">
-      <div className="w-8 h-8 border-2 border-green border-t-transparent rounded-full animate-spin"></div>
+      <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin"></div>
     </div>
   )
 
@@ -99,7 +99,7 @@ export default function MyProfile() {
               </label>
             </div>
             <h2 className="text-xl font-bold">{data.full_name || 'Anonymous'}</h2>
-            <p className="text-sm text-green mt-1 font-mono uppercase tracking-widest">{role}</p>
+            <p className="text-sm text-gold mt-1 font-mono uppercase tracking-widest">{role}</p>
             {uploading && <p className="text-xs text-blue-accent mt-4">Uploading image...</p>}
           </div>
 
@@ -162,7 +162,7 @@ export default function MyProfile() {
                   type="checkbox" 
                   checked={data.is_visible_on_team_page}
                   onChange={e => setData({...data, is_visible_on_team_page: e.target.checked})} 
-                  className="w-5 h-5 accent-green rounded" 
+                  className="w-5 h-5 accent-gold rounded" 
                 />
                 <div>
                   <span className="font-bold block">Visible on Team Page</span>

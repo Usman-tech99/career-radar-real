@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import SafeImage from '../../components/ui/SafeImage'
@@ -18,7 +18,7 @@ const platformIcons = {
 const platformColors = {
   linkedin: 'text-blue-500', github: 'text-gray-300', youtube: 'text-red-500',
   twitter: 'text-sky-400', instagram: 'text-pink-400', facebook: 'text-blue-500',
-  discord: 'text-indigo-400', website: 'text-green', other: 'text-muted',
+  discord: 'text-indigo-400', website: 'text-gold', other: 'text-muted',
 }
 
 const teamMemberSchema = z.object({
@@ -224,7 +224,7 @@ export default function ManageTeamMembers() {
     <div>
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Users className="text-green" /> Manage Team Members
+            <Users className="text-gold" /> Manage Team Members
           </h1>
           <button onClick={() => openModal()} className="btn-primary flex items-center gap-2">
             <Plus size={20} /> Add Member
@@ -243,7 +243,7 @@ export default function ManageTeamMembers() {
                   <SafeImage src={member.image_url} alt={member.name} className="w-16 h-16 rounded-full object-cover border-2 border-white/[0.05]" />
                   <div>
                     <h3 className="font-bold">{member.name}</h3>
-                    <p className="text-sm text-green">{member.role}</p>
+                    <p className="text-sm text-gold">{member.role}</p>
                   </div>
                 </div>
                 {member.skills?.length > 0 && (
@@ -269,7 +269,7 @@ export default function ManageTeamMembers() {
                   </div>
                 )}
                 <div className="flex justify-between items-center border-t border-border mt-auto pt-4">
-                  <span className={`text-xs ${member.is_active ? 'text-green' : 'text-red-400'}`}>
+                  <span className={`text-xs ${member.is_active ? 'text-gold' : 'text-red-400'}`}>
                     {member.is_active ? 'Active' : 'Hidden'}
                   </span>
                   <div className="flex gap-2">
@@ -374,7 +374,7 @@ export default function ManageTeamMembers() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="label mb-0">Social Links</label>
-                    <button type="button" onClick={addSocialRow} className="text-xs text-green hover:underline">+ Add platform</button>
+                    <button type="button" onClick={addSocialRow} className="text-xs text-gold hover:underline">+ Add platform</button>
                   </div>
                   {socialLinks.map((link, i) => (
                     <div key={i} className="flex flex-col sm:flex-row gap-2 mb-2">
@@ -403,7 +403,7 @@ export default function ManageTeamMembers() {
 
                 <div className="flex gap-6 mt-4 p-4 border border-border rounded-xl">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" {...register('is_active')} className="w-4 h-4 accent-green rounded" />
+                    <input type="checkbox" {...register('is_active')} className="w-4 h-4 accent-gold rounded" />
                     <span className="text-sm">Active on team page</span>
                   </label>
                 </div>
