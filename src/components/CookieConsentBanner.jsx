@@ -32,7 +32,7 @@ export default function CookieConsentBanner() {
           <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">
             <p className="text-sm text-slate-100 leading-relaxed flex-1">
               This site uses cookies to improve your experience and analyze site traffic.{' '}
-              <Link to="/about" className="text-gold hover:underline whitespace-nowrap">
+              <Link to="/privacy-policy" className="text-gold hover:underline whitespace-nowrap">
                 Learn more
               </Link>
             </p>

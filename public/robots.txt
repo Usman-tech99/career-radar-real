@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /onboarding
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://www.career-radar.space/sitemap.xml

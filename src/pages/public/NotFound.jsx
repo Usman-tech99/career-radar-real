@@ -1,10 +1,16 @@
 ﻿import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { Helmet } from 'react-helmet-async'
 import { Radar, Home, ArrowLeft } from 'lucide-react'
 
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-surface flex items-center justify-center px-4">
+      <Helmet>
+        <title>404 — Page Not Found | Career Radar</title>
+        <meta name="description" content="The page you're looking for doesn't exist or has moved. Return to Career Radar homepage." />
+        <meta name="robots" content="noindex" />
+      </Helmet>
       <div className="text-center max-w-md">
         {/* scanning graphic */}
         <div className="relative mx-auto w-40 h-40 mb-8">

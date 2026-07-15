@@ -13,6 +13,7 @@ const ROUTES = [
   '/', '/about', '/team', '/jobs', '/scholarships',
   '/education', '/products', '/community', '/social',
   '/collaborators', '/donate', '/weekly-content', '/structure',
+  '/volunteer', '/privacy-policy',
 ]
 
 const MIME_TYPES = {
