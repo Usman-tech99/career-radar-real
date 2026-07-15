@@ -101,7 +101,7 @@ export default function Home() {
       <motion.div
         animate={{ opacity: [0.6, 1, 0.6], scale: [1, 1.05, 1] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[500px] bg-gradient-to-b from-gold/20 to-transparent blur-[150px] pointer-events-none"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[500px] bg-[radial-gradient(ellipse_at_center,rgba(245,166,35,0.15)_0%,transparent_70%)] blur-[150px] pointer-events-none"
       />
       <motion.div
         animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 1.08, 1] }}
@@ -122,8 +122,8 @@ export default function Home() {
           style={{
             backgroundImage: 'linear-gradient(to right, var(--grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px)',
             backgroundSize: '40px 40px',
-            maskImage: 'radial-gradient(ellipse 70% 60% at center, transparent 20%, black 80%)',
-            WebkitMaskImage: 'radial-gradient(ellipse 70% 60% at center, transparent 20%, black 80%)',
+            maskImage: 'radial-gradient(ellipse 70% 60% at center, black 20%, transparent 80%)',
+            WebkitMaskImage: 'radial-gradient(ellipse 70% 60% at center, black 20%, transparent 80%)',
           }}
         />
         <div className="max-w-5xl mx-auto">
