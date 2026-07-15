@@ -173,6 +173,17 @@
 .glow-gold { box-shadow: 0 0 30px rgba(245, 166, 35, 0.08) !important; }
 .glow-gold-strong { box-shadow: 0 0 50px rgba(245, 166, 35, 0.15) !important; }
 
+/* ── Modal/dialog text: light on dark glass-card overlay ── */
+.fixed.inset-0.z-50 > .glass-card,
+.fixed.inset-0.z-50 > .glass-card .text-white,
+.fixed.inset-0.z-50 > .glass-card .text-white\/80,
+.fixed.inset-0.z-50 > .glass-card .text-white\/60 {
+  color: #e2e8f0 !important;
+}
+.fixed.inset-0.z-50 > .glass-card .text-muted {
+  color: #94a3b8 !important;
+}
+
 /* Animations */
 @media print {
   @page { margin: 0; size: A4; }
