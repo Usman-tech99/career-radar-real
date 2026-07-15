@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
 import SafeImage from '../../components/ui/SafeImage'
-import { Upload, Save } from 'lucide-react'
+import { Upload, Save, AlertTriangle } from 'lucide-react'
 
 export default function UserProfile() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [showDelete, setShowDelete] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState('')
+  const [deleting, setDeleting] = useState(false)
   
   const [profile, setProfile] = useState({
     full_name: '',
@@ -115,6 +119,24 @@ export default function UserProfile() {
     }
   }
 
+  async function handleDeleteAccount() {
+    setDeleting(true)
+    try {
+      const { error: pubError } = await supabase.from('public_users').delete().eq('id', user.id)
+      if (pubError) throw pubError
+
+      const { error: profError } = await supabase.from('profiles').delete().eq('id', user.id)
+      if (profError) throw profError
+
+      await supabase.auth.signOut()
+      toast.success('Account deleted successfully.')
+      navigate('/')
+    } catch (err) {
+      toast.error(err.message)
+      setDeleting(false)
+    }
+  }
+
   return (
     <div className="p-8">
         {loading ? (
@@ -196,12 +218,42 @@ export default function UserProfile() {
             <div className="border-t border-border pt-6 mt-8">
               <h2 className="text-lg font-semibold text-white mb-1">Delete Account</h2>
               <p className="text-sm text-muted mb-4">Once deleted, your account and all associated data cannot be recovered.</p>
-              <button 
-                onClick={() => toast.error("Please contact support to delete your account.")}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-red-400 border border-red-500/30 hover:bg-red-500/10 transition-colors"
-              >
-                Delete Account
-              </button>
+              {!showDelete ? (
+                <button
+                  onClick={() => setShowDelete(true)}
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-red-400 border border-red-500/30 hover:bg-red-500/10 transition-colors"
+                >
+                  Delete Account
+                </button>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-sm text-red-400 flex items-center gap-2">
+                    <AlertTriangle size={16} /> Type <strong>delete</strong> below to confirm permanent deletion.
+                  </p>
+                  <input
+                    type="text"
+                    value={deleteConfirm}
+                    onChange={e => setDeleteConfirm(e.target.value)}
+                    placeholder='Type "delete" to confirm'
+                    className="w-full bg-white/5 border border-red-500/30 rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-muted/50 focus:outline-none focus:border-red-500/60 transition-colors"
+                  />
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handleDeleteAccount}
+                      disabled={deleteConfirm !== 'delete' || deleting}
+                      className="px-4 py-2 rounded-lg text-sm font-medium bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      {deleting ? 'Deleting...' : 'Permanently Delete'}
+                    </button>
+                    <button
+                      onClick={() => { setShowDelete(false); setDeleteConfirm('') }}
+                      className="px-4 py-2 rounded-lg text-sm font-medium text-muted border border-border hover:bg-white/5 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
