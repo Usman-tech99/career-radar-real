@@ -30,6 +30,7 @@
   body {
     margin: 0;
     width: 100%;
+    overflow-x: hidden;
     background-color: var(--color-bg-dark);
     color: var(--color-white);
     font-family: "Inter", sans-serif;
