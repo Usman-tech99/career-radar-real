@@ -86,7 +86,7 @@ export default function Home() {
   ] : []
 
   return (
-    <div className="min-h-screen bg-surface flex flex-col relative w-full max-w-[100vw] overflow-x-hidden">
+    <div className="min-h-screen bg-surface flex flex-col relative w-full max-w-[100vw]">
       <Helmet>
         <title>Career Radar &mdash; AI-Powered Career GPS for Students & Professionals</title>
         <meta name="description" content="Discover verified scholarships, internships, jobs, and AI-powered career guidance. Join our global community and accelerate your career journey with Career Radar." />
