@@ -115,7 +115,7 @@ export default function Home() {
       />
 
       {/* Hero */}
-      <main className="flex-1 flex flex-col items-center justify-center pt-28 pb-20 px-4 relative z-10">
+      <main className="flex-1 w-full flex flex-col items-center justify-center pt-28 pb-20 px-4 relative z-10">
         {/* Grid Background (inside main so it doesn't reach footer) */}
         <div
           className="pointer-events-none absolute inset-0 opacity-20"
