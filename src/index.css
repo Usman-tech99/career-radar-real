@@ -23,14 +23,10 @@
 
   html {
     scroll-behavior: smooth;
-    overflow-x: hidden;
-    width: 100%;
   }
 
   body {
     margin: 0;
-    width: 100%;
-    overflow-x: hidden;
     background-color: var(--color-bg-dark);
     color: var(--color-white);
     font-family: "Inter", sans-serif;
@@ -172,13 +168,13 @@
 .glow-gold-strong { box-shadow: 0 0 50px rgba(245, 166, 35, 0.15) !important; }
 
 /* ── Modal/dialog text: light on dark glass-card overlay ── */
-.fixed.inset-0.z-50 > .glass-card,
-.fixed.inset-0.z-50 > .glass-card .text-white,
-.fixed.inset-0.z-50 > .glass-card .text-white\/80,
-.fixed.inset-0.z-50 > .glass-card .text-white\/60 {
+.fixed.inset-0.z-50 .glass-card,
+.fixed.inset-0.z-50 .glass-card .text-white,
+.fixed.inset-0.z-50 .glass-card .text-white\/80,
+.fixed.inset-0.z-50 .glass-card .text-white\/60 {
   color: #e2e8f0 !important;
 }
-.fixed.inset-0.z-50 > .glass-card .text-muted {
+.fixed.inset-0.z-50 .glass-card .text-muted {
   color: #94a3b8 !important;
 }
 
