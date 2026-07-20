@@ -183,6 +183,26 @@ export default function Home() {
           </BlurFade>
         )}
 
+        {/* Site Search */}
+        <BlurFade delay={0.3} offset={12} blur="3px" className="w-full max-w-3xl mx-auto mt-16 md:mt-28">
+          <div className="text-center">
+            <h2 className="text-2xl md:text-3xl font-bold font-sora text-white mb-2">Search Career Radar</h2>
+            <p className="text-muted text-sm md:text-base mb-6">Find jobs, scholarships, resources, and more.</p>
+            <form
+              onSubmit={e => { e.preventDefault(); const q = e.target.q.value.trim(); if (q) window.open(`https://www.google.com/search?q=site:career-radar.space+${encodeURIComponent(q)}`, '_blank') }}
+              className="relative max-w-xl mx-auto"
+            >
+              <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+              <input
+                name="q"
+                type="text"
+                placeholder="Search jobs, scholarships, resources..."
+                className="w-full bg-white border border-border rounded-xl pl-12 pr-4 py-4 text-navy focus:outline-none focus:border-gold text-base"
+              />
+            </form>
+          </div>
+        </BlurFade>
+
         {/* Why Career Radar */}
         <BlurFade delay={0.3} offset={15} blur="5px" className="w-full max-w-4xl mx-auto mt-16 md:mt-28">
           <div className="text-center">
