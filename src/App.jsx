@@ -34,6 +34,7 @@ const Community = lazy(() => import('./pages/public/Community'))
 const Collaborators = lazy(() => import('./pages/public/Collaborators'))
 const Volunteer = lazy(() => import('./pages/public/Volunteer'))
 const PrivacyPolicy = lazy(() => import('./pages/public/PrivacyPolicy'))
+const Search = lazy(() => import('./pages/public/Search'))
 const NotFound = lazy(() => import('./pages/public/NotFound'))
 
 const Login = lazy(() => import('./pages/auth/Login'))
@@ -136,6 +137,7 @@ export default function App() {
             <Route path="/volunteer" element={<Volunteer />} />
             <Route path="/donate" element={<Donate />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/search" element={<Search />} />
 
             {/* AUTH */}
             <Route path="/login" element={<Login />} />

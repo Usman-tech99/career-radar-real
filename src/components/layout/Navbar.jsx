@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import { Menu, X, User, ChevronDown } from 'lucide-react'
+import { Menu, X, User, ChevronDown, Search as SearchIcon } from 'lucide-react'
 import logo from '../../assets/logo.jpeg'
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -108,6 +108,7 @@ export default function Navbar() {
     },
     { name: 'Support Us', path: user ? '/dashboard/donate' : '/donate' },
     { name: 'Radar AI', path: '/' },
+    { name: 'Search', path: '/search', icon: SearchIcon },
   ]
 
   let dashPath = '/dashboard'
