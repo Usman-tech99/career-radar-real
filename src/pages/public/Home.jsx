@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
@@ -70,6 +70,7 @@ function BentoFeatureCard({ icon: Icon, title, desc, color, beamColor, index, wi
 }
 
 export default function Home() {
+  const navigate = useNavigate()
   const [siteStats, setSiteStats] = useState(null)
 
   useEffect(() => {
@@ -189,7 +190,7 @@ export default function Home() {
             <h2 className="text-2xl md:text-3xl font-bold font-sora text-white mb-2">Search Career Radar</h2>
             <p className="text-muted text-sm md:text-base mb-6">Find jobs, scholarships, resources, and more.</p>
             <form
-              onSubmit={e => { e.preventDefault(); const q = e.target.q.value.trim(); if (q) window.open(`https://www.google.com/search?q=site:career-radar.space+${encodeURIComponent(q)}`, '_blank') }}
+              onSubmit={e => { e.preventDefault(); const q = e.target.q.value.trim(); if (q) navigate(`/search?q=${encodeURIComponent(q)}`) }}
               className="relative max-w-xl mx-auto"
             >
               <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
