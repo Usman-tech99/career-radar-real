@@ -39,7 +39,7 @@ export default function BrandingPanel({ className = '' }) {
         {/* Text */}
         <div className="relative">
           <h1 className="text-3xl md:text-4xl font-sora font-bold tracking-tight">
-            <span className="text-white drop-shadow-[0_0_4px_rgba(255,255,255,0.3)]">Career</span>{' '}
+            <span className="text-slate-100 drop-shadow-[0_0_4px_rgba(255,255,255,0.3)]">Career</span>{' '}
             <span className="text-gold drop-shadow-[0_0_20px_rgba(245,166,35,0.8)_0_0_40px_rgba(245,166,35,0.4)]">Radar</span>
           </h1>
           <p className="text-xs text-gold/70 font-medium tracking-[0.2em] uppercase mt-1 drop-shadow-[0_0_8px_rgba(245,166,35,0.3)]">

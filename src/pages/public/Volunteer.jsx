@@ -15,7 +15,7 @@ export default function Volunteer() {
         <meta name="keywords" content="career radar volunteer, join us, community service, career development" />
       </Helmet>
       <Navbar />
-      <main className="flex-1 pt-24">
+      <main className="flex-1 w-full pt-24">
         <VolunteerForm />
       </main>
       <Footer />

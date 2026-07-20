@@ -70,7 +70,7 @@ export default function PopupModal() {
         <button onClick={dismiss} className="absolute top-3 right-3 text-muted hover:text-[#ffffff] z-20 bg-black/50 rounded-full p-2 transition-colors hover:bg-black/70 active:scale-95" aria-label="Close popup"><X size={20} /></button>
         {popup.image_url && <img src={popup._imgUrl || popup.image_url} alt="" className="w-full max-h-80 object-contain bg-black/30" />}
         <div className="p-6">
-          <p className="text-white text-lg leading-relaxed">{popup.message}</p>
+          <p className="text-slate-100 text-lg leading-relaxed">{popup.message}</p>
           {popup.link_url && (
             <a href={popup.link_url} target="_blank" rel="noreferrer" className="btn-primary inline-flex items-center gap-2 mt-4">
               Learn More

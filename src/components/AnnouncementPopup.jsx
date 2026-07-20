@@ -126,7 +126,7 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
                   <h3 className="text-lg font-extrabold leading-tight text-gray-900">{c.cardHeadline}</h3>
                 )}
                 {c.badgeText && (
-                  <span className="self-start bg-gold text-white text-xs font-semibold px-3 py-1 rounded-full">{c.badgeText}</span>
+                  <span className="self-start bg-gold text-[#07070C] text-xs font-semibold px-3 py-1 rounded-full">{c.badgeText}</span>
                 )}
                 {c.cardParagraph && (
                   <p className="text-gray-500 text-xs leading-relaxed">{c.cardParagraph}</p>
@@ -147,7 +147,7 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
                 )}
               </div>
               {c.linkUrl && (
-                <a href={c.linkUrl} target="_blank" rel="noreferrer" className="relative z-[1] self-start flex items-center gap-1.5 bg-gold hover:bg-gold-hover text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors">
+                <a href={c.linkUrl} target="_blank" rel="noreferrer" className="relative z-[1] self-start flex items-center gap-1.5 bg-gold hover:bg-gold-hover text-[#07070C] text-xs font-semibold px-4 py-2 rounded-full transition-colors">
                   <ExternalLink size={14} />
                   {c.buttonText || 'Learn More'}
                 </a>
@@ -186,7 +186,7 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
           <div className="flex items-center gap-2">
             <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Close</button>
             {c.linkUrl && (
-              <a href={c.linkUrl} target="_blank" rel="noreferrer" className="px-4 py-2 text-sm font-medium text-white bg-gold rounded-lg hover:bg-gold-hover transition-colors">{c.buttonText || 'Learn More'}</a>
+              <a href={c.linkUrl} target="_blank" rel="noreferrer" className="px-4 py-2 text-sm font-medium text-[#07070C] bg-gold rounded-lg hover:bg-gold-hover transition-colors">{c.buttonText || 'Learn More'}</a>
             )}
           </div>
         </div>

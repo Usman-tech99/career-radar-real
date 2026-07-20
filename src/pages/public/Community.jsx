@@ -50,7 +50,7 @@ export default function Community({ navless } = {}) {
       </Helmet>
       {!navless && <Navbar />}
 
-      <main className="flex-1">
+      <main className="flex-1 w-full">
         {/* Hero */}
         <section className="pt-36 pb-20 px-4 text-center relative overflow-hidden">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto relative z-10">

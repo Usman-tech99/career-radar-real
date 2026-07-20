@@ -66,11 +66,11 @@ export default function ReviewsMarquee({ className = '' }) {
               <Quote size={18} className="text-gold/20 mb-2" />
               <p className="text-sm text-muted leading-relaxed flex-1 mb-4 line-clamp-3">{r.text}</p>
               <div className="flex items-center gap-3 pt-3 border-t border-white/[0.05] mt-auto">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gold/30 to-blue-accent/30 flex items-center justify-center text-xs font-bold text-white shrink-0">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gold/30 to-blue-accent/30 flex items-center justify-center text-xs font-bold text-slate-100 shrink-0">
                   {r.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-white truncate">{r.name}</p>
+                  <p className="text-sm font-semibold text-slate-100 truncate">{r.name}</p>
                   <p className="text-[11px] text-muted truncate">{r.role}</p>
                 </div>
               </div>

@@ -174,11 +174,25 @@
 .fixed.inset-0.z-50 .glass-card,
 .fixed.inset-0.z-50 .glass-card .text-white,
 .fixed.inset-0.z-50 .glass-card .text-white\/80,
-.fixed.inset-0.z-50 .glass-card .text-white\/60 {
+.fixed.inset-0.z-50 .glass-card .text-white\/60,
+.fixed.inset-0.z-\[9999\] .glass-card,
+.fixed.inset-0.z-\[9999\] .glass-card .text-white,
+.fixed.inset-0.z-\[9999\] .glass-card .text-white\/80,
+.fixed.inset-0.z-\[9999\] .glass-card .text-white\/60 {
   color: #e2e8f0 !important;
 }
-.fixed.inset-0.z-50 .glass-card .text-muted {
+.fixed.inset-0.z-50 .glass-card .text-muted,
+.fixed.inset-0.z-\[9999\] .glass-card .text-muted {
   color: #94a3b8 !important;
+}
+
+/* ── Hide scrollbar utility ── */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 /* Animations */
