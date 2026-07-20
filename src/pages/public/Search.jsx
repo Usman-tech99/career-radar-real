@@ -118,15 +118,20 @@ export default function Search() {
       <main className="flex-1 w-full pt-32 pb-20 px-4 max-w-4xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold font-sora text-white mb-6">Search Career Radar</h1>
 
-        <form onSubmit={handleSubmit} className="relative mb-8">
-          <SearchIcon size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
-          <input
-            type="text"
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            placeholder="Search jobs, scholarships, resources..."
-            className="w-full bg-white border border-border rounded-xl pl-12 pr-4 py-4 text-navy focus:outline-none focus:border-gold text-base"
-          />
+        <form onSubmit={handleSubmit} className="flex gap-2 mb-8">
+          <div className="relative flex-1">
+            <SearchIcon size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+            <input
+              type="text"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="Search jobs, scholarships, resources..."
+              className="w-full bg-white border border-border rounded-xl pl-12 pr-4 py-4 text-navy focus:outline-none focus:border-gold text-base"
+            />
+          </div>
+          <button type="submit" className="btn-primary px-6 py-4 rounded-xl text-sm font-semibold shrink-0">
+            Search
+          </button>
         </form>
 
         {loading && <p className="text-muted text-center py-12">Searching...</p>}

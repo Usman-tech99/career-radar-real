@@ -191,15 +191,20 @@ export default function Home() {
             <p className="text-muted text-sm md:text-base mb-6">Find jobs, scholarships, resources, and more.</p>
             <form
               onSubmit={e => { e.preventDefault(); const q = e.target.q.value.trim(); if (q) navigate(`/search?q=${encodeURIComponent(q)}`) }}
-              className="relative max-w-xl mx-auto"
+              className="flex gap-2 max-w-xl mx-auto"
             >
-              <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
-              <input
-                name="q"
-                type="text"
-                placeholder="Search jobs, scholarships, resources..."
-                className="w-full bg-white border border-border rounded-xl pl-12 pr-4 py-4 text-navy focus:outline-none focus:border-gold text-base"
-              />
+              <div className="relative flex-1">
+                <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+                <input
+                  name="q"
+                  type="text"
+                  placeholder="Search jobs, scholarships, resources..."
+                  className="w-full bg-white border border-border rounded-xl pl-12 pr-4 py-4 text-navy focus:outline-none focus:border-gold text-base"
+                />
+              </div>
+              <button type="submit" className="btn-primary px-6 py-4 rounded-xl text-sm font-semibold shrink-0">
+                Search
+              </button>
             </form>
           </div>
         </BlurFade>
