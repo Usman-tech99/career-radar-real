@@ -153,10 +153,12 @@ export default function Home() {
               )}
             </motion.div>
 
-            {/* Right Column - Image */}
+            {/* Right Column - Video */}
             <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative">
               <div className="rounded-2xl overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80" alt="Coworking community" className="w-full h-auto object-cover rounded-2xl" />
+                <video autoPlay muted loop playsInline className="w-full h-auto object-cover rounded-2xl">
+                  <source src="/hero-video.mp4" type="video/mp4" />
+                </video>
               </div>
               {/* Floating Card Overlay */}
               <div className="absolute -bottom-4 left-4 bg-white rounded-xl p-4 shadow-lg">
