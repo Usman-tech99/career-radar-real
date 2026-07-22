@@ -131,20 +131,26 @@ export default function Home() {
               </div>
 
               {/* Stats Row */}
-              <div className="grid grid-cols-3 gap-8">
-                <div>
-                  <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats ? (siteStats.community_members?.toLocaleString() ?? '25K') : '25K'}+</div>
-                  <div className="text-sm text-slate-400">Community members</div>
+              {siteStats && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <div>
+                    <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats.community_members?.toLocaleString()}+</div>
+                    <div className="text-sm text-slate-400">Community Members</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats.countries?.toLocaleString()}+</div>
+                    <div className="text-sm text-slate-400">Countries</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats.whatsapp_groups?.toLocaleString()}</div>
+                    <div className="text-sm text-slate-400">WhatsApp Groups</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats.main_channel_followers?.toLocaleString()}+</div>
+                    <div className="text-sm text-slate-400">Main Career Channel Followers</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats ? (siteStats.jobs_posted?.toLocaleString() ?? '1.2K') : '1.2K'}+</div>
-                  <div className="text-sm text-slate-400">Opportunities shared</div>
-                </div>
-                <div>
-                  <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats ? (siteStats.countries?.toLocaleString() ?? '80') : '80'}+</div>
-                  <div className="text-sm text-slate-400">Partner organisations</div>
-                </div>
-              </div>
+              )}
             </motion.div>
 
             {/* Right Column - Image */}
@@ -154,8 +160,8 @@ export default function Home() {
               </div>
               {/* Floating Card Overlay */}
               <div className="absolute -bottom-4 left-4 bg-white rounded-xl p-4 shadow-lg">
-                <div className="text-xl font-bold text-navy">{siteStats ? (siteStats.jobs_posted?.toLocaleString() ?? '1.2K') : '1.2K'}+</div>
-                <div className="text-xs text-slate-500">opportunities shared</div>
+                <div className="text-xl font-bold text-navy">{siteStats ? siteStats.community_members?.toLocaleString() : ''}+</div>
+                <div className="text-xs text-slate-500">community members</div>
               </div>
             </motion.div>
           </div>
