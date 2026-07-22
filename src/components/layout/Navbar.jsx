@@ -21,7 +21,7 @@ function NavDropdown({ label, items }) {
     <div ref={ref} className="relative" onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 text-sm font-medium transition-colors hover:text-gold text-slate-100 whitespace-nowrap"
+        className="flex items-center gap-1 text-sm font-medium transition-colors hover:text-navy-dark text-navy whitespace-nowrap"
       >
         {label} <ChevronDown size={14} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
@@ -117,12 +117,12 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-40 bg-navy border-b border-navy/80">
+    <nav className="fixed top-0 left-0 right-0 z-40 bg-gold border-b border-gold/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <div className="w-14 h-14 rounded-full border-2 border-gold overflow-hidden bg-white flex items-center justify-center">
+          <div className="w-14 h-14 rounded-full border-2 border-navy overflow-hidden bg-white flex items-center justify-center">
             <img src={logo} alt="Career Radar" className="w-full h-full object-cover" />
           </div>
         </Link>
@@ -137,8 +137,8 @@ export default function Navbar() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`px-3 py-2 text-sm font-medium transition-colors hover:text-gold whitespace-nowrap ${
-                  isActive(item.path) ? 'text-gold' : 'text-slate-100'
+                className={`px-3 py-2 text-sm font-medium transition-colors hover:text-navy-dark whitespace-nowrap ${
+                  isActive(item.path) ? 'text-navy-dark' : 'text-navy'
                 }`}
               >
                 {item.name}
@@ -150,13 +150,13 @@ export default function Navbar() {
         {/* Actions */}
         <div className="hidden lg:flex items-center gap-3">
           {user ? (
-            <Link to={dashPath} className="btn-primary py-2 px-4 text-sm flex items-center gap-2">
+            <Link to={dashPath} className="bg-navy text-slate-100 font-semibold py-2 px-4 rounded-xl text-sm flex items-center gap-2 hover:bg-navy-light transition-colors">
               <User size={16} /> Dashboard
             </Link>
           ) : (
             <>
-              <Link to="/login" className="text-sm font-medium hover:text-gold transition-colors px-2 text-slate-100">Login</Link>
-              <Link to="/register" className="btn-primary py-2 px-4 text-sm">Join Free</Link>
+              <Link to="/login" className="text-sm font-medium hover:text-navy-dark transition-colors px-2 text-navy">Login</Link>
+              <Link to="/register" className="bg-navy text-slate-100 font-semibold py-2 px-4 rounded-xl text-sm hover:bg-navy-light transition-colors">Join Free</Link>
             </>
           )}
         </div>
@@ -164,16 +164,16 @@ export default function Navbar() {
         {/* Mobile Actions */}
         <div className="lg:hidden flex items-center gap-1.5 shrink-0">
           {user ? (
-            <Link to={dashPath} className="btn-primary py-1.5 px-2 text-xs flex items-center gap-1">
+            <Link to={dashPath} className="bg-navy text-slate-100 font-semibold py-1.5 px-2 rounded-xl text-xs flex items-center gap-1">
               <User size={13} /> Dash
             </Link>
           ) : (
             <>
-              <Link to="/login" className="text-xs font-medium hover:text-gold transition-colors px-1.5 text-slate-100">Login</Link>
-              <Link to="/register" className="btn-primary py-1.5 px-2 text-xs whitespace-nowrap">Join Free</Link>
+              <Link to="/login" className="text-xs font-medium hover:text-navy-dark transition-colors px-1.5 text-navy">Login</Link>
+              <Link to="/register" className="bg-navy text-slate-100 font-semibold py-1.5 px-2 rounded-xl text-xs whitespace-nowrap">Join Free</Link>
             </>
           )}
-          <button className="text-slate-100 p-1.5" onClick={() => setIsOpen(!isOpen)} aria-label={isOpen ? "Close menu" : "Open menu"}>
+          <button className="text-navy p-1.5" onClick={() => setIsOpen(!isOpen)} aria-label={isOpen ? "Close menu" : "Open menu"}>
             {isOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
