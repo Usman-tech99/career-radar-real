@@ -47,7 +47,7 @@ export default function ManagePopup() {
   }
 
   async function handleSave() {
-    if (!settings.message.trim()) return toast.error('Message is required')
+    if (settings.is_active && !settings.message.trim()) return toast.error('Message is required when popup is active')
     setSaving(true)
     try {
       if (settings.id) {

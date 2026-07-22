@@ -15,12 +15,15 @@ export default function PopupModal() {
 
   useEffect(() => {
     if (!isHome) {
+      setPopup(null)
       setVisible(false)
       return
     }
     const pageLoadTimer = setTimeout(() => { pageReady.current = true }, 2000)
     fetchPopup()
     return () => {
+      setPopup(null)
+      setVisible(false)
       clearTimeout(pageLoadTimer)
       if (exitRef.current) {
         document.removeEventListener('mouseleave', exitRef.current)
@@ -58,7 +61,7 @@ export default function PopupModal() {
     setVisible(false)
   }
 
-  if (!isHome || !visible || !popup) return null
+  if (!isHome || !visible || !popup || !popup.is_active) return null
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
