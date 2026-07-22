@@ -5,8 +5,7 @@ import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
 import { BlurFade } from '../../components/magicui/blur-fade'
 import { BorderBeam } from '../../components/magicui/border-beam'
-import { NumberTicker } from '../../components/magicui/number-ticker'
-import { LampContainer } from '../../components/ui/lamp'
+
 import { ArrowRight, Search, Bot, BookOpen, Users, TrendingUp, Target, Compass, CheckCircle, Rocket, Sparkles, Quote } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { CardContainer, CardBody, CardItem } from '../../components/ui/3d-card'
@@ -79,13 +78,6 @@ export default function Home() {
     })
   }, [])
 
-  const statItems = siteStats ? [
-    { value: siteStats.community_members, suffix: '+', label: 'Community Members' },
-    { value: siteStats.countries, suffix: '+', label: 'Countries' },
-    { value: siteStats.whatsapp_groups, suffix: '', label: 'WhatsApp Groups' },
-    { value: siteStats.main_channel_followers, suffix: '+', label: 'Career Channel Followers' },
-  ] : []
-
   return (
     <div className="min-h-screen bg-surface flex flex-col relative w-full">
       <Helmet>
@@ -98,91 +90,80 @@ export default function Home() {
       </Helmet>
       <Navbar />
 
-      {/* Aurora Backgrounds */}
-      <motion.div
-        animate={{ opacity: [0.6, 1, 0.6], scale: [1, 1.05, 1] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[500px] bg-[radial-gradient(ellipse_at_center,rgba(245,166,35,0.15)_0%,transparent_70%)] blur-[150px] pointer-events-none"
-      />
-      <motion.div
-        animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 1.08, 1] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-        className="absolute top-1/4 right-0 w-[250px] sm:w-[500px] h-[250px] sm:h-[500px] bg-blue-accent/10 blur-[100px] sm:blur-[150px] rounded-full pointer-events-none"
-      />
-      <motion.div
-        animate={{ opacity: [0.3, 0.7, 0.3], scale: [1, 1.06, 1] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-        className="absolute bottom-0 left-[-10%] w-[200px] sm:w-[500px] h-[200px] sm:h-[500px] bg-purple-accent/10 blur-[80px] sm:blur-[150px] rounded-full pointer-events-none"
-      />
-
-      {/* Hero */}
-      <main className="flex-1 w-full flex flex-col items-center justify-center pt-28 pb-20 px-4 relative z-10">
-        {/* Grid Background (inside main so it doesn't reach footer) */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: 'linear-gradient(to right, var(--grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
-            maskImage: 'radial-gradient(ellipse 70% 60% at center, black 20%, transparent 80%)',
-            WebkitMaskImage: 'radial-gradient(ellipse 70% 60% at center, black 20%, transparent 80%)',
-          }}
-        />
-        <div className="max-w-5xl mx-auto">
-          <LampContainer>
-            <div className="text-center">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gold/30 bg-gold/10 text-gold font-medium text-sm mb-8">
-                <motion.span
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="w-2 h-2 rounded-full bg-gold"
-                />
-                Ai Powered GPS
-              </div>
-
-              <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold font-sora tracking-tight mb-2 leading-[1.05]">
-                <span className="text-[#1A2D4A]">Career</span>{' '}
-                <span className="bg-gradient-to-r from-gold via-gold to-amber-400 bg-clip-text text-transparent">
-                  Radar
-                </span>
-              </h1>
-              <p className="text-lg md:text-xl font-medium text-navy mb-6">
-                Find.Prepare.Succeed
-              </p>
-
-              <p className="text-lg md:text-xl text-muted max-w-3xl mx-auto mb-10 leading-relaxed">
-                Career Radar is an AI-powered career ecosystem helping students and early-career professionals discover verified scholarships, internships, jobs, AI resources, career guidance, and professional networks&mdash;all in one place.
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-                <Link to="/social" className="btn-primary w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 flex items-center justify-center gap-2 group">
-                  Join Community <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link to="/jobs" className="btn-ghost w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 border border-white/10 hover:border-white/20">
-                  Explore Opportunities
-                </Link>
-              </div>
-            </div>
-          </LampContainer>
+      {/* Hero Section */}
+      <div className="w-full bg-navy relative overflow-hidden">
+        {/* Subtle concentric ring decoration */}
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+          <div className="w-[900px] h-[900px] rounded-full border border-gold/[0.08]" />
+          <div className="absolute w-[700px] h-[700px] rounded-full border border-gold/[0.06]" />
+          <div className="absolute w-[500px] h-[500px] rounded-full border border-gold/[0.05]" />
+          <div className="absolute w-[300px] h-[300px] rounded-full border border-gold/[0.04]" />
         </div>
 
-        {/* Stats Bar */}
-        {statItems.length > 0 && (
-          <BlurFade delay={0.3} offset={12} blur="3px" className="w-full max-w-5xl mx-auto mt-20">
-            <div className="glass-card p-8 md:p-10 rounded-2xl">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                {statItems.map((s, i) => (
-                  <div key={i} className="text-center">
-                    <div className="text-3xl md:text-5xl font-black font-mono text-gold">
-                      <NumberTicker value={s.value} delay={0.3 + i * 0.15} />
-                      <span>{s.suffix}</span>
-                    </div>
-                    <div className="text-sm text-muted mt-2 font-medium">{s.label}</div>
-                  </div>
-                ))}
+        <div className="max-w-7xl mx-auto px-4 pt-28 pb-20 md:pt-36 md:pb-28 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Column */}
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+              {/* Badge */}
+              <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#2A3A4A] text-gold text-xs font-semibold uppercase tracking-wider mb-6">
+                YOUR OPPORTUNITY SCANNER
               </div>
-            </div>
-          </BlurFade>
-        )}
+
+              {/* Heading */}
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+                <span className="text-slate-100">Find. Prepare.</span><br />
+                <span className="text-gold">Succeed.</span>
+              </h1>
+
+              {/* Subheading */}
+              <p className="text-slate-400 text-base md:text-lg leading-relaxed max-w-xl mb-8">
+                A one-stop ecosystem for students and early-career professionals to discover opportunities and build the skills to win them.
+              </p>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-12">
+                <Link to="/jobs" className="bg-gold text-navy-dark font-semibold px-8 py-3.5 rounded-xl inline-flex items-center justify-center gap-2 hover:bg-amber-500 transition-colors text-base">
+                  Explore Opportunities <ArrowRight size={18} />
+                </Link>
+                <Link to="/social" className="border border-white/20 text-slate-100 font-semibold px-8 py-3.5 rounded-xl inline-flex items-center justify-center gap-2 hover:bg-white/5 transition-colors text-base">
+                  Join the Community
+                </Link>
+              </div>
+
+              {/* Stats Row */}
+              <div className="grid grid-cols-3 gap-8">
+                <div>
+                  <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats ? (siteStats.community_members?.toLocaleString() ?? '25K') : '25K'}+</div>
+                  <div className="text-sm text-slate-400">Community members</div>
+                </div>
+                <div>
+                  <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats ? (siteStats.jobs_posted?.toLocaleString() ?? '1.2K') : '1.2K'}+</div>
+                  <div className="text-sm text-slate-400">Opportunities shared</div>
+                </div>
+                <div>
+                  <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats ? (siteStats.countries?.toLocaleString() ?? '80') : '80'}+</div>
+                  <div className="text-sm text-slate-400">Partner organisations</div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Right Column - Image */}
+            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative">
+              <div className="rounded-2xl overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80" alt="Coworking community" className="w-full h-auto object-cover rounded-2xl" />
+              </div>
+              {/* Floating Card Overlay */}
+              <div className="absolute -bottom-4 left-4 bg-white rounded-xl p-4 shadow-lg">
+                <div className="text-xl font-bold text-navy">{siteStats ? (siteStats.jobs_posted?.toLocaleString() ?? '1.2K') : '1.2K'}+</div>
+                <div className="text-xs text-slate-500">opportunities shared</div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content Wrapper */}
+      <main className="flex-1 w-full flex flex-col items-center pb-20 px-4 relative z-10">
 
         {/* Site Search */}
         <BlurFade delay={0.3} offset={12} blur="3px" className="w-full max-w-3xl mx-auto mt-16 md:mt-28">

@@ -21,13 +21,16 @@ CREATE TABLE user_roles (
 -- Create the function BEFORE using it in policies
 CREATE OR REPLACE FUNCTION get_my_role()
 RETURNS TEXT AS $$
-  SELECT role FROM user_roles WHERE user_id = auth.uid()
+  SELECT role FROM user_roles WHERE user_id = (SELECT auth.uid())
 $$ LANGUAGE sql SECURITY DEFINER STABLE;
 
 -- Now we can use the function in RLS policies
 ALTER TABLE user_roles ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "roles_founder" ON user_roles FOR ALL USING (get_my_role()='super_admin') WITH CHECK (get_my_role()='super_admin');
-CREATE POLICY "roles_own_read" ON user_roles FOR SELECT USING (user_id=auth.uid());
+CREATE POLICY "roles_founder_insert" ON user_roles FOR INSERT WITH CHECK (get_my_role()='super_admin');
+CREATE POLICY "roles_founder_update" ON user_roles FOR UPDATE USING (get_my_role()='super_admin') WITH CHECK (get_my_role()='super_admin');
+CREATE POLICY "roles_founder_delete" ON user_roles FOR DELETE USING (get_my_role()='super_admin');
+CREATE POLICY "roles_founder_select" ON user_roles FOR SELECT USING (get_my_role()='super_admin');
+CREATE POLICY "roles_own_read" ON user_roles FOR SELECT USING (user_id = (SELECT auth.uid()));
 
 CREATE TABLE profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -40,9 +43,9 @@ CREATE TABLE profiles (
 );
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "profiles_public_read" ON profiles FOR SELECT USING (TRUE);
-CREATE POLICY "profiles_own_update" ON profiles FOR UPDATE USING (auth.uid()=id) WITH CHECK (auth.uid()=id);
-CREATE POLICY "profiles_founder_insert" ON profiles FOR INSERT WITH CHECK (get_my_role()='super_admin');
-CREATE POLICY "profiles_founder_delete" ON profiles FOR DELETE USING (get_my_role()='super_admin');
+CREATE POLICY "profiles_own_update" ON profiles FOR UPDATE USING ((SELECT auth.uid())=id) WITH CHECK ((SELECT auth.uid())=id);
+CREATE POLICY "profiles_founder_insert" ON profiles FOR INSERT WITH CHECK ((SELECT get_my_role())='super_admin');
+CREATE POLICY "profiles_founder_delete" ON profiles FOR DELETE USING ((SELECT get_my_role())='super_admin');
 CREATE TRIGGER profiles_upd BEFORE UPDATE ON profiles FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
 
 CREATE OR REPLACE FUNCTION handle_new_user()
@@ -59,8 +62,10 @@ CREATE TABLE public_users (
   created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public_users ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "pub_users_own" ON public_users FOR ALL USING (auth.uid()=id) WITH CHECK (auth.uid()=id);
-CREATE POLICY "pub_users_founder" ON public_users FOR SELECT USING (get_my_role()='super_admin');
+CREATE POLICY "pub_users_own_insert" ON public_users FOR INSERT WITH CHECK ((SELECT auth.uid())=id);
+CREATE POLICY "pub_users_own_update" ON public_users FOR UPDATE USING ((SELECT auth.uid())=id) WITH CHECK ((SELECT auth.uid())=id);
+CREATE POLICY "pub_users_own_delete" ON public_users FOR DELETE USING ((SELECT auth.uid())=id);
+CREATE POLICY "pub_users_select" ON public_users FOR SELECT USING ((SELECT auth.uid())=id OR get_my_role()='super_admin');
 
 CREATE TABLE onboarding_data (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -70,8 +75,10 @@ CREATE TABLE onboarding_data (
   interests TEXT[], created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE onboarding_data ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "onboarding_own" ON onboarding_data FOR ALL USING (auth.uid()=user_id) WITH CHECK (auth.uid()=user_id);
-CREATE POLICY "onboarding_admin" ON onboarding_data FOR SELECT USING (get_my_role()='super_admin');
+CREATE POLICY "onboarding_own_insert" ON onboarding_data FOR INSERT WITH CHECK ((SELECT auth.uid())=user_id);
+CREATE POLICY "onboarding_own_update" ON onboarding_data FOR UPDATE USING ((SELECT auth.uid())=user_id) WITH CHECK ((SELECT auth.uid())=user_id);
+CREATE POLICY "onboarding_own_delete" ON onboarding_data FOR DELETE USING ((SELECT auth.uid())=user_id);
+CREATE POLICY "onboarding_select" ON onboarding_data FOR SELECT USING ((SELECT auth.uid())=user_id OR get_my_role()='super_admin');
 
 CREATE TABLE career_blueprints (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -86,7 +93,7 @@ CREATE TABLE career_blueprints (
   generated_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE career_blueprints ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "blueprints_own" ON career_blueprints FOR ALL USING (auth.uid()=user_id) WITH CHECK (auth.uid()=user_id);
+CREATE POLICY "blueprints_own" ON career_blueprints FOR ALL USING ((SELECT auth.uid())=user_id) WITH CHECK ((SELECT auth.uid())=user_id);
 
 CREATE TABLE career_scores (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -102,7 +109,7 @@ CREATE TABLE career_scores (
   last_calculated TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE career_scores ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "scores_own" ON career_scores FOR ALL USING (auth.uid()=user_id) WITH CHECK (auth.uid()=user_id);
+CREATE POLICY "scores_own" ON career_scores FOR ALL USING ((SELECT auth.uid())=user_id) WITH CHECK ((SELECT auth.uid())=user_id);
 
 -- Resumes
 CREATE TABLE resumes (
@@ -113,7 +120,7 @@ CREATE TABLE resumes (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE resumes ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "resumes_own" ON resumes FOR ALL USING (auth.uid()=user_id) WITH CHECK (auth.uid()=user_id);
+CREATE POLICY "resumes_own" ON resumes FOR ALL USING ((SELECT auth.uid())=user_id) WITH CHECK ((SELECT auth.uid())=user_id);
 
 -- Content Tables (Jobs, Weekly Content, Products, Education):
 -- site_stats SINGLETON
@@ -130,7 +137,7 @@ INSERT INTO site_stats(id) VALUES(1);
 -- Migration for existing DBs: ALTER TABLE site_stats ADD COLUMN IF NOT EXISTS countries INTEGER DEFAULT 0, ADD COLUMN IF NOT EXISTS whatsapp_groups INTEGER DEFAULT 0, ADD COLUMN IF NOT EXISTS main_channel_followers INTEGER DEFAULT 0, ADD COLUMN IF NOT EXISTS scholarship_channel_followers INTEGER DEFAULT 0, ADD COLUMN IF NOT EXISTS ai_channel_followers INTEGER DEFAULT 0;
 ALTER TABLE site_stats ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "stats_read" ON site_stats FOR SELECT USING(TRUE);
-CREATE POLICY "stats_update" ON site_stats FOR UPDATE USING(get_my_role()='super_admin');
+CREATE POLICY "stats_update" ON site_stats FOR UPDATE USING((SELECT get_my_role())='super_admin');
 
 CREATE OR REPLACE FUNCTION increment_jobs_posted()
 RETURNS void LANGUAGE sql SECURITY DEFINER
@@ -162,7 +169,9 @@ CREATE INDEX idx_jobs ON jobs(is_active,created_at DESC);
 CREATE INDEX idx_jobs_tags ON jobs USING GIN(tags);
 ALTER TABLE jobs ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "jobs_pub" ON jobs FOR SELECT USING(is_active=TRUE);
-CREATE POLICY "jobs_admin" ON jobs FOR ALL USING(get_my_role() IN('super_admin','admin')) WITH CHECK(get_my_role() IN('super_admin','admin'));
+CREATE POLICY "jobs_admin_insert" ON jobs FOR INSERT WITH CHECK (get_my_role() IN ('super_admin', 'admin'));
+CREATE POLICY "jobs_admin_update" ON jobs FOR UPDATE USING (get_my_role() IN ('super_admin', 'admin')) WITH CHECK (get_my_role() IN ('super_admin', 'admin'));
+CREATE POLICY "jobs_admin_delete" ON jobs FOR DELETE USING (get_my_role() IN ('super_admin', 'admin'));
 CREATE TRIGGER jobs_upd BEFORE UPDATE ON jobs FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
 
 -- weekly_content
@@ -176,7 +185,9 @@ CREATE TABLE weekly_content (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 );
 ALTER TABLE weekly_content ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "content_pub" ON weekly_content FOR SELECT USING(is_published=TRUE);
-CREATE POLICY "content_admin" ON weekly_content FOR ALL USING(get_my_role() IN('super_admin','admin')) WITH CHECK(get_my_role() IN('super_admin','admin'));
+CREATE POLICY "content_admin_insert" ON weekly_content FOR INSERT WITH CHECK (get_my_role() IN ('super_admin', 'admin'));
+CREATE POLICY "content_admin_update" ON weekly_content FOR UPDATE USING (get_my_role() IN ('super_admin', 'admin')) WITH CHECK (get_my_role() IN ('super_admin', 'admin'));
+CREATE POLICY "content_admin_delete" ON weekly_content FOR DELETE USING (get_my_role() IN ('super_admin', 'admin'));
 CREATE TRIGGER content_upd BEFORE UPDATE ON weekly_content FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
 
 -- products
@@ -192,7 +203,9 @@ CREATE TABLE products (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 );
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "products_pub" ON products FOR SELECT USING(is_active=TRUE);
-CREATE POLICY "products_admin" ON products FOR ALL USING(get_my_role() IN('super_admin','admin')) WITH CHECK(get_my_role() IN('super_admin','admin'));
+CREATE POLICY "products_admin_insert" ON products FOR INSERT WITH CHECK (get_my_role() IN ('super_admin', 'admin'));
+CREATE POLICY "products_admin_update" ON products FOR UPDATE USING (get_my_role() IN ('super_admin', 'admin')) WITH CHECK (get_my_role() IN ('super_admin', 'admin'));
+CREATE POLICY "products_admin_delete" ON products FOR DELETE USING (get_my_role() IN ('super_admin', 'admin'));
 CREATE TRIGGER products_upd BEFORE UPDATE ON products FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
 
 -- delivered_orders (manual payment tracking)
@@ -219,7 +232,9 @@ CREATE TABLE education_items (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 );
 ALTER TABLE education_items ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "edu_pub" ON education_items FOR SELECT USING(is_published=TRUE);
-CREATE POLICY "edu_admin" ON education_items FOR ALL USING(get_my_role() IN('super_admin','admin')) WITH CHECK(get_my_role() IN('super_admin','admin'));
+CREATE POLICY "edu_admin_insert" ON education_items FOR INSERT WITH CHECK (get_my_role() IN ('super_admin', 'admin'));
+CREATE POLICY "edu_admin_update" ON education_items FOR UPDATE USING (get_my_role() IN ('super_admin', 'admin')) WITH CHECK (get_my_role() IN ('super_admin', 'admin'));
+CREATE POLICY "edu_admin_delete" ON education_items FOR DELETE USING (get_my_role() IN ('super_admin', 'admin'));
 
 -- Community + AI Tables:
 -- structure_page SINGLETON
@@ -261,7 +276,9 @@ CREATE TABLE socials (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 );
 ALTER TABLE socials ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "socials_pub" ON socials FOR SELECT USING(is_active=TRUE);
-CREATE POLICY "socials_admin" ON socials FOR ALL USING(get_my_role() IN('super_admin','admin')) WITH CHECK(get_my_role() IN('super_admin','admin'));
+CREATE POLICY "socials_admin_insert" ON socials FOR INSERT WITH CHECK (get_my_role() IN ('super_admin', 'admin'));
+CREATE POLICY "socials_admin_update" ON socials FOR UPDATE USING (get_my_role() IN ('super_admin', 'admin')) WITH CHECK (get_my_role() IN ('super_admin', 'admin'));
+CREATE POLICY "socials_admin_delete" ON socials FOR DELETE USING (get_my_role() IN ('super_admin', 'admin'));
 
 -- collaborators
 CREATE TABLE collaborators (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -273,7 +290,9 @@ CREATE TABLE collaborators (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 );
 ALTER TABLE collaborators ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "collab_pub" ON collaborators FOR SELECT USING(is_active=TRUE);
-CREATE POLICY "collab_admin" ON collaborators FOR ALL USING(get_my_role() IN('super_admin','admin')) WITH CHECK(get_my_role() IN('super_admin','admin'));
+CREATE POLICY "collab_admin_insert" ON collaborators FOR INSERT WITH CHECK (get_my_role() IN ('super_admin', 'admin'));
+CREATE POLICY "collab_admin_update" ON collaborators FOR UPDATE USING (get_my_role() IN ('super_admin', 'admin')) WITH CHECK (get_my_role() IN ('super_admin', 'admin'));
+CREATE POLICY "collab_admin_delete" ON collaborators FOR DELETE USING (get_my_role() IN ('super_admin', 'admin'));
 
 -- team_members (dedicated table — only super admin populates)
 CREATE TABLE team_members (
@@ -293,14 +312,16 @@ CREATE TABLE team_members (
 );
 ALTER TABLE team_members ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "team_members_pub" ON team_members FOR SELECT USING (is_active = TRUE);
-CREATE POLICY "team_members_admin" ON team_members FOR ALL USING (get_my_role() = 'super_admin') WITH CHECK (get_my_role() = 'super_admin');
+CREATE POLICY "team_members_admin_insert" ON team_members FOR INSERT WITH CHECK (get_my_role() = 'super_admin');
+CREATE POLICY "team_members_admin_update" ON team_members FOR UPDATE USING (get_my_role() = 'super_admin') WITH CHECK (get_my_role() = 'super_admin');
+CREATE POLICY "team_members_admin_delete" ON team_members FOR DELETE USING (get_my_role() = 'super_admin');
 CREATE TRIGGER team_members_upd BEFORE UPDATE ON team_members FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
 
 -- Storage RLS for team-avatars bucket
 CREATE POLICY "team_avatars_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'team-avatars');
-CREATE POLICY "team_avatars_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'team-avatars' AND auth.role() = 'authenticated');
-CREATE POLICY "team_avatars_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'team-avatars' AND auth.role() = 'authenticated');
-CREATE POLICY "team_avatars_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'team-avatars' AND auth.role() = 'authenticated');
+CREATE POLICY "team_avatars_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'team-avatars' AND (SELECT auth.role()) = 'authenticated');
+CREATE POLICY "team_avatars_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'team-avatars' AND (SELECT auth.role()) = 'authenticated');
+CREATE POLICY "team_avatars_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'team-avatars' AND (SELECT auth.role()) = 'authenticated');
 
 -- ai_chat_logs
 CREATE TABLE ai_chat_logs (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -310,7 +331,7 @@ CREATE TABLE ai_chat_logs (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE ai_chat_logs ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "logs_insert" ON ai_chat_logs FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "logs_insert" ON ai_chat_logs FOR INSERT WITH CHECK ((SELECT auth.role()) = 'authenticated');
 CREATE POLICY "logs_founder_select" ON ai_chat_logs FOR SELECT USING(get_my_role()='super_admin');
 CREATE POLICY "logs_founder_delete" ON ai_chat_logs FOR DELETE USING(get_my_role()='super_admin');
 
@@ -325,26 +346,28 @@ CREATE TABLE scholarships (id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 CREATE INDEX idx_scholarships ON scholarships(country,coverage);
 ALTER TABLE scholarships ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "scholarships_pub" ON scholarships FOR SELECT USING(TRUE);
-CREATE POLICY "scholarships_admin" ON scholarships FOR ALL USING(get_my_role() IN('super_admin','admin')) WITH CHECK(get_my_role() IN('super_admin','admin'));
+CREATE POLICY "scholarships_admin_insert" ON scholarships FOR INSERT WITH CHECK (get_my_role() IN ('super_admin', 'admin'));
+CREATE POLICY "scholarships_admin_update" ON scholarships FOR UPDATE USING (get_my_role() IN ('super_admin', 'admin')) WITH CHECK (get_my_role() IN ('super_admin', 'admin'));
+CREATE POLICY "scholarships_admin_delete" ON scholarships FOR DELETE USING (get_my_role() IN ('super_admin', 'admin'));
 CREATE TRIGGER scholarships_upd BEFORE UPDATE ON scholarships FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
 
 -- Storage RLS for avatars bucket
 CREATE POLICY "avatars_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'avatars');
-CREATE POLICY "avatars_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'avatars' AND auth.role() = 'authenticated');
-CREATE POLICY "avatars_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'avatars' AND auth.role() = 'authenticated');
-CREATE POLICY "avatars_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'avatars' AND auth.role() = 'authenticated');
+CREATE POLICY "avatars_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'avatars' AND (SELECT auth.role()) = 'authenticated');
+CREATE POLICY "avatars_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'avatars' AND (SELECT auth.role()) = 'authenticated');
+CREATE POLICY "avatars_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'avatars' AND (SELECT auth.role()) = 'authenticated');
 
 -- Storage RLS for collaborator-logos bucket
 CREATE POLICY "collab_logos_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'collaborator-logos');
-CREATE POLICY "collab_logos_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'collaborator-logos' AND auth.role() = 'authenticated');
-CREATE POLICY "collab_logos_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'collaborator-logos' AND auth.role() = 'authenticated');
-CREATE POLICY "collab_logos_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'collaborator-logos' AND auth.role() = 'authenticated');
+CREATE POLICY "collab_logos_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'collaborator-logos' AND (SELECT auth.role()) = 'authenticated');
+CREATE POLICY "collab_logos_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'collaborator-logos' AND (SELECT auth.role()) = 'authenticated');
+CREATE POLICY "collab_logos_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'collaborator-logos' AND (SELECT auth.role()) = 'authenticated');
 
 -- Storage RLS for product-thumbnails bucket
 CREATE POLICY "prod_thumbs_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'product-thumbnails');
-CREATE POLICY "prod_thumbs_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'product-thumbnails' AND auth.role() = 'authenticated');
-CREATE POLICY "prod_thumbs_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'product-thumbnails' AND auth.role() = 'authenticated');
-CREATE POLICY "prod_thumbs_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'product-thumbnails' AND auth.role() = 'authenticated');
+CREATE POLICY "prod_thumbs_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'product-thumbnails' AND (SELECT auth.role()) = 'authenticated');
+CREATE POLICY "prod_thumbs_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'product-thumbnails' AND (SELECT auth.role()) = 'authenticated');
+CREATE POLICY "prod_thumbs_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'product-thumbnails' AND (SELECT auth.role()) = 'authenticated');
 
 -- Storage RLS for product-files bucket (private — super_admin only for all ops)
 CREATE POLICY "prod_files_admin_read" ON storage.objects FOR SELECT USING (bucket_id = 'product-files' AND get_my_role() = 'super_admin');
@@ -354,15 +377,15 @@ CREATE POLICY "prod_files_admin_delete" ON storage.objects FOR DELETE USING (buc
 
 -- Storage RLS for education-thumbnails bucket
 CREATE POLICY "edu_thumbs_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'education-thumbnails');
-CREATE POLICY "edu_thumbs_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'education-thumbnails' AND auth.role() = 'authenticated');
-CREATE POLICY "edu_thumbs_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'education-thumbnails' AND auth.role() = 'authenticated');
-CREATE POLICY "edu_thumbs_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'education-thumbnails' AND auth.role() = 'authenticated');
+CREATE POLICY "edu_thumbs_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'education-thumbnails' AND (SELECT auth.role()) = 'authenticated');
+CREATE POLICY "edu_thumbs_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'education-thumbnails' AND (SELECT auth.role()) = 'authenticated');
+CREATE POLICY "edu_thumbs_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'education-thumbnails' AND (SELECT auth.role()) = 'authenticated');
 
 -- Storage RLS for content-files bucket
 CREATE POLICY "content_files_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'content-files');
-CREATE POLICY "content_files_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'content-files' AND auth.role() = 'authenticated');
-CREATE POLICY "content_files_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'content-files' AND auth.role() = 'authenticated');
-CREATE POLICY "content_files_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'content-files' AND auth.role() = 'authenticated');
+CREATE POLICY "content_files_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'content-files' AND (SELECT auth.role()) = 'authenticated');
+CREATE POLICY "content_files_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'content-files' AND (SELECT auth.role()) = 'authenticated');
+CREATE POLICY "content_files_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'content-files' AND (SELECT auth.role()) = 'authenticated');
 
 -- community_page SINGLETON
 CREATE TABLE community_page (id INT PRIMARY KEY DEFAULT 1 CHECK(id=1),
@@ -392,12 +415,7 @@ CREATE POLICY "community_admin" ON community_page FOR UPDATE USING(get_my_role()
 
 -- Storage RLS for scholarship-logos bucket
 CREATE POLICY "sclogos_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'scholarship-logos');
-CREATE POLICY "sclogos_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'scholarship-logos' AND auth.role() = 'authenticated');
-CREATE POLICY "sclogos_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'scholarship-logos' AND auth.role() = 'authenticated');
-CREATE POLICY "sclogos_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'scholarship-logos' AND auth.role() = 'authenticated');
+CREATE POLICY "sclogos_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'scholarship-logos' AND (SELECT auth.role()) = 'authenticated');
+CREATE POLICY "sclogos_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'scholarship-logos' AND (SELECT auth.role()) = 'authenticated');
+CREATE POLICY "sclogos_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'scholarship-logos' AND (SELECT auth.role()) = 'authenticated');
 
--- Storage RLS for avatars bucket
-CREATE POLICY "avatars_public_read" ON storage.objects FOR SELECT USING (bucket_id = 'avatars');
-CREATE POLICY "avatars_auth_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'avatars' AND auth.role() = 'authenticated');
-CREATE POLICY "avatars_auth_update" ON storage.objects FOR UPDATE USING (bucket_id = 'avatars' AND auth.role() = 'authenticated');
-CREATE POLICY "avatars_auth_delete" ON storage.objects FOR DELETE USING (bucket_id = 'avatars' AND auth.role() = 'authenticated');
