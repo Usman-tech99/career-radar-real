@@ -131,32 +131,30 @@ export default function Home() {
               </div>
 
               {/* Stats Row */}
-              {siteStats && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  <div>
-                    <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats.community_members?.toLocaleString()}+</div>
-                    <div className="text-sm text-slate-400">Community Members</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats.countries?.toLocaleString()}+</div>
-                    <div className="text-sm text-slate-400">Countries</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats.whatsapp_groups?.toLocaleString()}</div>
-                    <div className="text-sm text-slate-400">WhatsApp Groups</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats.main_channel_followers?.toLocaleString()}+</div>
-                    <div className="text-sm text-slate-400">Main Career Channel Followers</div>
-                  </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 min-h-[80px]">
+                <div>
+                  <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats ? siteStats.community_members?.toLocaleString() : '0'}+</div>
+                  <div className="text-sm text-slate-400">Community Members</div>
                 </div>
-              )}
+                <div>
+                  <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats ? siteStats.countries?.toLocaleString() : '0'}+</div>
+                  <div className="text-sm text-slate-400">Countries</div>
+                </div>
+                <div>
+                  <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats ? siteStats.whatsapp_groups?.toLocaleString() : '0'}</div>
+                  <div className="text-sm text-slate-400">WhatsApp Groups</div>
+                </div>
+                <div>
+                  <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats ? siteStats.main_channel_followers?.toLocaleString() : '0'}+</div>
+                  <div className="text-sm text-slate-400">Main Career Channel Followers</div>
+                </div>
+              </div>
             </motion.div>
 
             {/* Right Column - Video */}
             <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative">
               <div className="rounded-2xl overflow-hidden">
-                <video autoPlay muted loop playsInline className="w-full h-auto object-cover rounded-2xl">
+                <video autoPlay muted loop playsInline webkit-playsinline preload="auto" className="w-full h-auto object-cover rounded-2xl">
                   <source src="/hero-video.mp4" type="video/mp4" />
                 </video>
               </div>
