@@ -148,7 +148,7 @@ export default function ManagePopup() {
           <div className="glass-card w-full max-w-md relative overflow-hidden rounded-2xl border border-gold/50" style={{ boxShadow: '0 0 25px rgba(245,166,35,0.25)' }} onClick={e => e.stopPropagation()}>
             <button onClick={() => setPreview(false)} className="absolute top-4 right-4 text-muted hover:text-white z-10"><X size={24} /></button>
             {settings.image_url && <img src={settings.image_url} alt="" className="w-full max-h-80 object-contain bg-black/30" />}
-            <div className="p-6">
+            <div className="p-6 overflow-y-auto max-h-60">
               <p className="text-white text-lg leading-relaxed whitespace-pre-wrap">{settings.message}</p>
               {settings.link_url && (
                 <a href={settings.link_url} target="_blank" rel="noreferrer" className="btn-primary inline-flex items-center gap-2 mt-4">
