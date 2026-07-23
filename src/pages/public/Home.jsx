@@ -44,11 +44,11 @@ function AnimatedStat({ value }) {
 }
 
 const features = [
-  { icon: Search, title: 'Verified Opportunities', desc: 'Discover scholarships, internships, jobs, fellowships, competitions, conferences, and remote opportunities from trusted sources.', color: 'text-gold', beamColor: '#F5A623', wide: false },
+  { icon: Search, title: 'Verified Opportunities', desc: 'Discover scholarships, internships, jobs, fellowships, competitions, conferences, and remote opportunities from trusted sources.', color: 'text-amber-400', beamColor: '#F5A623', wide: false },
   { icon: Bot, title: 'AI Career Guidance', desc: 'Get personalized career roadmaps, AI-powered recommendations, resume feedback, and practical career advice.', color: 'text-blue-accent', beamColor: '#3B82F6', wide: true },
-  { icon: BookOpen, title: 'Career Resources', desc: 'Access resume templates, interview guides, AI tools, freelancing resources, productivity systems, and learning materials.', color: 'text-gold', beamColor: '#F59E0B', wide: false },
+  { icon: BookOpen, title: 'Career Resources', desc: 'Access resume templates, interview guides, AI tools, freelancing resources, productivity systems, and learning materials.', color: 'text-amber-400', beamColor: '#F59E0B', wide: false },
   { icon: Users, title: 'Global Community', desc: 'Join a growing network of students, graduates, freelancers, mentors, and professionals across multiple countries.', color: 'text-purple-accent', beamColor: '#8B5CF6', wide: false },
-  { icon: TrendingUp, title: 'Skill Development', desc: 'Build practical AI, freelancing, communication, leadership, and career skills employers actually value.', color: 'text-gold', beamColor: '#F5A623', wide: false },
+  { icon: TrendingUp, title: 'Skill Development', desc: 'Build practical AI, freelancing, communication, leadership, and career skills employers actually value.', color: 'text-amber-400', beamColor: '#F5A623', wide: false },
   { icon: Target, title: 'Career Growth', desc: 'Prepare for scholarships, internships, higher education, and future careers with structured guidance and continuous learning.', color: 'text-blue-accent', beamColor: '#3B82F6', wide: true },
 ]
 
@@ -126,10 +126,10 @@ export default function Home() {
       <div className="w-full bg-navy relative overflow-hidden">
         {/* Subtle concentric ring decoration */}
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          <div className="w-[900px] h-[900px] rounded-full border border-gold/[0.08]" />
-          <div className="absolute w-[700px] h-[700px] rounded-full border border-gold/[0.06]" />
-          <div className="absolute w-[500px] h-[500px] rounded-full border border-gold/[0.05]" />
-          <div className="absolute w-[300px] h-[300px] rounded-full border border-gold/[0.04]" />
+          <div className="w-[900px] h-[900px] rounded-full border border-amber-400/[0.08]" />
+          <div className="absolute w-[700px] h-[700px] rounded-full border border-amber-400/[0.06]" />
+          <div className="absolute w-[500px] h-[500px] rounded-full border border-amber-400/[0.05]" />
+          <div className="absolute w-[300px] h-[300px] rounded-full border border-amber-400/[0.04]" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 pt-28 pb-20 md:pt-36 md:pb-28 relative z-10">
@@ -137,14 +137,14 @@ export default function Home() {
             {/* Left Column */}
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
               {/* Badge */}
-              <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#2A3A4A] text-gold text-xs font-semibold uppercase tracking-wider mb-6">
+              <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#2A3A4A] text-amber-400 text-xs font-semibold uppercase tracking-wider mb-6">
                 YOUR OPPORTUNITY SCANNER
               </div>
 
               {/* Heading */}
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight mb-6">
                 <span className="text-slate-100">Find. Prepare.</span><br />
-                <span className="text-gold">Succeed.</span>
+                <span className="text-amber-400">Succeed.</span>
               </h1>
 
               {/* Subheading */}
@@ -154,7 +154,7 @@ export default function Home() {
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mb-12">
-                <Link to="/jobs" className="bg-gold text-navy-dark font-semibold px-8 py-3.5 rounded-xl inline-flex items-center justify-center gap-2 hover:bg-amber-500 transition-colors text-base">
+                <Link to="/jobs" className="bg-amber-400 text-navy-dark font-semibold px-8 py-3.5 rounded-xl inline-flex items-center justify-center gap-2 hover:bg-amber-500 transition-colors text-base">
                   Explore Opportunities <ArrowRight size={18} />
                 </Link>
                 <Link to="/social" className="border border-white/20 text-slate-100 font-semibold px-8 py-3.5 rounded-xl inline-flex items-center justify-center gap-2 hover:bg-white/5 transition-colors text-base">
@@ -165,19 +165,19 @@ export default function Home() {
               {/* Stats Row */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 min-h-[80px]">
                 <div>
-                  <div className="text-2xl md:text-3xl font-bold text-gold"><AnimatedStat value={siteStats?.community_members} />+</div>
+                  <div className="text-2xl md:text-3xl font-bold text-amber-400"><AnimatedStat value={siteStats?.community_members} />+</div>
                   <div className="text-sm text-slate-400">Community Members</div>
                 </div>
                 <div>
-                  <div className="text-2xl md:text-3xl font-bold text-gold"><AnimatedStat value={siteStats?.countries} />+</div>
+                  <div className="text-2xl md:text-3xl font-bold text-amber-400"><AnimatedStat value={siteStats?.countries} />+</div>
                   <div className="text-sm text-slate-400">Countries</div>
                 </div>
                 <div>
-                  <div className="text-2xl md:text-3xl font-bold text-gold"><AnimatedStat value={siteStats?.whatsapp_groups} /></div>
+                  <div className="text-2xl md:text-3xl font-bold text-amber-400"><AnimatedStat value={siteStats?.whatsapp_groups} /></div>
                   <div className="text-sm text-slate-400">WhatsApp Groups</div>
                 </div>
                 <div>
-                  <div className="text-2xl md:text-3xl font-bold text-gold"><AnimatedStat value={siteStats?.main_channel_followers} />+</div>
+                  <div className="text-2xl md:text-3xl font-bold text-amber-400"><AnimatedStat value={siteStats?.main_channel_followers} />+</div>
                   <div className="text-sm text-slate-400">Main Career Channel Followers</div>
                 </div>
               </div>
@@ -218,7 +218,7 @@ export default function Home() {
                   name="q"
                   type="text"
                   placeholder="Search jobs, scholarships, resources..."
-                  className="w-full bg-white border border-border rounded-xl pl-12 pr-4 py-4 text-navy focus:outline-none focus:border-gold text-base"
+                  className="w-full bg-white border border-border rounded-xl pl-12 pr-4 py-4 text-navy focus:outline-none focus:border-amber-400 text-base"
                 />
               </div>
               <button type="submit" className="btn-primary px-6 py-4 rounded-xl text-sm font-semibold shrink-0">
@@ -260,10 +260,10 @@ export default function Home() {
             {steps.map((step, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="text-center">
                 <div className="relative inline-flex mb-5">
-                  <div className="w-16 h-16 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-center">
-                    <step.icon size={28} className="text-gold" />
+                  <div className="w-16 h-16 rounded-2xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center">
+                    <step.icon size={28} className="text-amber-400" />
                   </div>
-                  <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-gold text-white text-xs font-bold flex items-center justify-center">
+                  <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-amber-400 text-white text-xs font-bold flex items-center justify-center">
                     {i + 1}
                   </div>
                 </div>
@@ -283,7 +283,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {whyJoin.map((item, i) => (
               <motion.div key={i} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }} className="flex items-center gap-3 p-4 glass-card">
-                <CheckCircle size={20} className="text-gold shrink-0" />
+                <CheckCircle size={20} className="text-amber-400 shrink-0" />
                 <span className="text-white font-medium">{item}</span>
               </motion.div>
             ))}
@@ -301,17 +301,17 @@ export default function Home() {
               <CardContainer key={i} className="w-full h-full" containerClassName="w-full h-full">
                 <CardBody className="glass-card p-6 flex flex-col h-full rounded-2xl border border-white/[0.06]">
                   <CardItem translateZ={30}>
-                    <Quote size={20} className="text-gold/40 mb-4" />
+                    <Quote size={20} className="text-amber-400/40 mb-4" />
                   </CardItem>
                   <CardItem translateZ={20} className="text-sm text-muted leading-relaxed mb-6 flex-1">&ldquo;{t.quote}&rdquo;</CardItem>
                   <CardItem translateZ={10} className="pt-4 border-t border-white/[0.06]">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold text-sm">
+                      <div className="w-10 h-10 rounded-full bg-amber-400/20 flex items-center justify-center text-amber-400 font-bold text-sm">
                         {t.name.split(' ').map(n => n[0]).join('')}
                       </div>
                       <div>
                         <p className="text-white font-semibold text-sm">{t.name}</p>
-                        <p className="text-gold text-xs">{t.achievement}</p>
+                        <p className="text-amber-400 text-xs">{t.achievement}</p>
                       </div>
                     </div>
                   </CardItem>
@@ -329,27 +329,27 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="glass-card p-8">
-              <h3 className="text-xl font-bold text-gold mb-6 flex items-center gap-2">
+              <h3 className="text-xl font-bold text-amber-400 mb-6 flex items-center gap-2">
                 <Rocket size={22} /> Available Now
               </h3>
               <ul className="space-y-3">
                 {roadmapAvailable.map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-sm">
-                    <CheckCircle size={18} className="text-gold shrink-0" />
+                    <CheckCircle size={18} className="text-amber-400 shrink-0" />
                     <span className="text-white">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
             <div className="glass-card p-8">
-              <h3 className="text-xl font-bold text-gold mb-6 flex items-center gap-2">
+              <h3 className="text-xl font-bold text-amber-400 mb-6 flex items-center gap-2">
                 <Sparkles size={22} /> Coming Soon
               </h3>
               <ul className="space-y-3">
                 {roadmapComing.map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-sm">
-                    <span className="w-[18px] h-[18px] rounded-full border-2 border-gold/50 flex items-center justify-center shrink-0">
-                      <span className="w-[6px] h-[6px] rounded-full bg-gold/50" />
+                    <span className="w-[18px] h-[18px] rounded-full border-2 border-amber-400/50 flex items-center justify-center shrink-0">
+                      <span className="w-[6px] h-[6px] rounded-full bg-amber-400/50" />
                     </span>
                     <span className="text-muted">{item}</span>
                   </li>

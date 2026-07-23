@@ -9,22 +9,42 @@ export default function PopupModal() {
   const location = useLocation()
   const [popup, setPopup] = useState(null)
   const [visible, setVisible] = useState(false)
+  const popupRef = useRef(null)
+  const entryReady = useRef(false)
   const pageReady = useRef(false)
   const exitRef = useRef(null)
   const isHome = location.pathname === '/'
 
   useEffect(() => {
+    popupRef.current = popup
+  }, [popup])
+
+  useEffect(() => {
     if (!isHome) {
       setPopup(null)
       setVisible(false)
+      entryReady.current = false
       return
     }
-    const pageLoadTimer = setTimeout(() => { pageReady.current = true }, 2000)
+
     fetchPopup()
+
+    const pageLoadTimer = setTimeout(() => { pageReady.current = true }, 1500)
+
+    const entryTimer = setTimeout(() => {
+      entryReady.current = true
+      const p = popupRef.current
+      if (p?.show_on_entry && !sessionStorage.getItem(STORAGE_KEY)) {
+        setVisible(true)
+      }
+    }, 4000)
+
     return () => {
       setPopup(null)
       setVisible(false)
+      entryReady.current = false
       clearTimeout(pageLoadTimer)
+      clearTimeout(entryTimer)
       if (exitRef.current) {
         document.removeEventListener('mouseleave', exitRef.current)
       }
@@ -47,8 +67,8 @@ export default function PopupModal() {
       preload.src = data._imgUrl
     }
     setPopup(data)
-    if (data.show_on_entry && !sessionStorage.getItem(STORAGE_KEY)) {
-      setTimeout(() => setVisible(true), 800)
+    if (entryReady.current && data.show_on_entry && !sessionStorage.getItem(STORAGE_KEY)) {
+      setVisible(true)
     }
     if (data.show_on_exit) {
       exitRef.current = handleExitIntent

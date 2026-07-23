@@ -47,7 +47,7 @@ export default function AnnouncementPopup({ content: propContent, show: propShow
     if (!data) return
     setFetchedData(data)
     if (data.show_on_entry && !dismissedRef.current) {
-      setTimeout(() => setSelfVisible(true), 800)
+      setTimeout(() => setSelfVisible(true), 4000)
     }
   }
 
