@@ -65,7 +65,7 @@ export default function AdminLayout() {
         } ${
           active
             ? 'bg-gold/10 text-gold'
-            : 'text-slate-100 hover:text-white hover:bg-white/10'
+            : 'text-navy hover:text-navy-dark hover:bg-black/10'
         }`}
       >
         <item.icon size={16} />
@@ -77,15 +77,15 @@ export default function AdminLayout() {
   return (
     <div className="min-h-screen bg-surface flex flex-col">
       {/* Top Navbar */}
-      <div className="admin-topbar fixed top-0 left-0 right-0 z-40 h-16 bg-navy border-b border-navy/80 flex items-center px-4 sm:px-6 gap-3">
-        <button type="button" className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition-colors" onClick={() => setMobileOpen(true)}>
-          <Menu size={20} className="text-slate-100" />
+      <div className="admin-topbar fixed top-0 left-0 right-0 z-40 h-16 bg-amber-400 border-b border-amber-500 flex items-center px-4 sm:px-6 gap-3">
+        <button type="button" className="lg:hidden p-2 rounded-lg hover:bg-black/10 transition-colors" onClick={() => setMobileOpen(true)}>
+          <Menu size={20} className="text-navy" />
         </button>
 
         <Link to="/" className="flex items-center gap-2 shrink-0">
           <span className="font-sora font-bold text-lg tracking-tight">
-            <span className="text-gold">CR</span>{' '}
-            <span className="hidden sm:inline text-slate-100 font-normal text-sm">Admin</span>
+            <span className="text-navy">CR</span>{' '}
+            <span className="hidden sm:inline text-navy font-normal text-sm">Admin</span>
           </span>
         </Link>
 
@@ -97,7 +97,7 @@ export default function AdminLayout() {
         </div>
 
         <div className="ml-auto flex items-center gap-3 shrink-0">
-          <span className="text-xs text-slate-100 hidden sm:inline">{roleLabel}</span>
+          <span className="text-xs text-navy hidden sm:inline">{roleLabel}</span>
           <button
             type="button"
             onClick={signOut}
