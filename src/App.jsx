@@ -100,6 +100,7 @@ export default function App() {
     <BrowserRouter>
       <ThemeProvider>
       <AuthProvider>
+        <ErrorBoundary>
         <Suspense fallback={null}>
           <RadarCursor />
         </Suspense>
@@ -116,7 +117,6 @@ export default function App() {
           <CookieConsentBanner />
         </Suspense>
         <Toaster position="bottom-center" />
-        <ErrorBoundary>
         <Suspense fallback={<Loader />}>
           <Routes>
             <Route path="/" element={<HomeRedirect />} />

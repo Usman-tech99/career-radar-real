@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+﻿import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Navbar from '../../components/layout/Navbar'
@@ -10,6 +10,38 @@ import { ArrowRight, Search, Bot, BookOpen, Users, TrendingUp, Target, Compass, 
 import { supabase } from '../../lib/supabase'
 import { CardContainer, CardBody, CardItem } from '../../components/ui/3d-card'
 import { Helmet } from 'react-helmet-async'
+
+function AnimatedStat({ value }) {
+  const [display, setDisplay] = useState(0)
+  const prevRef = useRef(0)
+  const rafRef = useRef(null)
+
+  useEffect(() => {
+    const target = Number(value) || 0
+    if (target === prevRef.current) return
+    const startVal = prevRef.current
+    const startTime = performance.now()
+    const duration = 1500
+
+    function tick(now) {
+      const elapsed = now - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      const current = Math.floor(startVal + (target - startVal) * eased)
+      setDisplay(current)
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(tick)
+      } else {
+        prevRef.current = target
+      }
+    }
+
+    rafRef.current = requestAnimationFrame(tick)
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
+  }, [value])
+
+  return <>{display.toLocaleString()}</>
+}
 
 const features = [
   { icon: Search, title: 'Verified Opportunities', desc: 'Discover scholarships, internships, jobs, fellowships, competitions, conferences, and remote opportunities from trusted sources.', color: 'text-gold', beamColor: '#F5A623', wide: false },
@@ -133,19 +165,19 @@ export default function Home() {
               {/* Stats Row */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 min-h-[80px]">
                 <div>
-                  <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats ? siteStats.community_members?.toLocaleString() : '0'}+</div>
+                  <div className="text-2xl md:text-3xl font-bold text-gold"><AnimatedStat value={siteStats?.community_members} />+</div>
                   <div className="text-sm text-slate-400">Community Members</div>
                 </div>
                 <div>
-                  <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats ? siteStats.countries?.toLocaleString() : '0'}+</div>
+                  <div className="text-2xl md:text-3xl font-bold text-gold"><AnimatedStat value={siteStats?.countries} />+</div>
                   <div className="text-sm text-slate-400">Countries</div>
                 </div>
                 <div>
-                  <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats ? siteStats.whatsapp_groups?.toLocaleString() : '0'}</div>
+                  <div className="text-2xl md:text-3xl font-bold text-gold"><AnimatedStat value={siteStats?.whatsapp_groups} /></div>
                   <div className="text-sm text-slate-400">WhatsApp Groups</div>
                 </div>
                 <div>
-                  <div className="text-2xl md:text-3xl font-bold text-gold">{siteStats ? siteStats.main_channel_followers?.toLocaleString() : '0'}+</div>
+                  <div className="text-2xl md:text-3xl font-bold text-gold"><AnimatedStat value={siteStats?.main_channel_followers} />+</div>
                   <div className="text-sm text-slate-400">Main Career Channel Followers</div>
                 </div>
               </div>
@@ -160,7 +192,7 @@ export default function Home() {
               </div>
               {/* Floating Card Overlay */}
               <div className="absolute -bottom-4 left-4 bg-white rounded-xl p-4 shadow-lg">
-                <div className="text-xl font-bold text-navy">{siteStats ? siteStats.community_members?.toLocaleString() : ''}+</div>
+                <div className="text-xl font-bold text-navy"><AnimatedStat value={siteStats?.community_members} />+</div>
                 <div className="text-xs text-slate-500">community members</div>
               </div>
             </motion.div>
