@@ -149,7 +149,7 @@ export default function ManagePopup() {
             <button onClick={() => setPreview(false)} className="absolute top-4 right-4 text-muted hover:text-white z-10"><X size={24} /></button>
             {settings.image_url && <img src={settings.image_url} alt="" className="w-full max-h-80 object-contain bg-black/30" />}
             <div className="p-6">
-              <p className="text-white text-lg leading-relaxed">{settings.message}</p>
+              <p className="text-white text-lg leading-relaxed whitespace-pre-wrap">{settings.message}</p>
               {settings.link_url && (
                 <a href={settings.link_url} target="_blank" rel="noreferrer" className="btn-primary inline-flex items-center gap-2 mt-4">
                   Learn More
