@@ -117,7 +117,7 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-40 bg-gold border-b border-gold/80">
+    <nav className="fixed top-0 left-0 right-0 z-40 bg-amber-400 border-b border-amber-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
 
         {/* Logo */}
