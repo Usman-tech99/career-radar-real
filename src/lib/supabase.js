@@ -18,11 +18,10 @@ function supabaseFetch(url, options) {
   }
   let requestUrl = url
   try {
-    const u = new URL(url)
-    if (!u.searchParams.has('apikey')) {
-      u.searchParams.set('apikey', anonKey)
+    if (!url.includes('apikey=')) {
+      const sep = url.includes('?') ? '&' : '?'
+      requestUrl = url + sep + 'apikey=' + encodeURIComponent(anonKey)
     }
-    requestUrl = u.toString()
   } catch {}
   return fetch(requestUrl, { ...options, headers })
 }
