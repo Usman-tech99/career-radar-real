@@ -9,9 +9,12 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 function supabaseFetch(url, options) {
   const headers = { ...(options?.headers || {}) }
-  headers['apikey'] = supabaseAnonKey || 'placeholder-key'
-  if (headers.Authorization?.startsWith('Bearer sb_')) {
+  const anonKey = supabaseAnonKey || 'placeholder-key'
+  headers['apikey'] = anonKey
+  const auth = headers.Authorization || headers.authorization || ''
+  if (auth === `Bearer ${anonKey}` || auth.startsWith('Bearer sb_')) {
     delete headers.Authorization
+    delete headers.authorization
   }
   return fetch(url, { ...options, headers })
 }
