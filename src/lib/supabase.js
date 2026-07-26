@@ -8,15 +8,22 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 function supabaseFetch(url, options) {
-  const headers = { ...(options?.headers || {}) }
+  const headers = new Headers(options?.headers || {})
   const anonKey = supabaseAnonKey || 'placeholder-key'
-  headers['apikey'] = anonKey
-  const auth = headers.Authorization || headers.authorization || ''
+  if (!headers.has('apikey')) headers.set('apikey', anonKey)
+  const auth = headers.get('Authorization') || headers.get('authorization') || ''
   if (auth === `Bearer ${anonKey}` || auth.startsWith('Bearer sb_')) {
-    delete headers.Authorization
-    delete headers.authorization
+    headers.delete('Authorization')
+    headers.delete('authorization')
   }
-  return fetch(url, { ...options, headers })
+  let requestUrl = url
+  try {
+    if (!url.includes('apikey=')) {
+      const sep = url.includes('?') ? '&' : '?'
+      requestUrl = url + sep + 'apikey=' + encodeURIComponent(anonKey)
+    }
+  } catch {}
+  return fetch(requestUrl, { ...options, headers })
 }
 
 export const supabase = createClient(
