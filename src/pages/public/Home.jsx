@@ -105,7 +105,8 @@ export default function Home() {
   const [siteStats, setSiteStats] = useState(null)
 
   useEffect(() => {
-    supabase.from('site_stats').select('*').single().then(({ data }) => {
+    supabase.from('site_stats').select('*').single().then(({ data, error }) => {
+      if (error) console.error('Stats fetch error:', error)
       if (data) setSiteStats(data)
     })
   }, [])
