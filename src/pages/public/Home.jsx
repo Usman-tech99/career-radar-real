@@ -365,7 +365,7 @@ export default function Home() {
             <BorderBeam size={150} duration={10} colorFrom="#F5A623" colorTo="#8B5CF6" borderWidth={1} />
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">A Message from the Founder</h2>
             <div className="relative w-full aspect-video max-w-3xl mx-auto rounded-xl overflow-hidden">
-              <iframe src="https://www.youtube-nocookie.com/embed/BTWmQzuCjyc" title="Founder Message"  allowFullScreen className="absolute inset-0 w-full h-full" />
+              <iframe src="https://www.youtube-nocookie.com/embed/BTWmQzuCjyc" title="Founder Message" allow="autoplay; encrypted-media" allowFullScreen loading="lazy" className="absolute inset-0 w-full h-full" />
             </div>
           </div>
         </BlurFade>
