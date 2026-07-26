@@ -33,13 +33,21 @@ export default async function handler(req, res) {
 
   // Support both raw storage paths (file + bucket) and full public URLs (url)
   if (req.query.file) {
+    const fileName = req.query.file
+    if (fileName.includes('..') || fileName.startsWith('/')) {
+      return res.status(400).json({ error: 'Invalid file path' })
+    }
     const bucket = req.query.bucket || 'product-files'
-    const { data, error } = await supabase.storage.from(bucket).download(req.query.file)
+    const allowedBuckets = ['product-files', 'content-files', 'collaborator-logos']
+    if (!allowedBuckets.includes(bucket)) {
+      return res.status(400).json({ error: 'Invalid bucket' })
+    }
+    const { data, error } = await supabase.storage.from(bucket).download(fileName)
     if (error || !data) {
       return res.status(404).json({ error: 'File not found' })
     }
     const buffer = Buffer.from(await data.arrayBuffer())
-    const safeName = req.query.file.split('/').pop() || 'download'
+    const safeName = fileName.split('/').pop() || 'download'
     res.setHeader('Content-Type', 'application/pdf')
     res.setHeader('Content-Disposition', `inline; filename="${safeName}"`)
     res.setHeader('Cache-Control', 'no-cache')
@@ -47,11 +55,16 @@ export default async function handler(req, res) {
   }
 
   if (req.query.url) {
+    // Only allow Supabase storage signed URLs
     const allowedDomain = SUPABASE_URL.replace(/^https?:\/\//, '').split('/')[0]
     try {
       const parsed = new URL(req.query.url)
-      if (!parsed.hostname.endsWith(allowedDomain)) {
+      const hostname = parsed.hostname.toLowerCase()
+      if (hostname !== allowedDomain && !hostname.endsWith('.' + allowedDomain)) {
         return res.status(403).json({ error: 'URL not allowed' })
+      }
+      if (parsed.protocol !== 'https:') {
+        return res.status(403).json({ error: 'HTTPS required' })
       }
     } catch {
       return res.status(400).json({ error: 'Invalid URL' })

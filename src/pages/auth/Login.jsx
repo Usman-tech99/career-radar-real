@@ -30,7 +30,7 @@ export default function Login() {
       toast.success('Welcome back!')
       navigate('/')
     } catch (error) {
-      toast.error(error.message)
+      toast.error('Invalid email or password')
     } finally {
       setLoading(false)
     }

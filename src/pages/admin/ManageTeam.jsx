@@ -181,7 +181,7 @@ export default function ManageTeam() {
                 </div>
                 <div>
                   <label className="label">Temporary Password</label>
-                  <input required type="text" minLength="6" maxLength={16} value={newPassword} onChange={e => setNewPassword(e.target.value)} className="input-field" placeholder="password123" />
+                  <input required type="password" minLength="8" value={newPassword} onChange={e => setNewPassword(e.target.value)} className="input-field" placeholder="Min. 8 characters" />
                 </div>
                 <div>
                   <label className="label">Role Level</label>

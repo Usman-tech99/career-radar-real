@@ -166,18 +166,14 @@ export function AuthProvider({ children }) {
       await supabase.auth.signOut()
     } catch (err) {
       console.error('Supabase sign out error:', err)
-    } finally {
-      setUser(null)
-      setRole(null)
-      setRoleLabel('')
-      setPermissions([])
-      setOnboardingComplete(false)
-      setRoleChecked(true)
-      // Remove only Supabase keys instead of nuking all localStorage
-      const keysToRemove = Object.keys(localStorage).filter(k => k.startsWith('sb-'))
-      keysToRemove.forEach(k => localStorage.removeItem(k))
-      window.location.href = '/'
     }
+    setUser(null)
+    setRole(null)
+    setRoleLabel('')
+    setPermissions([])
+    setOnboardingComplete(false)
+    setRoleChecked(true)
+    window.location.href = '/'
   }
 
   function getRedirectPath() {

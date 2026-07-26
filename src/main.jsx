@@ -5,6 +5,10 @@ import { Analytics } from '@vercel/analytics/react'
 import App from './App.jsx'
 import './index.css'
 
+function sanitize(str) {
+  return typeof str === 'string' ? str.replace(/[<>]/g, '').slice(0, 1000) : ''
+}
+
 // Global error handler — skip logging in development
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 window.addEventListener('error', (e) => {
@@ -14,10 +18,10 @@ window.addEventListener('error', (e) => {
     headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY },
     body: JSON.stringify({
       user_id: null,
-      url: window.location.href,
-      message: e.message || 'Unhandled error',
-      stack: e.error?.stack || '',
-      user_agent: navigator.userAgent,
+      url: sanitize(window.location.href),
+      message: sanitize(e.message || 'Unhandled error'),
+      stack: sanitize(e.error?.stack || ''),
+      user_agent: sanitize(navigator.userAgent),
     })
   }).catch(() => {})
 })
@@ -28,10 +32,10 @@ window.addEventListener('unhandledrejection', (e) => {
     headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY },
     body: JSON.stringify({
       user_id: null,
-      url: window.location.href,
-      message: e.reason?.message || 'Unhandled promise rejection',
-      stack: e.reason?.stack || '',
-      user_agent: navigator.userAgent,
+      url: sanitize(window.location.href),
+      message: sanitize(e.reason?.message || 'Unhandled promise rejection'),
+      stack: sanitize(e.reason?.stack || ''),
+      user_agent: sanitize(navigator.userAgent),
     })
   }).catch(() => {})
 })

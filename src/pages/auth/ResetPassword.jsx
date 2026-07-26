@@ -9,14 +9,19 @@ export default function ResetPassword() {
   const [confirm, setConfirm] = useState('')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
+  const [recoveryReady, setRecoveryReady] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange(async (event) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        // Session is ready for password update
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setRecoveryReady(true)
+    })
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
+        setRecoveryReady(true)
       }
     })
+    return () => subscription?.unsubscribe()
   }, [])
 
   async function handleReset(e) {
@@ -25,8 +30,8 @@ export default function ResetPassword() {
       toast.error('Passwords do not match')
       return
     }
-    if (password.length < 6) {
-      toast.error('Password must be at least 6 characters')
+    if (password.length < 8) {
+      toast.error('Password must be at least 8 characters')
       return
     }
 
@@ -70,7 +75,11 @@ export default function ResetPassword() {
           )}
         </div>
 
-        {!done && (
+        {!done && !recoveryReady && (
+          <p className="text-muted text-sm text-center">Verifying your session...</p>
+        )}
+
+        {!done && recoveryReady && (
           <form onSubmit={handleReset} className="space-y-5">
             <div>
               <label className="label">New Password</label>
@@ -79,7 +88,7 @@ export default function ResetPassword() {
                 <input
                   type="password"
                   required
-                  maxLength={16}
+                  minLength={8}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   className="input-field pl-10"
@@ -95,7 +104,7 @@ export default function ResetPassword() {
                 <input
                   type="password"
                   required
-                  maxLength={16}
+                  minLength={8}
                   value={confirm}
                   onChange={e => setConfirm(e.target.value)}
                   className="input-field pl-10"
@@ -112,6 +121,10 @@ export default function ResetPassword() {
               {loading ? 'Updating...' : 'Reset Password'}
             </button>
           </form>
+        )}
+
+        {!done && !recoveryReady && (
+          <p className="text-xs text-muted text-center mt-4">No active recovery session. Use the link from your email.</p>
         )}
       </div>
     </div>

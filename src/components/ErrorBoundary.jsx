@@ -11,19 +11,19 @@ export default class ErrorBoundary extends Component {
     return { hasError: true }
   }
 
-  async componentDidCatch(error, info) {
+  async componentDidCatch(error) {
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return
     try {
+      const sanitize = (s) => typeof s === 'string' ? s.replace(/[<>]/g, '').slice(0, 1000) : ''
       const user = (await supabase.auth.getUser()).data?.user
       await supabase.from('error_logs').insert({
         user_id: user?.id || null,
-        url: window.location.href,
-        message: error?.message || 'Unknown error',
-        stack: error?.stack || '',
-        user_agent: navigator.userAgent || '',
+        url: sanitize(window.location.href),
+        message: sanitize(error?.message || 'Unknown error'),
+        stack: sanitize(error?.stack || ''),
+        user_agent: sanitize(navigator.userAgent || ''),
       })
     } catch (_) {
-      // Silently fail — can't log if logging itself fails
     }
   }
 

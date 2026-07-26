@@ -16,14 +16,7 @@ function supabaseFetch(url, options) {
     delete headers.Authorization
     delete headers.authorization
   }
-  let requestUrl = url
-  try {
-    if (!url.includes('apikey=')) {
-      const sep = url.includes('?') ? '&' : '?'
-      requestUrl = url + sep + 'apikey=' + encodeURIComponent(anonKey)
-    }
-  } catch {}
-  return fetch(requestUrl, { ...options, headers })
+  return fetch(url, { ...options, headers })
 }
 
 export const supabase = createClient(

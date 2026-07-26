@@ -56,6 +56,20 @@ Deno.serve(async (req: Request) => {
     const esc = (s) => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
     if (type === 'approved') {
+      const authHeader = req.headers.get('authorization');
+      if (!authHeader) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...cors, "Content-Type": "application/json" } });
+      }
+      const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+      const token = authHeader.replace('Bearer ', '');
+      const { data: { user }, error: authError } = await sb.auth.getUser(token);
+      if (authError || !user) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...cors, "Content-Type": "application/json" } });
+      }
+      const { data: roleData } = await sb.from('user_roles').select('role').eq('user_id', user.id).single();
+      if (roleData?.role !== 'super_admin' && roleData?.role !== 'admin') {
+        return new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403, headers: { ...cors, "Content-Type": "application/json" } });
+      }
       const html = `
         <h2>Welcome to Career Radar!</h2>
         <p>Dear ${esc(full_name)},</p>
@@ -110,6 +124,7 @@ Deno.serve(async (req: Request) => {
 
     return new Response(JSON.stringify({ success: true }), { headers: { ...cors, "Content-Type": "application/json" } });
   } catch (error: any) {
-    return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
+    console.error('send-volunteer-email error:', error);
+    return new Response(JSON.stringify({ error: "Failed to send email" }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
   }
 });

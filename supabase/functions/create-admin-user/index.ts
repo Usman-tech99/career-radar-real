@@ -58,6 +58,7 @@ Deno.serve(async (req: Request) => {
     return new Response(JSON.stringify({ success: true, user: newAuthUser.user }), { headers: { ...cors, "Content-Type": "application/json" } });
 
   } catch (error: any) {
-    return new Response(JSON.stringify({ error: error?.message || "An unknown error occurred" }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
+    console.error('create-admin-user error:', error);
+    return new Response(JSON.stringify({ error: "Operation failed" }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
   }
 });

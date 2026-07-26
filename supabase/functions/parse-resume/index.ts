@@ -101,6 +101,7 @@ Rules:
 
   } catch (error: any) {
     console.error("parse-resume Error:", error);
-    return new Response(JSON.stringify({ error: error?.message || "An unknown error occurred" }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
+    console.error("parse-resume Error:", error);
+    return new Response(JSON.stringify({ error: "Resume parsing failed" }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
   }
 });

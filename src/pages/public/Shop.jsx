@@ -7,6 +7,16 @@ import { ShoppingBag, Download, ExternalLink, MessageCircle, DollarSign, X } fro
 import toast from 'react-hot-toast'
 import { Helmet } from 'react-helmet-async'
 
+function safeExternalUrl(url) {
+  if (!url || typeof url !== 'string') return ''
+  try {
+    const parsed = new URL(url)
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:' ? url : ''
+  } catch {
+    return ''
+  }
+}
+
 export default function Shop({ navless } = {}) {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -70,7 +80,12 @@ export default function Shop({ navless } = {}) {
       if (product.file_url) {
         window.open(`/api/download?file=${encodeURIComponent(product.file_url)}`, '_blank')
       } else if (product.external_link) {
-        window.open(product.external_link, '_blank')
+        const safeUrl = safeExternalUrl(product.external_link)
+        if (safeUrl) {
+          window.open(safeUrl, '_blank')
+        } else {
+          toast.error('Invalid product link')
+        }
       }
     } else {
       setSelectedProduct(product)

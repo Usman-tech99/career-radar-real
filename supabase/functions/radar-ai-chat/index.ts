@@ -32,15 +32,16 @@ Deno.serve(async (req: Request) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
     let callerUserId: string | null = null;
-    if (token) {
-      const { data: { user }, error: authError } = await sb.auth.getUser(token);
-      if (!authError && user) {
-        callerUserId = user.id;
-      }
+    if (!token) {
+      return new Response(JSON.stringify({ error: 'Authentication required' }), { status: 401, headers: { ...cors, "Content-Type": "application/json" } });
     }
+    const { data: { user }, error: authError } = await sb.auth.getUser(token);
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: 'Invalid token' }), { status: 401, headers: { ...cors, "Content-Type": "application/json" } });
+    }
+    callerUserId = user.id;
 
     const { messages, session_id } = await req.json();
-    // Use the verified caller ID; never trust the body's user_id
     const verifiedUserId = callerUserId;
 
     const { data: jobs } = await sb
@@ -292,6 +293,7 @@ LIVE DATA:\n\n${liveData}`
 
   } catch (error: any) {
     console.error("Radar AI Error:", error);
-    return new Response(JSON.stringify({ error: error?.message || "An unknown error occurred" }), { status: 500, headers: cors });
+    console.error("Radar AI Error:", error);
+    return new Response(JSON.stringify({ error: "An internal error occurred" }), { status: 500, headers: cors });
   }
 });

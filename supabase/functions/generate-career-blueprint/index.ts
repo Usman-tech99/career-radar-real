@@ -179,6 +179,7 @@ Return ONLY valid JSON (no markdown, no code fences) with this exact structure:
 
   } catch (error: any) {
     console.error("Blueprint Error:", error);
-    return new Response(JSON.stringify({ error: error?.message || "An unknown error occurred" }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
+    console.error("Blueprint Error:", error);
+    return new Response(JSON.stringify({ error: "Blueprint generation failed" }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
   }
 });

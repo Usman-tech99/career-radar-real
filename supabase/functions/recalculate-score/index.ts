@@ -194,8 +194,7 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ success: true, score: updatedScore }), { headers: { ...cors, "Content-Type": "application/json" } });
 
   } catch (error: any) {
-    console.error("Score Error:", JSON.stringify(error));
-    const message = error?.message || error?.error?.message || JSON.stringify(error) || "Unknown error";
-    return new Response(JSON.stringify({ error: message }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
+    console.error("Score Error:", error);
+    return new Response(JSON.stringify({ error: "Score calculation failed" }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
   }
 });

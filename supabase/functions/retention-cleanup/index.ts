@@ -9,8 +9,14 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || '';
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 
-Deno.serve(async (_req: Request) => {
+Deno.serve(async (req: Request) => {
   try {
+    const authHeader = req.headers.get('authorization') || '';
+    const token = authHeader.replace('Bearer ', '');
+    if (token !== SUPABASE_SERVICE_ROLE_KEY) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { "Content-Type": "application/json" } });
+    }
+
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const results: string[] = [];
 
@@ -36,6 +42,7 @@ Deno.serve(async (_req: Request) => {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error: any) {
-    return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { "Content-Type": "application/json" } });
+    console.error('retention-cleanup error:', error);
+    return new Response(JSON.stringify({ error: 'Internal error' }), { status: 500, headers: { "Content-Type": "application/json" } });
   }
 });
