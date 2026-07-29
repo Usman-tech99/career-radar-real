@@ -120,7 +120,12 @@ export function AuthProvider({ children }) {
           setRoleChecked(true)
         }
       } catch (err) {
-        console.error('Auth init error')
+        console.error('Auth init error — clearing corrupted session')
+        try {
+          const keys = Object.keys(localStorage).filter(k => k.startsWith('sb-'))
+          keys.forEach(k => localStorage.removeItem(k))
+          if (mounted) supabase.auth.signOut().catch(() => {})
+        } catch {}
         if (mounted) setRoleChecked(true)
       } finally {
         if (mounted) initialLoadDone.current = true
