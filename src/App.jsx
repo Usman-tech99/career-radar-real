@@ -99,6 +99,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
+      <ErrorBoundary>
       <AuthProvider>
         <ErrorBoundary>
         <Suspense fallback={null}>
@@ -209,6 +210,7 @@ export default function App() {
         </Suspense>
         </ErrorBoundary>
       </AuthProvider>
+      </ErrorBoundary>
       </ThemeProvider>
     </BrowserRouter>
   )
