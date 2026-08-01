@@ -17,6 +17,10 @@ export default function Register() {
 
   function friendlyError(error) {
     const msg = error?.message || String(error || '')
+    const clean = msg.trim()
+    if (!clean || clean === '{}' || clean === '[object Object]' || clean === 'undefined' || clean === 'null') {
+      return 'Something went wrong. Please try again.'
+    }
     if (/captcha/i.test(msg)) {
       return 'Verification could not load on this network. Please check your connection or try again later.'
     }
