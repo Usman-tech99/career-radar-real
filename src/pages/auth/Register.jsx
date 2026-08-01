@@ -12,11 +12,28 @@ export default function Register() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [captchaToken, setCaptchaToken] = useState('')
+  const [captchaFailed, setCaptchaFailed] = useState(false)
   const navigate = useNavigate()
+
+  function friendlyError(error) {
+    const msg = error?.message || String(error || '')
+    if (/captcha/i.test(msg)) {
+      return 'Verification could not load on this network. Please check your connection or try again later.'
+    }
+    if (/apikey|API key/i.test(msg)) {
+      return 'Something went wrong. Please try again.'
+    }
+    return msg
+  }
 
   async function handleRegister(e) {
     e.preventDefault()
-    if (!captchaToken) return toast.error('Please wait for verification')
+    if (!captchaToken) {
+      toast.error(captchaFailed
+        ? 'Verification failed to load. Please refresh the page or try a different network.'
+        : 'Please wait for verification')
+      return
+    }
     setLoading(true)
 
     try {
@@ -41,7 +58,7 @@ export default function Register() {
         toast('Please check your email for a verification link to complete registration.', { icon: 'ðŸ“§' })
       }
     } catch (error) {
-      toast.error(error.message)
+      toast.error(friendlyError(error))
     } finally {
       setLoading(false)
     }
@@ -115,9 +132,17 @@ export default function Register() {
             <Turnstile
               siteKey={TURNSTILE_SITE_KEY}
               onSuccess={setCaptchaToken}
+              onError={() => setCaptchaFailed(true)}
+              onTimeout={() => setCaptchaFailed(true)}
+              onLoadScriptError={() => setCaptchaFailed(true)}
               options={{ theme: 'light' }}
             />
           </div>
+          {captchaFailed && (
+            <p className="text-center text-xs text-red-400 -mt-2">
+              Verification could not load on this network. Try a different connection or refresh the page.
+            </p>
+          )}
 
           <button 
             type="submit" 
