@@ -368,6 +368,9 @@ export default function VolunteerForm() {
                 <Turnstile
                   siteKey={TURNSTILE_SITE_KEY}
                   onSuccess={setCaptchaToken}
+                  onError={() => toast.error('Verification could not load on this network. Try a different connection.')}
+                  onTimeout={() => toast.error('Verification timed out. Please refresh the page.')}
+                  onLoadScriptError={() => toast.error('Verification could not load on this network. Try a different connection.')}
                   options={{ theme: 'light' }}
                 />
               </div>

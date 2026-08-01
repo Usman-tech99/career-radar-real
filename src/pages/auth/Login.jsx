@@ -11,11 +11,17 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [captchaToken, setCaptchaToken] = useState('')
+  const [captchaFailed, setCaptchaFailed] = useState(false)
   const navigate = useNavigate()
 
   async function handleLogin(e) {
     e.preventDefault()
-    if (!captchaToken) return toast.error('Please wait for verification')
+    if (!captchaToken) {
+      toast.error(captchaFailed
+        ? 'Verification failed to load. Please refresh the page or try a different network.'
+        : 'Please wait for verification')
+      return
+    }
     setLoading(true)
 
     try {
@@ -91,9 +97,17 @@ export default function Login() {
             <Turnstile
               siteKey={TURNSTILE_SITE_KEY}
               onSuccess={setCaptchaToken}
+              onError={() => setCaptchaFailed(true)}
+              onTimeout={() => setCaptchaFailed(true)}
+              onLoadScriptError={() => setCaptchaFailed(true)}
               options={{ theme: 'light' }}
             />
           </div>
+          {captchaFailed && (
+            <p className="text-center text-xs text-red-400 -mt-2">
+              Verification could not load on this network. Try a different connection or refresh the page.
+            </p>
+          )}
 
           <button 
             type="submit" 
