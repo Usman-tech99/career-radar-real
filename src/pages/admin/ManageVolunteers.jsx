@@ -29,9 +29,14 @@ export default function ManageVolunteers() {
       const vol = volunteers.find(v => v.id === id)
       if (vol) {
         try {
+          const { data: { session } } = await supabase.auth.getSession()
           const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-volunteer-email`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY },
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${session?.access_token}`,
+            },
             body: JSON.stringify({ type: 'approved', full_name: vol.full_name, email: vol.email })
           })
           if (!res.ok) console.error('Failed to send approval email')
