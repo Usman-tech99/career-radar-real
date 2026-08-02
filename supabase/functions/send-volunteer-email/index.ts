@@ -1,4 +1,6 @@
 // @ts-nocheck
+import { createClient } from "jsr:@supabase/supabase-js@2";
+
 declare const Deno: {
   serve: (handler: (req: Request) => Promise<Response>) => void;
   env: { get: (key: string) => string | undefined };
@@ -41,15 +43,20 @@ Deno.serve(async (req: Request) => {
     const { type, captchaToken, full_name, email, phone, country, departments } = await req.json();
 
     // Verify captcha on new submissions (not approval emails from admin)
-    if (type !== 'approved' && captchaToken && TURNSTILE_SECRET) {
-      const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `secret=${TURNSTILE_SECRET}&response=${captchaToken}`,
-      })
-      const verifyData = await verifyRes.json()
-      if (!verifyData.success) {
-        return new Response(JSON.stringify({ error: 'Captcha verification failed' }), { status: 403, headers: { ...cors, "Content-Type": "application/json" } })
+    if (type !== 'approved') {
+      if (!captchaToken) {
+        return new Response(JSON.stringify({ error: 'Captcha token missing' }), { status: 403, headers: { ...cors, "Content-Type": "application/json" } });
+      }
+      if (TURNSTILE_SECRET) {
+        const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `secret=${TURNSTILE_SECRET}&response=${captchaToken}`,
+        })
+        const verifyData = await verifyRes.json()
+        if (!verifyData.success) {
+          return new Response(JSON.stringify({ error: 'Captcha verification failed' }), { status: 403, headers: { ...cors, "Content-Type": "application/json" } })
+        }
       }
     }
 
