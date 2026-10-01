@@ -482,4 +482,11 @@ check('stats views run as the caller so RLS applies', () => {
   if (views.length < 2) throw new Error('expected two security_invoker views')
 })
 
+check('views do not have policies (security_invoker handles RLS)', () => {
+  const viewPolicies = [...CODE.matchAll(/CREATE POLICY.*ON (certificate_stats|certificate_template_stats)/gi)]
+  if (viewPolicies.length > 0) {
+    throw new Error('views with security_invoker should not have policies - RLS is enforced from underlying tables')
+  }
+})
+
 console.log(`\n${passed} checks passed`)

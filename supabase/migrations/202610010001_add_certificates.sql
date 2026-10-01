@@ -760,6 +760,7 @@ REVOKE ALL ON FUNCTION revoke_certificate(UUID, TEXT) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION revoke_certificate(UUID, TEXT) TO authenticated;
 
 -- Dashboard aggregates (admin-only via the SELECT policy below).
+-- Views with security_invoker = true automatically enforce RLS from underlying tables.
 CREATE OR REPLACE VIEW certificate_stats WITH (security_invoker = true) AS
 SELECT
   count(*)                                                          AS total_issued,
@@ -774,15 +775,6 @@ SELECT
   count(DISTINCT template_id)                                         AS templates_in_use
 FROM certificates;
 
-DO $$
-BEGIN
-  IF EXISTS (SELECT 1 FROM pg_views WHERE schemaname = 'public' AND viewname = 'certificate_stats') THEN
-    DROP POLICY IF EXISTS "certificate_stats_admin_select" ON certificate_stats;
-    CREATE POLICY "certificate_stats_admin_select" ON certificate_stats FOR SELECT
-      USING (get_my_role() IN ('super_admin','admin'));
-  END IF;
-END $$;
-
 CREATE OR REPLACE VIEW certificate_template_stats WITH (security_invoker = true) AS
 SELECT
   ct.id, ct.name, ct.certificate_type, ct.is_active,
@@ -793,15 +785,6 @@ SELECT
 FROM certificate_templates ct
 LEFT JOIN certificates c ON c.template_id = ct.id
 GROUP BY ct.id, ct.name, ct.certificate_type, ct.is_active;
-
-DO $$
-BEGIN
-  IF EXISTS (SELECT 1 FROM pg_views WHERE schemaname = 'public' AND viewname = 'certificate_template_stats') THEN
-    DROP POLICY IF EXISTS "certificate_template_stats_admin_select" ON certificate_template_stats;
-    CREATE POLICY "certificate_template_stats_admin_select" ON certificate_template_stats FOR SELECT
-      USING (get_my_role() IN ('super_admin','admin'));
-  END IF;
-END $$;
 
 -- ===========================================================================
 -- Storage — private bucket for generated certificate PDFs
