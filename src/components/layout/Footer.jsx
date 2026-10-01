@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { MessageCircle, Youtube, Instagram, Linkedin, Twitter, Send, Users as UsersIcon, Globe, Mail, Handshake } from 'lucide-react'
+import { MessageCircle, Youtube, Instagram, Linkedin, Twitter, Send, Users as UsersIcon, Globe, Mail, Handshake, ShieldCheck } from 'lucide-react'
 import logo from '../../assets/logo.jpeg'
 
 const platformIcons = {
@@ -29,7 +29,7 @@ export default function Footer() {
   return (
     <footer className="bg-navy border-t border-navy/80 mt-20 pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-8 md:mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 md:gap-12 mb-8 md:mb-12">
 
           {/* Brand + Contact */}
           <div>
@@ -89,6 +89,19 @@ export default function Footer() {
               <li><Link to="/about" className="text-sm text-slate-100 hover:text-[#ffffff] transition-colors">Contact</Link></li>
               <li><Link to="/about" className="text-sm text-slate-100 hover:text-[#ffffff] transition-colors">Privacy Policy</Link></li>
               <li><Link to="/about" className="text-sm text-slate-100 hover:text-[#ffffff] transition-colors">Terms of Service</Link></li>
+            </ul>
+          </div>
+
+          {/* Services */}
+          <div>
+            <h4 className="font-bold text-[#ffffff] mb-6">Services</h4>
+            <ul className="space-y-4">
+              <li>
+                <Link to="/verify" className="text-sm text-slate-100 hover:text-[#ffffff] transition-colors flex items-center gap-2">
+                  <ShieldCheck size={14} className="text-gold" />
+                  Verify Certificate
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
