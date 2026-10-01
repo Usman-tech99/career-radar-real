@@ -18,6 +18,9 @@ const PATH_PERMISSIONS = {
   '/admin/manage-team-members': 'manage_team_members',
   '/admin/manage-payments': 'manage_payments',
   '/admin/ai-insights': 'ai_insights',
+  '/admin/certificates': 'manage_certificates',
+  '/admin/certificates/issue': 'manage_certificates',
+  '/admin/certificates/templates': 'manage_certificates',
 }
 
 export function ProtectedRoute({ allowedRoles }) {

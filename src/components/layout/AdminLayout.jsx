@@ -5,7 +5,8 @@ import {
   LayoutDashboard, Briefcase, FileText, ShoppingBag,
   BookOpen, LayoutTemplate, Info, Share2, Users, UserCheck,
   ShieldAlert, BarChart3, CreditCard, BrainCircuit, UserCircle,
-  GraduationCap, LogOut, Menu, X, ChevronRight, Home, Globe, AlertTriangle, Megaphone
+  GraduationCap, LogOut, Menu, X, ChevronRight, Home, Globe, AlertTriangle, Megaphone,
+  Award, FilePlus2
 } from 'lucide-react'
 
 const ALL_NAV_ITEMS = [
@@ -30,6 +31,9 @@ const ALL_NAV_ITEMS = [
   { label: 'Announcement', path: '/admin/manage-announcement', icon: Megaphone, perm: 'super_admin' },
   { label: 'Error Logs', path: '/admin/error-logs', icon: AlertTriangle, perm: 'super_admin' },
   { label: 'Volunteers', path: '/admin/manage-volunteers', icon: Users, perm: 'super_admin' },
+  { label: 'Certificates', path: '/admin/certificates', icon: Award, perm: 'manage_certificates' },
+  { label: 'Issue Certificate', path: '/admin/certificates/issue', icon: FilePlus2, perm: 'manage_certificates' },
+  { label: 'Cert Templates', path: '/admin/certificates/templates', icon: LayoutTemplate, perm: 'manage_certificates' },
   { label: 'My Profile', path: '/admin/my-profile', icon: UserCircle, perm: 'collaborator' },
 ]
 
@@ -45,7 +49,11 @@ export default function AdminLayout() {
     return permissions.includes(item.perm)
   })
 
-  const activeItem = filteredItems.find(item => location.pathname === item.path)
+  const activeItem = filteredItems.find(item =>
+    item.path === location.pathname ||
+    // Nested routes keep their parent highlighted, e.g. /admin/certificates/issue.
+    (item.path !== '/admin/dashboard' && location.pathname.startsWith(`${item.path}/`))
+  )
 
   // Breadcrumbs from path
   const pathParts = location.pathname.split('/').filter(Boolean)
@@ -55,7 +63,7 @@ export default function AdminLayout() {
   }))
 
   function NavLink({ item, onClick, mobile }) {
-    const active = location.pathname === item.path
+    const active = activeItem?.path === item.path
     return (
       <Link
         to={item.path}

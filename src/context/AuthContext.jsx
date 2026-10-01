@@ -88,14 +88,14 @@ export function AuthProvider({ children }) {
         'manage_jobs', 'manage_content', 'manage_products', 'manage_education',
         'manage_scholarships', 'manage_about', 'manage_community', 'manage_socials',
         'manage_collaborators', 'manage_structure', 'manage_stats', 'manage_team', 'manage_users', 'manage_team_members',
-        'manage_payments', 'ai_insights'
+        'manage_payments', 'ai_insights', 'manage_certificates'
       ]
       setPermissions(allPermissions)
     } else if (userRole === 'admin' && perms.length === 0) {
       const defaultAdminPermissions = [
         'manage_jobs', 'manage_content', 'manage_products', 'manage_education',
         'manage_scholarships', 'manage_about', 'manage_community', 'manage_socials',
-        'manage_collaborators'
+        'manage_collaborators', 'manage_certificates'
       ]
       setPermissions(defaultAdminPermissions)
     } else {

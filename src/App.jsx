@@ -36,6 +36,7 @@ const Volunteer = lazy(() => import('./pages/public/Volunteer'))
 const PrivacyPolicy = lazy(() => import('./pages/public/PrivacyPolicy'))
 const Search = lazy(() => import('./pages/public/Search'))
 const NotFound = lazy(() => import('./pages/public/NotFound'))
+const VerifyCertificate = lazy(() => import('./pages/public/VerifyCertificate'))
 
 const Login = lazy(() => import('./pages/auth/Login'))
 const Register = lazy(() => import('./pages/auth/Register'))
@@ -71,6 +72,9 @@ const ManageErrorLogs = lazy(() => import('./pages/admin/ManageErrorLogs'))
 const ManageVolunteers = lazy(() => import('./pages/admin/ManageVolunteers'))
 const ManagePopup = lazy(() => import('./pages/admin/ManagePopup'))
 const ManageAnnouncement = lazy(() => import('./pages/admin/ManageAnnouncement'))
+const ManageCertificates = lazy(() => import('./pages/admin/ManageCertificates'))
+const ManageCertificateTemplates = lazy(() => import('./pages/admin/ManageCertificateTemplates'))
+const IssueCertificate = lazy(() => import('./pages/admin/IssueCertificate'))
 
 function Loader() {
   return (
@@ -139,6 +143,8 @@ export default function App() {
             <Route path="/donate" element={<Donate />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/search" element={<Search />} />
+            <Route path="/verify" element={<VerifyCertificate />} />
+            <Route path="/verify/:token" element={<VerifyCertificate />} />
 
             {/* AUTH */}
             <Route path="/login" element={<Login />} />
@@ -184,6 +190,9 @@ export default function App() {
                 <Route path="/admin/manage-community" element={<ManageCommunity />} />
                 <Route path="/admin/manage-socials" element={<ManageSocials />} />
                 <Route path="/admin/manage-collaborators" element={<ManageCollaborators />} />
+                <Route path="/admin/certificates" element={<ManageCertificates />} />
+                <Route path="/admin/certificates/issue" element={<IssueCertificate />} />
+                <Route path="/admin/certificates/templates" element={<ManageCertificateTemplates />} />
               </Route>
 
               <Route element={<SuperAdminRoute />}>
