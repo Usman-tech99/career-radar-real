@@ -390,10 +390,10 @@ $$;
 CREATE OR REPLACE FUNCTION generate_verification_token()
 RETURNS TEXT
 LANGUAGE sql
-SET search_path = public, pgcrypto
 AS $$
   -- 192 bits of entropy, URL-safe. Unpredictable so URLs cannot be enumerated.
-  SELECT 'v_' || encode(gen_random_bytes(24), 'hex');
+  -- Use gen_random_uuid() which is always available in PostgreSQL 13+
+  SELECT 'v_' || replace(gen_random_uuid()::text, '-', '');
 $$;
 
 DROP FUNCTION IF EXISTS set_certificate_defaults() CASCADE;
