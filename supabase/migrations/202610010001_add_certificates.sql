@@ -390,6 +390,7 @@ $$;
 CREATE OR REPLACE FUNCTION generate_verification_token()
 RETURNS TEXT
 LANGUAGE sql
+SET search_path = public, pgcrypto
 AS $$
   -- 192 bits of entropy, URL-safe. Unpredictable so URLs cannot be enumerated.
   SELECT 'v_' || encode(gen_random_bytes(24), 'hex');
