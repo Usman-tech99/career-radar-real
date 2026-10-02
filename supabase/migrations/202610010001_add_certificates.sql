@@ -5,6 +5,22 @@
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- ---------------------------------------------------------------------------
+-- Helper functions
+-- ---------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION get_my_role()
+RETURNS TEXT AS $$
+  SELECT role FROM user_roles WHERE user_id = (SELECT auth.uid())
+$$ LANGUAGE sql SECURITY DEFINER STABLE;
+
+CREATE OR REPLACE FUNCTION handle_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- ---------------------------------------------------------------------------
 -- 1. Certificate templates
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS certificate_templates (
@@ -876,3 +892,19 @@ DROP FUNCTION IF EXISTS record_certificate_download(UUID, TEXT, TEXT);
 REVOKE ALL ON FUNCTION record_certificate_download(UUID, TEXT, TEXT, UUID, TEXT) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION record_certificate_verification(UUID) TO service_role;
 GRANT EXECUTE ON FUNCTION record_certificate_download(UUID, TEXT, TEXT, UUID, TEXT) TO service_role;
+
+-- ---------------------------------------------------------------------------
+-- Add manage_certificates permission to admin roles
+-- ---------------------------------------------------------------------------
+DO $$
+BEGIN
+  -- Add to admin role
+  UPDATE user_roles
+  SET permissions = array_append(permissions, 'manage_certificates')
+  WHERE role = 'admin' AND NOT 'manage_certificates' = ANY(permissions);
+
+  -- Add to super_admin role (should already have all, but ensure it)
+  UPDATE user_roles
+  SET permissions = array_append(permissions, 'manage_certificates')
+  WHERE role = 'super_admin' AND NOT 'manage_certificates' = ANY(permissions);
+END $$;
