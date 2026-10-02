@@ -44,8 +44,6 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
   if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
 
-  let browser = null;
-
   try {
     const authHeader = req.headers.get('authorization');
     if (!authHeader) return json({ error: 'Missing authorization header' }, 401);
@@ -92,6 +90,34 @@ Deno.serve(async (req) => {
     if (certError) throw certError;
     if (!certificate) return json({ error: 'Certificate not found' }, 404);
 
+    // Check if PDF already exists - if so, just mint a new signed URL
+    if (certificate.pdf_path) {
+      const { data: signed, error: signError } = await admin.storage
+        .from('certificate-pdfs')
+        .createSignedUrl(certificate.pdf_path, 300, download ? { download: `${certificate.certificate_id}.pdf` } : undefined);
+
+      if (signError) throw new Error(`Failed to sign PDF URL: ${signError.message}`);
+
+      if (download) {
+        const { error: downloadError } = await admin.rpc('record_certificate_download', {
+          p_certificate_id: certificate.id,
+          p_ip_hash: null,
+          p_user_agent: (req.headers.get('user-agent') || '').slice(0, 300),
+          p_actor: user.id,
+          p_channel: 'admin',
+        });
+        if (downloadError) console.error('record_certificate_download error:', downloadError);
+      }
+
+      return json({
+        success: true,
+        url: signed.signedUrl,
+        certificateId: certificate.certificate_id,
+        generatedAt: certificate.pdf_generated_at || new Date().toISOString(),
+        cached: true,
+      });
+    }
+
     // Page geometry and artwork come from the FROZEN snapshot so that editing a
     // template later cannot silently re-render an already-issued certificate.
     // The live template row is only a fallback for records snapshotted before
@@ -134,84 +160,93 @@ Deno.serve(async (req) => {
     });
 
     // 5. Render to PDF.
-    const { chromium, puppeteer } = await loadChromium();
-    browser = await puppeteer.launch({
-      args: [...chromium.args, '--font-render-hinting=none'],
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless === true ? true : 'shell',
-    });
-
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0', timeout: 60_000 });
-
-    // Webfonts must be resolved before printing or the PDF falls back to system
-    // fonts and the layout no longer matches the preview.
-    await page.evaluate(() => document.fonts.ready);
-    await page.emulateMediaType('print');
-
-    const pdfBytes = await page.pdf({
-      format: pageSize === 'Letter' ? 'Letter' : 'A4',
-      landscape: orientationValue === 'landscape',
-      printBackground: true,
-      preferCSSPageSize: true,
-      margin: { top: '0mm', right: '0mm', bottom: '0mm', left: '0mm' },
-    });
-
-    await page.close();
-
-    // 6. Persist to the private bucket. The object key is the certificate UUID,
-    //    which is stable and lets any later regeneration or public lookup find
-    //    the file without relying on `pdf_path` or the mutable `certificate_id`.
-    const filePath = `${certificate.id}.pdf`;
-    const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-
-    const { error: uploadError } = await admin.storage
-      .from('certificate-pdfs')
-      .upload(filePath, pdfBlob, { contentType: 'application/pdf', upsert: true });
-
-    if (uploadError) throw new Error(`Failed to store PDF: ${uploadError.message}`);
-
-    await admin
-      .from('certificates')
-      .update({ pdf_path: filePath, pdf_generated_at: new Date().toISOString() })
-      .eq('id', certificate.id);
-
-    // `log_certificate_audit` derives its actor from auth.uid(), which is null in
-    // a service-role context. `record_certificate_download` therefore accepts the
-    // already-verified caller id and is granted to service_role only, so the actor
-    // cannot be forged from the browser.
-    if (download) {
-      const { error: downloadError } = await admin.rpc('record_certificate_download', {
-        p_certificate_id: certificate.id,
-        p_ip_hash: null,
-        p_user_agent: (req.headers.get('user-agent') || '').slice(0, 300),
-        p_actor: user.id,
-        p_channel: 'admin',
+    let browser = null;
+    try {
+      const { chromium, puppeteer } = await loadChromium();
+      browser = await puppeteer.launch({
+        args: [...chromium.args, '--font-render-hinting=none'],
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath(),
+        headless: chromium.headless === true ? true : 'shell',
       });
-      // A failed counter must not fail the download the admin asked for.
-      if (downloadError) console.error('record_certificate_download error:', downloadError);
+
+      const page = await browser.newPage();
+      await page.setContent(html, { waitUntil: 'networkidle0', timeout: 60_000 });
+
+      // Webfonts must be resolved before printing or the PDF falls back to system
+      // fonts and the layout no longer matches the preview.
+      await page.evaluate(() => document.fonts.ready);
+      await page.emulateMediaType('print');
+
+      const pdfBytes = await page.pdf({
+        format: pageSize === 'Letter' ? 'Letter' : 'A4',
+        landscape: orientationValue === 'landscape',
+        printBackground: true,
+        preferCSSPageSize: true,
+        margin: { top: '0mm', right: '0mm', bottom: '0mm', left: '0mm' },
+      });
+
+      await page.close();
+
+      // 6. Persist to the private bucket. The object key is the certificate UUID,
+      //    which is stable and lets any later regeneration or public lookup find
+      //    the file without relying on `pdf_path` or the mutable `certificate_id`.
+      const filePath = `${certificate.id}.pdf`;
+      const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+      const { error: uploadError } = await admin.storage
+        .from('certificate-pdfs')
+        .upload(filePath, pdfBlob, { contentType: 'application/pdf', upsert: true });
+
+      if (uploadError) throw new Error(`Failed to store PDF: ${uploadError.message}`);
+
+      await admin
+        .from('certificates')
+        .update({ pdf_path: filePath, pdf_generated_at: new Date().toISOString() })
+        .eq('id', certificate.id);
+
+      // `log_certificate_audit` derives its actor from auth.uid(), which is null in
+      // a service-role context. `record_certificate_download` therefore accepts the
+      // already-verified caller id and is granted to service_role only, so the actor
+      // cannot be forged from the browser.
+      if (download) {
+        const { error: downloadError } = await admin.rpc('record_certificate_download', {
+          p_certificate_id: certificate.id,
+          p_ip_hash: null,
+          p_user_agent: (req.headers.get('user-agent') || '').slice(0, 300),
+          p_actor: user.id,
+          p_channel: 'admin',
+        });
+        // A failed counter must not fail the download the admin asked for.
+        if (downloadError) console.error('record_certificate_download error:', downloadError);
+      }
+
+      // 7. Mint a short-lived signed URL. `download` switches to attachment.
+      const { data: signed, error: signError } = await admin.storage
+        .from('certificate-pdfs')
+        .createSignedUrl(filePath, 300, download ? { download: `${certificate.certificate_id}.pdf` } : undefined);
+
+      if (signError) throw new Error(`Failed to sign PDF URL: ${signError.message}`);
+
+      return json({
+        success: true,
+        url: signed.signedUrl,
+        certificateId: certificate.certificate_id,
+        generatedAt: new Date().toISOString(),
+      });
+    } catch (pdfError) {
+      console.error('PDF generation failed:', pdfError);
+      return json({
+        error: 'PDF generation is temporarily unavailable. Please try again later.',
+        details: pdfError.message,
+      }, 503);
+    } finally {
+      if (browser) {
+        try { await browser.close(); } catch { /* ignore */ }
+      }
     }
-
-    // 7. Mint a short-lived signed URL. `download` switches to attachment.
-    const { data: signed, error: signError } = await admin.storage
-      .from('certificate-pdfs')
-      .createSignedUrl(filePath, 300, download ? { download: `${certificate.certificate_id}.pdf` } : undefined);
-
-    if (signError) throw new Error(`Failed to sign PDF URL: ${signError.message}`);
-
-    return json({
-      success: true,
-      url: signed.signedUrl,
-      certificateId: certificate.certificate_id,
-      generatedAt: new Date().toISOString(),
-    });
   } catch (error) {
     console.error('generate-certificate-pdf error:', error);
     return json({ error: error?.message || 'Failed to generate certificate PDF' }, 500);
-  } finally {
-    if (browser) {
-      try { await browser.close(); } catch { /* ignore */ }
-    }
   }
 });
