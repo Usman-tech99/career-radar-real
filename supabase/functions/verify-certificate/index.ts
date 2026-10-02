@@ -185,11 +185,64 @@ Deno.serve(async (req) => {
 
     if (error) {
       console.error('public_verify_certificate error:', error);
-      // Surface the message for validation failures, generic otherwise.
-      if (/required/i.test(error.message || '')) {
-        return json({ error: 'A certificate reference is required' }, 400);
+      
+      // Fallback: direct database query if RPC fails
+      console.log('RPC failed, trying direct query as fallback');
+      const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+      if (!serviceKey) {
+        return json({ error: 'Verification is temporarily unavailable' }, 503);
       }
-      return json({ error: 'Verification is temporarily unavailable' }, 503);
+
+      const admin = createClient(supabaseUrl, serviceKey, {
+        auth: { persistSession: false },
+      });
+
+      const byToken = method === 'verification_url' || method === 'qr_code';
+      const value = byToken ? reference.toLowerCase() : reference.toUpperCase();
+
+      const { data: located, error: locateError } = await admin
+        .from('certificates')
+        .select('certificate_id, verification_token, recipient_name, certificate_title, description, achievement, template_snapshot, issue_date, organization_name, organization_logo_url, status, revoked_at, revocation_reason, verification_count')
+        .eq(byToken ? 'verification_token' : 'certificate_id', value)
+        .maybeSingle();
+
+      if (locateError) {
+        console.error('Fallback query error:', locateError);
+        return json({ error: 'Verification is temporarily unavailable' }, 503);
+      }
+
+      if (!located) {
+        return json({
+          found: false,
+          error: 'No certificate matches that reference. Please check the ID and try again.',
+        });
+      }
+
+      // Try to increment counter, but don't fail if it doesn't work
+      admin.rpc('record_certificate_verification', {
+        p_certificate_id: located.id,
+      }).catch(e => console.error('Failed to increment counter:', e));
+
+      return json({
+        found: true,
+        certificate: {
+          certificate_id: located.certificate_id,
+          verification_token: located.verification_token,
+          recipient_name: located.recipient_name,
+          certificate_title: located.certificate_title,
+          description: located.description,
+          achievement: located.achievement,
+          certificate_type: located.template_snapshot?.certificate_type || 'achievement',
+          issue_date: located.issue_date,
+          organization_name: located.organization_name,
+          organization_logo_url: located.organization_logo_url,
+          status: located.status,
+          revoked_at: located.revoked_at,
+          revocation_reason: located.revocation_reason,
+          verification_count: (located.verification_count || 0) + 1,
+          last_verified_at: new Date().toISOString(),
+        },
+      });
     }
 
     if (!data?.found) {
