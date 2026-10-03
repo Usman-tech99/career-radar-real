@@ -519,8 +519,8 @@ export function previewValues(design) {
  */
 export function renderCareerRadarAppreciationHtml(v = {}) {
   const certificateId = escapeHtml(v.certificateId || '');
-  const recipientName = escapeHtml(v.recipientName || 'Recipient Name');
-  const departmentName = escapeHtml(v.departmentName || 'Your Department');
+  const rawDept = v.departmentName || 'Your Department';
+  const departmentName = escapeHtml(String(rawDept).replace(/[\[\]]/g, '').trim());
   const verifyUrl = v.verificationUrl || '';
   const certificateTitle = v.certificateTitle || v.title || 'Certificate of Appreciation';
   const customDesc = v.description ? escapeHtml(v.description) : '';
@@ -553,13 +553,6 @@ export function renderCareerRadarAppreciationHtml(v = {}) {
     ? qrToSvg(verifyUrl, { margin: 1, dark: '#0F1B33', light: '#FFFFFF' })
         .replace('<svg ', '<svg class="cr-qr" ')
     : '';
-
-  // Hasnain signature SVG — hand-lettered style approximation
-  const signatureSvg = `<svg viewBox="0 0 200 70" class="cr-sig-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-    <path d="M 20 55 C 25 30, 35 20, 42 28 C 48 35, 44 50, 50 48 C 56 46, 58 30, 65 30 C 72 30, 70 50, 76 48 C 82 46, 88 35, 95 40 C 100 44, 98 55, 104 50 C 110 45, 118 30, 126 34 C 134 38, 130 55, 138 52 C 144 50, 148 42, 154 42 C 160 42, 162 52, 168 50"
-      fill="none" stroke="#0F1B33" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M 40 62 L 170 62" fill="none" stroke="#0F1B33" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-  </svg>`;
 
   // Career Radar logo — approximated with SVG shapes matching the original circular badge
   const logoSvg = `<svg viewBox="0 0 120 120" class="cr-logo" xmlns="http://www.w3.org/2000/svg" aria-label="Career Radar">
@@ -960,9 +953,19 @@ body {
   text-align: center;
   min-width: 50mm;
 }
-.cr-sig-svg {
-  width: 42mm;
-  height: 14mm;
+.cr-sig-script {
+  font-family: 'Great Vibes', 'Brush Script MT', 'Dancing Script', cursive;
+  font-size: 32pt;
+  color: #0F1B33;
+  line-height: 1;
+  margin-bottom: -1mm;
+  text-align: center;
+  font-weight: normal;
+}
+.cr-sig-img {
+  max-height: 14mm;
+  max-width: 48mm;
+  object-fit: contain;
   display: block;
   margin: 0 auto;
 }
@@ -970,8 +973,8 @@ body {
   width: 50mm;
   height: 0.4mm;
   background: #0F1B33;
-  margin: 1mm auto 1.5mm;
-  opacity: 0.3;
+  margin: 1.5mm auto 1.5mm;
+  opacity: 0.25;
 }
 .cr-sig-name {
   font-size: 8pt;
@@ -995,27 +998,46 @@ body {
   margin-top: 0.5mm;
 }
 
-/* Date block */
-.cr-date-block {
-  text-align: center;
+/* Bottom-right corner triangle for DATE */
+.cr-date-corner {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 55mm;
+  height: 45mm;
+  pointer-events: none;
+  z-index: 5;
 }
-.cr-date-label {
-  font-size: 6.5pt;
+.cr-date-corner-svg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+.cr-date-corner-content {
+  position: absolute;
+  right: 7mm;
+  bottom: 6mm;
+  text-align: center;
+  z-index: 6;
+}
+.cr-date-corner-label {
+  font-size: 7.5pt;
   font-weight: 700;
-  color: #0F1B33;
+  color: #C9A227;
   letter-spacing: 2px;
   text-transform: uppercase;
-  display: block;
-  margin-bottom: 0.5mm;
+  margin-bottom: 1.5mm;
+  font-family: Arial, sans-serif;
 }
-.cr-date-value {
-  font-size: 8pt;
-  color: #334155;
-  border-bottom: 0.4mm solid #0F1B33;
-  padding-bottom: 0.5mm;
+.cr-date-corner-value {
+  font-size: 8.5pt;
+  font-weight: 600;
+  color: #FFFFFF;
+  border-bottom: 0.4mm solid #C9A227;
+  padding-bottom: 0.8mm;
   min-width: 24mm;
-  text-align: center;
-  opacity: 0.8;
+  letter-spacing: 1px;
 }
 
 /* QR block */
@@ -1189,24 +1211,41 @@ body {
         </div>
 
         <!-- Footer -->
-        <div class="cr-footer">
+        <div class="cr-footer" style="padding-right: 55mm; align-items: flex-end;">
+          <!-- QR Code -->
+          ${showQr ? `<div class="cr-qr-block">${qrMarkup}</div>` : '<div></div>'}
+
           <!-- Signature -->
           <div class="cr-signatory">
-            ${signatureSvg}
+            ${v.signatory1Image ? `
+              <img src="${v.signatory1Image}" class="cr-sig-img" alt="Signature" />
+            ` : `
+              <div class="cr-sig-script">Hasnain</div>
+            `}
             <div class="cr-sig-rule"></div>
             <div class="cr-sig-name">${signatory1Name}</div>
             <div class="cr-sig-role">${signatory1Title}</div>
             <div class="cr-sig-org">Career Radar</div>
           </div>
+        </div>
 
-          <!-- Date -->
-          <div class="cr-date-block">
-            <span class="cr-date-label">Date</span>
-            <div class="cr-date-value">${issueDay} / ${issueMonth} / ${issueYear}</div>
+        <!-- Corner Date triangle -->
+        <div class="cr-date-corner">
+          <svg viewBox="0 0 210 170" class="cr-date-corner-svg" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="dateBladeGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#9B6E1F" />
+                <stop offset="50%" stopColor="#C9A227" />
+                <stop offset="100%" stopColor="#E5C46E" />
+              </linearGradient>
+            </defs>
+            <polygon points="0,170 210,0 210,16 16,170" fill="url(#dateBladeGrad)" />
+            <polygon points="14,170 210,14 210,170" fill="#0B1B3D" />
+          </svg>
+          <div class="cr-date-corner-content">
+            <div class="cr-date-corner-label">DATE</div>
+            <div class="cr-date-corner-value">${issueDay} / ${issueMonth} / ${issueYear}</div>
           </div>
-
-          <!-- QR Code -->
-          ${showQr ? `<div class="cr-qr-block">${qrMarkup}</div>` : '<div></div>'}
         </div>
       </div>
     </div>

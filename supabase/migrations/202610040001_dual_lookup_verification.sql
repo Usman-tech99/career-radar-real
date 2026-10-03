@@ -1,8 +1,7 @@
 -- ===========================================================================
--- Fix certificate public verification function and add direct select policy
+-- Ensure dual lookup (verification_token + certificate_id) for public verification
 -- ===========================================================================
 
--- 1. Fix public_verify_certificate SQL error (superseded_by_id is UUID, not JSON)
 CREATE OR REPLACE FUNCTION public_verify_certificate(
   p_reference TEXT,
   p_method TEXT DEFAULT 'certificate_id',
@@ -54,7 +53,6 @@ BEGIN
        CASE WHEN v_found THEN v_row.status END,
        p_ip_hash, left(COALESCE(p_user_agent,''), 300));
   EXCEPTION WHEN OTHERS THEN
-    -- Never fail verification because event logging hit an issue
     NULL;
   END;
 
@@ -104,10 +102,3 @@ $$;
 
 REVOKE ALL ON FUNCTION public_verify_certificate(TEXT, TEXT, TEXT, TEXT) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public_verify_certificate(TEXT, TEXT, TEXT, TEXT) TO anon, authenticated;
-
--- 2. Allow public/anon to read certificates for verification fallback
-DROP POLICY IF EXISTS "certificates_public_verify_select" ON certificates;
-CREATE POLICY "certificates_public_verify_select" ON certificates
-  FOR SELECT
-  TO anon, authenticated
-  USING (true);

@@ -636,11 +636,22 @@ export async function verifyCertificate(reference, method = 'certificate_id') {
     const col = isByToken ? 'verification_token' : 'certificate_id'
     const val = isByToken ? normRef.toLowerCase() : normRef.toUpperCase()
 
-    const { data: located, error: tableError } = await supabase
+    let { data: located, error: tableError } = await supabase
       .from('certificates')
       .select('*')
       .eq(col, val)
       .maybeSingle()
+
+    if (!located) {
+      const altCol = isByToken ? 'certificate_id' : 'verification_token'
+      const altVal = isByToken ? normRef.toUpperCase() : normRef.toLowerCase()
+      const { data: altLocated } = await supabase
+        .from('certificates')
+        .select('*')
+        .eq(altCol, altVal)
+        .maybeSingle()
+      if (altLocated) located = altLocated
+    }
 
     if (!tableError && located) {
       return {

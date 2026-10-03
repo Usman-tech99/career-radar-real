@@ -245,7 +245,7 @@ export default function VerifyCertificate() {
     if (!token) return
     const parsed = parseCertificateReference(token) || { reference: token, method: 'verification_url' }
     setReference(parsed.reference)
-    lookup(parsed.reference, 'verification_url')
+    lookup(parsed.reference, parsed.method || 'verification_url')
   }, [token, lookup])
 
   // The form redirects to /verify?ref=… so a checked result stays shareable.

@@ -80,7 +80,8 @@ function deriveSubtitle(title, type) {
 }
 
 function deriveDefaultContent(type, department) {
-  const dept = department || 'DEPARTMENT / TEAM'
+  const rawDept = department || 'Department / Team'
+  const dept = String(rawDept).replace(/[\[\]]/g, '').trim()
   const t = (type || '').toLowerCase()
 
   if (t === 'completion' || t.includes('course') || t.includes('bootcamp')) {
@@ -88,7 +89,7 @@ function deriveDefaultContent(type, department) {
       intro: (
         <span>
           for successfully completing the comprehensive program and coursework in{' '}
-          <strong style={{ color: GOLD_ACCENT, fontWeight: 700 }}>[{dept}]</strong>{' '}
+          <strong style={{ color: GOLD_ACCENT, fontWeight: 700 }}>{dept}</strong>{' '}
           at <strong style={{ color: NAVY, fontWeight: 700 }}>Career Radar.</strong>
         </span>
       ),
@@ -103,7 +104,7 @@ function deriveDefaultContent(type, department) {
       intro: (
         <span>
           in recognition of successfully completing the internship tenure in the{' '}
-          <strong style={{ color: GOLD_ACCENT, fontWeight: 700 }}>[{dept}]</strong>{' '}
+          <strong style={{ color: GOLD_ACCENT, fontWeight: 700 }}>{dept}</strong>{' '}
           at <strong style={{ color: NAVY, fontWeight: 700 }}>Career Radar.</strong>
         </span>
       ),
@@ -118,7 +119,7 @@ function deriveDefaultContent(type, department) {
       intro: (
         <span>
           in recognition of outstanding achievement and excellence in{' '}
-          <strong style={{ color: GOLD_ACCENT, fontWeight: 700 }}>[{dept}]</strong>{' '}
+          <strong style={{ color: GOLD_ACCENT, fontWeight: 700 }}>{dept}</strong>{' '}
           at <strong style={{ color: NAVY, fontWeight: 700 }}>Career Radar.</strong>
         </span>
       ),
@@ -133,7 +134,7 @@ function deriveDefaultContent(type, department) {
       intro: (
         <span>
           for active participation and valuable engagement in the{' '}
-          <strong style={{ color: GOLD_ACCENT, fontWeight: 700 }}>[{dept}]</strong>{' '}
+          <strong style={{ color: GOLD_ACCENT, fontWeight: 700 }}>{dept}</strong>{' '}
           at <strong style={{ color: NAVY, fontWeight: 700 }}>Career Radar.</strong>
         </span>
       ),
@@ -148,7 +149,7 @@ function deriveDefaultContent(type, department) {
     intro: (
       <span>
         in recognition of your valuable contributions as a volunteer in the{' '}
-        <strong style={{ color: GOLD_ACCENT, fontWeight: 700 }}>[{dept}]</strong>{' '}
+        <strong style={{ color: GOLD_ACCENT, fontWeight: 700 }}>{dept}</strong>{' '}
         at <strong style={{ color: NAVY, fontWeight: 700 }}>Career Radar.</strong>
       </span>
     ),
