@@ -10,7 +10,7 @@
 
 import { Link, useLocation, Outlet } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   LayoutDashboard, Briefcase, FileText, ShoppingBag,
   BookOpen, LayoutTemplate, Info, Share2, Users, UserCheck,
@@ -251,84 +251,112 @@ const SIDEBAR_W = 240
 
 export default function AdminLayout() {
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const location = useLocation()
+
+  // Automatically close mobile drawer whenever the route changes
+  useEffect(() => {
+    setDrawerOpen(false)
+  }, [location.pathname])
+
+  // Close drawer on ESC key
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') setDrawerOpen(false)
+    }
+    if (drawerOpen) {
+      window.addEventListener('keydown', handleKeyDown)
+      return () => window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [drawerOpen])
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#0C1A2E' }}>
 
-      {/* ── Desktop sidebar ── */}
-      <aside style={{
-        width: SIDEBAR_W, flexShrink: 0,
-        position: 'fixed', top: 0, left: 0, bottom: 0,
-        background: '#0A1628',
-        borderRight: '1px solid rgba(255,255,255,0.06)',
-        display: 'flex', flexDirection: 'column',
-        zIndex: 30,
-        // Hide on mobile, show lg+
-      }} className="hidden lg:flex">
+      {/* ── Desktop sidebar (sticky in layout flow, never overlays content) ── */}
+      <aside
+        className="hidden lg:flex flex-col shrink-0 sticky top-0 h-screen z-30"
+        style={{
+          width: SIDEBAR_W,
+          background: '#0A1628',
+          borderRight: '1px solid rgba(255,255,255,0.06)',
+        }}
+      >
         <SidebarContent />
       </aside>
 
-      {/* ── Mobile drawer overlay ── */}
+      {/* ── Mobile drawer overlay (only on < lg screens) ── */}
       {drawerOpen && (
-        <>
+        <div className="lg:hidden">
           {/* Backdrop */}
           <div
             onClick={() => setDrawerOpen(false)}
             style={{
               position: 'fixed', inset: 0, zIndex: 40,
-              background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(2px)',
+              background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(3px)',
             }}
           />
           {/* Drawer panel */}
-          <aside style={{
-            position: 'fixed', top: 0, left: 0, bottom: 0,
-            width: SIDEBAR_W, zIndex: 50,
-            background: '#0A1628',
-            borderRight: '1px solid rgba(255,255,255,0.06)',
-            display: 'flex', flexDirection: 'column',
-          }}>
+          <aside
+            style={{
+              position: 'fixed', top: 0, left: 0, bottom: 0,
+              width: SIDEBAR_W, zIndex: 50,
+              background: '#0A1628',
+              borderRight: '1px solid rgba(255,255,255,0.06)',
+              display: 'flex', flexDirection: 'column',
+              boxShadow: '4px 0 24px rgba(0,0,0,0.5)',
+            }}
+          >
             <div style={{ padding: '12px 12px 0', display: 'flex', justifyContent: 'flex-end' }}>
               <button
                 onClick={() => setDrawerOpen(false)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94A3B8', padding: 4 }}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  color: '#94A3B8', padding: 6, borderRadius: 6,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+                aria-label="Close menu"
               >
                 <X size={20} />
               </button>
             </div>
             <SidebarContent onNavigate={() => setDrawerOpen(false)} />
           </aside>
-        </>
+        </div>
       )}
 
-      {/* ── Main area ── */}
-      <div style={{
-        flex: 1,
-        marginLeft: 0,
-        display: 'flex', flexDirection: 'column',
-        minWidth: 0,
-      }} className="lg:ml-60">
-
+      {/* ── Main area (flex-1 naturally flows next to the sidebar on desktop, full width on mobile) ── */}
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minWidth: 0,
+          minHeight: '100vh',
+        }}
+      >
         {/* Top header bar */}
-        <header style={{
-          position: 'sticky', top: 0, zIndex: 20,
-          height: 56, display: 'flex', alignItems: 'center',
-          padding: '0 24px', gap: 12,
-          background: 'rgba(10,22,40,0.92)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
-        }}>
+        <header
+          style={{
+            position: 'sticky', top: 0, zIndex: 20,
+            height: 56, display: 'flex', alignItems: 'center',
+            padding: '0 24px', gap: 12,
+            background: 'rgba(10,22,40,0.92)',
+            backdropFilter: 'blur(12px)',
+            borderBottom: '1px solid rgba(255,255,255,0.06)',
+          }}
+        >
           {/* Hamburger — mobile only */}
           <button
             className="lg:hidden"
             onClick={() => setDrawerOpen(true)}
             style={{
-              background: 'none', border: 'none', cursor: 'pointer',
-              color: '#94A3B8', padding: 6, borderRadius: 8,
+              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+              cursor: 'pointer', color: '#CBD5E1', padding: 7, borderRadius: 8,
               display: 'flex', alignItems: 'center',
             }}
             aria-label="Open menu"
           >
-            <Menu size={20} />
+            <Menu size={18} />
           </button>
 
           <Breadcrumbs />

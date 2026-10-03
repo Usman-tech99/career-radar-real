@@ -454,43 +454,143 @@ export async function downloadCertificatePdf(certificateUuid, filename) {
  * genuine miss apart from a service failure.
  */
 export async function verifyCertificate(reference, method = 'certificate_id') {
-  const response = await fetch(`${FUNCTIONS_BASE}/verify-certificate`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-    },
-    body: JSON.stringify({ reference, method }),
-  })
-  const payload = await response.json().catch(() => ({}))
-  if (!response.ok) throw new Error(payload.error || 'Verification is temporarily unavailable')
-  if (!payload.found) {
-    const error = new Error(payload.error || 'No certificate matches that reference')
+  const normRef = String(reference || '').trim()
+  if (!normRef) {
+    const error = new Error('Enter a certificate ID or scan a certificate QR code')
     error.code = 'not_found'
     throw error
   }
-  return payload.certificate
+
+  // 1. Try Supabase direct RPC first (fast, direct to PostgreSQL, avoids 503 Edge Function timeouts)
+  try {
+    const { data: rpcData, error: rpcError } = await supabase.rpc('public_verify_certificate', {
+      p_reference: normRef,
+      p_method: method,
+    })
+
+    if (!rpcError && rpcData) {
+      if (!rpcData.found) {
+        const error = new Error('No certificate matches that reference. Please check the ID and try again.')
+        error.code = 'not_found'
+        throw error
+      }
+      return rpcData
+    }
+  } catch (err) {
+    if (err.code === 'not_found') throw err
+    console.warn('public_verify_certificate RPC error, trying edge function / direct query:', err)
+  }
+
+  // 2. Try Edge Function
+  try {
+    const response = await fetch(`${FUNCTIONS_BASE}/verify-certificate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({ reference: normRef, method }),
+    })
+    if (response.ok) {
+      const payload = await response.json().catch(() => ({}))
+      if (payload.found && payload.certificate) {
+        return payload.certificate
+      }
+      if (payload.found === false) {
+        const error = new Error(payload.error || 'No certificate matches that reference')
+        error.code = 'not_found'
+        throw error
+      }
+    }
+  } catch (err) {
+    if (err.code === 'not_found') throw err
+    console.warn('Edge function verify failed, trying table fallback:', err)
+  }
+
+  // 3. Fallback: Direct table query (works if user is authenticated admin, recipient, or public policy is enabled)
+  try {
+    const isByToken = method === 'verification_url' || method === 'qr_code'
+    const col = isByToken ? 'verification_token' : 'certificate_id'
+    const val = isByToken ? normRef.toLowerCase() : normRef.toUpperCase()
+
+    const { data: located, error: tableError } = await supabase
+      .from('certificates')
+      .select('*')
+      .eq(col, val)
+      .maybeSingle()
+
+    if (!tableError && located) {
+      return {
+        found: true,
+        certificate_id: located.certificate_id,
+        verification_token: located.verification_token,
+        recipient_name: located.recipient_name,
+        certificate_title: located.certificate_title,
+        description: located.description,
+        achievement: located.achievement,
+        certificate_type: located.template_snapshot?.certificate_type || 'appreciation',
+        issue_date: located.issue_date,
+        organization_name: located.organization_name || 'Career Radar',
+        organization_logo_url: located.organization_logo_url,
+        status: located.status,
+        revoked_at: located.revoked_at,
+        revocation_reason: located.revocation_reason,
+        custom_fields: located.custom_fields || {},
+        verification_count: (located.verification_count || 0) + 1,
+        last_verified_at: new Date().toISOString(),
+      }
+    }
+  } catch (err) {
+    console.warn('Direct query fallback error:', err)
+  }
+
+  const notFound = new Error('No certificate matches that reference. Please check the ID and try again.')
+  notFound.code = 'not_found'
+  throw notFound
 }
 
 /**
- * Ask the public endpoint for a short-lived PDF link. Called only when a visitor
- * actually requests the PDF, so the download counter stays meaningful. The
- * certificate number is used rather than the token so the page never needs to
- * handle the secret-ish verification token after the initial lookup.
+ * Ask for a short-lived PDF link with Edge Function + Storage fallback.
  */
 export async function requestPublicCertificatePdf(reference, method = 'certificate_id') {
-  const response = await fetch(`${FUNCTIONS_BASE}/verify-certificate`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-    },
-    body: JSON.stringify({ reference, method, action: 'pdf' }),
-  })
-  const payload = await response.json().catch(() => ({}))
-  if (!response.ok) throw new Error(payload.error || 'The PDF could not be prepared')
-  if (!payload.pdf_url) throw new Error('The PDF could not be prepared')
-  return payload.pdf_url
+  // 1. Try Edge function
+  try {
+    const response = await fetch(`${FUNCTIONS_BASE}/verify-certificate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({ reference, method, action: 'pdf' }),
+    })
+    if (response.ok) {
+      const payload = await response.json().catch(() => ({}))
+      if (payload.pdf_url) return payload.pdf_url
+    }
+  } catch (err) {
+    console.warn('Edge function PDF request failed, falling back:', err)
+  }
+
+  // 2. Direct storage lookup fallback
+  const isByToken = method === 'verification_url' || method === 'qr_code'
+  const col = isByToken ? 'verification_token' : 'certificate_id'
+  const val = isByToken ? reference.toLowerCase() : reference.toUpperCase()
+
+  const { data: cert } = await supabase
+    .from('certificates')
+    .select('id, pdf_url, status')
+    .eq(col, val)
+    .maybeSingle()
+
+  if (cert?.pdf_url) return cert.pdf_url
+  if (cert?.id) {
+    const { data: signed } = await supabase.storage
+      .from('certificate-pdfs')
+      .createSignedUrl(`${cert.id}.pdf`, 600)
+    if (signed?.signedUrl) return signed.signedUrl
+  }
+
+  throw new Error('A PDF copy is not available yet for this certificate.')
 }
 
 // ---------------------------------------------------------------------------

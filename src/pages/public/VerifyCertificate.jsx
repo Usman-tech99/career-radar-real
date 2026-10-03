@@ -10,6 +10,7 @@ import {
   verifyCertificate,
 } from '../../lib/certificates'
 import { formatDate } from '../../lib/helpers'
+import CertificateAppreciationPreview from '../../components/certificates/CertificateAppreciationPreview'
 
 const STATUS_PRESENTATION = {
   valid: {
@@ -369,6 +370,17 @@ export default function VerifyCertificate() {
         {found && (
           <>
             <VerdictBanner status={state} certificate={certificate} />
+
+            {/* Official Certificate Visual Display */}
+            <div className="mb-6 rounded-2xl bg-white/5 border border-border p-3 sm:p-4 overflow-hidden">
+              <CertificateAppreciationPreview
+                certificateId={certificate.certificate_id}
+                recipientName={certificate.recipient_name}
+                departmentName={(certificate.custom_fields || {}).department_name || certificate.achievement || 'Career Radar'}
+                issueDate={certificate.issue_date}
+              />
+            </div>
+
             <CertificateDetails certificate={certificate} />
 
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
