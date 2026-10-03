@@ -1,22 +1,28 @@
 /**
- * CertificateAppreciationPreview
+ * CertificateAppreciationPreview (Universal Official Career Radar Certificate Preview)
  *
- * Official Career Radar "Certificate of Appreciation" component.
- * Recreates the exact client design from image reference:
- *   - Left Navy Panel (~29.2% width):
- *       • Career Radar circular medallion with double gold ring
- *       • Angled gold ribbon tails below medallion
- *       • Navy hexagon badge with double gold border & gold star
- *       • 3 Feature bullets: Find Opportunities, Prepare Yourself, Succeed Globally
- *   - Right Off-White Panel (~70.8% width):
- *       • Top-right: Certificate reference (e.g. CR-VOL-2026-___)
- *       • CERTIFICATE (navy bold) / OF APPRECIATION (gold spaced) / ★ with gold rules
- *       • PROUDLY PRESENTED TO
- *       • Recipient Name in elegant cursive script with flanking gold rules
- *       • Recognition body with gold bold [DEPARTMENT / TEAM NAME]
- *       • Core appreciation statement & gold italic closing
- *       • Hasnain Shakeel Ahmed (Founder & CEO) signature block
- *       • Bottom-right corner navy triangle with gold blade border for DATE
+ * Implements the official Career Radar certificate template design from the client reference image.
+ * Fully dynamic to support ANY certificate type:
+ *   - Appreciation (Volunteer, contributions)
+ *   - Completion (Course, bootcamp, training)
+ *   - Internship (Internship tenure, practical work)
+ *   - Achievement (Excellence, honors, competitions)
+ *   - Participation (Events, workshops, webinars)
+ *   - Custom titles & custom recognition descriptions
+ *
+ * Left Navy Panel:
+ *   • Career Radar circular medallion with double gold ring
+ *   • Angled gold ribbon tails below medallion
+ *   • Navy hexagon badge with double gold border & gold star
+ *   • 3 Feature bullets: Find Opportunities, Prepare Yourself, Succeed Globally
+ * Right Panel:
+ *   • Certificate ID (top right)
+ *   • CERTIFICATE / OF [TYPE / TITLE] / ★ with gold rules
+ *   • PROUDLY PRESENTED TO
+ *   • Recipient Name in elegant cursive script with flanking gold rules
+ *   • Dynamic body text with highlighted gold department / program name
+ *   • Signature block (Hasnain Shakeel Ahmed / custom signatory)
+ *   • Bottom-right corner navy triangle with gold blade border for DATE
  */
 
 import { useLayoutEffect, useRef, useState } from 'react'
@@ -48,6 +54,110 @@ function fmtDate(str) {
   }
 }
 
+function deriveSubtitle(title, type) {
+  const cleanTitle = (title || '').trim()
+  if (cleanTitle) {
+    if (cleanTitle.toLowerCase().startsWith('certificate of ')) {
+      return 'OF ' + cleanTitle.slice(15).toUpperCase()
+    }
+    if (cleanTitle.toLowerCase().startsWith('of ')) {
+      return cleanTitle.toUpperCase()
+    }
+    if (cleanTitle.toLowerCase() === 'appreciation') return 'OF APPRECIATION'
+    if (cleanTitle.toLowerCase() === 'completion') return 'OF COMPLETION'
+    if (cleanTitle.toLowerCase() === 'internship') return 'OF INTERNSHIP'
+    if (cleanTitle.toLowerCase() === 'achievement') return 'OF ACHIEVEMENT'
+    if (cleanTitle.toLowerCase() === 'participation') return 'OF PARTICIPATION'
+    return cleanTitle.toUpperCase()
+  }
+
+  const cleanType = (type || '').toLowerCase()
+  if (cleanType === 'completion') return 'OF COMPLETION'
+  if (cleanType === 'internship') return 'OF INTERNSHIP'
+  if (cleanType === 'achievement') return 'OF ACHIEVEMENT'
+  if (cleanType === 'participation') return 'OF PARTICIPATION'
+  return 'OF APPRECIATION'
+}
+
+function deriveDefaultContent(type, department) {
+  const dept = department || 'DEPARTMENT / TEAM'
+  const t = (type || '').toLowerCase()
+
+  if (t === 'completion' || t.includes('course') || t.includes('bootcamp')) {
+    return {
+      intro: (
+        <span>
+          for successfully completing the comprehensive program and coursework in{' '}
+          <strong style={{ color: GOLD_ACCENT, fontWeight: 700 }}>[{dept}]</strong>{' '}
+          at <strong style={{ color: NAVY, fontWeight: 700 }}>Career Radar.</strong>
+        </span>
+      ),
+      dedication: 'Demonstrating technical proficiency, perseverance, and dedication to professional excellence and career advancement.',
+      highlight: 'We commend your hard work, dedication, and successful completion.',
+      closing: 'Wishing you continued success in your professional journey!',
+    }
+  }
+
+  if (t === 'internship') {
+    return {
+      intro: (
+        <span>
+          in recognition of successfully completing the internship tenure in the{' '}
+          <strong style={{ color: GOLD_ACCENT, fontWeight: 700 }}>[{dept}]</strong>{' '}
+          at <strong style={{ color: NAVY, fontWeight: 700 }}>Career Radar.</strong>
+        </span>
+      ),
+      dedication: 'Having demonstrated exemplary work ethic, collaborative teamwork, and practical problem-solving skills throughout the duration of the program.',
+      highlight: 'We sincerely appreciate your valuable contributions to our team and initiatives.',
+      closing: 'Thank you for being an essential part of Career Radar!',
+    }
+  }
+
+  if (t === 'achievement' || t.includes('honor') || t.includes('excellence')) {
+    return {
+      intro: (
+        <span>
+          in recognition of outstanding achievement and excellence in{' '}
+          <strong style={{ color: GOLD_ACCENT, fontWeight: 700 }}>[{dept}]</strong>{' '}
+          at <strong style={{ color: NAVY, fontWeight: 700 }}>Career Radar.</strong>
+        </span>
+      ),
+      dedication: 'Awarded for exceptional performance, perseverance, and high standards of accomplishment that inspire our entire community.',
+      highlight: 'We proudly honor your dedication and remarkable success.',
+      closing: 'Congratulations on this well-deserved accomplishment!',
+    }
+  }
+
+  if (t === 'participation') {
+    return {
+      intro: (
+        <span>
+          for active participation and valuable engagement in the{' '}
+          <strong style={{ color: GOLD_ACCENT, fontWeight: 700 }}>[{dept}]</strong>{' '}
+          at <strong style={{ color: NAVY, fontWeight: 700 }}>Career Radar.</strong>
+        </span>
+      ),
+      dedication: 'Contributing meaningfully to our collaborative learning sessions, knowledge exchange, and community growth.',
+      highlight: 'We sincerely appreciate your enthusiasm, time, and active participation.',
+      closing: 'Thank you for being an active part of Career Radar!',
+    }
+  }
+
+  // Default: Appreciation
+  return {
+    intro: (
+      <span>
+        in recognition of your valuable contributions as a volunteer in the{' '}
+        <strong style={{ color: GOLD_ACCENT, fontWeight: 700 }}>[{dept}]</strong>{' '}
+        at <strong style={{ color: NAVY, fontWeight: 700 }}>Career Radar.</strong>
+      </span>
+    ),
+    dedication: 'Your dedication, professionalism, and commitment have played an important role in supporting our mission of helping students and early-career professionals discover opportunities, develop skills, and build successful careers.',
+    highlight: 'We sincerely appreciate your time, effort, and positive impact on our community.',
+    closing: 'Thank you for being an essential part of Career Radar!',
+  }
+}
+
 // ── Left panel decorative gold blades ──────────────────────────────────────────
 function LeftPanelBlades() {
   return (
@@ -68,17 +178,14 @@ function LeftPanelBlades() {
         </linearGradient>
       </defs>
 
-      {/* Main sharp gold diagonal blade on right edge */}
       <polygon
         points={`${LEFT_W - 55},0 ${LEFT_W + 2},0 ${LEFT_W + 2},${H} ${LEFT_W - 75},${H}`}
         fill="url(#bladeGrad)"
       />
-      {/* Secondary accent diagonal stripe */}
       <polygon
         points={`${LEFT_W - 75},0 ${LEFT_W - 55},0 ${LEFT_W - 75},${H} ${LEFT_W - 95},${H}`}
         fill="url(#bladeGrad2)"
       />
-      {/* Bottom angled corner accent */}
       <polygon
         points={`0,${H} 0,${H * 0.72} ${LEFT_W * 0.6},${H}`}
         fill={GOLD}
@@ -88,7 +195,7 @@ function LeftPanelBlades() {
   )
 }
 
-// ── Bottom right corner navy triangle with gold blade ──────────────────────────
+// ── Bottom right corner navy triangle with gold blade for DATE ─────────────────
 function BottomRightDateCorner({ dateStr }) {
   const { d, m, y } = fmtDate(dateStr)
   const TRI_W = 210
@@ -116,19 +223,16 @@ function BottomRightDateCorner({ dateStr }) {
           </linearGradient>
         </defs>
 
-        {/* Gold diagonal border blade */}
         <polygon
           points={`0,${TRI_H} ${TRI_W},0 ${TRI_W},16 16,${TRI_H}`}
           fill="url(#dateBladeGrad)"
         />
-        {/* Navy corner triangle */}
         <polygon
           points={`14,${TRI_H} ${TRI_W},14 ${TRI_W},${TRI_H}`}
           fill={NAVY}
         />
       </svg>
 
-      {/* Date text content inside navy triangle */}
       <div style={{
         position: 'absolute',
         right: 28,
@@ -184,13 +288,11 @@ function RibbonTails() {
           <stop offset="100%" stopColor="#8C6215" />
         </linearGradient>
       </defs>
-      {/* Left ribbon tail */}
       <polygon
         points="22,0 48,0 42,60 28,48 14,60"
         fill="url(#ribbonGrad)"
         opacity="0.95"
       />
-      {/* Right ribbon tail */}
       <polygon
         points="62,0 88,0 96,60 82,48 68,60"
         fill="url(#ribbonGrad)"
@@ -222,11 +324,8 @@ function HexBadge() {
           <stop offset="100%" stopColor="#8C6215" />
         </linearGradient>
       </defs>
-      {/* Outer gold border */}
       <polygon points={pts} fill="url(#hexGold)" />
-      {/* Inner navy background */}
       <polygon points={ptsInner} fill={NAVY_DEEP} />
-      {/* Gold star */}
       <text
         x={cx}
         y={cy + 13}
@@ -241,7 +340,7 @@ function HexBadge() {
   )
 }
 
-// ── Background Watermark (Target Radar & Briefcase) ───────────────────────────
+// ── Watermark Background (Target Radar) ────────────────────────────────────────
 function Watermark() {
   return (
     <svg
@@ -257,18 +356,16 @@ function Watermark() {
       height="440"
       viewBox="0 0 440 440"
     >
-      {/* Concentric radar circles */}
       <circle cx="220" cy="220" r="200" fill="none" stroke={NAVY} strokeWidth="26" />
       <circle cx="220" cy="220" r="140" fill="none" stroke={NAVY} strokeWidth="18" />
       <circle cx="220" cy="220" r="80"  fill="none" stroke={NAVY} strokeWidth="12" />
-      {/* Target Arrow line */}
       <line x1="60" y1="380" x2="380" y2="60" stroke={NAVY} strokeWidth="16" strokeLinecap="round" />
       <polygon points="380,60 330,70 370,110" fill={NAVY} />
     </svg>
   )
 }
 
-// ── Features in Left Panel ─────────────────────────────────────────────────────
+// ── 3 Left Panel Features ──────────────────────────────────────────────────────
 const FEATURES = [
   {
     icon: (
@@ -306,7 +403,21 @@ const FEATURES = [
 ]
 
 // ── Main Certificate Canvas ────────────────────────────────────────────────────
-function CertificateCanvas({ certificateId, recipientName, departmentName, issueDate }) {
+function CertificateCanvas({
+  certificateId,
+  recipientName,
+  certificateTitle,
+  certificateType,
+  departmentName,
+  description,
+  achievement,
+  issueDate,
+  signatory1Name,
+  signatory1Title,
+}) {
+  const subTitle = deriveSubtitle(certificateTitle, certificateType)
+  const defaultContent = deriveDefaultContent(certificateType || subTitle, departmentName)
+
   return (
     <div style={{
       width: W,
@@ -441,7 +552,7 @@ function CertificateCanvas({ certificateId, recipientName, departmentName, issue
             marginTop: 4,
             fontFamily: "'Inter', sans-serif",
           }}>
-            OF APPRECIATION
+            {subTitle}
           </div>
 
           {/* Star with flanking horizontal rules */}
@@ -508,32 +619,44 @@ function CertificateCanvas({ certificateId, recipientName, departmentName, issue
           margin: '0 auto',
           flex: 1,
         }}>
-          {/* Recognition Line */}
-          <div style={{ fontSize: 13, color: '#334155', lineHeight: 1.6, marginBottom: 10 }}>
-            in recognition of your valuable contributions as a volunteer in the{' '}
-            <strong style={{ color: GOLD_ACCENT, fontWeight: 700 }}>
-              [{departmentName || 'DEPARTMENT / TEAM NAME'}]
-            </strong>{' '}
-            at <strong style={{ color: NAVY, fontWeight: 700 }}>Career Radar.</strong>
-          </div>
+          {description ? (
+            /* Custom description entered by the user */
+            <div style={{ fontSize: 13, color: '#334155', lineHeight: 1.7, marginBottom: 10 }}>
+              {description}
+            </div>
+          ) : (
+            /* Dynamic default recognition statement */
+            <>
+              <div style={{ fontSize: 13, color: '#334155', lineHeight: 1.6, marginBottom: 10 }}>
+                {defaultContent.intro}
+              </div>
+              <div style={{ fontSize: 11.5, color: '#64748B', lineHeight: 1.7, marginBottom: 8 }}>
+                {defaultContent.dedication}
+              </div>
+              <div style={{
+                fontSize: 12.5,
+                fontWeight: 700,
+                color: '#1E293B',
+                marginBottom: 6,
+                lineHeight: 1.5,
+              }}>
+                {defaultContent.highlight}
+              </div>
+            </>
+          )}
 
-          {/* Dedication Text */}
-          <div style={{ fontSize: 11.5, color: '#64748B', lineHeight: 1.7, marginBottom: 8 }}>
-            Your dedication, professionalism, and commitment have played an important role in supporting our mission of helping students and early-career professionals discover opportunities, develop skills, and build successful careers.
-          </div>
+          {achievement && (
+            <div style={{
+              fontSize: 12,
+              fontWeight: 700,
+              color: GOLD,
+              letterSpacing: 1,
+              marginTop: 4,
+            }}>
+              ★ {achievement} ★
+            </div>
+          )}
 
-          {/* Appreciation Highlight */}
-          <div style={{
-            fontSize: 12.5,
-            fontWeight: 700,
-            color: '#1E293B',
-            marginBottom: 6,
-            lineHeight: 1.5,
-          }}>
-            We sincerely appreciate your time, effort, and positive impact on our community.
-          </div>
-
-          {/* Gold Italic Thank You */}
           <div style={{
             fontSize: 13.5,
             fontStyle: 'italic',
@@ -541,7 +664,7 @@ function CertificateCanvas({ certificateId, recipientName, departmentName, issue
             fontFamily: "'Georgia', serif",
             marginTop: 4,
           }}>
-            Thank you for being an essential part of Career Radar!
+            {defaultContent.closing}
           </div>
         </div>
 
@@ -556,7 +679,6 @@ function CertificateCanvas({ certificateId, recipientName, departmentName, issue
           paddingBottom: 8,
         }}>
           <div style={{ textAlign: 'center' }}>
-            {/* Cursive Signature Hasnain */}
             <div style={{
               fontFamily: "'Brush Script MT', 'Great Vibes', 'Dancing Script', cursive",
               fontSize: 36,
@@ -567,7 +689,6 @@ function CertificateCanvas({ certificateId, recipientName, departmentName, issue
             }}>
               Hasnain
             </div>
-            {/* Signature Underline */}
             <div style={{ height: 1.5, background: NAVY, opacity: 0.25, width: 190, margin: '2px auto 6px' }} />
             <div style={{
               fontSize: 11,
@@ -576,7 +697,7 @@ function CertificateCanvas({ certificateId, recipientName, departmentName, issue
               letterSpacing: 1,
               textTransform: 'uppercase',
             }}>
-              HASNAIN SHAKEEL AHMED
+              {signatory1Name || 'HASNAIN SHAKEEL AHMED'}
             </div>
             <div style={{
               fontSize: 10,
@@ -586,7 +707,7 @@ function CertificateCanvas({ certificateId, recipientName, departmentName, issue
               textTransform: 'uppercase',
               marginTop: 2,
             }}>
-              FOUNDER &amp; CEO
+              {signatory1Title || 'FOUNDER & CEO'}
             </div>
             <div style={{
               fontSize: 9.5,
@@ -611,35 +732,74 @@ export default function CertificateAppreciationPreview(props) {
   const wrapRef = useRef(null)
   const [scale, setScale] = useState(0.35)
 
-  // Normalize props so both <CertificateAppreciationPreview ...> and <CertificatePreview values={...} ...> work
+  // Normalize flat props or nested values object
   const values = props.values || {}
   const certificateId =
     props.certificateId ||
     props.certificate_id ||
-    values.certificate_id ||
     values.certificateId ||
+    values.certificate_id ||
     'CR-VOL-2026-001'
 
   const recipientName =
     props.recipientName ||
     props.recipient_name ||
-    values.recipient_name ||
     values.recipientName ||
+    values.recipient_name ||
     'Recipient Name'
+
+  const certificateTitle =
+    props.certificateTitle ||
+    props.certificate_title ||
+    props.title ||
+    values.certificateTitle ||
+    values.certificate_title ||
+    values.title ||
+    ''
+
+  const certificateType =
+    props.certificateType ||
+    props.certificate_type ||
+    values.certificateType ||
+    values.certificate_type ||
+    ''
 
   const departmentName =
     props.departmentName ||
     props.department_name ||
-    values.department_name ||
     values.departmentName ||
+    values.department_name ||
     values.custom_fields?.department_name ||
-    'DEPARTMENT / TEAM NAME'
+    props.custom_fields?.department_name ||
+    ''
+
+  const description =
+    props.description ||
+    values.description ||
+    ''
+
+  const achievement =
+    props.achievement ||
+    values.achievement ||
+    ''
 
   const issueDate =
     props.issueDate ||
     props.issue_date ||
-    values.issue_date ||
-    values.issueDate
+    values.issueDate ||
+    values.issue_date
+
+  const signatory1Name =
+    props.signatory1Name ||
+    props.signatory_1_name ||
+    values.signatory1Name ||
+    values.signatory_1_name
+
+  const signatory1Title =
+    props.signatory1Title ||
+    props.signatory_1_title ||
+    values.signatory1Title ||
+    values.signatory_1_title
 
   useLayoutEffect(() => {
     const el = wrapRef.current
@@ -677,8 +837,14 @@ export default function CertificateAppreciationPreview(props) {
           <CertificateCanvas
             certificateId={certificateId}
             recipientName={recipientName}
+            certificateTitle={certificateTitle}
+            certificateType={certificateType}
             departmentName={departmentName}
+            description={description}
+            achievement={achievement}
             issueDate={issueDate}
+            signatory1Name={signatory1Name}
+            signatory1Title={signatory1Title}
           />
         </div>
       </div>

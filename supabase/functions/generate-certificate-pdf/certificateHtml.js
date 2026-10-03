@@ -522,6 +522,23 @@ export function renderCareerRadarAppreciationHtml(v = {}) {
   const recipientName = escapeHtml(v.recipientName || 'Recipient Name');
   const departmentName = escapeHtml(v.departmentName || 'Your Department');
   const verifyUrl = v.verificationUrl || '';
+  const certificateTitle = v.certificateTitle || v.title || 'Certificate of Appreciation';
+  const customDesc = v.description ? escapeHtml(v.description) : '';
+  const achievement = v.achievement ? escapeHtml(v.achievement) : '';
+  const signatory1Name = escapeHtml(v.signatory1Name || 'HASNAIN SHAKEEL AHMED');
+  const signatory1Title = escapeHtml(v.signatory1Title || 'Founder & CEO');
+
+  let subTitle = 'OF APPRECIATION';
+  const cleanTitle = (certificateTitle || '').trim();
+  if (cleanTitle) {
+    if (cleanTitle.toLowerCase().startsWith('certificate of ')) {
+      subTitle = 'OF ' + escapeHtml(cleanTitle.slice(15).toUpperCase());
+    } else if (cleanTitle.toLowerCase().startsWith('of ')) {
+      subTitle = escapeHtml(cleanTitle.toUpperCase());
+    } else {
+      subTitle = escapeHtml(cleanTitle.toUpperCase());
+    }
+  }
 
   const issueDate = v.issueDate
     ? new Date(v.issueDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })
@@ -1068,7 +1085,7 @@ body {
         <!-- Main heading -->
         <div class="cr-heading-block">
           <div class="cr-title-main">CERTIFICATE</div>
-          <div class="cr-title-sub">of appreciation</div>
+          <div class="cr-title-sub">${subTitle}</div>
           <span class="cr-title-star">★</span>
         </div>
 
@@ -1084,20 +1101,91 @@ body {
 
         <!-- Body -->
         <div class="cr-body-text">
-          <div class="cr-recognition-line">
-            in recognition of your valuable contributions as a volunteer in the<br/>
-            <span class="cr-dept-inline">${departmentName}</span> at <span class="cr-brand-inline">Career Radar.</span>
-          </div>
-          <div class="cr-dedication">
-            Your dedication, professionalism, and commitment<br/>
-            have played an important role in supporting our mission of helping<br/>
-            students and early-career professionals discover opportunities,<br/>
-            develop skills, and build successful careers.
-          </div>
-          <div class="cr-appreciation">
-            We sincerely appreciate your time, effort, and positive<br/>impact on our community.
-          </div>
-          <div class="cr-thankyou">Thank you for being an essential part of Career Radar!</div>
+          ${customDesc ? `
+            <div class="cr-recognition-line" style="max-width: 170mm; margin: 0 auto 3mm; line-height: 1.7;">
+              ${customDesc}
+            </div>
+          ` : (() => {
+            const t = (v.certificateType || cleanTitle || '').toLowerCase();
+            if (t.includes('completion') || t.includes('course') || t.includes('bootcamp')) {
+              return `
+                <div class="cr-recognition-line">
+                  for successfully completing the comprehensive program and coursework in<br/>
+                  <span class="cr-dept-inline">${departmentName}</span> at <span class="cr-brand-inline">Career Radar.</span>
+                </div>
+                <div class="cr-dedication">
+                  Demonstrating technical proficiency, perseverance, and dedication to professional excellence and career advancement.
+                </div>
+                <div class="cr-appreciation">
+                  We commend your hard work, dedication, and successful completion.
+                </div>
+              `;
+            }
+            if (t.includes('internship') || t.includes('intern')) {
+              return `
+                <div class="cr-recognition-line">
+                  in recognition of successful completion of the professional internship in<br/>
+                  <span class="cr-dept-inline">${departmentName}</span> at <span class="cr-brand-inline">Career Radar.</span>
+                </div>
+                <div class="cr-dedication">
+                  Exhibiting exemplary initiative, practical skill application, teamwork, and strong professional ethics during the tenure.
+                </div>
+                <div class="cr-appreciation">
+                  We commend your active contribution and commendable service.
+                </div>
+              `;
+            }
+            if (t.includes('achievement') || t.includes('honor') || t.includes('excellence')) {
+              return `
+                <div class="cr-recognition-line">
+                  in recognition of outstanding achievement, performance, and distinguished excellence in<br/>
+                  <span class="cr-dept-inline">${departmentName}</span> at <span class="cr-brand-inline">Career Radar.</span>
+                </div>
+                <div class="cr-dedication">
+                  Recognizing extraordinary capability, perseverance, and leadership that set a high standard of professional excellence.
+                </div>
+                <div class="cr-appreciation">
+                  We celebrate your outstanding accomplishments and remarkable success.
+                </div>
+              `;
+            }
+            if (t.includes('participation') || t.includes('attend')) {
+              return `
+                <div class="cr-recognition-line">
+                  in recognition of active participation and engagement in<br/>
+                  <span class="cr-dept-inline">${departmentName}</span> organized by <span class="cr-brand-inline">Career Radar.</span>
+                </div>
+                <div class="cr-dedication">
+                  Demonstrating passion for continuous learning, networking, and professional skill enhancement.
+                </div>
+                <div class="cr-appreciation">
+                  We appreciate your enthusiastic engagement and meaningful contribution.
+                </div>
+              `;
+            }
+            return `
+              <div class="cr-recognition-line">
+                in recognition of valuable contributions in the<br/>
+                <span class="cr-dept-inline">${departmentName}</span> at <span class="cr-brand-inline">Career Radar.</span>
+              </div>
+              <div class="cr-dedication">
+                Your dedication, professionalism, and commitment<br/>
+                have played an important role in supporting our mission of helping<br/>
+                students and early-career professionals discover opportunities,<br/>
+                develop skills, and build successful careers.
+              </div>
+              <div class="cr-appreciation">
+                We sincerely appreciate your time, effort, and positive<br/>impact on our community.
+              </div>
+            `;
+          })()}
+          ${achievement ? `<div class="cr-appreciation" style="color: #C9A227; margin: 2mm 0;">★ ${achievement} ★</div>` : ''}
+          <div class="cr-thankyou">${(() => {
+            const t = (v.certificateType || cleanTitle || '').toLowerCase();
+            if (t.includes('completion') || t.includes('internship')) return 'Wishing you continued success in your professional journey!';
+            if (t.includes('achievement')) return 'Continue inspiring others and reaching new heights!';
+            return 'Thank you for being an essential part of Career Radar!';
+          })()}</div>
         </div>
 
         <!-- Footer -->
@@ -1106,8 +1194,8 @@ body {
           <div class="cr-signatory">
             ${signatureSvg}
             <div class="cr-sig-rule"></div>
-            <div class="cr-sig-name">HASNAIN SHAKEEL AHMED</div>
-            <div class="cr-sig-role">Founder &amp; CEO</div>
+            <div class="cr-sig-name">${signatory1Name}</div>
+            <div class="cr-sig-role">${signatory1Title}</div>
             <div class="cr-sig-org">Career Radar</div>
           </div>
 

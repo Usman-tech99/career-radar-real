@@ -2,6 +2,7 @@ import { supabase } from './supabase'
 import { parseCertificateReference } from './certificateReference'
 import {
   renderCertificateHtml,
+  renderCareerRadarAppreciationHtml,
   normalizeDesign,
   previewValues,
 } from '../../supabase/functions/generate-certificate-pdf/certificateHtml.js'
@@ -422,22 +423,144 @@ async function callPdfFunction(certificateUuid, download) {
   return payload
 }
 
+/**
+ * Direct client-side print and vector PDF view.
+ * Renders the full, uncompressed, official Career Radar certificate
+ * with A4 Landscape page dimensions and triggers the browser's native PDF save dialog.
+ * This completely avoids server-side Chromium / headless browser runtime issues.
+ */
+export async function openCertificatePrintView(certificateRecord, autoPrint = false) {
+  // Open window immediately on user gesture to avoid popup blockers
+  let win = null
+  try {
+    win = window.open('about:blank', '_blank')
+    if (win) {
+      win.document.write('<!DOCTYPE html><html><head><title>Career Radar Certificate</title></head><body style="margin:0;background:#07122A;display:flex;align-items:center;justify-content:center;height:100vh;color:#C9993C;font-family:Inter,sans-serif;"><h3>Preparing official certificate...</h3></body></html>')
+    }
+  } catch {}
+
+  let cert = certificateRecord
+  if (typeof cert === 'string') {
+    try {
+      const { data } = await supabase
+        .from('certificates')
+        .select('*')
+        .or(`id.eq.${cert},certificate_id.eq.${cert},verification_token.eq.${cert}`)
+        .maybeSingle()
+      cert = data
+    } catch {}
+  }
+
+  if (!cert) {
+    if (win) win.close()
+    throw new Error('Certificate record could not be loaded for print view')
+  }
+
+  const verifyUrl = certificateVerifyUrl(cert.verification_token)
+  const certId = cert.certificate_id || ''
+  const recipientName = cert.recipient_name || 'Recipient'
+  const departmentName = cert.custom_fields?.department_name || cert.achievement || 'Career Radar'
+  const certTitle = cert.certificate_title || 'Certificate of Appreciation'
+  const certType = cert.custom_fields?.certificate_type || cert.template_snapshot?.certificate_type || ''
+  const desc = cert.description || ''
+  const achieve = cert.achievement || ''
+  const issueDate = cert.issue_date || ''
+  const sigName = cert.signatory_1_name || 'HASNAIN SHAKEEL AHMED'
+  const sigTitle = cert.signatory_1_title || 'FOUNDER & CEO'
+
+  const rawHtml = renderCareerRadarAppreciationHtml({
+    certificateId: certId,
+    recipientName,
+    departmentName,
+    certificateTitle: certTitle,
+    certificateType: certType,
+    description: desc,
+    achievement: achieve,
+    issueDate,
+    verificationUrl: verifyUrl,
+    signatory1Name: sigName,
+    signatory1Title: sigTitle,
+  })
+
+  const toolbar = `
+    <div class="cr-toolbar-print" style="position: fixed; top: 16px; right: 24px; z-index: 999999; display: flex; align-items: center; gap: 10px; background: rgba(11,27,61,0.96); padding: 8px 16px; border-radius: 12px; border: 1.5px solid #C9A227; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: Inter, sans-serif;">
+      <button onclick="window.print()" style="background: #C9A227; color: #0B1B3D; border: none; font-weight: 700; font-size: 13px; padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+        🖨️ Save as PDF / Print
+      </button>
+      <button onclick="window.close()" style="background: rgba(255,255,255,0.1); color: #FFF; border: none; font-size: 13px; padding: 8px 14px; border-radius: 8px; cursor: pointer;">
+        ✕ Close
+      </button>
+    </div>
+    <style>
+      @media print {
+        .cr-toolbar-print { display: none !important; }
+        @page { size: A4 landscape; margin: 0; }
+        body { margin: 0 !important; padding: 0 !important; background: white !important; }
+      }
+    </style>
+    ${autoPrint ? '<script>window.addEventListener("load", () => setTimeout(() => window.print(), 400));</script>' : ''}
+  `
+
+  const finalHtml = rawHtml.replace('</body>', `${toolbar}</body>`)
+
+  if (win && !win.closed) {
+    win.document.open()
+    win.document.write(finalHtml)
+    win.document.close()
+    if (autoPrint) {
+      setTimeout(() => {
+        try { win.focus(); win.print(); } catch {}
+      }, 500)
+    }
+    return true
+  }
+
+  // Fallback: hidden iframe print if popups are fully blocked
+  try {
+    const iframe = document.createElement('iframe')
+    iframe.style.position = 'fixed'
+    iframe.style.right = '0'
+    iframe.style.bottom = '0'
+    iframe.style.width = '0'
+    iframe.style.height = '0'
+    iframe.style.border = '0'
+    document.body.appendChild(iframe)
+    iframe.contentWindow.document.open()
+    iframe.contentWindow.document.write(finalHtml)
+    iframe.contentWindow.document.close()
+    iframe.contentWindow.focus()
+    setTimeout(() => {
+      iframe.contentWindow.print()
+      setTimeout(() => iframe.remove(), 4000)
+    }, 400)
+    return true
+  } catch (e) {
+    throw new Error('Please allow popups or use print to view and download certificates')
+  }
+}
+
 export async function openCertificatePdf(certificateUuid) {
-  const { url } = await callPdfFunction(certificateUuid, false)
-  window.open(url, '_blank', 'noopener')
-  return url
+  // If static PDF is already stored in storage bucket, we can check it
+  try {
+    const certId = typeof certificateUuid === 'object' ? certificateUuid.id : certificateUuid
+    const { data: cert } = await supabase
+      .from('certificates')
+      .select('id, pdf_url')
+      .eq('id', certId)
+      .maybeSingle()
+
+    if (cert?.pdf_url) {
+      window.open(cert.pdf_url, '_blank', 'noopener')
+      return cert.pdf_url
+    }
+  } catch {}
+
+  return openCertificatePrintView(certificateUuid, false)
 }
 
 export async function downloadCertificatePdf(certificateUuid, filename) {
-  const { url } = await callPdfFunction(certificateUuid, true)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = filename || 'certificate.pdf'
-  link.rel = 'noopener'
-  document.body.appendChild(link)
-  link.click()
-  link.remove()
-  return url
+  // Trigger direct landscape vector print to PDF
+  return openCertificatePrintView(certificateUuid, true)
 }
 
 // ---------------------------------------------------------------------------

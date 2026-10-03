@@ -48,10 +48,9 @@ const NAV_GROUPS = [
   {
     label: 'Certificates',
     items: [
-      { label: 'All Certificates',   path: '/admin/certificates',                      icon: Award,         perm: 'manage_certificates' },
-      { label: 'Issue (Custom)',      path: '/admin/certificates/issue',                icon: FilePlus2,     perm: 'manage_certificates' },
-      { label: 'Issue Appreciation', path: '/admin/certificates/issue-appreciation',   icon: FilePlus2,     perm: 'manage_certificates' },
-      { label: 'Templates',          path: '/admin/certificates/templates',            icon: LayoutTemplate, perm: 'manage_certificates' },
+      { label: 'All Certificates',   path: '/admin/certificates',            icon: Award,         perm: 'manage_certificates' },
+      { label: 'Issue Certificate',  path: '/admin/certificates/issue',      icon: FilePlus2,     perm: 'manage_certificates' },
+      { label: 'Templates',          path: '/admin/certificates/templates',  icon: LayoutTemplate, perm: 'manage_certificates' },
     ],
   },
   {

@@ -255,7 +255,7 @@ function DetailDrawer({ certificateId, revision = 0, onClose, onRevoke, onReissu
   async function handlePdf() {
     setOpeningPdf(true)
     try {
-      await openCertificatePdf(certificateId)
+      await openCertificatePdf(record || certificateId)
     } catch (error) {
       toast.error(error.message)
     } finally {
@@ -266,8 +266,8 @@ function DetailDrawer({ certificateId, revision = 0, onClose, onRevoke, onReissu
   async function handleDownload() {
     setOpeningPdf(true)
     try {
-      await downloadCertificatePdf(certificateId, record?.certificate_id)
-      toast.success('Download recorded')
+      await downloadCertificatePdf(record || certificateId, record?.certificate_id)
+      toast.success('Certificate ready')
       load()
     } catch (error) {
       toast.error(error.message)

@@ -8,6 +8,7 @@ import {
   parseCertificateReference,
   requestPublicCertificatePdf,
   verifyCertificate,
+  openCertificatePrintView,
 } from '../../lib/certificates'
 import { formatDate } from '../../lib/helpers'
 import CertificateAppreciationPreview from '../../components/certificates/CertificateAppreciationPreview'
@@ -103,11 +104,10 @@ function CertificateDetails({ certificate }) {
   // download counter records downloads rather than verification traffic.
   const [pdfState, setPdfState] = useState({ status: 'idle' })
 
-  async function handleDownload() {
+  async function handleOpenPrint(autoPrint = false) {
     setPdfState({ status: 'loading' })
     try {
-      const url = await requestPublicCertificatePdf(certificate.certificate_id, 'certificate_id')
-      window.open(url, '_blank', 'noopener')
+      await openCertificatePrintView(certificate, autoPrint)
       setPdfState({ status: 'done' })
     } catch (error) {
       setPdfState({ status: 'error', message: error.message })
@@ -171,19 +171,29 @@ function CertificateDetails({ certificate }) {
 
       {certificate.status === 'valid' && (
         <div className="pt-5 border-t border-border">
-          <button
-            type="button"
-            onClick={handleDownload}
-            disabled={pdfState.status === 'loading'}
-            className="btn-primary text-sm px-5 py-2.5 inline-flex items-center gap-2 disabled:opacity-60"
-          >
-            {pdfState.status === 'loading'
-              ? <Loader2 size={15} className="animate-spin" />
-              : <Download size={15} />}
-            {pdfState.status === 'done' ? 'Open PDF certificate again' : 'Open PDF certificate'}
-          </button>
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => handleOpenPrint(true)}
+              disabled={pdfState.status === 'loading'}
+              className="btn-primary text-sm px-5 py-2.5 inline-flex items-center gap-2 disabled:opacity-60"
+            >
+              {pdfState.status === 'loading'
+                ? <Loader2 size={15} className="animate-spin" />
+                : <Download size={15} />}
+              Save as PDF / Print
+            </button>
+            <button
+              type="button"
+              onClick={() => handleOpenPrint(false)}
+              disabled={pdfState.status === 'loading'}
+              className="btn-ghost text-sm px-5 py-2.5 inline-flex items-center gap-2 disabled:opacity-60"
+            >
+              View Official Certificate
+            </button>
+          </div>
           <p className="text-[11px] text-muted mt-2">
-            This secure link expires shortly and each download is recorded.
+            Opens the authentic Career Radar vector certificate formatted for landscape A4 printing.
           </p>
           {pdfState.status === 'error' && (
             <p className="text-[11px] text-red-400 mt-1">{pdfState.message}</p>
@@ -375,9 +385,15 @@ export default function VerifyCertificate() {
             <div className="mb-6 rounded-2xl bg-white/5 border border-border p-3 sm:p-4 overflow-hidden">
               <CertificateAppreciationPreview
                 certificateId={certificate.certificate_id}
+                certificateTitle={certificate.certificate_title}
+                certificateType={certificate.custom_fields?.certificate_type || certificate.template_snapshot?.certificate_type || ''}
                 recipientName={certificate.recipient_name}
                 departmentName={(certificate.custom_fields || {}).department_name || certificate.achievement || 'Career Radar'}
+                description={certificate.description}
+                achievement={certificate.achievement}
                 issueDate={certificate.issue_date}
+                signatory1Name={certificate.signatory_1_name}
+                signatory1Title={certificate.signatory_1_title}
               />
             </div>
 

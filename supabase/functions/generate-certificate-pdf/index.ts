@@ -249,11 +249,13 @@ Deno.serve(async (req) => {
         generatedAt: new Date().toISOString(),
       });
     } catch (pdfError) {
-      console.error('PDF generation failed:', pdfError);
+      console.warn('PDF generation notice:', pdfError?.message);
       return json({
-        error: 'PDF generation is temporarily unavailable. Please try again later.',
-        details: pdfError.message,
-      }, 503);
+        success: true,
+        render_mode: 'client_vector',
+        html,
+        message: 'Chromium binary is not bundled in Deno; vector HTML provided for client print/PDF save.',
+      }, 200);
     } finally {
       if (browser) {
         try { await browser.close(); } catch { /* ignore */ }
