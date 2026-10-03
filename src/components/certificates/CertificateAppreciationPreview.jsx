@@ -1,281 +1,365 @@
 /**
  * CertificateAppreciationPreview
  *
- * A self-contained browser component that renders the Career Radar
- * "Certificate of Appreciation" design directly in the admin UI.
+ * Browser-side preview that matches the official Career Radar
+ * "Certificate of Appreciation" design exactly.
  *
- * It uses the SAME visual tokens as the Supabase edge-function renderer
- * but is implemented as pure JSX/inline-SVG so it can run in a browser
- * without importing any server-side modules.
+ * Layout mirrors the PDF renderer in certificateHtml.js:
+ *   - Left navy panel  (~29% width): CR logo circle, gold diagonal shapes,
+ *     gold hexagon star badge, three feature bullet points
+ *   - Right white panel (~71% width): CERTIFICATE heading, recipient name
+ *     in script, body text, signature block, date
  *
- * The design is drawn at a fixed 1190×842 px (A4 landscape @ 100 dpi)
- * and then CSS-scaled to fill whatever container it lives in.
+ * Uses CSS scale-to-fit so it fills any container width.
  */
 
 import { useLayoutEffect, useRef, useState } from 'react'
+import logo from '../../assets/logo.jpeg'
 
-// ── Design tokens (mirror certificateHtml.js cr_appreciation renderer) ───────
-const C = {
-  navy:      '#0A1628',
-  navyMid:   '#0D1E3A',
-  gold:      '#C9993C',
-  goldLight: '#E5C46E',
-  goldPale:  '#F5E6C3',
-  white:     '#FFFFFF',
-  cream:     '#FDF8EE',
-}
+// ── Canvas dimensions (A4 landscape @ 96 dpi) ─────────────────────────────────
+const W = 1122
+const H = 794
+const LEFT_W = 328   // ~29.2% — matches official left panel
 
-const W = 1190   // natural width  (px)
-const H = 842    // natural height (px)
+// ── Design tokens ──────────────────────────────────────────────────────────────
+const NAVY   = '#0D1B3E'
+const GOLD   = '#C9A227'
+const GOLD2  = '#E8C547'
+const WHITE  = '#FFFFFF'
+const OFFWHT = '#F8F9FA'
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-function fmt(dateStr) {
-  if (!dateStr) return ''
-  try {
-    return new Date(dateStr).toLocaleDateString('en-GB', {
-      day: 'numeric', month: 'long', year: 'numeric',
-    })
-  } catch {
-    return dateStr
+// ── Helpers ────────────────────────────────────────────────────────────────────
+function fmtDate(str) {
+  if (!str) return { d: '__', m: '__', y: '____' }
+  const dt = new Date(str + 'T12:00:00')
+  return {
+    d: String(dt.getDate()).padStart(2, '0'),
+    m: String(dt.getMonth() + 1).padStart(2, '0'),
+    y: String(dt.getFullYear()),
   }
 }
 
-// ── Sub-components ────────────────────────────────────────────────────────────
-
-/** The entire certificate rendered as a 1190×842 SVG foreignObject + HTML mix.
- *  We use a plain <div> wrapper + absolute-positioned children for flexibility. */
-function CertBody({ recipientName, departmentName, certificateId, issueDate, verificationUrl }) {
+// ── Left panel gold diagonal shapes (SVG) ─────────────────────────────────────
+function LeftPanelShapes() {
   return (
-    <div
-      style={{
-        width: W,
-        height: H,
-        position: 'relative',
-        background: C.navy,
-        fontFamily: "'Georgia', 'Times New Roman', serif",
-        overflow: 'hidden',
-        borderRadius: 4,
-      }}
+    <svg
+      viewBox={`0 0 ${LEFT_W} ${H}`}
+      style={{ position: 'absolute', inset: 0, width: LEFT_W, height: H }}
+      preserveAspectRatio="none"
     >
-      {/* ── Background gradient overlay ── */}
+      {/* Large gold diagonal blade — right edge of panel going to top-right */}
+      <polygon
+        points={`${LEFT_W - 46},0 ${LEFT_W + 2},0 ${LEFT_W + 2},${H} ${LEFT_W - 66},${H}`}
+        fill={GOLD}
+        opacity="0.92"
+      />
+      {/* Thinner gold accent stripe just inside it */}
+      <polygon
+        points={`${LEFT_W - 66},0 ${LEFT_W - 46},0 ${LEFT_W - 66},${H} ${LEFT_W - 86},${H}`}
+        fill={GOLD2}
+        opacity="0.45"
+      />
+      {/* Bottom-left corner triangle accent */}
+      <polygon
+        points={`0,${H} 0,${H * 0.7} ${LEFT_W * 0.55},${H}`}
+        fill={GOLD}
+        opacity="0.18"
+      />
+    </svg>
+  )
+}
+
+// ── Gold hexagon star badge ────────────────────────────────────────────────────
+function HexBadge() {
+  const cx = 40, cy = 44, r = 38
+  // Regular hexagon points (flat-top)
+  const pts = Array.from({ length: 6 }, (_, i) => {
+    const a = (Math.PI / 180) * (60 * i - 30)
+    return `${cx + r * Math.cos(a)},${cy + r * Math.sin(a)}`
+  }).join(' ')
+  const ptsInner = Array.from({ length: 6 }, (_, i) => {
+    const a = (Math.PI / 180) * (60 * i - 30)
+    return `${cx + (r - 5) * Math.cos(a)},${cy + (r - 5) * Math.sin(a)}`
+  }).join(' ')
+
+  return (
+    <svg width="80" height="88" viewBox="0 0 80 88">
+      <defs>
+        <linearGradient id="hexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor={GOLD} />
+          <stop offset="50%" stopColor={GOLD2} />
+          <stop offset="100%" stopColor={GOLD} />
+        </linearGradient>
+      </defs>
+      <polygon points={pts} fill="url(#hexGrad)" />
+      <polygon points={ptsInner} fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
+      {/* Star ★ */}
+      <text x={cx} y={cy + 13} textAnchor="middle" fontSize="34" fill={WHITE} style={{ fontFamily: 'Georgia, serif' }}>★</text>
+    </svg>
+  )
+}
+
+// ── Feature bullet items ───────────────────────────────────────────────────────
+const FEATURES = [
+  { emoji: '🎯', label: 'Find Opportunities' },
+  { emoji: '📖', label: 'Prepare Yourself' },
+  { emoji: '🏆', label: 'Succeed Globally' },
+]
+
+// ── Signature SVG (cursive "Hasnain") ─────────────────────────────────────────
+function SignatureSvg() {
+  return (
+    <svg width="180" height="52" viewBox="0 0 180 52" style={{ display: 'block' }}>
+      <text
+        x="14" y="40"
+        fontFamily="'Brush Script MT', 'Dancing Script', cursive"
+        fontSize="38"
+        fill={NAVY}
+        opacity="0.85"
+      >
+        Hasnain
+      </text>
+    </svg>
+  )
+}
+
+// ── Watermark concentric circles ──────────────────────────────────────────────
+function Watermark() {
+  return (
+    <svg
+      style={{ position: 'absolute', right: -30, top: '50%', transform: 'translateY(-50%)', opacity: 0.12 }}
+      width="340" height="340" viewBox="0 0 340 340"
+    >
+      <circle cx="170" cy="170" r="155" fill="none" stroke={NAVY} strokeWidth="34" />
+      <circle cx="170" cy="170" r="100" fill="none" stroke={NAVY} strokeWidth="14" />
+      <circle cx="170" cy="170" r="56"  fill="none" stroke={NAVY} strokeWidth="8" />
+    </svg>
+  )
+}
+
+// ── Main certificate body ──────────────────────────────────────────────────────
+function CertBody({ certificateId, recipientName, departmentName, issueDate }) {
+  const { d, m, y } = fmtDate(issueDate)
+
+  return (
+    <div style={{
+      width: W, height: H,
+      display: 'flex', flexDirection: 'row',
+      fontFamily: "'Arial', sans-serif",
+      background: WHITE,
+      overflow: 'hidden',
+    }}>
+
+      {/* ══ LEFT NAVY PANEL ══ */}
       <div style={{
-        position: 'absolute', inset: 0,
-        background: `radial-gradient(ellipse at 50% 0%, ${C.navyMid} 0%, ${C.navy} 70%)`,
-      }} />
-
-      {/* ── Outer gold border ── */}
-      <div style={{
-        position: 'absolute', inset: 14,
-        border: `2px solid ${C.gold}`,
-        borderRadius: 4,
-        pointerEvents: 'none',
-      }} />
-
-      {/* ── Inner thin gold border ── */}
-      <div style={{
-        position: 'absolute', inset: 20,
-        border: `1px solid ${C.goldLight}40`,
-        borderRadius: 3,
-        pointerEvents: 'none',
-      }} />
-
-      {/* ── Decorative corner ornaments (SVG) ── */}
-      <svg style={{ position: 'absolute', inset: 0, width: W, height: H }} viewBox={`0 0 ${W} ${H}`}>
-        {/* Top-left */}
-        <g transform="translate(22,22)" stroke={C.gold} fill="none" strokeWidth="1.5">
-          <line x1="0" y1="40" x2="0" y2="0" /><line x1="0" y1="0" x2="40" y2="0" />
-          <circle cx="8" cy="8" r="3" fill={C.gold} stroke="none" />
-        </g>
-        {/* Top-right */}
-        <g transform={`translate(${W-22},22) scale(-1,1)`} stroke={C.gold} fill="none" strokeWidth="1.5">
-          <line x1="0" y1="40" x2="0" y2="0" /><line x1="0" y1="0" x2="40" y2="0" />
-          <circle cx="8" cy="8" r="3" fill={C.gold} stroke="none" />
-        </g>
-        {/* Bottom-left */}
-        <g transform={`translate(22,${H-22}) scale(1,-1)`} stroke={C.gold} fill="none" strokeWidth="1.5">
-          <line x1="0" y1="40" x2="0" y2="0" /><line x1="0" y1="0" x2="40" y2="0" />
-          <circle cx="8" cy="8" r="3" fill={C.gold} stroke="none" />
-        </g>
-        {/* Bottom-right */}
-        <g transform={`translate(${W-22},${H-22}) scale(-1,-1)`} stroke={C.gold} fill="none" strokeWidth="1.5">
-          <line x1="0" y1="40" x2="0" y2="0" /><line x1="0" y1="0" x2="40" y2="0" />
-          <circle cx="8" cy="8" r="3" fill={C.gold} stroke="none" />
-        </g>
-
-        {/* Top centre gold bar */}
-        <rect x={W/2-120} y="14" width="240" height="12" rx="6" fill={C.gold} />
-
-        {/* Gold wave lines flanking the centre bar */}
-        {[-1,1].map(dir => (
-          <g key={dir} transform={`translate(${W/2 + dir*140},20)`}>
-            <line x1="0" y1="0" x2={dir*60} y2="0" stroke={C.gold} strokeWidth="1" opacity="0.5" />
-          </g>
-        ))}
-      </svg>
-
-      {/* ── Left panel (dark) with CR badge area ── */}
-      <div style={{
-        position: 'absolute', left: 0, top: 0, width: 200, height: H,
-        background: `linear-gradient(180deg, ${C.navyMid} 0%, ${C.navy}CC 100%)`,
-        borderRight: `1px solid ${C.gold}50`,
-        display: 'flex', flexDirection: 'column', alignItems: 'center',
-        justifyContent: 'center', gap: 16, padding: '20px 10px',
+        width: LEFT_W, height: H,
+        background: NAVY,
+        position: 'relative',
+        flexShrink: 0,
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center',
+        padding: '28px 16px 24px',
+        gap: 0,
+        zIndex: 0,
       }}>
-        {/* CR circular badge */}
+        <LeftPanelShapes />
+
+        {/* Career Radar circular logo */}
         <div style={{
-          width: 90, height: 90,
+          position: 'relative', zIndex: 2,
+          width: 148, height: 148,
           borderRadius: '50%',
-          border: `3px solid ${C.gold}`,
-          background: `radial-gradient(circle, ${C.navyMid}, ${C.navy})`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          flexDirection: 'column',
-          boxShadow: `0 0 20px ${C.gold}40`,
+          border: `4px solid ${GOLD}`,
+          background: WHITE,
+          overflow: 'hidden',
+          boxShadow: `0 4px 24px rgba(0,0,0,0.35)`,
+          flexShrink: 0,
         }}>
-          <span style={{ color: C.gold, fontSize: 28, fontWeight: 700, lineHeight: 1, fontFamily: 'Georgia, serif' }}>CR</span>
-          <span style={{ color: C.goldLight, fontSize: 9, letterSpacing: 2, marginTop: 2 }}>VERIFIED</span>
+          <img
+            src={logo}
+            alt="Career Radar"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
         </div>
 
-        {/* Vertical text */}
-        <div style={{
-          writingMode: 'vertical-rl',
-          textOrientation: 'mixed',
-          transform: 'rotate(180deg)',
-          color: C.goldPale,
-          fontSize: 9,
-          letterSpacing: 3,
-          textTransform: 'uppercase',
-          opacity: 0.7,
-        }}>
-          Career Radar
-        </div>
-
-        {/* QR / verify info */}
-        {verificationUrl && (
-          <div style={{
-            marginTop: 'auto', textAlign: 'center',
-            color: C.goldLight, fontSize: 8, opacity: 0.6, wordBreak: 'break-all',
-            padding: '0 8px',
-          }}>
-            Verify at<br />
-            <span style={{ fontFamily: 'monospace', fontSize: 7 }}>
-              {verificationUrl.replace('https://', '')}
-            </span>
+        {/* Brand text below logo */}
+        <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', marginTop: 10 }}>
+          <div style={{ fontWeight: 700, fontSize: 16, letterSpacing: 0.5 }}>
+            <span style={{ color: WHITE }}>Career</span>
+            <span style={{ color: GOLD }}>Radar</span>
           </div>
-        )}
+          <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.65)', letterSpacing: 1.8, textTransform: 'uppercase', marginTop: 3 }}>
+            — Your Opportunity Scanner —
+          </div>
+          <div style={{ color: GOLD, fontSize: 10, marginTop: 3 }}>★</div>
+          <div style={{ fontSize: 7.5, color: 'rgba(255,255,255,0.5)', letterSpacing: 1.5, textTransform: 'uppercase', marginTop: 2 }}>
+            Find. Prepare. Succeed.
+          </div>
+        </div>
+
+        {/* Gold hexagon star badge */}
+        <div style={{ position: 'relative', zIndex: 2, marginTop: 28 }}>
+          <HexBadge />
+        </div>
+
+        {/* Feature bullet list */}
+        <div style={{
+          position: 'relative', zIndex: 2,
+          marginTop: 'auto', width: '100%',
+          display: 'flex', flexDirection: 'column', gap: 11,
+        }}>
+          {FEATURES.map(({ emoji, label }) => (
+            <div key={label} style={{
+              display: 'flex', alignItems: 'center', gap: 10,
+              fontSize: 11.5, color: 'rgba(255,255,255,0.88)',
+            }}>
+              <span style={{ fontSize: 15 }}>{emoji}</span>
+              <span>{label}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* ── Main content area ── */}
+      {/* ══ RIGHT WHITE PANEL ══ */}
       <div style={{
-        position: 'absolute', left: 200, right: 0, top: 0, bottom: 0,
+        flex: 1, height: H,
+        background: WHITE,
+        position: 'relative',
         display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'center',
-        padding: '40px 60px 30px 50px',
-        textAlign: 'center',
+        padding: '18px 38px 20px 44px',
+        overflow: 'hidden',
       }}>
+        <Watermark />
 
-        {/* Career Radar wordmark */}
+        {/* Certificate ID — top right */}
         <div style={{
-          fontSize: 13, letterSpacing: 8, textTransform: 'uppercase',
-          color: C.goldLight, fontFamily: 'Georgia, serif', marginBottom: 6,
+          position: 'absolute', top: 16, right: 30,
+          fontSize: 10, color: '#64748B', letterSpacing: 0.8,
+          fontFamily: 'monospace',
         }}>
-          Career Radar
+          {certificateId || 'CR-VOL-2026-___'}
         </div>
 
-        {/* Title */}
-        <div style={{
-          fontSize: 34, fontWeight: 700, letterSpacing: 2,
-          color: C.white, fontFamily: 'Georgia, serif', lineHeight: 1.1,
-          marginBottom: 4,
-        }}>
-          Certificate
-        </div>
-        <div style={{
-          fontSize: 16, letterSpacing: 6, textTransform: 'uppercase',
-          color: C.gold, marginBottom: 28,
-        }}>
-          of Appreciation
-        </div>
-
-        {/* Gold divider */}
-        <div style={{ width: '60%', height: 1, background: `linear-gradient(90deg, transparent, ${C.gold}, transparent)`, marginBottom: 22 }} />
-
-        {/* Intro text */}
-        <div style={{ color: C.goldPale, fontSize: 12, letterSpacing: 1, marginBottom: 14, opacity: 0.85 }}>
-          This certificate is proudly awarded to
-        </div>
-
-        {/* Recipient name */}
-        <div style={{
-          fontSize: 42, fontFamily: "'Brush Script MT', 'Segoe Script', cursive",
-          color: C.goldLight, lineHeight: 1.2, marginBottom: 6,
-          textShadow: `0 2px 12px ${C.gold}60`,
-        }}>
-          {recipientName || 'Recipient Name'}
-        </div>
-
-        {/* Department */}
-        {departmentName && (
+        {/* ── Heading ── */}
+        <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
           <div style={{
-            color: C.goldPale, fontSize: 12, letterSpacing: 1,
-            marginBottom: 16, opacity: 0.8, fontStyle: 'italic',
+            fontSize: 58, fontWeight: 900, color: NAVY,
+            fontFamily: "'Arial Black', 'Arial', sans-serif",
+            letterSpacing: 6, lineHeight: 1, marginTop: 8,
           }}>
-            {departmentName}
+            CERTIFICATE
           </div>
-        )}
-
-        {/* Body text */}
-        <div style={{
-          color: C.goldPale, fontSize: 11.5, lineHeight: 1.7,
-          maxWidth: 480, marginBottom: 24, opacity: 0.8,
-        }}>
-          In recognition of outstanding dedication, hard work, and invaluable contributions
-          to Career Radar's mission of empowering careers and transforming futures.
+          <div style={{
+            fontSize: 16, fontWeight: 700, color: GOLD,
+            letterSpacing: 8, textTransform: 'uppercase',
+            marginTop: 2,
+          }}>
+            OF APPRECIATION
+          </div>
+          <div style={{ color: GOLD, fontSize: 20, marginTop: 3 }}>★</div>
         </div>
 
-        {/* Gold divider */}
-        <div style={{ width: '50%', height: 1, background: `linear-gradient(90deg, transparent, ${C.gold}80, transparent)`, marginBottom: 20 }} />
-
-        {/* Bottom meta row */}
+        {/* ── Proudly presented to ── */}
         <div style={{
-          display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end',
-          width: '100%', paddingTop: 4,
+          textAlign: 'center', marginTop: 10,
+          fontSize: 10, letterSpacing: 4, color: '#64748B',
+          fontWeight: 700, textTransform: 'uppercase',
+          position: 'relative', zIndex: 1,
+        }}>
+          PROUDLY PRESENTED TO
+        </div>
+
+        {/* ── Recipient name with flanking gold rules ── */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 14,
+          margin: '8px 0 4px',
+          position: 'relative', zIndex: 1,
+        }}>
+          <div style={{ flex: 1, height: 1.5, background: `linear-gradient(to right, transparent, ${GOLD})` }} />
+          <div style={{
+            fontSize: 50,
+            fontFamily: "'Brush Script MT', 'Dancing Script', 'Segoe Script', cursive",
+            color: NAVY,
+            fontStyle: 'italic',
+            whiteSpace: 'nowrap',
+            lineHeight: 1.15,
+          }}>
+            {recipientName || 'Recipient Name'}
+          </div>
+          <div style={{ flex: 1, height: 1.5, background: `linear-gradient(to left, transparent, ${GOLD})` }} />
+        </div>
+
+        {/* ── Body text ── */}
+        <div style={{ textAlign: 'center', position: 'relative', zIndex: 1, flex: 1 }}>
+          {/* Recognition line */}
+          <div style={{ fontSize: 12, color: '#334155', lineHeight: 1.65, marginBottom: 8 }}>
+            in recognition of your valuable contributions as a volunteer in the{' '}
+            <strong style={{ color: GOLD }}>
+              [{departmentName || 'DEPARTMENT / TEAM NAME'}]
+            </strong>{' '}
+            at <strong style={{ color: NAVY }}>Career Radar.</strong>
+          </div>
+
+          {/* Dedication paragraph */}
+          <div style={{ fontSize: 11, color: '#64748B', lineHeight: 1.75, marginBottom: 6 }}>
+            Your dedication, professionalism, and commitment<br />
+            have played an important role in supporting our mission of helping<br />
+            students and early-career professionals discover opportunities,<br />
+            develop skills, and build successful careers.
+          </div>
+
+          {/* Appreciation sentence */}
+          <div style={{ fontSize: 12, fontWeight: 700, color: '#1E293B', marginBottom: 5, lineHeight: 1.5 }}>
+            We sincerely appreciate your time, effort, and positive<br />
+            impact on our community.
+          </div>
+
+          {/* Thank you */}
+          <div style={{
+            fontSize: 13, fontStyle: 'italic', color: GOLD,
+            fontFamily: 'Georgia, serif',
+          }}>
+            Thank you for being an essential part of Career Radar!
+          </div>
+        </div>
+
+        {/* ── Footer: signature left | date right ── */}
+        <div style={{
+          display: 'flex', justifyContent: 'space-between',
+          alignItems: 'flex-end', position: 'relative', zIndex: 1,
+          marginTop: 10,
         }}>
           {/* Signature block */}
-          <div style={{ textAlign: 'center', flex: 1 }}>
-            <div style={{
-              height: 1, background: C.gold, width: 120, margin: '0 auto 4px',
-            }} />
-            <div style={{ color: C.goldPale, fontSize: 9, letterSpacing: 1, opacity: 0.7 }}>
-              AUTHORISED SIGNATURE
+          <div style={{ textAlign: 'center' }}>
+            <SignatureSvg />
+            {/* Rule under signature */}
+            <div style={{ height: 1, background: NAVY, opacity: 0.2, width: 180, margin: '2px auto 6px' }} />
+            <div style={{ fontSize: 10.5, fontWeight: 700, color: NAVY, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+              Hasnain Shakeel Ahmed
+            </div>
+            <div style={{ fontSize: 9.5, color: GOLD, letterSpacing: 0.5, textTransform: 'uppercase', marginTop: 2 }}>
+              Founder &amp; CEO
+            </div>
+            <div style={{ fontSize: 9.5, fontWeight: 700, color: NAVY, letterSpacing: 0.8, textTransform: 'uppercase', marginTop: 1 }}>
+              Career Radar
             </div>
           </div>
 
-          {/* Cert ID + date */}
-          <div style={{ textAlign: 'center', flex: 1 }}>
-            {certificateId && (
-              <div style={{ color: C.goldPale, fontSize: 9, fontFamily: 'monospace', opacity: 0.7, marginBottom: 2 }}>
-                {certificateId}
-              </div>
-            )}
-            {issueDate && (
-              <div style={{ color: C.goldPale, fontSize: 9, opacity: 0.6 }}>
-                {fmt(issueDate)}
-              </div>
-            )}
-          </div>
-
-          {/* Official seal placeholder */}
-          <div style={{ textAlign: 'center', flex: 1 }}>
+          {/* Date block */}
+          <div style={{ textAlign: 'center' }}>
             <div style={{
-              width: 56, height: 56, borderRadius: '50%',
-              border: `2px solid ${C.gold}70`,
-              margin: '0 auto',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 10, fontWeight: 700, color: GOLD,
+              letterSpacing: 2, textTransform: 'uppercase', marginBottom: 5,
             }}>
-              <span style={{ color: C.gold, fontSize: 9, letterSpacing: 1, textAlign: 'center', lineHeight: 1.3 }}>
-                OFFICIAL<br/>SEAL
-              </span>
+              DATE
+            </div>
+            <div style={{
+              fontSize: 12, color: NAVY,
+              borderBottom: `1.5px solid ${NAVY}`,
+              paddingBottom: 3, minWidth: 110, opacity: 0.75,
+              textAlign: 'center',
+            }}>
+              {d} / {m} / {y}
             </div>
           </div>
         </div>
@@ -284,19 +368,18 @@ function CertBody({ recipientName, departmentName, certificateId, issueDate, ver
   )
 }
 
-// ── Main export ───────────────────────────────────────────────────────────────
-
+// ── Scale-to-fit wrapper ───────────────────────────────────────────────────────
 export default function CertificateAppreciationPreview({
   certificateId   = 'CR-VOL-2026-001',
   recipientName   = 'Recipient Name',
   departmentName  = 'Department / Team',
   issueDate,
-  verificationUrl = 'https://www.career-radar.space/verify/preview',
-  className       = '',
-  showShadow      = true,
+  verificationUrl,  // kept for API compat; not shown in preview (shown on PDF)
+  className = '',
+  showShadow = true,
 }) {
   const wrapRef = useRef(null)
-  const [scale, setScale] = useState(0.4)
+  const [scale, setScale] = useState(0.35)
 
   useLayoutEffect(() => {
     const el = wrapRef.current
@@ -315,30 +398,27 @@ export default function CertificateAppreciationPreview({
     <div
       ref={wrapRef}
       className={className}
-      style={{ width: '100%', overflow: 'hidden', borderRadius: 6 }}
+      style={{ width: '100%' }}
     >
-      <div
-        style={{
-          width: W * scale,
-          height: H * scale,
-          position: 'relative',
-          ...(showShadow ? { boxShadow: '0 8px 32px rgba(0,0,0,0.4)' } : {}),
-          borderRadius: 6,
-          overflow: 'hidden',
-        }}
-      >
+      <div style={{
+        width: Math.round(W * scale),
+        height: Math.round(H * scale),
+        position: 'relative',
+        borderRadius: 4,
+        overflow: 'hidden',
+        ...(showShadow ? { boxShadow: '0 8px 40px rgba(0,0,0,0.35)' } : {}),
+      }}>
         <div style={{
-          transform: `scale(${scale})`,
-          transformOrigin: 'top left',
           width: W,
           height: H,
+          transform: `scale(${scale})`,
+          transformOrigin: 'top left',
         }}>
           <CertBody
+            certificateId={certificateId}
             recipientName={recipientName}
             departmentName={departmentName}
-            certificateId={certificateId}
             issueDate={issueDate}
-            verificationUrl={verificationUrl}
           />
         </div>
       </div>
