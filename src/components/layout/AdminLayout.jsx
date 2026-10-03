@@ -270,7 +270,15 @@ export default function AdminLayout() {
   }, [drawerOpen])
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#0C1A2E' }}>
+    <div
+      className="admin-theme"
+      style={{
+        display: 'flex',
+        minHeight: '100vh',
+        background: '#0C1A2E',
+        color: '#F1F5F9',
+      }}
+    >
 
       {/* ── Desktop sidebar (sticky in layout flow, never overlays content) ── */}
       <aside
@@ -345,15 +353,10 @@ export default function AdminLayout() {
             borderBottom: '1px solid rgba(255,255,255,0.06)',
           }}
         >
-          {/* Hamburger — mobile only */}
+          {/* Hamburger — strictly mobile only via Tailwind responsive class */}
           <button
-            className="lg:hidden"
+            className="lg:hidden flex items-center justify-center p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white transition-colors"
             onClick={() => setDrawerOpen(true)}
-            style={{
-              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-              cursor: 'pointer', color: '#CBD5E1', padding: 7, borderRadius: 8,
-              display: 'flex', alignItems: 'center',
-            }}
             aria-label="Open menu"
           >
             <Menu size={18} />
