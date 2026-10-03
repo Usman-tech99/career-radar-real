@@ -18,4 +18,10 @@ enabled = true
 site_url = "https://www.career-radar.space"
 additional_redirect_urls = ["https://www.career-radar.space/**"]
 
+[functions.generate-certificate-pdf]
+verify_jwt = false
+
+[functions.verify-certificate]
+verify_jwt = false
+
 [storage]

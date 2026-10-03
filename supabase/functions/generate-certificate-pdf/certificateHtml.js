@@ -466,6 +466,16 @@ export function renderCertificateHtml(options) {
 /** Placeholder values used by the template editor's live preview. */
 export function previewValues(design) {
   const normalized = normalizeDesign(design);
+  // For the Career Radar Appreciation template, return themed preview values.
+  if (normalized._templateType === 'cr_appreciation') {
+    return {
+      certificateId: 'CR-VOL-2026-001',
+      verificationUrl: 'https://www.career-radar.space/verify/v_preview',
+      recipientName: 'Recipient Name',
+      departmentName: 'Design & Branding',
+      issueDate: new Date().toISOString().slice(0, 10),
+    };
+  }
   return {
     certificateId: 'CR-2026-000123',
     verificationUrl: 'https://www.career-radar.space/verify/v_preview',
@@ -484,4 +494,651 @@ export function previewValues(design) {
   };
 }
 
-export default { renderCertificateHtml, normalizeDesign, DEFAULT_DESIGN, PAGE_SIZES, previewValues };
+// ---------------------------------------------------------------------------
+// Career Radar Official Certificate of Appreciation
+// Exact reproduction of the client-provided design.
+// ---------------------------------------------------------------------------
+
+/**
+ * Renders the official Career Radar Certificate of Appreciation.
+ *
+ * Layout: A4 Landscape (297mm × 210mm)
+ *   - Left panel (≈30%): navy-blue with logo, star badge, mission icons
+ *   - Right panel (≈70%): white/light grey with certificate content
+ *   - Gold diagonal accent stripe bridging the two panels
+ *
+ * All text, colours, and layout positions are fixed — this is the official
+ * template that cannot be edited by the general template editor.
+ *
+ * @param {object} v   Per-certificate values:
+ *   - certificateId    Human-readable ID (CR-VOL-2026-001)
+ *   - verificationUrl  Full /verify/<token> URL for the QR code
+ *   - recipientName    Award recipient's full name
+ *   - departmentName   Department / team name shown in the body
+ *   - issueDate        ISO date string (YYYY-MM-DD)
+ */
+export function renderCareerRadarAppreciationHtml(v = {}) {
+  const certificateId = escapeHtml(v.certificateId || '');
+  const recipientName = escapeHtml(v.recipientName || 'Recipient Name');
+  const departmentName = escapeHtml(v.departmentName || 'Your Department');
+  const verifyUrl = v.verificationUrl || '';
+
+  const issueDate = v.issueDate
+    ? new Date(v.issueDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    : '';
+  const issueDateParts = issueDate.split('/');
+  const issueDay   = issueDateParts[0] || '';
+  const issueMonth = issueDateParts[1] || '';
+  const issueYear  = issueDateParts[2] || '';
+
+  const showQr = !!verifyUrl;
+  const qrMarkup = showQr
+    ? qrToSvg(verifyUrl, { margin: 1, dark: '#0F1B33', light: '#FFFFFF' })
+        .replace('<svg ', '<svg class="cr-qr" ')
+    : '';
+
+  // Hasnain signature SVG — hand-lettered style approximation
+  const signatureSvg = `<svg viewBox="0 0 200 70" class="cr-sig-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 20 55 C 25 30, 35 20, 42 28 C 48 35, 44 50, 50 48 C 56 46, 58 30, 65 30 C 72 30, 70 50, 76 48 C 82 46, 88 35, 95 40 C 100 44, 98 55, 104 50 C 110 45, 118 30, 126 34 C 134 38, 130 55, 138 52 C 144 50, 148 42, 154 42 C 160 42, 162 52, 168 50"
+      fill="none" stroke="#0F1B33" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 40 62 L 170 62" fill="none" stroke="#0F1B33" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  </svg>`;
+
+  // Career Radar logo — approximated with SVG shapes matching the original circular badge
+  const logoSvg = `<svg viewBox="0 0 120 120" class="cr-logo" xmlns="http://www.w3.org/2000/svg" aria-label="Career Radar">
+    <!-- Outer ring -->
+    <circle cx="60" cy="60" r="58" fill="white" stroke="#C9A227" stroke-width="2.5"/>
+    <!-- Radar waves -->
+    <circle cx="60" cy="60" r="44" fill="none" stroke="#0F1B33" stroke-width="1.5" opacity="0.3"/>
+    <circle cx="60" cy="60" r="32" fill="none" stroke="#0F1B33" stroke-width="1.5" opacity="0.4"/>
+    <circle cx="60" cy="60" r="20" fill="none" stroke="#0F1B33" stroke-width="1.5" opacity="0.5"/>
+    <!-- Briefcase body -->
+    <rect x="40" y="62" width="40" height="28" rx="4" fill="#0F1B33"/>
+    <rect x="48" y="57" width="24" height="8" rx="3" fill="#0F1B33"/>
+    <line x1="60" y1="62" x2="60" y2="90" stroke="white" stroke-width="2" opacity="0.4"/>
+    <!-- Graduation cap -->
+    <polygon points="60,32 80,42 60,52 40,42" fill="#C9A227"/>
+    <line x1="80" y1="42" x2="80" y2="54" stroke="#C9A227" stroke-width="2.5"/>
+    <circle cx="80" cy="55" r="2.5" fill="#C9A227"/>
+    <!-- Arrow target pin -->
+    <line x1="72" y1="34" x2="85" y2="22" stroke="#C9A227" stroke-width="2" stroke-linecap="round"/>
+    <polygon points="88,19 83,24 78,20 82,14" fill="#C9A227"/>
+  </svg>`;
+
+  // Star icon for badge
+  const starSvg = `<svg viewBox="0 0 24 24" class="cr-star-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="#C9A227" stroke="#C9A227" stroke-width="1" stroke-linejoin="round"/>
+  </svg>`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>${certificateId ? `Certificate ${certificateId}` : 'Career Radar Certificate of Appreciation'}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Great+Vibes&display=block" rel="stylesheet"/>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: #fff; }
+body {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Page shell ── */
+.cr-sheet {
+  position: relative;
+  width: 297mm;
+  height: 210mm;
+  overflow: hidden;
+  background: #F8F9FA;
+  display: flex;
+  flex-direction: row;
+}
+
+/* ── Left navy panel ── */
+.cr-left {
+  position: relative;
+  width: 88mm;
+  height: 210mm;
+  background: #0F1B33;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10mm 6mm 8mm;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Decorative angled gold stripes on left panel */
+.cr-left::before {
+  content: '';
+  position: absolute;
+  top: -10mm;
+  right: -8mm;
+  width: 20mm;
+  height: 240mm;
+  background: linear-gradient(135deg, #C9A227 0%, #E8C547 40%, #C9A227 100%);
+  transform: rotate(-15deg);
+  z-index: 0;
+  opacity: 0.9;
+}
+.cr-left::after {
+  content: '';
+  position: absolute;
+  top: -10mm;
+  right: -16mm;
+  width: 10mm;
+  height: 240mm;
+  background: linear-gradient(135deg, #C9A227 0%, #E8C547 50%, #C9A227 100%);
+  transform: rotate(-15deg);
+  z-index: 0;
+  opacity: 0.5;
+}
+
+/* Bottom-left geometric corner accent */
+.cr-left-bottom-accent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-left: 40mm solid rgba(201,162,39,0.25);
+  border-top: 40mm solid transparent;
+  z-index: 0;
+}
+
+/* Top-left corner triangle accent */
+.cr-left-top-accent {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-right: 30mm solid rgba(201,162,39,0.12);
+  border-bottom: 30mm solid transparent;
+  z-index: 0;
+}
+
+.cr-left-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Logo */
+.cr-logo { width: 42mm; height: 42mm; }
+
+/* Brand name below logo */
+.cr-brand {
+  margin-top: 3mm;
+  text-align: center;
+}
+.cr-brand-name {
+  font-family: Inter, sans-serif;
+  font-weight: 700;
+  font-size: 12.5pt;
+  letter-spacing: 0.5px;
+}
+.cr-brand-career { color: white; }
+.cr-brand-radar { color: #C9A227; }
+.cr-brand-tagline {
+  font-size: 6pt;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-top: 0.5mm;
+}
+.cr-brand-dots {
+  color: #C9A227;
+  font-size: 7pt;
+  letter-spacing: 2px;
+  margin-top: 0.5mm;
+}
+.cr-brand-mission {
+  font-size: 5.5pt;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 0.5mm;
+}
+
+/* Gold star badge */
+.cr-star-badge {
+  margin-top: auto;
+  margin-bottom: 5mm;
+  width: 18mm;
+  height: 18mm;
+  background: linear-gradient(135deg, #C9A227, #E8C547, #C9A227);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hexagon badge for star */
+.cr-hex-badge {
+  width: 15mm;
+  height: 15mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cr-star-icon { width: 10mm; height: 10mm; }
+
+/* Mission items */
+.cr-mission-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2mm;
+  width: 100%;
+  margin-top: 2mm;
+}
+.cr-mission-item {
+  display: flex;
+  align-items: center;
+  gap: 2.5mm;
+  font-size: 7pt;
+  color: rgba(255,255,255,0.85);
+}
+.cr-mission-dot {
+  width: 3mm;
+  height: 3mm;
+  border-radius: 50%;
+  background: #C9A227;
+  flex-shrink: 0;
+}
+
+/* ── Right white panel ── */
+.cr-right {
+  flex: 1;
+  position: relative;
+  height: 210mm;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  padding: 8mm 10mm 6mm 14mm;
+  overflow: hidden;
+}
+
+/* Decorative large circle watermark on right side */
+.cr-right::before {
+  content: '';
+  position: absolute;
+  right: -20mm;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 80mm;
+  height: 80mm;
+  border-radius: 50%;
+  border: 8mm solid rgba(15,27,51,0.04);
+  z-index: 0;
+}
+.cr-right::after {
+  content: '';
+  position: absolute;
+  right: -28mm;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100mm;
+  height: 100mm;
+  border-radius: 50%;
+  border: 4mm solid rgba(15,27,51,0.03);
+  z-index: 0;
+}
+
+/* Diagonal gold accent top-right area */
+.cr-right-accent {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-right: 55mm solid #F8F9FA;
+  border-bottom: 55mm solid transparent;
+  z-index: 0;
+}
+
+.cr-right-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Certificate ID top-right */
+.cr-cert-id-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2mm;
+}
+.cr-cert-id {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 7pt;
+  color: #64748B;
+  letter-spacing: 0.5px;
+}
+
+/* Main heading */
+.cr-heading-block {
+  text-align: center;
+  margin-bottom: 2mm;
+}
+.cr-title-main {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 800;
+  font-size: 28pt;
+  color: #0F1B33;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.cr-title-sub {
+  font-size: 10pt;
+  font-weight: 700;
+  color: #C9A227;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  margin-top: 1mm;
+}
+.cr-title-star {
+  color: #C9A227;
+  font-size: 12pt;
+  display: block;
+  margin-top: 1mm;
+}
+
+/* Divider lines flanking recipient */
+.cr-divider-row {
+  display: flex;
+  align-items: center;
+  gap: 2mm;
+  margin: 1mm 0;
+}
+.cr-divider-line {
+  flex: 1;
+  height: 0.4mm;
+  background: linear-gradient(to right, transparent, #C9A227 30%, #C9A227 70%, transparent);
+}
+
+/* Proudly presented line */
+.cr-presented-to {
+  text-align: center;
+  font-size: 7pt;
+  font-weight: 600;
+  color: #64748B;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 1mm 0;
+}
+
+/* Recipient name */
+.cr-recipient {
+  font-family: 'Great Vibes', 'Brush Script MT', cursive;
+  font-size: 38pt;
+  color: #0F1B33;
+  text-align: center;
+  line-height: 1.1;
+  padding: 0 4mm;
+}
+
+/* Body text */
+.cr-body-text {
+  text-align: center;
+  margin-top: 2mm;
+  flex: 1;
+}
+.cr-recognition-line {
+  font-size: 8.5pt;
+  color: #334155;
+  line-height: 1.6;
+}
+.cr-dept-inline {
+  color: #C9A227;
+  font-weight: 700;
+}
+.cr-brand-inline {
+  font-weight: 700;
+  color: #0F1B33;
+}
+.cr-dedication {
+  font-size: 8pt;
+  color: #64748B;
+  line-height: 1.6;
+  margin-top: 1.5mm;
+  max-width: 170mm;
+}
+.cr-appreciation {
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: #0F1B33;
+  margin-top: 1.5mm;
+}
+.cr-thankyou {
+  font-size: 8.5pt;
+  font-style: italic;
+  color: #C9A227;
+  margin-top: 1mm;
+}
+
+/* Footer row: signature + date + QR */
+.cr-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 2mm;
+}
+
+/* Signature block */
+.cr-signatory {
+  text-align: center;
+  min-width: 50mm;
+}
+.cr-sig-svg {
+  width: 42mm;
+  height: 14mm;
+  display: block;
+  margin: 0 auto;
+}
+.cr-sig-rule {
+  width: 50mm;
+  height: 0.4mm;
+  background: #0F1B33;
+  margin: 1mm auto 1.5mm;
+  opacity: 0.3;
+}
+.cr-sig-name {
+  font-size: 8pt;
+  font-weight: 700;
+  color: #0F1B33;
+  letter-spacing: 0.5px;
+}
+.cr-sig-role {
+  font-size: 7pt;
+  color: #C9A227;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 0.5mm;
+}
+.cr-sig-org {
+  font-size: 7pt;
+  font-weight: 700;
+  color: #0F1B33;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 0.5mm;
+}
+
+/* Date block */
+.cr-date-block {
+  text-align: center;
+}
+.cr-date-label {
+  font-size: 6.5pt;
+  font-weight: 700;
+  color: #0F1B33;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.5mm;
+}
+.cr-date-value {
+  font-size: 8pt;
+  color: #334155;
+  border-bottom: 0.4mm solid #0F1B33;
+  padding-bottom: 0.5mm;
+  min-width: 24mm;
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* QR block */
+.cr-qr-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1mm;
+}
+.cr-qr {
+  width: 18mm;
+  height: 18mm;
+  display: block;
+}
+
+@page { size: A4 landscape; margin: 0; }
+</style>
+</head>
+<body>
+  <div class="cr-sheet">
+    <!-- Left navy panel -->
+    <div class="cr-left">
+      <div class="cr-left-top-accent"></div>
+      <div class="cr-left-bottom-accent"></div>
+      <div class="cr-left-content">
+        ${logoSvg}
+        <div class="cr-brand">
+          <div class="cr-brand-name">
+            <span class="cr-brand-career">Career</span><span class="cr-brand-radar">Radar</span>
+          </div>
+          <div class="cr-brand-tagline">— Your Opportunity Scanner —</div>
+          <div class="cr-brand-dots">★</div>
+          <div class="cr-brand-mission">Find. Prepare. Succeed.</div>
+        </div>
+
+        <div class="cr-hex-badge" style="margin-top: 6mm;">
+          ${starSvg}
+        </div>
+
+        <div class="cr-mission-items" style="margin-top: 6mm;">
+          <div class="cr-mission-item">
+            <div class="cr-mission-dot"></div>
+            <span>Find Opportunities</span>
+          </div>
+          <div class="cr-mission-item">
+            <div class="cr-mission-dot"></div>
+            <span>Prepare Yourself</span>
+          </div>
+          <div class="cr-mission-item">
+            <div class="cr-mission-dot"></div>
+            <span>Succeed Globally</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right white panel -->
+    <div class="cr-right">
+      <div class="cr-right-accent"></div>
+      <div class="cr-right-content">
+
+        <!-- Certificate ID -->
+        <div class="cr-cert-id-row">
+          <span class="cr-cert-id">${certificateId}</span>
+        </div>
+
+        <!-- Main heading -->
+        <div class="cr-heading-block">
+          <div class="cr-title-main">CERTIFICATE</div>
+          <div class="cr-title-sub">of appreciation</div>
+          <span class="cr-title-star">★</span>
+        </div>
+
+        <!-- Proudly presented to -->
+        <div class="cr-presented-to">Proudly Presented To</div>
+
+        <!-- Recipient name with decorative lines -->
+        <div class="cr-divider-row">
+          <div class="cr-divider-line"></div>
+          <div class="cr-recipient">${recipientName}</div>
+          <div class="cr-divider-line"></div>
+        </div>
+
+        <!-- Body -->
+        <div class="cr-body-text">
+          <div class="cr-recognition-line">
+            in recognition of your valuable contributions as a volunteer in the<br/>
+            <span class="cr-dept-inline">${departmentName}</span> at <span class="cr-brand-inline">Career Radar.</span>
+          </div>
+          <div class="cr-dedication">
+            Your dedication, professionalism, and commitment<br/>
+            have played an important role in supporting our mission of helping<br/>
+            students and early-career professionals discover opportunities,<br/>
+            develop skills, and build successful careers.
+          </div>
+          <div class="cr-appreciation">
+            We sincerely appreciate your time, effort, and positive<br/>impact on our community.
+          </div>
+          <div class="cr-thankyou">Thank you for being an essential part of Career Radar!</div>
+        </div>
+
+        <!-- Footer -->
+        <div class="cr-footer">
+          <!-- Signature -->
+          <div class="cr-signatory">
+            ${signatureSvg}
+            <div class="cr-sig-rule"></div>
+            <div class="cr-sig-name">HASNAIN SHAKEEL AHMED</div>
+            <div class="cr-sig-role">Founder &amp; CEO</div>
+            <div class="cr-sig-org">Career Radar</div>
+          </div>
+
+          <!-- Date -->
+          <div class="cr-date-block">
+            <span class="cr-date-label">Date</span>
+            <div class="cr-date-value">${issueDay} / ${issueMonth} / ${issueYear}</div>
+          </div>
+
+          <!-- QR Code -->
+          ${showQr ? `<div class="cr-qr-block">${qrMarkup}</div>` : '<div></div>'}
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
+/**
+ * Preview values for the Career Radar Appreciation template specifically.
+ * Used by the live preview in the admin panel.
+ */
+export function previewCareerRadarAppreciation() {
+  return {
+    certificateId: 'CR-VOL-2026-001',
+    verificationUrl: 'https://www.career-radar.space/verify/v_preview',
+    recipientName: 'Recipient Name',
+    departmentName: 'Design & Branding',
+    issueDate: new Date().toISOString().slice(0, 10),
+  };
+}
+
+export default { renderCertificateHtml, normalizeDesign, DEFAULT_DESIGN, PAGE_SIZES, previewValues, renderCareerRadarAppreciationHtml, previewCareerRadarAppreciation };

@@ -75,6 +75,7 @@ const ManageAnnouncement = lazy(() => import('./pages/admin/ManageAnnouncement')
 const ManageCertificates = lazy(() => import('./pages/admin/ManageCertificates'))
 const ManageCertificateTemplates = lazy(() => import('./pages/admin/ManageCertificateTemplates'))
 const IssueCertificate = lazy(() => import('./pages/admin/IssueCertificate'))
+const IssueCertificateAppreciation = lazy(() => import('./pages/admin/IssueCertificateAppreciation'))
 
 function Loader() {
   return (
@@ -192,6 +193,7 @@ export default function App() {
                 <Route path="/admin/manage-collaborators" element={<ManageCollaborators />} />
                 <Route path="/admin/certificates" element={<ManageCertificates />} />
                 <Route path="/admin/certificates/issue" element={<IssueCertificate />} />
+                <Route path="/admin/certificates/issue-appreciation" element={<IssueCertificateAppreciation />} />
                 <Route path="/admin/certificates/templates" element={<ManageCertificateTemplates />} />
               </Route>
 

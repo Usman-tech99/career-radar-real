@@ -13,7 +13,7 @@
  *    signed URLs, so possession of the file alone proves nothing.
  */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { renderCertificateHtml } from './certificateHtml.js';
+import { renderCertificateHtml, renderCareerRadarAppreciationHtml } from './certificateHtml.js';
 
 declare const Deno: {
   serve: (handler: (req: Request) => Promise<Response>) => void;
@@ -136,28 +136,39 @@ Deno.serve(async (req) => {
 
     const verificationUrl = `${publicSiteUrl}/verify/${certificate.verification_token}`;
 
-    const html = renderCertificateHtml({
-      design: snapshot,
-      page: { size: pageSize, orientation: orientationValue },
-      values: {
-        certificateId: certificate.certificate_id,
-        verificationUrl,
-        recipientName: certificate.recipient_name,
-        certificateTitle: certificate.certificate_title,
-        description: certificate.description,
-        certificateType: snapshot.certificate_type,
-        organizationName: certificate.organization_name,
-        organizationLogoUrl: certificate.organization_logo_url,
-        issueDate: certificate.issue_date,
-        signatory1Name: certificate.signatory_1_name,
-        signatory1Title: certificate.signatory_1_title,
-        signatory1Image: certificate.signatory_1_image_url,
-        signatory2Name: certificate.signatory_2_name,
-        signatory2Title: certificate.signatory_2_title,
-        signatory2Image: certificate.signatory_2_image_url,
-        backgroundUrl,
-      },
-    });
+    const templateType = snapshot.templateType || snapshot.certificate_type || '';
+    const departmentName = (certificate.custom_fields || {}).department_name || '';
+
+    const html = templateType === 'cr_appreciation'
+      ? renderCareerRadarAppreciationHtml({
+          certificateId: certificate.certificate_id,
+          verificationUrl,
+          recipientName: certificate.recipient_name,
+          departmentName,
+          issueDate: certificate.issue_date,
+        })
+      : renderCertificateHtml({
+          design: snapshot,
+          page: { size: pageSize, orientation: orientationValue },
+          values: {
+            certificateId: certificate.certificate_id,
+            verificationUrl,
+            recipientName: certificate.recipient_name,
+            certificateTitle: certificate.certificate_title,
+            description: certificate.description,
+            certificateType: snapshot.certificate_type,
+            organizationName: certificate.organization_name,
+            organizationLogoUrl: certificate.organization_logo_url,
+            issueDate: certificate.issue_date,
+            signatory1Name: certificate.signatory_1_name,
+            signatory1Title: certificate.signatory_1_title,
+            signatory1Image: certificate.signatory_1_image_url,
+            signatory2Name: certificate.signatory_2_name,
+            signatory2Title: certificate.signatory_2_title,
+            signatory2Image: certificate.signatory_2_image_url,
+            backgroundUrl,
+          },
+        });
 
     // 5. Render to PDF.
     let browser = null;
@@ -178,9 +189,12 @@ Deno.serve(async (req) => {
       await page.evaluate(() => document.fonts.ready);
       await page.emulateMediaType('print');
 
+      const pdfFormat = templateType === 'cr_appreciation' ? 'A4' : (pageSize === 'Letter' ? 'Letter' : 'A4');
+      const pdfLandscape = templateType === 'cr_appreciation' ? true : orientationValue === 'landscape';
+
       const pdfBytes = await page.pdf({
-        format: pageSize === 'Letter' ? 'Letter' : 'A4',
-        landscape: orientationValue === 'landscape',
+        format: pdfFormat,
+        landscape: pdfLandscape,
         printBackground: true,
         preferCSSPageSize: true,
         margin: { top: '0mm', right: '0mm', bottom: '0mm', left: '0mm' },

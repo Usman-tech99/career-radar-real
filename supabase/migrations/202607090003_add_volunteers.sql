@@ -37,8 +37,14 @@ CREATE TABLE IF NOT EXISTS volunteers (
 
 ALTER TABLE volunteers ENABLE ROW LEVEL SECURITY;
 
+-- Re-runnable: the object may already exist from an out-of-band apply.
+DROP POLICY IF EXISTS "insert_volunteers" ON volunteers;
 CREATE POLICY "insert_volunteers" ON volunteers FOR INSERT WITH CHECK (true);
+-- Re-runnable: the object may already exist from an out-of-band apply.
+DROP POLICY IF EXISTS "super_admin_select_volunteers" ON volunteers;
 CREATE POLICY "super_admin_select_volunteers" ON volunteers FOR SELECT USING (get_my_role() = 'super_admin');
+-- Re-runnable: the object may already exist from an out-of-band apply.
+DROP POLICY IF EXISTS "super_admin_update_volunteers" ON volunteers;
 CREATE POLICY "super_admin_update_volunteers" ON volunteers FOR UPDATE USING (get_my_role() = 'super_admin');
 
 SELECT pg_notify('pgrst', 'reload schema');
