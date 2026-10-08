@@ -108,31 +108,57 @@ function CertificateDetails({ certificate }) {
 
   async function handleDownloadPdf() {
     setPdfState({ status: 'loading' })
+    let targetWin = null
+    try {
+      targetWin = window.open('about:blank', '_blank')
+      if (targetWin) {
+        targetWin.document.write('<!DOCTYPE html><html><head><title>Career Radar Certificate</title></head><body style="margin:0;background:#07122A;display:flex;align-items:center;justify-content:center;height:100vh;color:#C9993C;font-family:Inter,sans-serif;"><h3>Preparing official certificate...</h3></body></html>')
+      }
+    } catch {}
+
     try {
       // 1. Request public PDF (invokes record_certificate_download in DB)
       const ref = certificate.verification_token || certificate.certificate_id
       const method = certificate.verification_token ? 'verification_url' : 'certificate_id'
       const signedUrl = await requestPublicCertificatePdf(ref, method).catch(() => null)
       if (signedUrl) {
-        window.open(signedUrl, '_blank')
+        if (targetWin && !targetWin.closed) {
+          targetWin.location.href = signedUrl
+        } else {
+          window.open(signedUrl, '_blank')
+        }
         setPdfState({ status: 'done' })
         return
       }
 
-      // 2. Open high-fidelity vector print / PDF view
-      await openCertificatePrintView(certificate, true)
+      // 2. Open high-fidelity vector print / PDF view in the opened tab
+      await openCertificatePrintView(certificate, true, targetWin)
       setPdfState({ status: 'done' })
     } catch (error) {
+      if (targetWin && !targetWin.closed) {
+        targetWin.close()
+      }
       setPdfState({ status: 'error', message: error.message })
     }
   }
 
   async function handleViewCertificate() {
     setPdfState({ status: 'loading' })
+    let targetWin = null
     try {
-      await openCertificatePrintView(certificate, false)
+      targetWin = window.open('about:blank', '_blank')
+      if (targetWin) {
+        targetWin.document.write('<!DOCTYPE html><html><head><title>Career Radar Certificate</title></head><body style="margin:0;background:#07122A;display:flex;align-items:center;justify-content:center;height:100vh;color:#C9993C;font-family:Inter,sans-serif;"><h3>Preparing official certificate...</h3></body></html>')
+      }
+    } catch {}
+
+    try {
+      await openCertificatePrintView(certificate, false, targetWin)
       setPdfState({ status: 'done' })
     } catch (error) {
+      if (targetWin && !targetWin.closed) {
+        targetWin.close()
+      }
       setPdfState({ status: 'error', message: error.message })
     }
   }

@@ -429,15 +429,17 @@ async function callPdfFunction(certificateUuid, download) {
  * with A4 Landscape page dimensions and triggers the browser's native PDF save dialog.
  * This completely avoids server-side Chromium / headless browser runtime issues.
  */
-export async function openCertificatePrintView(certificateRecord, autoPrint = false) {
-  // Open window immediately on user gesture to avoid popup blockers
-  let win = null
-  try {
-    win = window.open('about:blank', '_blank')
-    if (win) {
-      win.document.write('<!DOCTYPE html><html><head><title>Career Radar Certificate</title></head><body style="margin:0;background:#07122A;display:flex;align-items:center;justify-content:center;height:100vh;color:#C9993C;font-family:Inter,sans-serif;"><h3>Preparing official certificate...</h3></body></html>')
-    }
-  } catch {}
+export async function openCertificatePrintView(certificateRecord, autoPrint = false, existingWindow = null) {
+  // Use existing window opened synchronously on user click, or open a new one
+  let win = existingWindow
+  if (!win || win.closed) {
+    try {
+      win = window.open('about:blank', '_blank')
+      if (win) {
+        win.document.write('<!DOCTYPE html><html><head><title>Career Radar Certificate</title></head><body style="margin:0;background:#07122A;display:flex;align-items:center;justify-content:center;height:100vh;color:#C9993C;font-family:Inter,sans-serif;"><h3>Preparing official certificate...</h3></body></html>')
+      }
+    } catch {}
+  }
 
   try {
     let cert = certificateRecord
@@ -453,7 +455,7 @@ export async function openCertificatePrintView(certificateRecord, autoPrint = fa
     }
 
     if (!cert) {
-      if (win) win.close()
+      if (win && !win.closed) win.close()
       throw new Error('Certificate record could not be loaded for print view')
     }
 
@@ -518,8 +520,8 @@ export async function openCertificatePrintView(certificateRecord, autoPrint = fa
       return true
     }
 
-    // Blob URL fallback if initial window.open was blocked by the browser
-    const blob = new Blob([finalHtml], { type: 'text/html' })
+    // Blob URL fallback if initial window.open was blocked by browser
+    const blob = new Blob([finalHtml], { type: 'text/html;charset=utf-8' })
     const blobUrl = URL.createObjectURL(blob)
 
     try {
@@ -527,32 +529,22 @@ export async function openCertificatePrintView(certificateRecord, autoPrint = fa
       if (fallbackWin) return true
     } catch {}
 
-    // Fallback: iframe print or direct link navigation
+    // Fallback direct download link (never use iframe to avoid CSP frame-src violations)
     try {
-      const iframe = document.createElement('iframe')
-      iframe.style.position = 'fixed'
-      iframe.style.right = '0'
-      iframe.style.bottom = '0'
-      iframe.style.width = '0'
-      iframe.style.height = '0'
-      iframe.style.border = '0'
-      document.body.appendChild(iframe)
-      iframe.src = blobUrl
-      iframe.onload = () => {
-        if (autoPrint) {
-          try { iframe.contentWindow.focus(); iframe.contentWindow.print(); } catch {}
-        }
-        setTimeout(() => iframe.remove(), 60000)
-      }
-      return true
-    } catch {
       const link = document.createElement('a')
       link.href = blobUrl
+      link.download = `certificate-${certId || 'career-radar'}.html`
       link.target = '_blank'
       link.rel = 'noopener noreferrer'
+      document.body.appendChild(link)
       link.click()
+      setTimeout(() => {
+        try { link.remove(); URL.revokeObjectURL(blobUrl); } catch {}
+      }, 5000)
       return true
-    }
+    } catch {}
+
+    return false
   } catch (error) {
     if (win && !win.closed) {
       win.document.open()
@@ -564,6 +556,14 @@ export async function openCertificatePrintView(certificateRecord, autoPrint = fa
 }
 
 export async function openCertificatePdf(certificateUuid) {
+  let win = null
+  try {
+    win = window.open('about:blank', '_blank')
+    if (win) {
+      win.document.write('<!DOCTYPE html><html><head><title>Career Radar Certificate</title></head><body style="margin:0;background:#07122A;display:flex;align-items:center;justify-content:center;height:100vh;color:#C9993C;font-family:Inter,sans-serif;"><h3>Preparing official certificate...</h3></body></html>')
+    }
+  } catch {}
+
   // If static PDF is already stored in storage bucket, open signed URL
   const cert = typeof certificateUuid === 'object' ? certificateUuid : null
   if (cert?.pdf_path) {
@@ -573,16 +573,28 @@ export async function openCertificatePdf(certificateUuid) {
         .createSignedUrl(cert.pdf_path, 300)
 
       if (signed?.signedUrl) {
-        window.open(signed.signedUrl, '_blank', 'noopener')
+        if (win && !win.closed) {
+          win.location.href = signed.signedUrl
+        } else {
+          window.open(signed.signedUrl, '_blank', 'noopener')
+        }
         return signed.signedUrl
       }
     } catch {}
   }
 
-  return openCertificatePrintView(certificateUuid, false)
+  return openCertificatePrintView(certificateUuid, false, win)
 }
 
 export async function downloadCertificatePdf(certificateUuid, filename) {
+  let win = null
+  try {
+    win = window.open('about:blank', '_blank')
+    if (win) {
+      win.document.write('<!DOCTYPE html><html><head><title>Career Radar Certificate</title></head><body style="margin:0;background:#07122A;display:flex;align-items:center;justify-content:center;height:100vh;color:#C9993C;font-family:Inter,sans-serif;"><h3>Preparing official certificate...</h3></body></html>')
+    }
+  } catch {}
+
   // If static PDF is already stored in storage bucket, download signed URL
   const cert = typeof certificateUuid === 'object' ? certificateUuid : null
   if (cert?.pdf_path) {
@@ -592,14 +604,18 @@ export async function downloadCertificatePdf(certificateUuid, filename) {
         .createSignedUrl(cert.pdf_path, 300, { download: `${cert.certificate_id || 'certificate'}.pdf` })
 
       if (signed?.signedUrl) {
-        window.open(signed.signedUrl, '_blank')
+        if (win && !win.closed) {
+          win.location.href = signed.signedUrl
+        } else {
+          window.open(signed.signedUrl, '_blank')
+        }
         return signed.signedUrl
       }
     } catch {}
   }
 
   // Fallback: trigger landscape vector print to PDF
-  return openCertificatePrintView(certificateUuid, true)
+  return openCertificatePrintView(certificateUuid, true, win)
 }
 
 // ---------------------------------------------------------------------------
