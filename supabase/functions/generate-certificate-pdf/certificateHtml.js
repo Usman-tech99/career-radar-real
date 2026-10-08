@@ -588,12 +588,12 @@ export function renderCareerRadarAppreciationHtml(v = {}) {
 <title>${certificateId ? `Certificate ${certificateId}` : 'Career Radar Certificate of Appreciation'}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Great+Vibes&display=block" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700;800;900&display=block" rel="stylesheet"/>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { background: #fff; }
 body {
-  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -832,10 +832,11 @@ body {
   margin-bottom: 2mm;
 }
 .cr-cert-id {
-  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 7pt;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 7.5pt;
+  font-weight: 600;
   color: #64748B;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
 }
 
 /* Main heading */
@@ -844,24 +845,25 @@ body {
   margin-bottom: 2mm;
 }
 .cr-title-main {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 800;
-  font-size: 28pt;
-  color: #0F1B33;
-  letter-spacing: 3px;
+  font-family: 'Arial Black', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 900;
+  font-size: 32pt;
+  color: #0B1B3D;
+  letter-spacing: 5px;
   text-transform: uppercase;
   line-height: 1;
 }
 .cr-title-sub {
-  font-size: 10pt;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 10.5pt;
   font-weight: 700;
-  color: #C9A227;
+  color: #C9993C;
   letter-spacing: 6px;
   text-transform: uppercase;
-  margin-top: 1mm;
+  margin-top: 1.5mm;
 }
 .cr-title-star {
-  color: #C9A227;
+  color: #C9993C;
   font-size: 12pt;
   display: block;
   margin-top: 1mm;
@@ -877,28 +879,31 @@ body {
 .cr-divider-line {
   flex: 1;
   height: 0.4mm;
-  background: linear-gradient(to right, transparent, #C9A227 30%, #C9A227 70%, transparent);
+  background: linear-gradient(to right, transparent, #C9993C 30%, #C9A227 70%, transparent);
 }
 
 /* Proudly presented line */
 .cr-presented-to {
   text-align: center;
+  font-family: 'Inter', sans-serif;
   font-size: 7pt;
-  font-weight: 600;
+  font-weight: 700;
   color: #64748B;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  margin: 1mm 0;
+  margin: 1.5mm 0;
 }
 
 /* Recipient name */
 .cr-recipient {
-  font-family: 'Great Vibes', 'Brush Script MT', cursive;
-  font-size: 38pt;
-  color: #0F1B33;
+  font-family: 'Great Vibes', cursive;
+  font-size: 40pt;
+  color: #0B1B3D;
   text-align: center;
-  line-height: 1.1;
+  line-height: 1.15;
   padding: 0 4mm;
+  white-space: nowrap;
+  font-weight: normal;
 }
 
 /* Body text */
@@ -934,10 +939,11 @@ body {
   margin-top: 1.5mm;
 }
 .cr-thankyou {
+  font-family: 'Georgia', serif;
   font-size: 8.5pt;
   font-style: italic;
-  color: #C9A227;
-  margin-top: 1mm;
+  color: #D4A017;
+  margin-top: 1.5mm;
 }
 
 /* Footer row: signature + date + QR */
@@ -955,8 +961,8 @@ body {
   min-width: 50mm;
 }
 .cr-sig-script {
-  font-family: 'Great Vibes', 'Brush Script MT', 'Dancing Script', cursive;
-  font-size: 32pt;
+  font-family: 'Great Vibes', cursive;
+  font-size: 30pt;
   color: #0F1B33;
   line-height: 1;
   margin-bottom: -1mm;
@@ -978,23 +984,28 @@ body {
   opacity: 0.25;
 }
 .cr-sig-name {
-  font-size: 8pt;
-  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  font-size: 8.5pt;
+  font-weight: 800;
   color: #0F1B33;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
 }
 .cr-sig-role {
-  font-size: 7pt;
-  color: #C9A227;
-  letter-spacing: 0.5px;
+  font-family: 'Inter', sans-serif;
+  font-size: 7.5pt;
+  font-weight: 700;
+  color: #C9993C;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
   margin-top: 0.5mm;
 }
 .cr-sig-org {
-  font-size: 7pt;
+  font-family: 'Inter', sans-serif;
+  font-size: 7.5pt;
   font-weight: 700;
   color: #0F1B33;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
   margin-top: 0.5mm;
 }
@@ -1025,20 +1036,21 @@ body {
 .cr-date-corner-label {
   font-size: 7.5pt;
   font-weight: 700;
-  color: #C9A227;
+  color: #C9993C;
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 1.5mm;
-  font-family: Arial, sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 .cr-date-corner-value {
   font-size: 8.5pt;
   font-weight: 600;
   color: #FFFFFF;
-  border-bottom: 0.4mm solid #C9A227;
+  border-bottom: 0.4mm solid #C9993C;
   padding-bottom: 0.8mm;
   min-width: 24mm;
   letter-spacing: 1px;
+  font-family: 'Inter', sans-serif;
 }
 
 /* QR block */

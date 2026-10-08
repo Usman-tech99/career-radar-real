@@ -248,7 +248,7 @@ function BottomRightDateCorner({ dateStr }) {
           letterSpacing: 2.5,
           textTransform: 'uppercase',
           marginBottom: 6,
-          fontFamily: "'Arial', sans-serif",
+          fontFamily: "'Inter', sans-serif",
         }}>
           DATE
         </div>
@@ -260,7 +260,7 @@ function BottomRightDateCorner({ dateStr }) {
           paddingBottom: 4,
           minWidth: 85,
           letterSpacing: 1.5,
-          fontFamily: "'Arial', sans-serif",
+          fontFamily: "'Inter', sans-serif",
         }}>
           {d} / {m} / {y}
         </div>
@@ -599,10 +599,9 @@ function CertificateCanvas({
         }}>
           <div style={{ width: 60, height: 1.5, background: `linear-gradient(to right, transparent, ${GOLD})` }} />
           <div style={{
-            fontSize: 48,
-            fontFamily: "'Great Vibes', 'Alex Brush', 'Brush Script MT', 'Dancing Script', 'Segoe Script', cursive",
+            fontSize: 50,
+            fontFamily: "'Great Vibes', cursive",
             color: NAVY,
-            fontStyle: 'italic',
             whiteSpace: 'nowrap',
             lineHeight: 1.15,
             padding: '0 8px',
@@ -689,8 +688,8 @@ function CertificateCanvas({
               />
             ) : (
               <div style={{
-                fontFamily: "'Brush Script MT', 'Great Vibes', 'Dancing Script', cursive",
-                fontSize: 36,
+                fontFamily: "'Great Vibes', cursive",
+                fontSize: 38,
                 color: NAVY,
                 lineHeight: 1,
                 marginBottom: -4,
