@@ -146,6 +146,13 @@ Deno.serve(async (req) => {
           recipientName: certificate.recipient_name,
           departmentName,
           issueDate: certificate.issue_date,
+          certificateTitle: certificate.certificate_title,
+          description: certificate.description,
+          achievement: certificate.achievement,
+          signatory1Name: certificate.signatory_1_name,
+          signatory1Title: certificate.signatory_1_title,
+          signatory1Image: certificate.signatory_1_image_url,
+          logoUrl: 'https://www.career-radar.space/logo.jpeg',
         })
       : renderCertificateHtml({
           design: snapshot,

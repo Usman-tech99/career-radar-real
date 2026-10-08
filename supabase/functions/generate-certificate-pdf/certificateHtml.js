@@ -122,7 +122,7 @@ function escapeHtml(value) {
 function safeUrl(url) {
   if (!url) return '';
   const value = String(url).trim();
-  if (/^(https?:|data:image\/)/i.test(value)) return value;
+  if (/^(https?:|\/|data:image\/)/i.test(value)) return value;
   return '';
 }
 
@@ -555,31 +555,7 @@ export function renderCareerRadarAppreciationHtml(v = {}) {
         .replace('<svg ', '<svg class="cr-qr" ')
     : '';
 
-  // Career Radar logo — approximated with SVG shapes matching the original circular badge
-  const logoSvg = `<svg viewBox="0 0 120 120" class="cr-logo" xmlns="http://www.w3.org/2000/svg" aria-label="Career Radar">
-    <!-- Outer ring -->
-    <circle cx="60" cy="60" r="58" fill="white" stroke="#C9A227" stroke-width="2.5"/>
-    <!-- Radar waves -->
-    <circle cx="60" cy="60" r="44" fill="none" stroke="#0F1B33" stroke-width="1.5" opacity="0.3"/>
-    <circle cx="60" cy="60" r="32" fill="none" stroke="#0F1B33" stroke-width="1.5" opacity="0.4"/>
-    <circle cx="60" cy="60" r="20" fill="none" stroke="#0F1B33" stroke-width="1.5" opacity="0.5"/>
-    <!-- Briefcase body -->
-    <rect x="40" y="62" width="40" height="28" rx="4" fill="#0F1B33"/>
-    <rect x="48" y="57" width="24" height="8" rx="3" fill="#0F1B33"/>
-    <line x1="60" y1="62" x2="60" y2="90" stroke="white" stroke-width="2" opacity="0.4"/>
-    <!-- Graduation cap -->
-    <polygon points="60,32 80,42 60,52 40,42" fill="#C9A227"/>
-    <line x1="80" y1="42" x2="80" y2="54" stroke="#C9A227" stroke-width="2.5"/>
-    <circle cx="80" cy="55" r="2.5" fill="#C9A227"/>
-    <!-- Arrow target pin -->
-    <line x1="72" y1="34" x2="85" y2="22" stroke="#C9A227" stroke-width="2" stroke-linecap="round"/>
-    <polygon points="88,19 83,24 78,20 82,14" fill="#C9A227"/>
-  </svg>`;
-
-  // Star icon for badge
-  const starSvg = `<svg viewBox="0 0 24 24" class="cr-star-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="#C9A227" stroke="#C9A227" stroke-width="1" stroke-linejoin="round"/>
-  </svg>`;
+  const logoUrl = safeUrl(v.logoUrl) || 'https://www.career-radar.space/logo.jpeg';
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -684,86 +660,69 @@ body {
   height: 100%;
 }
 
-/* Logo */
-.cr-logo { width: 42mm; height: 42mm; }
-
-/* Brand name below logo */
-.cr-brand {
-  margin-top: 3mm;
-  text-align: center;
+/* Circular Medallion */
+.cr-medallion {
+  position: relative;
+  z-index: 3;
+  width: 44mm;
+  height: 44mm;
+  border-radius: 50%;
+  border: 1.4mm solid #C9993C;
+  background: #FFFFFF;
+  overflow: hidden;
+  box-shadow: 0 3mm 8mm rgba(0,0,0,0.5), inset 0 0 0 0.8mm #0B1B3D;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.cr-brand-name {
-  font-family: Inter, sans-serif;
-  font-weight: 700;
-  font-size: 12.5pt;
-  letter-spacing: 0.5px;
-}
-.cr-brand-career { color: white; }
-.cr-brand-radar { color: #C9A227; }
-.cr-brand-tagline {
-  font-size: 6pt;
-  color: rgba(255,255,255,0.7);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  margin-top: 0.5mm;
-}
-.cr-brand-dots {
-  color: #C9A227;
-  font-size: 7pt;
-  letter-spacing: 2px;
-  margin-top: 0.5mm;
-}
-.cr-brand-mission {
-  font-size: 5.5pt;
-  color: rgba(255,255,255,0.6);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-top: 0.5mm;
+.cr-medallion-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-/* Gold star badge */
-.cr-star-badge {
+/* Ribbon tails below medallion */
+.cr-ribbon-tails {
+  position: relative;
+  margin-top: -7mm;
+  z-index: 1;
+  display: block;
+}
+
+/* Hexagon Star Badge */
+.cr-hex-badge-wrap {
+  position: relative;
+  z-index: 3;
+  margin-top: 4mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 3 Features at bottom */
+.cr-features-list {
+  position: relative;
+  z-index: 3;
   margin-top: auto;
-  margin-bottom: 5mm;
-  width: 18mm;
-  height: 18mm;
-  background: linear-gradient(135deg, #C9A227, #E8C547, #C9A227);
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Hexagon badge for star */
-.cr-hex-badge {
-  width: 15mm;
-  height: 15mm;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.cr-star-icon { width: 10mm; height: 10mm; }
-
-/* Mission items */
-.cr-mission-items {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 2mm;
-  width: 100%;
-  margin-top: 2mm;
+  gap: 3.5mm;
+  padding-left: 3mm;
 }
-.cr-mission-item {
+.cr-feature-item {
   display: flex;
   align-items: center;
-  gap: 2.5mm;
-  font-size: 7pt;
-  color: rgba(255,255,255,0.85);
+  gap: 3mm;
+  font-family: 'Inter', sans-serif;
+  font-size: 7.5pt;
+  font-weight: 500;
+  color: rgba(255,255,255,0.92);
+  letter-spacing: 0.3px;
 }
-.cr-mission-dot {
-  width: 3mm;
-  height: 3mm;
-  border-radius: 50%;
-  background: #C9A227;
+.cr-feature-item svg {
   flex-shrink: 0;
 }
 
@@ -1076,31 +1035,53 @@ body {
       <div class="cr-left-top-accent"></div>
       <div class="cr-left-bottom-accent"></div>
       <div class="cr-left-content">
-        ${logoSvg}
-        <div class="cr-brand">
-          <div class="cr-brand-name">
-            <span class="cr-brand-career">Career</span><span class="cr-brand-radar">Radar</span>
-          </div>
-          <div class="cr-brand-tagline">— Your Opportunity Scanner —</div>
-          <div class="cr-brand-dots">★</div>
-          <div class="cr-brand-mission">Find. Prepare. Succeed.</div>
+        <div class="cr-medallion">
+          <img src="${logoUrl}" alt="Career Radar Logo" class="cr-medallion-img" onerror="this.onerror=null;this.src='https://www.career-radar.space/logo.jpeg'"/>
+        </div>
+        <svg width="29mm" height="17mm" viewBox="0 0 110 65" class="cr-ribbon-tails">
+          <defs>
+            <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#E5C46E" />
+              <stop offset="60%" stop-color="#C9993C" />
+              <stop offset="100%" stop-color="#8C6215" />
+            </linearGradient>
+          </defs>
+          <polygon points="22,0 48,0 42,60 28,48 14,60" fill="url(#ribbonGrad)" opacity="0.95"/>
+          <polygon points="62,0 88,0 96,60 82,48 68,60" fill="url(#ribbonGrad)" opacity="0.95"/>
+        </svg>
+
+        <div class="cr-hex-badge-wrap">
+          <svg width="24mm" height="26mm" viewBox="0 0 92 100">
+            <defs>
+              <linearGradient id="hexGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#E5C46E" />
+                <stop offset="50%" stop-color="#C9993C" />
+                <stop offset="100%" stop-color="#8C6215" />
+              </linearGradient>
+            </defs>
+            <polygon points="82.39,71 46,92 9.61,71 9.61,29 46,8 82.39,29" fill="url(#hexGold)"/>
+            <polygon points="78.06,68.5 46,87 13.94,68.5 13.94,31.5 46,13 78.06,31.5" fill="#07122A"/>
+            <text x="46" y="63" text-anchor="middle" font-size="34" fill="url(#hexGold)" style="font-family: Georgia, serif;">★</text>
+          </svg>
         </div>
 
-        <div class="cr-hex-badge" style="margin-top: 6mm;">
-          ${starSvg}
-        </div>
-
-        <div class="cr-mission-items" style="margin-top: 6mm;">
-          <div class="cr-mission-item">
-            <div class="cr-mission-dot"></div>
+        <div class="cr-features-list">
+          <div class="cr-feature-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E5C46E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+            </svg>
             <span>Find Opportunities</span>
           </div>
-          <div class="cr-mission-item">
-            <div class="cr-mission-dot"></div>
+          <div class="cr-feature-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E5C46E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
             <span>Prepare Yourself</span>
           </div>
-          <div class="cr-mission-item">
-            <div class="cr-mission-dot"></div>
+          <div class="cr-feature-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E5C46E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
             <span>Succeed Globally</span>
           </div>
         </div>

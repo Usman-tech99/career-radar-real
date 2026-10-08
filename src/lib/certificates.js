@@ -485,6 +485,7 @@ export async function openCertificatePrintView(certificateRecord, autoPrint = fa
       signatory1Name: sigName,
       signatory1Title: sigTitle,
       signatory1Image: sigImage,
+      logoUrl: typeof window !== 'undefined' ? `${window.location.origin}/logo.jpeg` : 'https://www.career-radar.space/logo.jpeg',
     })
 
     const toolbar = `
