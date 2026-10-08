@@ -415,6 +415,7 @@ function CertificateCanvas({
   issueDate,
   signatory1Name,
   signatory1Title,
+  signatory1Image,
 }) {
   const subTitle = deriveSubtitle(certificateTitle, certificateType)
   const defaultContent = deriveDefaultContent(certificateType || subTitle, departmentName)
@@ -680,16 +681,24 @@ function CertificateCanvas({
           paddingBottom: 8,
         }}>
           <div style={{ textAlign: 'center' }}>
-            <div style={{
-              fontFamily: "'Brush Script MT', 'Great Vibes', 'Dancing Script', cursive",
-              fontSize: 36,
-              color: NAVY,
-              lineHeight: 1,
-              marginBottom: -4,
-              opacity: 0.9,
-            }}>
-              Hasnain
-            </div>
+            {signatory1Image ? (
+              <img
+                src={signatory1Image}
+                alt="Signature"
+                style={{ maxHeight: 38, maxWidth: 160, objectFit: 'contain', margin: '0 auto', display: 'block' }}
+              />
+            ) : (
+              <div style={{
+                fontFamily: "'Brush Script MT', 'Great Vibes', 'Dancing Script', cursive",
+                fontSize: 36,
+                color: NAVY,
+                lineHeight: 1,
+                marginBottom: -4,
+                opacity: 0.9,
+              }}>
+                {signatory1Name ? signatory1Name.split(' ')[0] : 'Hasnain'}
+              </div>
+            )}
             <div style={{ height: 1.5, background: NAVY, opacity: 0.25, width: 190, margin: '2px auto 6px' }} />
             <div style={{
               fontSize: 11,
@@ -802,6 +811,13 @@ export default function CertificateAppreciationPreview(props) {
     values.signatory1Title ||
     values.signatory_1_title
 
+  const signatory1Image =
+    props.signatory1Image ||
+    props.signatory_1_image_url ||
+    values.signatory1Image ||
+    values.signatory_1_image_url ||
+    ''
+
   useLayoutEffect(() => {
     const el = wrapRef.current
     if (!el) return
@@ -846,6 +862,7 @@ export default function CertificateAppreciationPreview(props) {
             issueDate={issueDate}
             signatory1Name={signatory1Name}
             signatory1Title={signatory1Title}
+            signatory1Image={signatory1Image}
           />
         </div>
       </div>

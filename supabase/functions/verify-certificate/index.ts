@@ -202,7 +202,7 @@ Deno.serve(async (req) => {
 
       const { data: located, error: locateError } = await admin
         .from('certificates')
-        .select('certificate_id, verification_token, recipient_name, certificate_title, description, achievement, template_snapshot, issue_date, organization_name, organization_logo_url, status, revoked_at, revocation_reason, verification_count')
+        .select('id, certificate_id, verification_token, recipient_name, certificate_title, description, achievement, template_snapshot, issue_date, organization_name, organization_logo_url, signatory_1_name, signatory_1_title, signatory_1_image_url, signatory_2_name, signatory_2_title, signatory_2_image_url, custom_fields, pdf_path, status, revoked_at, revocation_reason, verification_count')
         .eq(byToken ? 'verification_token' : 'certificate_id', value)
         .maybeSingle();
 
@@ -226,16 +226,26 @@ Deno.serve(async (req) => {
       return json({
         found: true,
         certificate: {
+          id: located.id,
           certificate_id: located.certificate_id,
           verification_token: located.verification_token,
           recipient_name: located.recipient_name,
           certificate_title: located.certificate_title,
           description: located.description,
           achievement: located.achievement,
-          certificate_type: located.template_snapshot?.certificate_type || 'achievement',
+          certificate_type: located.custom_fields?.certificate_type || located.template_snapshot?.certificate_type || 'appreciation',
           issue_date: located.issue_date,
           organization_name: located.organization_name,
           organization_logo_url: located.organization_logo_url,
+          signatory_1_name: located.signatory_1_name,
+          signatory_1_title: located.signatory_1_title,
+          signatory_1_image_url: located.signatory_1_image_url,
+          signatory_2_name: located.signatory_2_name,
+          signatory_2_title: located.signatory_2_title,
+          signatory_2_image_url: located.signatory_2_image_url,
+          template_snapshot: located.template_snapshot,
+          custom_fields: located.custom_fields || {},
+          pdf_path: located.pdf_path,
           status: located.status,
           revoked_at: located.revoked_at,
           revocation_reason: located.revocation_reason,

@@ -82,8 +82,10 @@ function Signatory({ name, title, imageUrl }) {
   return (
     <div className="text-center">
       <div className="h-12 flex items-end justify-center mb-1">
-        {imageUrl && (
+        {imageUrl ? (
           <img src={imageUrl} alt={`Signature of ${name}`} className="max-h-12 object-contain" />
+        ) : (
+          <span className="font-serif italic text-base text-gold/90">{name.split(' ')[0]}</span>
         )}
       </div>
       <div className="w-28 mx-auto border-t border-navy/20 pt-1.5">
@@ -104,10 +106,35 @@ function CertificateDetails({ certificate }) {
   // download counter records downloads rather than verification traffic.
   const [pdfState, setPdfState] = useState({ status: 'idle' })
 
-  async function handleOpenPrint(autoPrint = false) {
+  async function handleDownloadPdf() {
     setPdfState({ status: 'loading' })
     try {
-      await openCertificatePrintView(certificate, autoPrint)
+      // 1. First request public PDF (invokes record_certificate_download in DB)
+      try {
+        const ref = certificate.verification_token || certificate.certificate_id
+        const method = certificate.verification_token ? 'verification_url' : 'certificate_id'
+        const signedUrl = await requestPublicCertificatePdf(ref, method)
+        if (signedUrl) {
+          window.open(signedUrl, '_blank')
+          setPdfState({ status: 'done' })
+          return
+        }
+      } catch (err) {
+        console.info('Storage PDF not directly cached, using vector printable view:', err?.message)
+      }
+
+      // 2. Open high-fidelity vector print / PDF view
+      await openCertificatePrintView(certificate, true)
+      setPdfState({ status: 'done' })
+    } catch (error) {
+      setPdfState({ status: 'error', message: error.message })
+    }
+  }
+
+  async function handleViewCertificate() {
+    setPdfState({ status: 'loading' })
+    try {
+      await openCertificatePrintView(certificate, false)
       setPdfState({ status: 'done' })
     } catch (error) {
       setPdfState({ status: 'error', message: error.message })
@@ -174,7 +201,7 @@ function CertificateDetails({ certificate }) {
           <div className="flex flex-wrap items-center gap-3">
             <button
               type="button"
-              onClick={() => handleOpenPrint(true)}
+              onClick={handleDownloadPdf}
               disabled={pdfState.status === 'loading'}
               className="btn-primary text-sm px-5 py-2.5 inline-flex items-center gap-2 disabled:opacity-60"
             >
@@ -185,7 +212,7 @@ function CertificateDetails({ certificate }) {
             </button>
             <button
               type="button"
-              onClick={() => handleOpenPrint(false)}
+              onClick={handleViewCertificate}
               disabled={pdfState.status === 'loading'}
               className="btn-ghost text-sm px-5 py-2.5 inline-flex items-center gap-2 disabled:opacity-60"
             >
@@ -394,6 +421,7 @@ export default function VerifyCertificate() {
                 issueDate={certificate.issue_date}
                 signatory1Name={certificate.signatory_1_name}
                 signatory1Title={certificate.signatory_1_title}
+                signatory1Image={certificate.signatory_1_image_url}
               />
             </div>
 

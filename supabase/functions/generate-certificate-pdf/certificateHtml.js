@@ -1218,9 +1218,9 @@ body {
           <!-- Signature -->
           <div class="cr-signatory">
             ${v.signatory1Image ? `
-              <img src="${v.signatory1Image}" class="cr-sig-img" alt="Signature" />
+              <img src="${safeUrl(v.signatory1Image)}" class="cr-sig-img" alt="Signature" />
             ` : `
-              <div class="cr-sig-script">Hasnain</div>
+              <div class="cr-sig-script">${v.signatory1Name ? escapeHtml(v.signatory1Name.split(' ')[0]) : 'Hasnain'}</div>
             `}
             <div class="cr-sig-rule"></div>
             <div class="cr-sig-name">${signatory1Name}</div>

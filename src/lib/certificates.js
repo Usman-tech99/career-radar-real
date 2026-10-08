@@ -467,6 +467,7 @@ export async function openCertificatePrintView(certificateRecord, autoPrint = fa
   const issueDate = cert.issue_date || ''
   const sigName = cert.signatory_1_name || 'HASNAIN SHAKEEL AHMED'
   const sigTitle = cert.signatory_1_title || 'FOUNDER & CEO'
+  const sigImage = cert.signatory_1_image_url || ''
 
   const rawHtml = renderCareerRadarAppreciationHtml({
     certificateId: certId,
@@ -480,6 +481,7 @@ export async function openCertificatePrintView(certificateRecord, autoPrint = fa
     verificationUrl: verifyUrl,
     signatory1Name: sigName,
     signatory1Title: sigTitle,
+    signatory1Image: sigImage,
   })
 
   const toolbar = `
@@ -515,7 +517,16 @@ export async function openCertificatePrintView(certificateRecord, autoPrint = fa
     return true
   }
 
-  // Fallback: hidden iframe print if popups are fully blocked
+  // Blob URL fallback if initial window.open was blocked by the browser
+  const blob = new Blob([finalHtml], { type: 'text/html' })
+  const blobUrl = URL.createObjectURL(blob)
+
+  try {
+    const fallbackWin = window.open(blobUrl, '_blank')
+    if (fallbackWin) return true
+  } catch {}
+
+  // Fallback: iframe print or direct link navigation
   try {
     const iframe = document.createElement('iframe')
     iframe.style.position = 'fixed'
@@ -525,41 +536,60 @@ export async function openCertificatePrintView(certificateRecord, autoPrint = fa
     iframe.style.height = '0'
     iframe.style.border = '0'
     document.body.appendChild(iframe)
-    iframe.contentWindow.document.open()
-    iframe.contentWindow.document.write(finalHtml)
-    iframe.contentWindow.document.close()
-    iframe.contentWindow.focus()
-    setTimeout(() => {
-      iframe.contentWindow.print()
-      setTimeout(() => iframe.remove(), 4000)
-    }, 400)
+    iframe.src = blobUrl
+    iframe.onload = () => {
+      if (autoPrint) {
+        try { iframe.contentWindow.focus(); iframe.contentWindow.print(); } catch {}
+      }
+      setTimeout(() => iframe.remove(), 60000)
+    }
     return true
-  } catch (e) {
-    throw new Error('Please allow popups or use print to view and download certificates')
+  } catch {
+    const link = document.createElement('a')
+    link.href = blobUrl
+    link.target = '_blank'
+    link.rel = 'noopener noreferrer'
+    link.click()
+    return true
   }
 }
 
 export async function openCertificatePdf(certificateUuid) {
-  // If static PDF is already stored in storage bucket, we can check it
-  try {
-    const certId = typeof certificateUuid === 'object' ? certificateUuid.id : certificateUuid
-    const { data: cert } = await supabase
-      .from('certificates')
-      .select('id, pdf_url')
-      .eq('id', certId)
-      .maybeSingle()
+  // If static PDF is already stored in storage bucket, open signed URL
+  const cert = typeof certificateUuid === 'object' ? certificateUuid : null
+  if (cert?.pdf_path) {
+    try {
+      const { data: signed } = await supabase.storage
+        .from(CERTIFICATES_BUCKET)
+        .createSignedUrl(cert.pdf_path, 300)
 
-    if (cert?.pdf_url) {
-      window.open(cert.pdf_url, '_blank', 'noopener')
-      return cert.pdf_url
-    }
-  } catch {}
+      if (signed?.signedUrl) {
+        window.open(signed.signedUrl, '_blank', 'noopener')
+        return signed.signedUrl
+      }
+    } catch {}
+  }
 
   return openCertificatePrintView(certificateUuid, false)
 }
 
 export async function downloadCertificatePdf(certificateUuid, filename) {
-  // Trigger direct landscape vector print to PDF
+  // If static PDF is already stored in storage bucket, download signed URL
+  const cert = typeof certificateUuid === 'object' ? certificateUuid : null
+  if (cert?.pdf_path) {
+    try {
+      const { data: signed } = await supabase.storage
+        .from(CERTIFICATES_BUCKET)
+        .createSignedUrl(cert.pdf_path, 300, { download: `${cert.certificate_id || 'certificate'}.pdf` })
+
+      if (signed?.signedUrl) {
+        window.open(signed.signedUrl, '_blank')
+        return signed.signedUrl
+      }
+    } catch {}
+  }
+
+  // Fallback: trigger landscape vector print to PDF
   return openCertificatePrintView(certificateUuid, true)
 }
 
@@ -656,16 +686,25 @@ export async function verifyCertificate(reference, method = 'certificate_id') {
     if (!tableError && located) {
       return {
         found: true,
+        id: located.id,
         certificate_id: located.certificate_id,
         verification_token: located.verification_token,
         recipient_name: located.recipient_name,
         certificate_title: located.certificate_title,
         description: located.description,
         achievement: located.achievement,
-        certificate_type: located.template_snapshot?.certificate_type || 'appreciation',
+        certificate_type: located.custom_fields?.certificate_type || located.template_snapshot?.certificate_type || 'appreciation',
         issue_date: located.issue_date,
         organization_name: located.organization_name || 'Career Radar',
         organization_logo_url: located.organization_logo_url,
+        signatory_1_name: located.signatory_1_name,
+        signatory_1_title: located.signatory_1_title,
+        signatory_1_image_url: located.signatory_1_image_url,
+        signatory_2_name: located.signatory_2_name,
+        signatory_2_title: located.signatory_2_title,
+        signatory_2_image_url: located.signatory_2_image_url,
+        template_snapshot: located.template_snapshot,
+        pdf_path: located.pdf_path,
         status: located.status,
         revoked_at: located.revoked_at,
         revocation_reason: located.revocation_reason,
@@ -712,15 +751,14 @@ export async function requestPublicCertificatePdf(reference, method = 'certifica
 
   const { data: cert } = await supabase
     .from('certificates')
-    .select('id, pdf_url, status')
+    .select('id, pdf_path, status')
     .eq(col, val)
     .maybeSingle()
 
-  if (cert?.pdf_url) return cert.pdf_url
-  if (cert?.id) {
+  if (cert?.pdf_path) {
     const { data: signed } = await supabase.storage
       .from('certificate-pdfs')
-      .createSignedUrl(`${cert.id}.pdf`, 600)
+      .createSignedUrl(cert.pdf_path, 600)
     if (signed?.signedUrl) return signed.signedUrl
   }
 
