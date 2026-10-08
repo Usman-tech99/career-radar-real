@@ -519,6 +519,7 @@ export function previewValues(design) {
  */
 export function renderCareerRadarAppreciationHtml(v = {}) {
   const certificateId = escapeHtml(v.certificateId || '');
+  const recipientName = escapeHtml(v.recipientName || 'Recipient Name');
   const rawDept = v.departmentName || 'Your Department';
   const departmentName = escapeHtml(String(rawDept).replace(/[\[\]]/g, '').trim());
   const verifyUrl = v.verificationUrl || '';

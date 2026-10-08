@@ -439,118 +439,127 @@ export async function openCertificatePrintView(certificateRecord, autoPrint = fa
     }
   } catch {}
 
-  let cert = certificateRecord
-  if (typeof cert === 'string') {
-    try {
-      const { data } = await supabase
-        .from('certificates')
-        .select('*')
-        .or(`id.eq.${cert},certificate_id.eq.${cert},verification_token.eq.${cert}`)
-        .maybeSingle()
-      cert = data
-    } catch {}
-  }
-
-  if (!cert) {
-    if (win) win.close()
-    throw new Error('Certificate record could not be loaded for print view')
-  }
-
-  const verifyUrl = certificateVerifyUrl(cert.verification_token)
-  const certId = cert.certificate_id || ''
-  const recipientName = cert.recipient_name || 'Recipient'
-  const departmentName = cert.custom_fields?.department_name || cert.achievement || 'Career Radar'
-  const certTitle = cert.certificate_title || 'Certificate of Appreciation'
-  const certType = cert.custom_fields?.certificate_type || cert.template_snapshot?.certificate_type || ''
-  const desc = cert.description || ''
-  const achieve = cert.achievement || ''
-  const issueDate = cert.issue_date || ''
-  const sigName = cert.signatory_1_name || 'HASNAIN SHAKEEL AHMED'
-  const sigTitle = cert.signatory_1_title || 'FOUNDER & CEO'
-  const sigImage = cert.signatory_1_image_url || ''
-
-  const rawHtml = renderCareerRadarAppreciationHtml({
-    certificateId: certId,
-    recipientName,
-    departmentName,
-    certificateTitle: certTitle,
-    certificateType: certType,
-    description: desc,
-    achievement: achieve,
-    issueDate,
-    verificationUrl: verifyUrl,
-    signatory1Name: sigName,
-    signatory1Title: sigTitle,
-    signatory1Image: sigImage,
-  })
-
-  const toolbar = `
-    <div class="cr-toolbar-print" style="position: fixed; top: 16px; right: 24px; z-index: 999999; display: flex; align-items: center; gap: 10px; background: rgba(11,27,61,0.96); padding: 8px 16px; border-radius: 12px; border: 1.5px solid #C9A227; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: Inter, sans-serif;">
-      <button onclick="window.print()" style="background: #C9A227; color: #0B1B3D; border: none; font-weight: 700; font-size: 13px; padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-        🖨️ Save as PDF / Print
-      </button>
-      <button onclick="window.close()" style="background: rgba(255,255,255,0.1); color: #FFF; border: none; font-size: 13px; padding: 8px 14px; border-radius: 8px; cursor: pointer;">
-        ✕ Close
-      </button>
-    </div>
-    <style>
-      @media print {
-        .cr-toolbar-print { display: none !important; }
-        @page { size: A4 landscape; margin: 0; }
-        body { margin: 0 !important; padding: 0 !important; background: white !important; }
-      }
-    </style>
-    ${autoPrint ? '<script>window.addEventListener("load", () => setTimeout(() => window.print(), 400));</script>' : ''}
-  `
-
-  const finalHtml = rawHtml.replace('</body>', `${toolbar}</body>`)
-
-  if (win && !win.closed) {
-    win.document.open()
-    win.document.write(finalHtml)
-    win.document.close()
-    if (autoPrint) {
-      setTimeout(() => {
-        try { win.focus(); win.print(); } catch {}
-      }, 500)
+  try {
+    let cert = certificateRecord
+    if (typeof cert === 'string') {
+      try {
+        const { data } = await supabase
+          .from('certificates')
+          .select('*')
+          .or(`id.eq.${cert},certificate_id.eq.${cert},verification_token.eq.${cert}`)
+          .maybeSingle()
+        cert = data
+      } catch {}
     }
-    return true
-  }
 
-  // Blob URL fallback if initial window.open was blocked by the browser
-  const blob = new Blob([finalHtml], { type: 'text/html' })
-  const blobUrl = URL.createObjectURL(blob)
+    if (!cert) {
+      if (win) win.close()
+      throw new Error('Certificate record could not be loaded for print view')
+    }
 
-  try {
-    const fallbackWin = window.open(blobUrl, '_blank')
-    if (fallbackWin) return true
-  } catch {}
+    const verifyUrl = certificateVerifyUrl(cert.verification_token)
+    const certId = cert.certificate_id || ''
+    const recipientName = cert.recipient_name || 'Recipient'
+    const departmentName = cert.custom_fields?.department_name || cert.achievement || 'Career Radar'
+    const certTitle = cert.certificate_title || 'Certificate of Appreciation'
+    const certType = cert.custom_fields?.certificate_type || cert.template_snapshot?.certificate_type || ''
+    const desc = cert.description || ''
+    const achieve = cert.achievement || ''
+    const issueDate = cert.issue_date || ''
+    const sigName = cert.signatory_1_name || 'HASNAIN SHAKEEL AHMED'
+    const sigTitle = cert.signatory_1_title || 'FOUNDER & CEO'
+    const sigImage = cert.signatory_1_image_url || ''
 
-  // Fallback: iframe print or direct link navigation
-  try {
-    const iframe = document.createElement('iframe')
-    iframe.style.position = 'fixed'
-    iframe.style.right = '0'
-    iframe.style.bottom = '0'
-    iframe.style.width = '0'
-    iframe.style.height = '0'
-    iframe.style.border = '0'
-    document.body.appendChild(iframe)
-    iframe.src = blobUrl
-    iframe.onload = () => {
+    const rawHtml = renderCareerRadarAppreciationHtml({
+      certificateId: certId,
+      recipientName,
+      departmentName,
+      certificateTitle: certTitle,
+      certificateType: certType,
+      description: desc,
+      achievement: achieve,
+      issueDate,
+      verificationUrl: verifyUrl,
+      signatory1Name: sigName,
+      signatory1Title: sigTitle,
+      signatory1Image: sigImage,
+    })
+
+    const toolbar = `
+      <div class="cr-toolbar-print" style="position: fixed; top: 16px; right: 24px; z-index: 999999; display: flex; align-items: center; gap: 10px; background: rgba(11,27,61,0.96); padding: 8px 16px; border-radius: 12px; border: 1.5px solid #C9A227; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: Inter, sans-serif;">
+        <button onclick="window.print()" style="background: #C9A227; color: #0B1B3D; border: none; font-weight: 700; font-size: 13px; padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+          🖨️ Save as PDF / Print
+        </button>
+        <button onclick="window.close()" style="background: rgba(255,255,255,0.1); color: #FFF; border: none; font-size: 13px; padding: 8px 14px; border-radius: 8px; cursor: pointer;">
+          ✕ Close
+        </button>
+      </div>
+      <style>
+        @media print {
+          .cr-toolbar-print { display: none !important; }
+          @page { size: A4 landscape; margin: 0; }
+          body { margin: 0 !important; padding: 0 !important; background: white !important; }
+        }
+      </style>
+      ${autoPrint ? '<script>window.addEventListener("load", () => setTimeout(() => window.print(), 400));</script>' : ''}
+    `
+
+    const finalHtml = rawHtml.replace('</body>', `${toolbar}</body>`)
+
+    if (win && !win.closed) {
+      win.document.open()
+      win.document.write(finalHtml)
+      win.document.close()
       if (autoPrint) {
-        try { iframe.contentWindow.focus(); iframe.contentWindow.print(); } catch {}
+        setTimeout(() => {
+          try { win.focus(); win.print(); } catch {}
+        }, 500)
       }
-      setTimeout(() => iframe.remove(), 60000)
+      return true
     }
-    return true
-  } catch {
-    const link = document.createElement('a')
-    link.href = blobUrl
-    link.target = '_blank'
-    link.rel = 'noopener noreferrer'
-    link.click()
-    return true
+
+    // Blob URL fallback if initial window.open was blocked by the browser
+    const blob = new Blob([finalHtml], { type: 'text/html' })
+    const blobUrl = URL.createObjectURL(blob)
+
+    try {
+      const fallbackWin = window.open(blobUrl, '_blank')
+      if (fallbackWin) return true
+    } catch {}
+
+    // Fallback: iframe print or direct link navigation
+    try {
+      const iframe = document.createElement('iframe')
+      iframe.style.position = 'fixed'
+      iframe.style.right = '0'
+      iframe.style.bottom = '0'
+      iframe.style.width = '0'
+      iframe.style.height = '0'
+      iframe.style.border = '0'
+      document.body.appendChild(iframe)
+      iframe.src = blobUrl
+      iframe.onload = () => {
+        if (autoPrint) {
+          try { iframe.contentWindow.focus(); iframe.contentWindow.print(); } catch {}
+        }
+        setTimeout(() => iframe.remove(), 60000)
+      }
+      return true
+    } catch {
+      const link = document.createElement('a')
+      link.href = blobUrl
+      link.target = '_blank'
+      link.rel = 'noopener noreferrer'
+      link.click()
+      return true
+    }
+  } catch (error) {
+    if (win && !win.closed) {
+      win.document.open()
+      win.document.write(`<!DOCTYPE html><html><head><title>Career Radar Certificate</title></head><body style="margin:0;background:#07122A;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;color:#FF6B6B;font-family:Inter,sans-serif;"><h3>Could not load certificate</h3><p style="color:#A0AEC0;font-size:14px;margin-top:8px;">${error.message || 'Unknown error'}</p></body></html>`)
+      win.document.close()
+    }
+    throw error
   }
 }
 
