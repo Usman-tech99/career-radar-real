@@ -39,6 +39,13 @@ const GOLD_LIGHT = '#E5C46E'
 const GOLD_ACCENT = '#D4A017'
 const WHITE = '#FFFFFF'
 
+function formatSignatureName(name) {
+  if (!name) return 'Hasnain'
+  const first = String(name).trim().split(/\s+/)[0]
+  if (!first) return 'Hasnain'
+  return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase()
+}
+
 function fmtDate(str) {
   if (!str) return { d: '__', m: '__', y: '____' }
   try {
@@ -599,9 +606,10 @@ function CertificateCanvas({
         }}>
           <div style={{ width: 60, height: 1.5, background: `linear-gradient(to right, transparent, ${GOLD})` }} />
           <div style={{
-            fontSize: 50,
-            fontFamily: "'Great Vibes', cursive",
+            fontSize: 52,
+            fontFamily: "'Brush Script MT', 'Dancing Script', 'Segoe Script', cursive",
             color: NAVY,
+            fontStyle: 'italic',
             whiteSpace: 'nowrap',
             lineHeight: 1.15,
             padding: '0 8px',
@@ -688,14 +696,15 @@ function CertificateCanvas({
               />
             ) : (
               <div style={{
-                fontFamily: "'Great Vibes', cursive",
-                fontSize: 38,
+                fontFamily: "'Brush Script MT', 'Dancing Script', 'Segoe Script', cursive",
+                fontSize: 40,
                 color: NAVY,
+                fontStyle: 'italic',
                 lineHeight: 1,
                 marginBottom: -4,
                 opacity: 0.9,
               }}>
-                {signatory1Name ? signatory1Name.split(' ')[0] : 'Hasnain'}
+                {formatSignatureName(signatory1Name)}
               </div>
             )}
             <div style={{ height: 1.5, background: NAVY, opacity: 0.25, width: 190, margin: '2px auto 6px' }} />

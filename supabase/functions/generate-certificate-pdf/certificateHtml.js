@@ -557,6 +557,13 @@ export function renderCareerRadarAppreciationHtml(v = {}) {
 
   const logoUrl = safeUrl(v.logoUrl) || 'https://www.career-radar.space/logo.jpeg';
 
+  function formatSignatureName(name) {
+    if (!name) return 'Hasnain';
+    const first = String(name).trim().split(/\s+/)[0];
+    if (!first) return 'Hasnain';
+    return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
+  }
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -564,7 +571,7 @@ export function renderCareerRadarAppreciationHtml(v = {}) {
 <title>${certificateId ? `Certificate ${certificateId}` : 'Career Radar Certificate of Appreciation'}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700;800;900&display=block" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Inter:wght@300;400;500;600;700;800;900&display=block" rel="stylesheet"/>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { background: #fff; }
@@ -855,14 +862,14 @@ body {
 
 /* Recipient name */
 .cr-recipient {
-  font-family: 'Great Vibes', cursive;
-  font-size: 40pt;
+  font-family: 'Brush Script MT', 'Dancing Script', 'Segoe Script', cursive;
+  font-size: 42pt;
+  font-style: italic;
   color: #0B1B3D;
   text-align: center;
   line-height: 1.15;
   padding: 0 4mm;
   white-space: nowrap;
-  font-weight: normal;
 }
 
 /* Body text */
@@ -920,13 +927,13 @@ body {
   min-width: 50mm;
 }
 .cr-sig-script {
-  font-family: 'Great Vibes', cursive;
-  font-size: 30pt;
+  font-family: 'Brush Script MT', 'Dancing Script', 'Segoe Script', cursive;
+  font-size: 32pt;
+  font-style: italic;
   color: #0F1B33;
   line-height: 1;
   margin-bottom: -1mm;
   text-align: center;
-  font-weight: normal;
 }
 .cr-sig-img {
   max-height: 14mm;
@@ -1214,7 +1221,7 @@ body {
             ${v.signatory1Image ? `
               <img src="${safeUrl(v.signatory1Image)}" class="cr-sig-img" alt="Signature" />
             ` : `
-              <div class="cr-sig-script">${v.signatory1Name ? escapeHtml(v.signatory1Name.split(' ')[0]) : 'Hasnain'}</div>
+              <div class="cr-sig-script">${escapeHtml(formatSignatureName(v.signatory1Name))}</div>
             `}
             <div class="cr-sig-rule"></div>
             <div class="cr-sig-name">${signatory1Name}</div>
