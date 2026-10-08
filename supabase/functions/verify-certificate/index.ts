@@ -152,17 +152,7 @@ Deno.serve(async (req) => {
         }, 403);
       }
 
-      const { data: signed, error: signError } = await resolved.admin.storage
-        .from('certificate-pdfs')
-        .createSignedUrl(`${resolved.row.id}.pdf`, 600);
-
-      if (signError || !signed?.signedUrl) {
-        console.error('createSignedUrl error:', signError);
-        // The PDF may not have been generated yet; verification must still work,
-        // so this is a soft failure for the download button alone.
-        return json({ error: 'No PDF is available for this certificate yet.' }, 404);
-      }
-
+      // Record download count on every click
       const { error: downloadError } = await resolved.admin.rpc('record_certificate_download', {
         p_certificate_id: resolved.row.id,
         p_ip_hash: ipHash,
@@ -170,8 +160,16 @@ Deno.serve(async (req) => {
         p_actor: null,
         p_channel: 'public',
       });
-      // The PDF is already minted; a failed counter must not deny the download.
       if (downloadError) console.error('record_certificate_download error:', downloadError);
+
+      const { data: signed, error: signError } = await resolved.admin.storage
+        .from('certificate-pdfs')
+        .createSignedUrl(`${resolved.row.id}.pdf`, 600);
+
+      if (signError || !signed?.signedUrl) {
+        // PDF is not pre-rendered in storage bucket; client vector printable view will be used
+        return json({ found: true, pdf_url: null, message: 'PDF not pre-rendered in storage' }, 200);
+      }
 
       return json({ found: true, pdf_url: signed.signedUrl, expires_in: 600 });
     }

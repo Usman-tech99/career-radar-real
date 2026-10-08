@@ -771,7 +771,7 @@ export async function requestPublicCertificatePdf(reference, method = 'certifica
     if (signed?.signedUrl) return signed.signedUrl
   }
 
-  throw new Error('A PDF copy is not available yet for this certificate.')
+  return null
 }
 
 // ---------------------------------------------------------------------------

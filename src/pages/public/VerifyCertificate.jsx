@@ -109,18 +109,14 @@ function CertificateDetails({ certificate }) {
   async function handleDownloadPdf() {
     setPdfState({ status: 'loading' })
     try {
-      // 1. First request public PDF (invokes record_certificate_download in DB)
-      try {
-        const ref = certificate.verification_token || certificate.certificate_id
-        const method = certificate.verification_token ? 'verification_url' : 'certificate_id'
-        const signedUrl = await requestPublicCertificatePdf(ref, method)
-        if (signedUrl) {
-          window.open(signedUrl, '_blank')
-          setPdfState({ status: 'done' })
-          return
-        }
-      } catch (err) {
-        console.info('Storage PDF not directly cached, using vector printable view:', err?.message)
+      // 1. Request public PDF (invokes record_certificate_download in DB)
+      const ref = certificate.verification_token || certificate.certificate_id
+      const method = certificate.verification_token ? 'verification_url' : 'certificate_id'
+      const signedUrl = await requestPublicCertificatePdf(ref, method).catch(() => null)
+      if (signedUrl) {
+        window.open(signedUrl, '_blank')
+        setPdfState({ status: 'done' })
+        return
       }
 
       // 2. Open high-fidelity vector print / PDF view
