@@ -3,12 +3,13 @@ import { useAuth } from '../../context/AuthContext'
 import { motion } from 'framer-motion'
 import logo from '../../assets/logo.jpeg'
 import {
-  LayoutDashboard, Target, Activity, FileText, User, LogOut,
+  LayoutDashboard, Award, Target, Activity, FileText, User, LogOut,
   Briefcase, GraduationCap, BookOpen, ShoppingBag, Users, Info, Share2, HandshakeIcon, Building2, Heart, Globe
 } from 'lucide-react'
 
 const primaryNav = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Overview' },
+  { to: '/dashboard/certificates', icon: Award, label: 'My Certificates' },
   { to: '/dashboard/blueprint', icon: Target, label: 'AI Blueprint' },
   { to: '/dashboard/score', icon: Activity, label: 'Career Score' },
   { to: '/dashboard/resume', icon: FileText, label: 'Resume Builder' },

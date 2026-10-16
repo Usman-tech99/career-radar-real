@@ -350,6 +350,53 @@ export async function listCertificates({
   return { rows: data || [], total: count || 0 }
 }
 
+/**
+ * Retrieves all certificates issued to the authenticated user.
+ * Matches both `recipient_user_id` and the user's registered email address.
+ */
+export async function listMyCertificates() {
+  const { data: userData, error: userError } = await supabase.auth.getUser()
+  if (userError || !userData?.user) return []
+  const user = userData.user
+  const email = user.email?.trim()?.toLowerCase()
+
+  // 1. Try secure RPC first
+  try {
+    const { data: rpcData, error: rpcError } = await supabase.rpc('get_my_certificates')
+    if (!rpcError && Array.isArray(rpcData)) {
+      return rpcData
+    }
+  } catch {
+    /* Fall back to direct query */
+  }
+
+  // 2. Direct query fallback
+  let query = supabase
+    .from('certificates')
+    .select('*')
+    .order('issue_date', { ascending: false })
+    .order('created_at', { ascending: false })
+
+  if (email) {
+    query = query.or(`recipient_user_id.eq.${user.id},recipient_email.ilike.${email}`)
+  } else {
+    query = query.eq('recipient_user_id', user.id)
+  }
+
+  const { data, error } = await query
+  if (error) {
+    console.warn('Could not query certificates by email filter:', error.message)
+    // Fall back to simple recipient_user_id query if complex or() failed
+    const { data: fallbackData } = await supabase
+      .from('certificates')
+      .select('*')
+      .eq('recipient_user_id', user.id)
+      .order('issue_date', { ascending: false })
+    return fallbackData || []
+  }
+  return data || []
+}
+
 export async function getCertificate(uuid) {
   const { data, error } = await supabase
     .from('certificates')

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
   ShieldCheck, ShieldAlert, ShieldX, Search, Loader2, Award, Calendar, User, Building2,
   QrCode, Download, RotateCcw, Fingerprint,
@@ -352,7 +352,7 @@ export default function VerifyCertificate() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="glass-card p-6 sm:p-8 mb-8">
+        <form onSubmit={handleSubmit} className="glass-card p-6 sm:p-8 mb-6">
           <label className="label" htmlFor="cert-reference">
             Certificate ID or verification link
           </label>
@@ -379,6 +379,25 @@ export default function VerifyCertificate() {
             </button>
           </div>
         </form>
+
+        {/* Self-service recovery banner for certificate holders */}
+        <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4 sm:p-5 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <Award size={20} className="text-gold shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-semibold text-white">Lost your Certificate ID, link, or PDF?</p>
+              <p className="text-xs text-muted mt-0.5">
+                Sign in to your Career Radar account to view and download any certificate issued to your email.
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/dashboard/certificates"
+            className="btn-ghost text-xs px-4 py-2 shrink-0 inline-flex items-center gap-1.5 border border-gold/30 text-gold hover:bg-gold/10"
+          >
+            Go to My Certificates
+          </Link>
+        </div>
 
         {state === 'idle' && (
           <div className="text-center text-muted py-8">

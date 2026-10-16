@@ -45,6 +45,7 @@ const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword'))
 const ResetPassword = lazy(() => import('./pages/auth/ResetPassword'))
 
 const Dashboard = lazy(() => import('./pages/user/Dashboard'))
+const MyCertificates = lazy(() => import('./pages/user/MyCertificates'))
 const Blueprint = lazy(() => import('./pages/user/Blueprint'))
 const Score = lazy(() => import('./pages/user/Score'))
 const UserProfile = lazy(() => import('./pages/user/UserProfile'))
@@ -158,6 +159,7 @@ export default function App() {
             <Route element={<UserRoute />}>
               <Route element={<DashboardLayout />}>
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard/certificates" element={<MyCertificates />} />
                 <Route path="/dashboard/blueprint" element={<Blueprint />} />
                 <Route path="/dashboard/score" element={<Score />} />
                 <Route path="/dashboard/profile" element={<UserProfile />} />
