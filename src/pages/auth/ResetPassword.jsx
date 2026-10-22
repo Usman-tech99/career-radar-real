@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
@@ -113,18 +113,38 @@ export default function ResetPassword() {
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full flex justify-center items-center gap-2 mt-4"
-            >
-              {loading ? 'Updating...' : 'Reset Password'}
-            </button>
+            <div className="flex flex-col gap-2.5 mt-4">
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-primary w-full flex justify-center items-center gap-2"
+              >
+                {loading ? 'Updating...' : 'Update Password'}
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/dashboard')}
+                className="btn-ghost w-full text-xs text-muted hover:text-white py-2"
+              >
+                Keep current password & continue to Dashboard &rarr;
+              </button>
+            </div>
           </form>
         )}
 
         {!done && !recoveryReady && (
-          <p className="text-xs text-muted text-center mt-4">No active recovery session. Use the link from your email.</p>
+          <div className="text-center mt-6 space-y-3">
+            <p className="text-xs text-muted">
+              No active session found or the link may have expired.
+            </p>
+            <button
+              type="button"
+              onClick={() => navigate('/forgot-password')}
+              className="text-xs text-gold hover:underline font-medium inline-block"
+            >
+              Request a new Magic Link
+            </button>
+          </div>
         )}
       </div>
     </div>
