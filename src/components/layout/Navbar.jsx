@@ -55,7 +55,7 @@ function NavDropdown({ label, items }) {
   )
 }
 
-export default function Navbar() {
+export default function Navbar({ navLogoVisible = true }) {
   const { user, role } = useAuth()
   const location = useLocation()
   const [isOpen, setIsOpen] = useState(false)
@@ -122,7 +122,11 @@ export default function Navbar() {
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <div className="w-14 h-14 rounded-full border-2 border-navy overflow-hidden bg-white flex items-center justify-center">
+          <div
+            id="nav-logo"
+            className="w-14 h-14 rounded-full border-2 border-navy overflow-hidden bg-white flex items-center justify-center transition-opacity duration-150"
+            style={{ opacity: navLogoVisible ? 1 : 0 }}
+          >
             <img src={logo} alt="Career Radar" className="w-full h-full object-cover" />
           </div>
         </Link>

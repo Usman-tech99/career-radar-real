@@ -1,10 +1,11 @@
-﻿import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Navbar from '../../components/layout/Navbar'
 import Footer from '../../components/layout/Footer'
 import { BlurFade } from '../../components/magicui/blur-fade'
 import { BorderBeam } from '../../components/magicui/border-beam'
+import SiteEntranceAnimation from '../../components/ui/SiteEntranceAnimation'
 
 import { ArrowRight, Search, Bot, BookOpen, Users, TrendingUp, Target, Compass, CheckCircle, Rocket, Sparkles, Quote } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
@@ -103,6 +104,8 @@ function BentoFeatureCard({ icon: Icon, title, desc, color, beamColor, index, wi
 export default function Home() {
   const navigate = useNavigate()
   const [siteStats, setSiteStats] = useState(null)
+  const [entranceDone, setEntranceDone] = useState(false)
+  const [heroRevealed, setHeroRevealed] = useState(false)
 
   useEffect(() => {
     supabase.from('site_stats').select('*').single().then(({ data, error }) => {
@@ -121,7 +124,14 @@ export default function Home() {
         <meta property="og:type" content="website" />
         <meta name="keywords" content="career radar, AI career tools, scholarships, internships, jobs, career guidance" />
       </Helmet>
-      <Navbar />
+
+      {/* 3-Phase Responsive Entrance Animation */}
+      <SiteEntranceAnimation
+        onPhase2Start={() => setHeroRevealed(true)}
+        onComplete={() => setEntranceDone(true)}
+      />
+
+      <Navbar navLogoVisible={entranceDone} />
 
       {/* Hero Section */}
       <div className="w-full bg-navy relative overflow-hidden">
@@ -136,7 +146,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 pt-28 pb-20 md:pt-36 md:pb-28 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Column */}
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={heroRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+            >
               {/* Badge */}
               <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#2A3A4A] text-amber-400 text-xs font-semibold uppercase tracking-wider mb-6">
                 YOUR OPPORTUNITY SCANNER
@@ -185,7 +199,12 @@ export default function Home() {
             </motion.div>
 
             {/* Right Column - Video */}
-            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative">
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={heroRevealed ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
+              transition={{ duration: 0.85, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+              className="relative"
+            >
               <div className="rounded-2xl overflow-hidden">
                 <video autoPlay muted loop playsInline webkit-playsinline preload="auto" className="w-full h-auto object-cover rounded-2xl">
                   <source src="/hero-video.mp4" type="video/mp4" />
